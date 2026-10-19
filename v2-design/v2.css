@@ -1,0 +1,417 @@
+/* ==========================================================================
+   MEATWASH Car Care Club — v2 homepage
+   Layout, spacing, radii, gradients, chips, pills and timing follow the
+   measured reference (porsche.com/germany, 19–20.10.2026): see
+   scratchpad v2d/ref/spec.md. Colours and type are Meat Wash's own.
+   ========================================================================== */
+
+@font-face { font-family: 'Arsenal'; src: url('fonts/arsenal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Arsenal SC'; src: url('fonts/arsenal-sc.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Arsenal SC'; src: url('fonts/arsenal-sc-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+
+:root {
+  color-scheme: dark;
+
+  /* Meat Wash palette (dist/css/style.css): black and ivory. */
+  --bg: #080808;
+  --fg: #f1ebe0;
+  --fg-rgb: 241 235 224;
+  --muted: rgb(var(--fg-rgb) / .64);
+  --faint: rgb(var(--fg-rgb) / .44);
+  --line: rgb(var(--fg-rgb) / .12);
+  --focus: #f1ebe0;
+
+  /* Frosted fills of the reference, warmed a touch toward ivory. */
+  --frost: rgb(112 106 100 / .26);          /* ref rgba(107,107,112,.227) */
+  --frost-strong: rgb(160 152 142 / .32);   /* ref rgba(156,156,159,.30) */
+  --blur: blur(32px);
+
+  /* Fluid spacing — the reference's PDS formulas, unchanged. */
+  --xs: clamp(4px, .25vw + 3px, 8px);
+  --sm: clamp(8px, .5vw + 6px, 16px);
+  --md: clamp(16px, 1.25vw + 12px, 36px);
+  --lg: clamp(32px, 2.75vw + 23px, 76px);
+  --xl: clamp(48px, 3vw + 38px, 96px);
+  --xxl: clamp(80px, 7.5vw + 56px, 200px);
+
+  --ease: cubic-bezier(.25, .1, .25, 1);
+  --ease-out: cubic-bezier(0, 0, .2, 1);   /* PDS "ease-in" (decelerate) */
+
+  /* The reference's 16-stop scrim, black alpha .8 → 0. */
+  --fade: rgb(8 8 8 / .8) 0%, rgb(8 8 8 / .8) 8.1%, rgb(8 8 8 / .8) 15.5%, rgb(8 8 8 / .8) 22.5%,
+          rgb(8 8 8 / .78) 29%, rgb(8 8 8 / .73) 35.3%, rgb(8 8 8 / .67) 41.2%, rgb(8 8 8 / .6) 47.1%,
+          rgb(8 8 8 / .52) 52.9%, rgb(8 8 8 / .44) 58.8%, rgb(8 8 8 / .33) 64.7%, rgb(8 8 8 / .22) 71%,
+          rgb(8 8 8 / .12) 77.5%, rgb(8 8 8 / .05) 84.5%, rgb(8 8 8 / .01) 91.9%, rgb(8 8 8 / 0) 100%;
+
+  --sans: 'Arsenal', 'Helvetica Neue', Arial, sans-serif;
+  --display: 'Arsenal SC', 'Arsenal', 'Times New Roman', serif;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 96px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 16px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+h1, h2, h3, p, ul, address { margin: 0; padding: 0; }
+ul { list-style: none; }
+address { font-style: normal; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ---------- Header: the bull, centred; transparent over the hero ---------- */
+.site-header {
+  position: fixed; inset: 0 0 auto; z-index: 300;
+  height: 72px;
+  pointer-events: none;
+}
+/* Ref: a 148 px scrim over the hero (72 px on phones). */
+.site-header::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--fade));
+  transition: opacity .4s var(--ease);
+}
+.site-header__bar {
+  position: relative;
+  height: 66px;
+  display: grid; place-items: center;
+  transition: background-color .4s var(--ease), box-shadow .4s var(--ease);
+}
+.site-header__logo {
+  pointer-events: auto;
+  display: grid; place-items: center;
+  min-width: 44px; min-height: 44px;
+  border-radius: 8px;
+  color: var(--fg);
+}
+.site-header__logo svg { display: block; width: auto; height: 38px; aspect-ratio: 1097 / 800; }
+/* Past the hero: a solid bar, no scrim. */
+.site-header.is-solid::before { opacity: 0; }
+.site-header.is-solid .site-header__bar {
+  background-color: rgb(8 8 8 / .9);
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  box-shadow: 0 1px 0 var(--line);
+}
+@media (min-width: 480px) {
+  .site-header { height: 148px; }
+  .site-header__bar { height: 83px; }
+  .site-header__logo svg { height: 46px; }
+}
+
+/* ---------- Hero: photo + «Car Care Club / by MEATWASH», nothing else ---------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+}
+.hero__media, .hero__media img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.hero__media { z-index: -2; }
+.hero__media img { object-fit: cover; object-position: 72% 70%; }
+/* Ref: bottom scrim, 0deg curve. Taller than the reference's 200 px because
+   the lettering sits inside it rather than above a CTA row. */
+.hero::after {
+  content: ""; position: absolute; inset: auto 0 0; z-index: -1;
+  height: max(56%, 400px);
+  background: linear-gradient(0deg, var(--fade));
+  pointer-events: none;
+}
+.hero__title {
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(10px, .9vw + 6px, 22px);
+  width: 100%;
+  padding: 0 16px calc(var(--md) + clamp(48px, 9svh, 120px));
+  color: var(--fg);
+  font-weight: 400;
+  text-align: center;
+  animation: rise 1.2s var(--ease-out) both;
+}
+.hero__script {
+  display: block;
+  width: min(86vw, 980px, 120svh);
+  height: auto;
+  aspect-ratio: 1231 / 198;
+  overflow: visible;
+}
+.hero__by {
+  display: block;
+  font: 400 clamp(15px, .55vw + 12px, 22px)/1 var(--sans);
+  letter-spacing: .24em;
+  white-space: nowrap;
+}
+.hero__by svg {
+  display: inline-block;
+  vertical-align: baseline;
+  height: clamp(15px, .9vw + 10px, 26px);
+  width: auto;
+  aspect-ratio: 1558 / 248;
+  margin-left: .2em;
+}
+@media (min-width: 700px) {
+  .hero__media img { object-position: 72% 70%; }
+  .hero__script { width: min(78vw, 980px, 120svh); }
+}
+@media (max-width: 699px) {
+  .hero__media img { object-position: 80% 60%; }
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Directions (ref: «Ihr Porsche Abenteuer beginnt jetzt.») ---------- */
+.dirs {
+  width: 94vw; max-width: 1880px;
+  margin: 0 auto;
+  padding: var(--xl) 0 var(--lg);
+}
+.dirs__heading {
+  max-width: 90vw;
+  padding: 0 0 var(--lg) var(--lg);
+  font: 400 clamp(2.03rem, 3.58vw + 1.31rem, 5.61rem)/1.2 var(--display);
+  letter-spacing: -.005em;
+  text-wrap: balance;
+}
+.js .dirs__heading:not(.is-in) { opacity: 0; transform: translateY(40px); }
+.dirs__heading.is-in { animation: rise 1.2s var(--ease-out) both; }
+
+.dirs__grid { padding-top: var(--md); }
+
+/* One direction = title + card. */
+.dir { position: relative; }
+.dir__title {
+  font: 700 clamp(26px, 1.25vw + 18px, 44px)/1 var(--display);
+  letter-spacing: .01em;
+  text-align: center;
+  color: var(--fg);
+  text-wrap: balance;
+  pointer-events: none;
+}
+.dir__card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 32px;
+  background: #000;
+  cursor: pointer;
+}
+.dir__img {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--focus-xy, 50% 50%);
+}
+/* Scrims (ref: top 20 %, bottom 25 % on desktop; bottom 70 % on phones). */
+.dir__card::before, .dir__card::after {
+  content: ""; position: absolute; left: 0; right: 0; z-index: 5;
+  pointer-events: none;
+}
+.dir__card::before { top: 0; height: 20%; background: linear-gradient(180deg, var(--fade)); }
+.dir__card::after { bottom: 0; height: 70%; background: linear-gradient(0deg, var(--fade)); }
+
+/* The whole card is a link (hidden duplicate; the CTA is the tab stop). */
+.dir__hit { position: absolute; inset: 0; z-index: 11; }
+
+.dir__content {
+  position: absolute; left: 0; bottom: 0; z-index: 13;
+  width: 100%;
+  pointer-events: none;
+  color: var(--fg);
+}
+.dir__tags { display: flex; flex-wrap: wrap; gap: var(--sm); }
+.chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 14.875px;
+  font: 400 15px/21.75px var(--sans);
+  letter-spacing: .01em;
+  background: var(--frost-strong);
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+}
+.dir__desc { font: 400 17px/24px var(--sans); hyphens: none; text-wrap: pretty; }
+
+.dir__cta {
+  pointer-events: auto;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  font: 400 17px/24px var(--sans);
+  color: var(--fg);
+  white-space: nowrap;
+}
+.dir__arrow { display: block; flex: none; width: 24px; height: 24px; }
+
+/* ---------- Phones: stacked, CTA always visible (ref mobile anatomy) ---------- */
+@media (max-width: 759px) {
+  .dirs__grid { display: grid; gap: var(--lg); padding-inline: var(--md); }
+  .dir__title { margin: 0 auto var(--md); }
+  .dir__card { height: 83vh; height: 83svh; max-height: 42em; min-height: 440px; }
+  .dir__card::before { display: none; }
+  .dir__content { padding: 0 var(--md) var(--md); }
+  .dir__desc { padding-top: var(--sm); }
+  .dir__cta {
+    width: 100%; min-height: 56px;
+    margin-top: var(--md);
+    padding: 16px 28px;
+    border-radius: 12px;
+    background: var(--fg); color: var(--bg);
+  }
+  .dir__cta .dir__arrow { display: none; }
+  .dir__cta:focus-visible { outline-offset: 3px; }
+}
+@media (max-width: 390px) { .dir__card { height: 79vh; height: 79svh; } }
+@media (max-width: 375px) { .dir__card { height: 77vh; height: 77svh; } }
+
+/* ---------- Desktop and tablet: 2 × 2 tiles that widen on hover/focus ---------- */
+@media (min-width: 760px) {
+  .dirs__grid {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: var(--md);
+  }
+  .dir {
+    width: calc(50% - 1.5 * var(--md));
+    height: 45vw;
+    transition: width .6s var(--ease-out);
+  }
+  .dir:nth-child(odd) { margin-left: var(--md); }
+  .dir:nth-child(even) { margin-right: var(--md); }
+  .dir__title {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 2;
+    margin: var(--md) auto;
+    padding: 0 var(--md);
+  }
+  .dir__card { position: absolute; inset: 0; }
+  /* Scrims sized by what they carry: one-line title and two-line text give
+     the reference's 20 % / 25 %; longer copy on narrower tiles gets more. */
+  .dir__card::before, .dir__card::after { display: none; }
+  .dir__title::before, .dir__content::before {
+    content: ""; position: absolute; left: 0; right: 0; z-index: -1;
+    pointer-events: none;
+  }
+  .dir__title::before {
+    top: calc(-1 * var(--md));
+    height: calc(190% + 1.9 * var(--md));
+    border-radius: 32px 32px 0 0;
+    background: linear-gradient(180deg, var(--fade));
+  }
+  .dir__content::before {
+    bottom: calc(-1 * var(--md));
+    height: calc(170% + 1.7 * var(--md));
+    background: linear-gradient(0deg, var(--fade));
+  }
+  .dir__content {
+    display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--md);
+    margin: var(--md) 0;
+    padding: 0 var(--md);
+  }
+  .dir__tags { margin-bottom: var(--sm); }
+  .dir__desc { margin-right: 12px; }
+
+  /* Rest: a round arrow button (ref p-link-pure, hide-label, compact). */
+  .dir__cta { padding: calc(.6 * var(--xs)); }
+  .dir__cta::before {
+    content: ""; position: absolute; inset: -2px; z-index: -1;
+    border-radius: 999px;
+    background: var(--frost);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    transition: background-color .25s var(--ease);
+  }
+  .dir__cta:hover::before { background-color: var(--frost-strong); }
+  .dir__cta:focus-visible { outline: none; }
+  .dir__cta:focus-visible::before { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .dir__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}
+@media (min-width: 760px) and (max-width: 999px) { .dir__desc, .dir__cta { font-size: 16px; } }
+@media (min-width: 1300px) { .dir { height: calc(7vh + 39vw); } }
+@media (min-width: 1760px) { .dir { height: calc(51vh + 10vw); max-height: 54em; } }
+
+/* Active tile = the pill with its label; the row's widths shift 55 / 45. */
+@media (min-width: 760px) and (hover: hover) {
+  .dir:nth-child(odd):hover { width: calc(55% - 1.5 * var(--md)); }
+  .dir:nth-child(odd):hover + .dir { width: calc(45% - 1.5 * var(--md)); }
+  .dir:nth-child(even):hover { width: calc(55% - 1.5 * var(--md)); }
+  .dir:nth-child(odd):has(+ .dir:hover) { width: calc(45% - 1.5 * var(--md)); }
+  .dir:hover .dir__desc { margin-right: 8px; }
+  .dir:hover .dir__cta { padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
+  .dir:hover .dir__cta::before { border-radius: 8px; }
+  .dir:hover .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; animation: show 1.2s var(--ease-out) both; }
+}
+@media (min-width: 760px) {
+  .dir:nth-child(odd):has(.dir__cta:focus-visible) { width: calc(55% - 1.5 * var(--md)); }
+  .dir:nth-child(odd):has(.dir__cta:focus-visible) + .dir { width: calc(45% - 1.5 * var(--md)); }
+  .dir:nth-child(even):has(.dir__cta:focus-visible) { width: calc(55% - 1.5 * var(--md)); }
+  .dir:nth-child(odd):has(+ .dir .dir__cta:focus-visible) { width: calc(45% - 1.5 * var(--md)); }
+  .dir:has(.dir__cta:focus-visible) .dir__desc { margin-right: 8px; }
+  .dir .dir__cta:focus-visible { padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
+  .dir .dir__cta:focus-visible::before { border-radius: 8px; }
+  .dir .dir__cta:focus-visible .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+}
+/* Touch screens at tablet width: no hover, so every CTA shows its label,
+   under the text so a narrow tile keeps room for it. */
+@media (min-width: 760px) and (hover: none) {
+  .dir__content { grid-template-columns: 1fr; gap: var(--sm); }
+  .dir__cta { justify-self: start; padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
+  .dir__cta::before { border-radius: 8px; background: var(--frost-strong); }
+  .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+}
+
+@keyframes show { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  width: 94vw; max-width: 1880px;
+  margin: 0 auto;
+  padding: var(--xl) var(--md) var(--lg);
+  color: var(--muted);
+  font: 400 15px/1.55 var(--sans);
+}
+.site-footer__top {
+  display: grid; gap: var(--lg);
+  padding: var(--lg) 0;
+  border-top: 1px solid var(--line);
+}
+.site-footer__brand { color: var(--fg); display: flex; align-items: center; gap: 14px; }
+.site-footer__brand svg { display: block; height: 34px; width: auto; }
+.site-footer__brand .mw { height: 18px; aspect-ratio: 1558 / 248; }
+.site-footer__brand .bull { aspect-ratio: 1097 / 800; }
+.studios { display: grid; gap: var(--md) var(--lg); }
+.studio__name { font: 700 22px/1.1 var(--display); color: var(--fg); margin-bottom: 4px; }
+.studio__type { color: var(--faint); margin-bottom: 10px; }
+.studio a { color: var(--fg); text-decoration: underline; text-decoration-color: rgb(var(--fg-rgb) / .3); text-underline-offset: 3px; transition: text-decoration-color .25s var(--ease); }
+.studio a:hover { text-decoration-color: currentColor; }
+.site-footer__legal {
+  display: flex; flex-wrap: wrap; gap: 10px var(--md); align-items: baseline;
+  padding-top: var(--md);
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--faint);
+}
+.site-footer__legal a { color: var(--muted); transition: color .25s var(--ease); }
+.site-footer__legal a:hover { color: var(--fg); }
+.site-footer__note { flex-basis: 100%; order: 3; }
+@media (min-width: 760px) {
+  .site-footer__top { grid-template-columns: 1fr 2fr; align-items: start; }
+  .studios { grid-template-columns: 1fr 1fr; }
+  .site-footer__copy { margin-left: auto; }
+}
+
+/* ---------- Reduced motion: final states, no transitions ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .dirs__heading:not(.is-in) { opacity: 1; transform: none; }
+}
