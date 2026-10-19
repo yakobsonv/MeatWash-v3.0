@@ -1,41 +1,45 @@
 /* ==========================================================================
    MEATWASH Car Care Club — v2 homepage
-   Layout, spacing, radii, gradients, chips, pills and timing follow the
-   measured reference (porsche.com/germany, 19–20.10.2026): see
-   scratchpad v2d/ref/spec.md. Colours and type are Meat Wash's own.
+   Layout, spacing, radii, gradients, chips, pills, page-colour switch and
+   timing follow the measured reference (porsche.com/germany, 19–20.10.2026):
+   see scratchpad v2d/ref/spec.md. Type is Meat Wash's own (Arsenal); the
+   reference's white/near-black pair maps to Meat Wash ivory/black.
    ========================================================================== */
 
 @font-face { font-family: 'Arsenal'; src: url('fonts/arsenal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: 'Arsenal SC'; src: url('fonts/arsenal-sc.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Arsenal SC'; src: url('fonts/arsenal-sc-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Meat Wash palette (dist/css/style.css): black and ivory. */
+  /* Meat Wash palette: black and ivory (ref #010205 and #fff / #fafbff). */
   --bg: #080808;
   --fg: #f1ebe0;
   --fg-rgb: 241 235 224;
-  --muted: rgb(var(--fg-rgb) / .64);
-  --faint: rgb(var(--fg-rgb) / .44);
-  --line: rgb(var(--fg-rgb) / .12);
-  --focus: #f1ebe0;
+  --ink: #080808;
+  --ink-rgb: 8 8 8;
 
-  /* Frosted fills of the reference, warmed a touch toward ivory. */
-  --frost: rgb(112 106 100 / .26);          /* ref rgba(107,107,112,.227) */
-  --frost-strong: rgb(160 152 142 / .32);   /* ref rgba(156,156,159,.30) */
+  /* Reference tokens, unchanged (PDS dark scheme). */
+  --frost: rgb(107 107 112 / .227);
+  --frost-strong: rgb(156 156 159 / .3);
   --blur: blur(32px);
+  --focus: #1a44ea;
 
-  /* Fluid spacing — the reference's PDS formulas, unchanged. */
+  /* Fluid spacing — the reference's PDS formulas. */
   --xs: clamp(4px, .25vw + 3px, 8px);
   --sm: clamp(8px, .5vw + 6px, 16px);
   --md: clamp(16px, 1.25vw + 12px, 36px);
   --lg: clamp(32px, 2.75vw + 23px, 76px);
   --xl: clamp(48px, 3vw + 38px, 96px);
-  --xxl: clamp(80px, 7.5vw + 56px, 200px);
+
+  /* PDS grid: start of the "extended" column (29.4 at 390, 140.9 at 1440, 192.3 at 1920). */
+  --ext: max(22px, 10.625vw - 12px);
+  /* PDS display "large" (the hero headline size: 40.1 / 94.7 / 119.7). */
+  --fs-hero: clamp(2.28rem, 5.2vw + 1.24rem, 7.48rem);
 
   --ease: cubic-bezier(.25, .1, .25, 1);
-  --ease-out: cubic-bezier(0, 0, .2, 1);   /* PDS "ease-in" (decelerate) */
+  --ease-out: cubic-bezier(0, 0, .2, 1);    /* PDS "ease-in" (decelerate) */
+  --ease-color: cubic-bezier(.4, 0, .5, 1); /* the page-colour switch */
 
   /* The reference's 16-stop scrim, black alpha .8 → 0. */
   --fade: rgb(8 8 8 / .8) 0%, rgb(8 8 8 / .8) 8.1%, rgb(8 8 8 / .8) 15.5%, rgb(8 8 8 / .8) 22.5%,
@@ -49,75 +53,99 @@
 
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 96px; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* The page is light below the hero and turns dark while the directions are
+   on screen (ref CarRange__toDark: 1.2 s, cubic-bezier(.4,0,.5,1)). Text that
+   sits on the page itself takes its colours from --on*. */
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--fg);
+  background-color: var(--fg);
+  color: var(--ink);
   font: 400 16px/1.5 var(--sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
+  --on: var(--ink);
+  --on-rgb: var(--ink-rgb);
+  --on-muted: rgb(var(--ink-rgb) / .7);
+  --on-line: rgb(var(--ink-rgb) / .14);
+  transition: background-color 1.2s var(--ease-color);
 }
+body.is-dark {
+  background-color: var(--bg);
+  --on: var(--fg);
+  --on-rgb: var(--fg-rgb);
+  --on-muted: rgb(var(--fg-rgb) / .66);
+  --on-line: rgb(var(--fg-rgb) / .14);
+}
+body.no-tr, body.no-tr * { transition: none !important; }
 h1, h2, h3, p, ul, address { margin: 0; padding: 0; }
 ul { list-style: none; }
 address { font-style: normal; }
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
-/* ---------- Header: the bull, centred; transparent over the hero ---------- */
+/* ---------- Header: absolute over the hero, scrolls away with it (ref) ---------- */
 .site-header {
-  position: fixed; inset: 0 0 auto; z-index: 300;
+  position: absolute; inset: 0 0 auto; z-index: 300;
   height: 72px;
+  color: var(--fg);
   pointer-events: none;
 }
 /* Ref: a 148 px scrim over the hero (72 px on phones). */
 .site-header::before {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, var(--fade));
-  transition: opacity .4s var(--ease);
 }
 .site-header__bar {
   position: relative;
   height: 66px;
   display: grid; place-items: center;
-  transition: background-color .4s var(--ease), box-shadow .4s var(--ease);
 }
 .site-header__logo {
   pointer-events: auto;
   display: grid; place-items: center;
   min-width: 44px; min-height: 44px;
+  padding: 0 4px;
   border-radius: 8px;
-  color: var(--fg);
 }
-.site-header__logo svg { display: block; width: auto; height: 38px; aspect-ratio: 1097 / 800; }
-/* Past the hero: a solid bar, no scrim. */
-.site-header.is-solid::before { opacity: 0; }
-.site-header.is-solid .site-header__bar {
-  background-color: rgb(8 8 8 / .9);
-  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
-  box-shadow: 0 1px 0 var(--line);
-}
+.site-header__logo svg { display: block; width: auto; }
+/* Phones: the bull, like the reference's crest (30×40 there). */
+.site-header__logo .site-header__bull { height: 40px; aspect-ratio: 1097 / 800; }
+.site-header__logo .site-header__mw { display: none; aspect-ratio: 1558 / 248; }
 @media (min-width: 480px) {
   .site-header { height: 148px; }
-  .site-header__bar { height: 83px; }
-  .site-header__logo svg { height: 46px; }
+  .site-header__bar { height: 73px; }
 }
+/* From 760 px: the MEATWASH wordmark, like the reference's centred wordmark
+   (165×11 at 768, 210×14 at 1440, 240×16 at 1920 → the same 11:14:16 step). */
+@media (min-width: 760px) {
+  .site-header__logo .site-header__bull { display: none; }
+  .site-header__logo .site-header__mw { display: block; height: clamp(14px, .564vw + 9.77px, 22px); }
+}
+@media (min-width: 1000px) { .site-header__bar { height: 83px; } }
 
 /* ---------- Hero: photo + «Car Care Club / by MEATWASH», nothing else ---------- */
+/* Ref composition: the headline sits bottom-left at the extended column, its
+   box ending fluid-md + scroll row + CTA row above the bottom (700 of 900 at
+   1440), at most half the extended column wide. */
 .hero {
+  --hero-foot: calc(3 * var(--md) + 110px);
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
   align-content: end;
-  justify-items: center;
+  justify-items: start;
+  padding: 0 var(--ext) var(--hero-foot);
   overflow: hidden;
   isolation: isolate;
   background: var(--bg);
+  color: var(--fg);
 }
 .hero__media, .hero__media img {
   position: absolute; inset: 0;
@@ -125,81 +153,72 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
 }
 .hero__media { z-index: -2; }
 .hero__media img { object-fit: cover; object-position: 72% 70%; }
-/* Ref: bottom scrim, 0deg curve. Taller than the reference's 200 px because
-   the lettering sits inside it rather than above a CTA row. */
+/* Ref: bottom scrim over the CTA and scroll rows only (200 px at 1440, 218 at 1920). */
 .hero::after {
   content: ""; position: absolute; inset: auto 0 0; z-index: -1;
-  height: max(56%, 400px);
+  height: var(--hero-foot);
   background: linear-gradient(0deg, var(--fade));
   pointer-events: none;
 }
 .hero__title {
-  display: flex; flex-direction: column; align-items: center;
-  gap: clamp(10px, .9vw + 6px, 22px);
-  width: 100%;
-  padding: 0 16px calc(var(--md) + clamp(48px, 9svh, 120px));
-  color: var(--fg);
+  --w: calc(var(--fs-hero) * 6);
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: calc(var(--fs-hero) * .16);
+  width: var(--w); max-width: 100%;
   font-weight: 400;
-  text-align: center;
-  animation: rise 1.2s var(--ease-out) both;
+  /* Ref entrance is a 40 px rise; it runs on transform only, so the lettering
+     is painted from the first frame and counts as the page's LCP. */
+  animation: rise-in 1.2s var(--ease-out) both;
+}
+@media (min-width: 760px) {
+  .hero__title { --w: min(calc(var(--fs-hero) * 6.3), calc((100vw - 2 * var(--ext) - var(--md)) / 2)); }
 }
 .hero__script {
   display: block;
-  width: min(86vw, 980px, 120svh);
+  width: 100%;
   height: auto;
   aspect-ratio: 1231 / 198;
   overflow: visible;
 }
 .hero__by {
-  display: block;
-  font: 400 clamp(15px, .55vw + 12px, 22px)/1 var(--sans);
-  letter-spacing: .24em;
+  --by: clamp(13px, calc(var(--fs-hero) * .17), 22px);
+  display: flex; align-items: baseline; gap: .3em;
+  font: 400 var(--by)/1 var(--sans);
+  letter-spacing: .02em;
   white-space: nowrap;
 }
-.hero__by svg {
-  display: inline-block;
-  vertical-align: baseline;
-  height: clamp(15px, .9vw + 10px, 26px);
-  width: auto;
-  aspect-ratio: 1558 / 248;
-  margin-left: .2em;
-}
-@media (min-width: 700px) {
-  .hero__media img { object-position: 72% 70%; }
-  .hero__script { width: min(78vw, 980px, 120svh); }
-}
+.hero__by svg { display: block; height: calc(var(--by) * 1.1); width: auto; aspect-ratio: 1558 / 248; }
 @media (max-width: 699px) {
   .hero__media img { object-position: 80% 60%; }
 }
 
 @keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+@keyframes rise-in { from { transform: translateY(40px); } to { transform: none; } }
 
 /* ---------- Directions (ref: «Ihr Porsche Abenteuer beginnt jetzt.») ---------- */
 .dirs {
   width: 94vw; max-width: 1880px;
   margin: 0 auto;
-  padding: var(--xl) 0 var(--lg);
+  padding: var(--lg) 0;
 }
 .dirs__heading {
   max-width: 90vw;
   padding: 0 0 var(--lg) var(--lg);
-  font: 400 clamp(2.03rem, 3.58vw + 1.31rem, 5.61rem)/1.2 var(--display);
-  letter-spacing: -.005em;
+  font: 400 clamp(2.03rem, 3.58vw + 1.31rem, 5.61rem)/calc(6px + 2.125ex) var(--sans);
+  color: var(--on);
   text-wrap: balance;
+  transition: color 1.2s var(--ease-color);
 }
 .js .dirs__heading:not(.is-in) { opacity: 0; transform: translateY(40px); }
 .dirs__heading.is-in { animation: rise 1.2s var(--ease-out) both; }
 
-.dirs__grid { padding-top: var(--md); }
-
 /* One direction = title + card. */
 .dir { position: relative; }
 .dir__title {
-  font: 700 clamp(26px, 1.25vw + 18px, 44px)/1 var(--display);
-  letter-spacing: .01em;
+  font: 400 clamp(24px, 1.5vw + 13px, 38px)/36px var(--display);
   text-align: center;
+  white-space: nowrap;
   color: var(--fg);
-  text-wrap: balance;
   pointer-events: none;
 }
 .dir__card {
@@ -216,13 +235,17 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
   object-fit: cover;
   object-position: var(--focus-xy, 50% 50%);
 }
-/* Scrims (ref: top 20 %, bottom 25 % on desktop; bottom 70 % on phones). */
+/* Scrims, fixed to the tile (ref: top 20 %, bottom 25 % on desktop; bottom 70 %
+   on phones). Where the tile is shorter than at 1366+ the same curve gets a
+   fixed larger share, identical on every tile, so the longer Russian copy
+   stays readable: top ≥ 110 px, bottom 36 % at 1100–1365 and 88 % / 62 % in
+   the tablet layout. */
 .dir__card::before, .dir__card::after {
   content: ""; position: absolute; left: 0; right: 0; z-index: 5;
   pointer-events: none;
 }
-.dir__card::before { top: 0; height: 20%; background: linear-gradient(180deg, var(--fade)); }
-.dir__card::after { bottom: 0; height: 70%; background: linear-gradient(0deg, var(--fade)); }
+.dir__card::before { top: 0; height: max(20%, 110px); background: linear-gradient(180deg, var(--fade)); }
+.dir__card::after { bottom: 0; height: 25%; background: linear-gradient(0deg, var(--fade)); }
 
 /* The whole card is a link (hidden duplicate; the CTA is the tab stop). */
 .dir__hit { position: absolute; inset: 0; z-index: 11; }
@@ -234,34 +257,59 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
   color: var(--fg);
 }
 .dir__tags { display: flex; flex-wrap: wrap; gap: var(--sm); }
+/* Ref chip: 14/21.75, frosted-strong + blur. A dark under-layer keeps ivory
+   text at 4.5:1 over the brightest photo (foam on tile 1); over dark photos it
+   reads as the reference's grey chip. */
 .chip {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 14.875px;
-  font: 400 15px/21.75px var(--sans);
-  letter-spacing: .01em;
-  background: var(--frost-strong);
+  font: 400 14px/21.75px var(--sans);
+  white-space: nowrap;
+  background: linear-gradient(var(--frost-strong), var(--frost-strong)), rgb(8 8 8 / .58);
   -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
 }
-.dir__desc { font: 400 17px/24px var(--sans); hyphens: none; text-wrap: pretty; }
+.dir__desc { font: 400 16px/24px var(--sans); hyphens: none; text-wrap: pretty; }
 
 .dir__cta {
   pointer-events: auto;
   position: relative;
   isolation: isolate;
   display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  font: 400 17px/24px var(--sans);
+  font: 400 16px/24px var(--sans);
   color: var(--fg);
   white-space: nowrap;
 }
 .dir__arrow { display: block; flex: none; width: 24px; height: 24px; }
 
-/* ---------- Phones: stacked, CTA always visible (ref mobile anatomy) ---------- */
+/* Phone carousel controls (ref p-carousel paginator + pause). */
+.dirs__controls { display: none; }
+
+/* ---------- Phones: a swipe carousel of 85vw slides (ref mobile anatomy) ---------- */
 @media (max-width: 759px) {
-  .dirs__grid { display: grid; gap: var(--lg); padding-inline: var(--md); }
-  .dir__title { margin: 0 auto var(--md); }
+  .dirs { width: 100%; }
+  .dirs__heading { max-width: none; padding: 0 var(--lg) var(--lg); }
+  .dirs__grid {
+    display: flex; gap: var(--md);
+    padding: 0 7.5vw;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 7.5vw;
+    scrollbar-width: none;
+  }
+  .dirs__grid::-webkit-scrollbar { display: none; }
+  .dir { flex: 0 0 85vw; scroll-snap-align: center; scroll-snap-stop: always; }
+  /* The signature sits above the slide, on the page. */
+  .dir__title {
+    margin: var(--md) auto;
+    font-size: clamp(20px, 5.6vw, 28px);
+    color: var(--on);
+    transition: color 1.2s var(--ease-color);
+  }
   .dir__card { height: 83vh; height: 83svh; max-height: 42em; min-height: 440px; }
   .dir__card::before { display: none; }
+  .dir__card::after { height: 70%; }
   .dir__content { padding: 0 var(--md) var(--md); }
   .dir__desc { padding-top: var(--sm); }
   .dir__cta {
@@ -273,15 +321,77 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
   }
   .dir__cta .dir__arrow { display: none; }
   .dir__cta:focus-visible { outline-offset: 3px; }
+
+  .js .dirs__controls {
+    display: flex; justify-content: center; align-items: center; gap: 6px;
+    margin-top: 15px;
+  }
+  .dirs__dots {
+    display: flex; align-items: center;
+    height: 40px; padding: 0 8px;
+    border-radius: 32px;
+    background: rgb(110 110 115 / .227);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  }
+  .dirs__dot {
+    appearance: none; -webkit-appearance: none;
+    display: grid; place-items: center;
+    height: 40px; margin: 0; padding: 0 7px;
+    border: 0; border-radius: 20px;
+    background: none;
+    cursor: pointer;
+  }
+  .dirs__dot span {
+    position: relative; overflow: hidden;
+    display: block; width: 10px; height: 10px;
+    border-radius: 5px;
+    background: rgb(var(--on-rgb) / .35);
+    transition: width .4s var(--ease), background-color 1.2s var(--ease-color);
+  }
+  .dirs__dot[aria-current="true"] span { width: 35px; }
+  .dirs__dot span::after {
+    content: ""; position: absolute; inset: 0;
+    border-radius: inherit;
+    background: var(--on);
+    transform: scaleX(0); transform-origin: left center;
+  }
+  .dirs__dot[aria-current="true"] span::after { animation: dot-progress 9.5s var(--ease-out) both paused; }
+  .dirs__controls.is-playing .dirs__dot[aria-current="true"] span::after { animation-play-state: running; }
+  .dirs__dot.is-restart span::after { animation: none; }
+  .dirs__play {
+    appearance: none; -webkit-appearance: none;
+    position: relative;
+    display: grid; place-items: center;
+    width: 44px; height: 44px; margin: 0; padding: 0;
+    border: 0; border-radius: 50%;
+    background: none;
+    color: var(--on);
+    cursor: pointer;
+    transition: color 1.2s var(--ease-color);
+  }
+  .dirs__play::before {
+    content: ""; position: absolute; inset: 2px;
+    border-radius: 50%;
+    background: rgb(110 110 115 / .227);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  }
+  .dirs__play svg { position: relative; width: 24px; height: 24px; }
+  .dirs__play .i-play, .dirs__play[data-state="paused"] .i-pause { display: none; }
+  .dirs__play[data-state="paused"] .i-play { display: block; }
 }
 @media (max-width: 390px) { .dir__card { height: 79vh; height: 79svh; } }
 @media (max-width: 375px) { .dir__card { height: 77vh; height: 77svh; } }
+/* Below 360 px the slide is too narrow for the longest chip at 14 px. */
+@media (max-width: 359px) { .chip { font-size: 13px; padding-inline: 10px; } }
 
-/* ---------- Desktop and tablet: 2 × 2 tiles that widen on hover/focus ---------- */
+@keyframes dot-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ---------- Desktop and tablet: 2 × 2 tiles ---------- */
 @media (min-width: 760px) {
   .dirs__grid {
     display: flex; flex-wrap: wrap; justify-content: center;
     gap: var(--md);
+    padding-top: var(--md);
   }
   .dir {
     width: calc(50% - 1.5 * var(--md));
@@ -290,37 +400,21 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
   }
   .dir:nth-child(odd) { margin-left: var(--md); }
   .dir:nth-child(even) { margin-right: var(--md); }
+  /* Signature: centred, fluid-md below the tile top, a 36 px line box. */
   .dir__title {
-    position: absolute; top: 0; left: 0; right: 0; z-index: 2;
+    position: absolute; top: 0; left: 0; right: 0; z-index: 6;
     margin: var(--md) auto;
     padding: 0 var(--md);
   }
   .dir__card { position: absolute; inset: 0; }
-  /* Scrims sized by what they carry: one-line title and two-line text give
-     the reference's 20 % / 25 %; longer copy on narrower tiles gets more. */
-  .dir__card::before, .dir__card::after { display: none; }
-  .dir__title::before, .dir__content::before {
-    content: ""; position: absolute; left: 0; right: 0; z-index: -1;
-    pointer-events: none;
-  }
-  .dir__title::before {
-    top: calc(-1 * var(--md));
-    height: calc(190% + 1.9 * var(--md));
-    border-radius: 32px 32px 0 0;
-    background: linear-gradient(180deg, var(--fade));
-  }
-  .dir__content::before {
-    bottom: calc(-1 * var(--md));
-    height: calc(170% + 1.7 * var(--md));
-    background: linear-gradient(0deg, var(--fade));
-  }
   .dir__content {
     display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--md);
     margin: var(--md) 0;
     padding: 0 var(--md);
   }
   .dir__tags { margin-bottom: var(--sm); }
-  .dir__desc { margin-right: 12px; }
+  /* Two lines reserved, so the chips and first lines of a row line up. */
+  .dir__desc { margin-right: 12px; min-height: 48px; }
 
   /* Rest: a round arrow button (ref p-link-pure, hide-label, compact). */
   .dir__cta { padding: calc(.6 * var(--xs)); }
@@ -336,12 +430,14 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
   .dir__cta:focus-visible::before { outline: 2px solid var(--focus); outline-offset: 2px; }
   .dir__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 }
-@media (min-width: 760px) and (max-width: 999px) { .dir__desc, .dir__cta { font-size: 16px; } }
 @media (min-width: 1300px) { .dir { height: calc(7vh + 39vw); } }
 @media (min-width: 1760px) { .dir { height: calc(51vh + 10vw); max-height: 54em; } }
+/* Three lines reserved where the longest text needs them (1100–1365 px, rest and hover). */
+@media (min-width: 1100px) and (max-width: 1365px) { .dir__desc { min-height: 72px; } .dir__card::after { height: 36%; } }
 
-/* Active tile = the pill with its label; the row's widths shift 55 / 45. */
-@media (min-width: 760px) and (hover: hover) {
+/* Active tile (≥1100 px, mouse): the pill with its label, shown at once;
+   only the row's widths move, 55 / 45 over .6 s. */
+@media (min-width: 1100px) and (hover: hover) {
   .dir:nth-child(odd):hover { width: calc(55% - 1.5 * var(--md)); }
   .dir:nth-child(odd):hover + .dir { width: calc(45% - 1.5 * var(--md)); }
   .dir:nth-child(even):hover { width: calc(55% - 1.5 * var(--md)); }
@@ -349,9 +445,10 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
   .dir:hover .dir__desc { margin-right: 8px; }
   .dir:hover .dir__cta { padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
   .dir:hover .dir__cta::before { border-radius: 8px; }
-  .dir:hover .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; animation: show 1.2s var(--ease-out) both; }
+  .dir:hover .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
 }
-@media (min-width: 760px) {
+/* Keyboard focus = the same state as hover (ref 5.3). */
+@media (min-width: 1100px) {
   .dir:nth-child(odd):has(.dir__cta:focus-visible) { width: calc(55% - 1.5 * var(--md)); }
   .dir:nth-child(odd):has(.dir__cta:focus-visible) + .dir { width: calc(45% - 1.5 * var(--md)); }
   .dir:nth-child(even):has(.dir__cta:focus-visible) { width: calc(55% - 1.5 * var(--md)); }
@@ -361,49 +458,65 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
   .dir .dir__cta:focus-visible::before { border-radius: 8px; }
   .dir .dir__cta:focus-visible .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
 }
-/* Touch screens at tablet width: no hover, so every CTA shows its label,
-   under the text so a narrow tile keeps room for it. */
-@media (min-width: 760px) and (hover: none) {
+/* Tablets and narrow windows (760–1099 px) and touch screens: every CTA shows
+   its label under the text, so the text column keeps the full tile width and
+   nothing reflows on hover. */
+@media (min-width: 760px) and (max-width: 1099px), (min-width: 760px) and (hover: none) {
   .dir__content { grid-template-columns: 1fr; gap: var(--sm); }
+  .dir__desc { margin-right: 0; min-height: 72px; }
   .dir__cta { justify-self: start; padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
   .dir__cta::before { border-radius: 8px; background: var(--frost-strong); }
   .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+  .dir__card::after { height: 62%; }
+}
+@media (min-width: 760px) and (max-width: 999px) { .dir__card::after { height: 88%; } }
+@media (min-width: 1024px) and (max-width: 1099px), (min-width: 1024px) and (hover: none) {
+  .dir__desc { min-height: 48px; }
 }
 
-@keyframes show { from { opacity: 0; } to { opacity: 1; } }
-
-/* ---------- Footer ---------- */
+/* ---------- Footer: on the page, light or dark with it ---------- */
 .site-footer {
   width: 94vw; max-width: 1880px;
   margin: 0 auto;
   padding: var(--xl) var(--md) var(--lg);
-  color: var(--muted);
+  color: var(--on-muted);
   font: 400 15px/1.55 var(--sans);
+  transition: color 1.2s var(--ease-color);
 }
+/* Only elements that set their own colour transition; the rest inherit the
+   moving value (a second transition on an inheriting child would lag). */
+.site-footer__top, .site-footer__legal { transition: border-color 1.2s var(--ease-color); }
+.site-footer__brand, .studio__name, .studio a, .site-footer__legal a { transition: color 1.2s var(--ease-color), text-decoration-color .25s var(--ease); }
 .site-footer__top {
   display: grid; gap: var(--lg);
   padding: var(--lg) 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--on-line);
 }
-.site-footer__brand { color: var(--fg); display: flex; align-items: center; gap: 14px; }
+.site-footer__brand { color: var(--on); display: flex; align-items: center; gap: 14px; }
 .site-footer__brand svg { display: block; height: 34px; width: auto; }
 .site-footer__brand .mw { height: 18px; aspect-ratio: 1558 / 248; }
 .site-footer__brand .bull { aspect-ratio: 1097 / 800; }
 .studios { display: grid; gap: var(--md) var(--lg); }
-.studio__name { font: 700 22px/1.1 var(--display); color: var(--fg); margin-bottom: 4px; }
-.studio__type { color: var(--faint); margin-bottom: 10px; }
-.studio a { color: var(--fg); text-decoration: underline; text-decoration-color: rgb(var(--fg-rgb) / .3); text-underline-offset: 3px; transition: text-decoration-color .25s var(--ease); }
-.studio a:hover { text-decoration-color: currentColor; }
-.site-footer__legal {
-  display: flex; flex-wrap: wrap; gap: 10px var(--md); align-items: baseline;
-  padding-top: var(--md);
-  border-top: 1px solid var(--line);
-  font-size: 13px;
-  color: var(--faint);
+.studio__name { font: 400 22px/1.1 var(--display); color: var(--on); margin-bottom: 4px; }
+.studio__type { margin-bottom: 10px; }
+/* Phone numbers and legal links: 44 px tap height, same look. */
+.studio a, .site-footer__legal a {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--on-rgb) / .3);
+  text-underline-offset: 3px;
 }
-.site-footer__legal a { color: var(--muted); transition: color .25s var(--ease); }
-.site-footer__legal a:hover { color: var(--fg); }
-.site-footer__note { flex-basis: 100%; order: 3; }
+.studio a { color: var(--on); margin-block: -10px; }
+.studio a:hover, .site-footer__legal a:hover { text-decoration-color: currentColor; }
+.site-footer__legal {
+  display: flex; flex-wrap: wrap; gap: 0 var(--md); align-items: center;
+  padding-top: var(--sm);
+  border-top: 1px solid var(--on-line);
+  font-size: 13px;
+}
+.site-footer__legal a { color: var(--on-muted); text-decoration-color: transparent; }
+.site-footer__note { flex-basis: 100%; order: 3; padding-top: 6px; }
 @media (min-width: 760px) {
   .site-footer__top { grid-template-columns: 1fr 2fr; align-items: start; }
   .studios { grid-template-columns: 1fr 1fr; }
@@ -414,4 +527,5 @@ a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transpar
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js .dirs__heading:not(.is-in) { opacity: 1; transform: none; }
+  .dirs__play { display: none !important; }
 }
