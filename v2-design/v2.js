@@ -1,4 +1,4 @@
-/* MEATWASH v2 — three behaviours of the reference that CSS cannot do alone:
+/* Meat Auto v2 — three behaviours of the reference that CSS cannot do alone:
    1) the page turns dark while the directions are on screen and light again
       after them (ref CarRange__toDark: section top ≤ 12 % of the viewport,
       section bottom ≤ 49 %, both directions);
