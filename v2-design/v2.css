@@ -150,7 +150,8 @@ button { font: inherit; color: inherit; }
 /* The bull on every width, centred like the reference's crest (owner, 22.10:
    «логотип быка, заметно больше»): 48 px on phones, 64–80 px on desktop. */
 .site-header__logo .site-header__bull {
-  height: clamp(48px, 2.4vw + 37px, 80px); aspect-ratio: 1097 / 800;
+  height: clamp(64px, 4vw + 44px, 112px); aspect-ratio: 1097 / 800; color: #fff;
+  filter: drop-shadow(0 2px 10px rgb(0 0 0 / .55));
   transition: opacity .4s var(--ease), transform .8s var(--expo);
 }
 .site-header__logo:hover .site-header__bull { opacity: .82; transform: scale(.96); }
@@ -204,9 +205,18 @@ button { font: inherit; color: inherit; }
 @media (min-width: 760px) {
   .hero__title { --w: min(calc(var(--fs-hero) * 6.3), calc((100vw - 2 * var(--ext) - var(--md)) / 2)); }
 }
+/* Name in the hero, the script «Car Care Club» under it is the descriptor
+   (owner 22.10: дескриптор внизу тем же шрифтом, что был под названием). */
+.hero__name {
+  display: block;
+  font-size: calc(var(--fs-hero) * 1.12);
+  font-weight: 300; letter-spacing: -.035em; line-height: .95;
+  text-transform: uppercase;
+  color: #fff;
+}
 .hero__script {
   display: block;
-  width: 100%;
+  width: 62%;
   height: auto;
   aspect-ratio: 1231 / 198;
   overflow: visible;
