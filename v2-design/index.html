@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" as="image" href="img/hero-m-720.webp" imagesrcset="img/hero-m-720.webp 720w, img/hero-m-1080.webp 1080w" imagesizes="100vw" media="(max-width: 699px)" fetchpriority="high">
 <link rel="preload" as="image" href="img/hero-1600.webp" imagesrcset="img/hero-1600.webp 1600w, img/hero-2560.webp 2560w" imagesizes="100vw" media="(min-width: 700px)" fetchpriority="high">
-<link rel="preload" as="font" type="font/woff2" href="fonts/arsenal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-garamond-normal-cyrillic.woff2" crossorigin>
 <link rel="stylesheet" href="v2.css">
 <script src="v2.js" defer></script>
 </head>
@@ -26,7 +26,6 @@
   <div class="site-header__bar">
     <a class="site-header__logo" href="./" aria-label="MEATWASH Car Care Club — на главную">
       <svg class="site-header__bull" viewBox="0 0 1097 800" fill="currentColor" aria-hidden="true" focusable="false"><use href="#i-bull"/></svg>
-      <svg class="site-header__mw" viewBox="0 0 1558 248" fill="currentColor" aria-hidden="true" focusable="false"><use href="#i-mw"/></svg>
     </a>
   </div>
 </header>
@@ -40,16 +39,24 @@
     <h1 class="hero__title">
       <span class="sr">MEATWASH Car Care Club</span>
       <svg class="hero__script" viewBox="0 0 1231 198" fill="currentColor" aria-hidden="true" focusable="false"><use href="#i-ccc"/></svg>
-      <span class="hero__by" aria-hidden="true">by<svg viewBox="0 0 1558 248" fill="currentColor" focusable="false"><use href="#i-mw"/></svg></span>
+      <span class="hero__by" aria-hidden="true"><span class="hero__by-word">by</span><svg viewBox="0 0 1558 248" fill="currentColor" focusable="false"><use href="#i-mw"/></svg></span>
     </h1>
+    <div class="hero__foot" aria-hidden="true">
+      <span class="hero__meta">Москва&nbsp;· с&nbsp;2021&nbsp;года</span>
+      <span class="hero__cue">Листайте<span class="hero__cue-line"></span></span>
+      <span class="hero__meta hero__meta--end">Мясницкая&nbsp;· Технопарк</span>
+    </div>
   </section>
 
   <section class="dirs" aria-labelledby="dirs-title">
-    <h2 class="dirs__heading" id="dirs-title" data-reveal>Чем&nbsp;занимается MEATWASH</h2>
+    <div class="dirs__head" data-reveal>
+      <p class="eyebrow" aria-hidden="true"><span class="eyebrow__rule"></span>Car Care Club&nbsp;· с&nbsp;2021&nbsp;года</p>
+      <h2 class="dirs__heading" id="dirs-title"><span class="ln"><span class="ln__in"><em class="wd">Чем</em>&nbsp;<span class="wd">занимается</span></span></span> <span class="ln"><span class="ln__in"><span class="wd">MEATWASH</span></span></span></h2>
+    </div>
 
     <div class="dirs__grid">
-      <article class="dir" aria-labelledby="dir-1">
-        <h3 class="dir__title" id="dir-1">Мойка и&nbsp;детейлинг</h3>
+      <article class="dir" data-reveal aria-labelledby="dir-1">
+        <h3 class="dir__title" id="dir-1"><span class="dir__num" aria-hidden="true">I</span><span class="dir__name">Мойка и&nbsp;детейлинг</span></h3>
         <div class="dir__card">
           <img class="dir__img" style="--focus-xy: 68% 56%" src="img/tile-1-800.webp" srcset="img/tile-1-800.webp 800w, img/tile-1-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 447px, (max-width: 759px) 55vh, 52vw" width="1240" height="1864" loading="lazy" decoding="async" alt="Lexus LX в активной пене в моечном боксе Meat Wash">
           <a class="dir__hit" href="https://meatwash.ru/services" tabindex="-1" aria-hidden="true"></a>
@@ -63,23 +70,23 @@
         </div>
       </article>
 
-      <article class="dir" aria-labelledby="dir-2">
-        <h3 class="dir__title" id="dir-2">Привоз авто из‑за&nbsp;рубежа</h3>
+      <article class="dir" data-reveal aria-labelledby="dir-2">
+        <h3 class="dir__title" id="dir-2"><span class="dir__num" aria-hidden="true">II</span><span class="dir__name">Привоз авто <span class="nw">из-за</span>&nbsp;рубежа</span></h3>
         <div class="dir__card">
           <img class="dir__img" style="--focus-xy: 60% 50%" src="img/tile-2-800.webp" srcset="img/tile-2-800.webp 800w, img/tile-2-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 1010px, (max-width: 759px) 125vh, (min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="825" loading="lazy" decoding="async" alt="Чёрный Mercedes-AMG G 63 с красными дисками в подземном паркинге">
           <a class="dir__hit" href="https://t.me/otec_roman" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"></a>
           <div class="dir__content">
             <div class="dir__body">
               <ul class="dir__tags"><li class="chip">Привоз и&nbsp;подготовка</li></ul>
-              <p class="dir__desc">Привезём автомобиль из‑за&nbsp;рубежа и&nbsp;подготовим его&nbsp;к&nbsp;жизни в&nbsp;России&nbsp;— например, сделаем русификацию.</p>
+              <p class="dir__desc">Привезём автомобиль <span class="nw">из-за</span>&nbsp;рубежа и&nbsp;подготовим его&nbsp;к&nbsp;жизни в&nbsp;России&nbsp;— например, сделаем русификацию.</p>
             </div>
             <a class="dir__cta" href="https://t.me/otec_roman" target="_blank" rel="noopener"><span class="dir__label">Обсудить привоз</span><span class="sr"> авто из-за рубежа в Telegram</span><svg class="dir__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
       </article>
 
-      <article class="dir" aria-labelledby="dir-3">
-        <h3 class="dir__title" id="dir-3">Покупка и&nbsp;продажа авто</h3>
+      <article class="dir" data-reveal aria-labelledby="dir-3">
+        <h3 class="dir__title" id="dir-3"><span class="dir__num" aria-hidden="true">III</span><span class="dir__name">Покупка и&nbsp;продажа авто</span></h3>
         <div class="dir__card">
           <img class="dir__img" style="--focus-xy: 75% 70%" src="img/tile-3-800.webp" srcset="img/tile-3-800.webp 800w, img/tile-3-1080.webp 1080w" sizes="(max-width: 759px) and (min-height: 810px) 538px, (max-width: 759px) 66vh, 52vw" width="1080" height="1350" loading="lazy" decoding="async" alt="Серый BMW 7 серии на закате на фоне городских высоток">
           <a class="dir__hit" href="https://meatwash.ru/auto" tabindex="-1" aria-hidden="true"></a>
@@ -93,8 +100,8 @@
         </div>
       </article>
 
-      <article class="dir" aria-labelledby="dir-4">
-        <h3 class="dir__title" id="dir-4">О&nbsp;нас</h3>
+      <article class="dir" data-reveal aria-labelledby="dir-4">
+        <h3 class="dir__title" id="dir-4"><span class="dir__num" aria-hidden="true">IV</span><span class="dir__name">О&nbsp;нас</span></h3>
         <div class="dir__card">
           <picture>
             <source media="(max-width: 759px)" srcset="img/tile-4-m-860.webp 860w, img/tile-4-m-1280.webp 1280w" sizes="(min-height: 810px) 447px, 55vh" width="1280" height="1924">
@@ -129,24 +136,27 @@
 
 <footer class="site-footer">
   <div class="site-footer__top">
+    <div class="site-footer__id">
     <p class="site-footer__brand">
       <svg class="bull" viewBox="0 0 1097 800" fill="currentColor" aria-hidden="true" focusable="false"><use href="#i-bull"/></svg>
       <svg class="mw" viewBox="0 0 1558 248" fill="currentColor" role="img" aria-label="MEATWASH"><use href="#i-mw"/></svg>
     </p>
+    <p class="site-footer__est"><span class="eyebrow__rule"></span>Car Care Club&nbsp;· Москва, с&nbsp;2021&nbsp;года</p>
+    </div>
     <div class="studios">
       <address class="studio">
         <p class="studio__name">Мясницкая</p>
         <p class="studio__type">Премиальная мойка</p>
         <p>ул.&nbsp;Мясницкая,&nbsp;11</p>
         <p>Пн–Пт 08:00–22:00<br>Сб–Вс 09:00–22:00</p>
-        <p><a href="tel:+79300352325">+7&nbsp;(930)&nbsp;035‑23‑25</a></p>
+        <p><a href="tel:+79300352325"><span class="nw">+7&nbsp;(930)&nbsp;035-23-25</span></a></p>
       </address>
       <address class="studio">
         <p class="studio__name">Технопарк</p>
         <p class="studio__type">Детейлинг-центр</p>
         <p>пр-т Андропова,&nbsp;8, стр.&nbsp;2</p>
         <p>Ежедневно 08:00–22:00</p>
-        <p><a href="tel:+79324916991">+7&nbsp;(932)&nbsp;491‑69‑91</a></p>
+        <p><a href="tel:+79324916991"><span class="nw">+7&nbsp;(932)&nbsp;491-69-91</span></a></p>
       </address>
     </div>
   </div>

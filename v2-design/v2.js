@@ -2,7 +2,8 @@
    1) the page turns dark while the directions are on screen and light again
       after them (ref CarRange__toDark: section top ≤ 12 % of the viewport,
       section bottom ≤ 49 %, both directions);
-   2) the section heading rises in when it reaches the screen (1.2 s);
+   2) the section heading and the tiles reveal when they reach the screen,
+      and the heading's words light up with scroll (redomedia.co, 22.10);
    3) on phones the directions are a swipe carousel with a paginator whose
       active dot fills over 9.5 s, then moves on, and a pause button. */
 (function () {
@@ -41,6 +42,28 @@
     reveals.forEach(function (el) { reveal.observe(el); });
   } else {
     reveals.forEach(function (el) { el.classList.add('is-in'); });
+  }
+
+  /* 2b. Scroll-linked word fill: the heading's words go from dim to full as
+     its top travels from 92 % to 40 % of the viewport, one after another.
+     Read-only on scroll (no scroll-jacking); off for reduced motion. */
+  var words = Array.prototype.slice.call(document.querySelectorAll('.dirs__heading .wd'));
+  var head = document.querySelector('.dirs__heading');
+  if (words.length && head && !reduce.matches) {
+    var fillQueued = false;
+    var fill = function () {
+      fillQueued = false;
+      var vh = window.innerHeight, top = head.getBoundingClientRect().top;
+      var p = Math.min(1, Math.max(0, (vh * 0.92 - top) / (vh * 0.52)));
+      words.forEach(function (w, i) {
+        var k = Math.min(1, Math.max(0, p * words.length - i * 0.7));
+        w.style.setProperty('--k', k.toFixed(3));
+      });
+    };
+    var queueFill = function () { if (!fillQueued) { fillQueued = true; requestAnimationFrame(fill); } };
+    fill();
+    window.addEventListener('scroll', queueFill, { passive: true });
+    window.addEventListener('resize', queueFill);
   }
 
   /* 3. Phone carousel */
