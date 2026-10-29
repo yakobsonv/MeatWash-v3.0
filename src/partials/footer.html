@@ -1,5 +1,5 @@
 <!-- Подвал (план §1.4, паттерн Porsche 3.3). Владелец: WP1.
-     Сверху «Наверх», строка города, три колонки (Студии · Meat Auto · Связаться), юридическая
+     Сверху «Наверх», строка города, три колонки (Студии · Meat Wash · Связаться), юридическая
      строка, пометка о Meta, внизу по центру — белый бык и «Car Care Club».
      «На карте» — class="footer__map", href к карте студии, data-map-link — порядок атрибутов
      именно такой (его читают ui.js и check). Колонки ссылок — nav с подписью (поправка 25):
@@ -28,7 +28,7 @@
       </address>
     </section>
     <nav class="site-footer__col" aria-labelledby="footer-sections-title">
-      <h3 class="site-footer__title" id="footer-sections-title" lang="en">Meat Auto</h3>
+      <h3 class="site-footer__title" id="footer-sections-title" lang="en">Meat Wash</h3>
       <ul class="site-footer__links">
         <li><a href="services"{{current:services}}>Автомойка / Детейлинг</a></li>
         <li><a href="wrap"{{current:wrap}}>Оклейка полиуретаном</a></li>
@@ -51,12 +51,12 @@
   </div>
   <!-- Документы по 152-ФЗ. «Настройки cookie» показывает js/analytics.js, только если подключена Метрика. -->
   <div class="site-footer__legal">
-    <span class="site-footer__copy">©&nbsp;2026 <span lang="en">Meat Auto</span></span>
+    <span class="site-footer__copy">©&nbsp;2026 <span lang="en">Meat Wash</span></span>
     <a href="privacy"{{current:privacy}}>Политика обработки персональных данных</a>
     <a href="consent"{{current:consent}}>Согласие на обработку данных</a>
     <button type="button" data-consent-open hidden>Настройки cookie</button>
   </div>
   <!-- По слову Влада 19.10: пометка про Meta в подвале всех страниц. -->
   <p class="site-footer__note">Instagram принадлежит компании Meta, которая признана экстремистской организацией и запрещена на территории РФ.</p>
-  <p class="site-footer__mark">{{icon:bull}}<span class="sr" lang="en">Meat Auto Car Care Club</span>{{icon:ccc}}</p>
+  <p class="site-footer__mark">{{icon:bull}}<span class="sr" lang="en">Meat Wash Car Care Club</span>{{icon:ccc}}</p>
 </footer>

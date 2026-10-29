@@ -336,3 +336,7 @@ body[data-page="services"] .teasers { padding-bottom: var(--xl); }
 .works-m4__links { margin-top: var(--xs); }
 
 .works-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: var(--lg); font-size: var(--fs-md); }
+
+/* Ролик категории «Оклейка» (Влад 29.10): вертикальный кадр под заголовком вкладки. */
+.catalog__media { margin: var(--lg) var(--basic) 0; max-width: 380px; aspect-ratio: 4 / 5; }
+.catalog__media > img { height: 100%; object-fit: cover; }

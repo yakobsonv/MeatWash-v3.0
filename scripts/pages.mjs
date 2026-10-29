@@ -1,4 +1,4 @@
-// Подстановки и общие части страниц Meat Auto.
+// Подстановки и общие части страниц Meat Wash.
 //
 // Общие части (шапка со шторкой, подвал, окна записи и заявки, нижняя кнопка, карточки
 // студий с картами, блок записи, клубный блок, аналитика в <head>) живут в src/partials/*.html
@@ -26,11 +26,11 @@
 //   {{price:<позиция>}}    «от 1 000 ₽» или «стоимость после оценки»
 //   {{program:<i>}}        «Трёхфазная» (в кавычках); {{program:<i>:name|time|price}} — имя,
 //                          «30 минут», «от 2 150 ₽»; {{program-from:<i>}}, {{program-includes:<i>}}
-//   {{min:<раздел>}}       «2 150 ₽» — минимальная цена раздела каталога (у мойки — программ)
+//   {{min:<раздел>}}       «2 150 ₽» — минимальная цена раздела каталога (у автомойки — программ)
 //   {{count:sale|sold|studios}}  число; {{count:sold:машина}} → «16 машин» (склонение)
 //   {{cars:sale|sold|date}}      разметка машин и дата цен (scripts/cars.mjs, WP4)
 //   {{catalog}}, {{compare}}     каталог и сравнение программ (scripts/catalog.mjs, WP3)
-//   {{brand:name|descriptor|legacy|since}}  Meat Auto · Car Care Club · Meat Wash · 2021
+//   {{brand:name|descriptor|legacy|since}}  Meat Wash · Car Care Club · Meat Wash · 2021
 //   {{op:<поле>}}, {{site:url|date}}        реквизиты оператора и документы
 //   {{todo:<что нужно>}}   заметная пометка «[нужно от клиента: …]» (span.todo);
 //                          npm run check перечисляет, check:release — падает

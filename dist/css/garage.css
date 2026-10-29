@@ -100,14 +100,19 @@
   border-left: 1px solid var(--line); background: var(--g-panel);
   container-type: inline-size;
 }
-/* Категории — в одну строку равными колонками; не помещаются — сетка 2×2
-   (без прокрутки вбок: все четыре видны сразу). */
+/* Категории — в одну строку равными колонками; не помещаются — сетка 3 + 2
+   (без прокрутки вбок: все пять видны сразу; «Оклейка» — своя вкладка, Влад 29.10).
+   В узкой панели (телефон, панель справа на компьютере) — плотнее, чтобы пять влезли в строку. */
 .garage__tabs {
-  flex: none; display: grid; grid-template-columns: repeat(4, minmax(max-content, 1fr));
+  flex: none; display: grid; grid-template-columns: repeat(5, minmax(max-content, 1fr));
   padding: 0 6px; border-bottom: 1px solid var(--line);
 }
-@container (max-width: 290px) {
-  .garage__tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (max-width: 460px) {
+  .garage__tabs { padding: 0 2px; }
+  .garage__tabs .garage__tab { padding: 0 4px; font-size: 14px; }
+}
+@container (max-width: 340px) {
+  .garage__tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 .garage__tab {
   position: relative; min-width: 0; min-height: 46px; padding: 0 8px; margin-bottom: -1px;

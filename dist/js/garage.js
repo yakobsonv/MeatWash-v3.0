@@ -1,4 +1,4 @@
-// «Гараж услуг» — 3D-сценарий страницы «Мойка и детейлинг» (/services, блок #garage-3d;
+// «Гараж услуг» — 3D-сценарий страницы «Автомойка и детейлинг» (/services, блок #garage-3d;
 // решение Влада 27.10: гараж остаётся, но не на главной). Модуль грузит js/site.js по
 // первому нажатию [data-garage-open].
 //
@@ -37,11 +37,11 @@ const GUARD_MS = 400;   // второй щелчок двойного клика
 // Гараж живёт на /services: «Открыть услуги» — якорь каталога этой же страницы.
 const CATALOG = '#price-list';
 const LATER = 'после оценки';   // цена работы, которую назовёт мастер (null в каталоге)
-// Вкладки — четыре категории каталога; готовых «наборов» нет: пакеты мойки —
-// настоящие позиции каталога, они во вкладке «Мойка».
+// Вкладки — четыре категории каталога; готовых «наборов» нет: пакеты автомойки —
+// настоящие позиции каталога, они во вкладке «Автомойка».
 const TABS = ZONE_GROUPS;
 
-// Выбор на время визита: только известные работы, одна программа мойки,
+// Выбор на время визита: только известные работы, одна программа автомойки,
 // без работ, уже входящих в выбранную программу.
 function readPicked() {
   let ids = [];
@@ -86,7 +86,7 @@ const esc = (text) => String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<
 // «Детейлинг-мойка от реагентов» переносится целиком «от реагентов». Только для видимого текста.
 const nb = (text) => String(text).replace(/(^|[\s(«—])([а-яё]{1,2}|для|без|под|над|при) /gi, '$1$2\u00a0');
 
-// Строка работы: флажок с названием и ценой; у программ и пакетов мойки —
+// Строка работы: флажок с названием и ценой; у программ и пакетов автомойки —
 // кнопка «Состав», сам состав раскрывается по нажатию.
 function zoneRow(z) {
   const program = z.price.program != null ? PROGRAMS[z.price.program] : null;
@@ -179,7 +179,7 @@ export function setupGarage() {
             <button class="btn btn--primary garage__book" type="button" data-book data-garage-book>Записаться</button>
             <button class="btn btn--ghost garage__request" type="button" data-request data-garage-request hidden>Узнать цену</button>
           </div>
-          <p class="garage__split" data-garage-split hidden>Мойка&nbsp;— онлайн-запись в&nbsp;студию, цену остальных работ назовёт администратор.</p>
+          <p class="garage__split" data-garage-split hidden>Автомойка&nbsp;— онлайн-запись в&nbsp;студию, цену остальных работ назовёт администратор.</p>
           <!-- Лицензия модели CC BY 4.0 требует указать автора и что модель изменена — рядом с ней. -->
           <p class="garage__credit">3D-модель: <a href="https://sketchfab.com/3d-models/free-1975-porsche-911-930-turbo-8568d9d14a994b9cae59499f0dbed21e" target="_blank" rel="noopener noreferrer">Karol Miklas</a>, <a href="https://creativecommons.org/licenses/by/4.0/deed.ru" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>, изменена</p>
         </div>
@@ -365,8 +365,8 @@ export function setupGarage() {
       totalEl.append(' ', more);
     }
   }
-  // Список выбранного (раскрывается по «Выбрано: N»): мойка и работы «Узнать цену» —
-  // отдельными группами, если выбраны вместе: в YCLIENTS уходит только мойка.
+  // Список выбранного (раскрывается по «Выбрано: N»): автомойка и работы «Узнать цену» —
+  // отдельными группами, если выбраны вместе: в YCLIENTS уходит только автомойка.
   function renderPicked(body, wash, other) {
     const list = (ids) => {
       const ul = document.createElement('ul');
@@ -383,9 +383,9 @@ export function setupGarage() {
     };
     const head = (text) => { const p = document.createElement('p'); p.className = 'garage__pickhead'; p.textContent = text; return p; };
     picksEl.replaceChildren(...(wash.length && other.length
-      ? [head('Мойка\u00a0— онлайн-запись'), list(wash), head('Цену назовёт администратор'), list(other)]
+      ? [head('Автомойка\u00a0— онлайн-запись'), list(wash), head('Цену назовёт администратор'), list(other)]
       : [list(picked)]));
-    noteEl.textContent = `Минимальные цены каталога${wash.length ? `, мойка — для кузова «${bodyName(body)}»` : ''}. Точную стоимость назовёт мастер.`;
+    noteEl.textContent = `Минимальные цены каталога${wash.length ? `, автомойка — для кузова «${bodyName(body)}»` : ''}. Точную стоимость назовёт мастер.`;
   }
   function setSummary(on) {
     const show = on && picked.length > 0;
@@ -418,7 +418,7 @@ export function setupGarage() {
     countEl.textContent = `Выбрано: ${picked.length}`;
     summaryBtn.hidden = !picked.length;
     if (!picked.length) setSummary(false);
-    // Два сценария: мойка — запись в YCLIENTS с выбором филиала, остальные
+    // Два сценария: автомойка — запись в YCLIENTS с выбором филиала, остальные
     // работы — «Узнать цену» (v2, план юзабилити 08.10: одна подпись у всех входов;
     // пока заявки с сайта не принимаются, ui.js откроет телефоны студий).
     // Смешанный выбор не уходит в YCLIENTS целиком:
@@ -427,8 +427,8 @@ export function setupGarage() {
     renderPicked(body, wash, other);
     const titles = (ids) => ids.map((id) => byId(id).title);
     bookBtn.hidden = Boolean(other.length && !wash.length);
-    bookBtn.textContent = wash.length ? 'Записаться на мойку' : 'Записаться';
-    // Состав мойки — в «Вы выбрали: …» окна записи, с кузовом (цена от него зависит).
+    bookBtn.textContent = wash.length ? 'Записаться на автомойку' : 'Записаться';
+    // Состав автомойки — в «Вы выбрали: …» окна записи, с кузовом (цена от него зависит).
     if (wash.length) bookBtn.dataset.bookContext = titles(wash).join(', ') + ' · ' + bodyName(body) + ' · предварительно от ' + money(garageSum(wash, body));
     else delete bookBtn.dataset.bookContext;
     // Для онлайн-записи — индексы программ; ui.js переведёт их в услуги YCLIENTS филиала.
@@ -448,7 +448,7 @@ export function setupGarage() {
   function markOffline() {
     import('./yclients.js').then((yc) => yc.loadMap().then(() => {
       let offline = 0;
-      // Только мойка: остальные работы — «Узнать цену», YCLIENTS там не участвует.
+      // Только автомойка: остальные работы — «Узнать цену», YCLIENTS там не участвует.
       for (const row of rows) {
         const zone = byId(row.dataset.row);
         if (!zone || !isWash(zone)) continue;
@@ -484,7 +484,7 @@ export function setupGarage() {
   function toggle(id, on) {
     let next = picked.filter((x) => x !== id);
     if (on) {
-      // Вторая программа мойки заменяет первую (они вложены друг в друга).
+      // Вторая программа автомойки заменяет первую (они вложены друг в друга).
       for (const group of EXCLUSIVE) if (group.includes(id)) next = next.filter((x) => !group.includes(x));
       next.push(id);
       // Работы, которые теперь входят в выбранную программу, отдельно не считаются.
@@ -629,7 +629,7 @@ export function setupGarage() {
       (nextBtn || (summaryBtn.hidden ? bookBtn : summaryBtn)).focus({ preventScroll: true });
       return;
     }
-    // «Записаться на мойку» и «Узнать цену»: гараж закрывается, затем общий
+    // «Записаться на автомойку» и «Узнать цену»: гараж закрывается, затем общий
     // обработчик ui.js (data-book / data-request) открывает своё окно — окна не
     // накладываются, выбор остаётся в sessionStorage.
     if (control.matches('[data-garage-book]')) { goal('garage_book', { works: picked.filter((id) => isWash(byId(id))).length, sum: garageSum(picked.filter((id) => isWash(byId(id))), getBody()) }); close(); }

@@ -1,4 +1,4 @@
-// Сборка всех страниц Meat Auto из реестра src/content/pages.mjs: <head> (layout),
+// Сборка всех страниц Meat Wash из реестра src/content/pages.mjs: <head> (layout),
 // тело из src/content/<body> (или разметка чтения scripts/reading.mjs вокруг тела),
 // подстановки и общие части (scripts/pages.mjs), неразрывные пробелы (scripts/typo.mjs),
 // JSON-LD, sitemap.xml и файл подтверждения Яндекс Вебмастера.
@@ -73,7 +73,7 @@ ${page.robots ? `<meta name="robots" content="${escape(page.robots)}">\n` : ''}<
 <title>${escape(title)}</title>
 <meta name="description" content="${escape(description)}">
 <link rel="canonical" href="${url}">
-<meta property="og:site_name" content="Meat Auto">
+<meta property="og:site_name" content="Meat Wash">
 <meta property="og:title" content="${escape(ogTitle)}">
 <meta property="og:description" content="${escape(description)}">
 <meta property="og:type" content="${ogType}">
@@ -111,7 +111,7 @@ ${book}</main>
 
 // ── JSON-LD ──────────────────────────────────────────────────────────────────
 const ORG = {'@type': 'Organization', name: `${d.brand.name} ${d.brand.descriptor}`, alternateName: d.brand.legacy, url: SITE, logo: {'@type': 'ImageObject', url: SITE + 'assets/favicon-bull.png'}};
-// Хлебные крошки по иерархии §1.2: Meat Auto → [родитель] → страница.
+// Хлебные крошки по иерархии §1.2: Meat Wash → [родитель] → страница.
 function crumbs(page) {
   const chain = [];
   for (let p = page; p; p = p.parent ? BY_ID[p.parent] : null) chain.unshift(p);

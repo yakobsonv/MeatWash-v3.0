@@ -61,7 +61,7 @@ def inventory(browser, base, pages, res):
         (b['visit'], '«Перед визитом»: скидка 500 ₽, паркинг, оплата'),
         (b['talk'] and b['wahelp'], '«Обсудить условия» и клубная карта wahelp'),
         (b['external'] == 2, f"«Открыть в Яндекс Картах» у обеих карт: {b['external']}"),
-        (b['earlier'] == 1, f"«ранее Meat Wash» на «О нас»: {b['earlier']}"),
+        (b['earlier'] == 0, f"«ранее Meat Wash» на «О нас» (имя снова Meat Wash, 29.10): {b['earlier']}"),
     ]
     # Старые якоря главной ведут на новые места (поправка 32)
     hops = {}

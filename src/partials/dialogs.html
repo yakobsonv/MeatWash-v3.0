@@ -6,7 +6,7 @@
      подстановок не писать: сборка их подставит или упадёт.
 
      Нижняя кнопка на телефоне — своя у страницы (поле cta в src/content/pages.mjs):
-     запись на мойку, звонок в Технопарк на оклейке, вопрос о машине на продаже авто и привозе. -->
+     запись на автомойку, звонок в Технопарк на оклейке, вопрос о машине на продаже авто и привозе. -->
 {{mobile-cta}}
 
 <!-- Запись: у Мясницкой и Технопарка разные компании в YCLIENTS, поэтому ссылки ведут
@@ -27,17 +27,17 @@
     <a class="dialog__branch studio-link" href="{{loc:technopark:booking}}" target="_blank" rel="noopener noreferrer" data-branch="technopark"><strong class="studio-link__name">{{loc:technopark:name}}</strong><span class="studio-link__type dialog__branch-type">{{loc:technopark:type}}</span><span class="studio-link__address">{{loc:technopark:address}}</span><span class="studio-link__hours dialog__branch-hours">{{loc:technopark:hours}}</span><span class="studio-link__go" aria-hidden="true">{{icon:arrow-up-right}}</span><span class="sr"> — онлайн-запись, откроется в новой вкладке</span></a>
   </div>
   <p class="dialog__yc">Онлайн-запись откроется в YCLIENTS <span class="nw">(<span lang="en">{{brand:legacy}}</span>)</span></p>
-  <!-- Мойка и другие работы выбраны вместе (гараж): цену остального — «Узнать цену». -->
+  <!-- Автомойка и другие работы выбраны вместе (гараж): цену остального — «Узнать цену». -->
   <p class="dialog__note dialog__note--request" id="booking-request" hidden><span data-booking-request-text></span> <button class="link-arrow" type="button" data-request data-booking-request>Узнать цену{{icon:arrow-right}}</button></p>
   <p class="dialog__aside" id="booking-other">Химчистка, полировка, плёнка, ремонт — по телефону: администратор назовёт цену.</p>
   <!-- Порядок телефонов меняет ui.js: про плёнку и защиту первым звонят в Технопарк. -->
   <div class="dialog__phones">
-    <a href="tel:{{loc:myasnitskaya:tel}}" data-phone="myasnitskaya">{{icon:phone}}<span>{{loc:myasnitskaya:name}} — мойка</span><strong>{{loc:myasnitskaya:phone}}</strong></a>
+    <a href="tel:{{loc:myasnitskaya:tel}}" data-phone="myasnitskaya">{{icon:phone}}<span>{{loc:myasnitskaya:name}} — автомойка</span><strong>{{loc:myasnitskaya:phone}}</strong></a>
     <a href="tel:{{loc:technopark:tel}}" data-phone="technopark">{{icon:phone}}<span>{{loc:technopark:name}} — детейлинг и плёнка</span><strong>{{loc:technopark:phone}}</strong></a>
   </div>
 </dialog>
 
-<!-- Заявка с фото: всё, кроме мойки (детейлинг, оклейка, стёкла и другие работы).
+<!-- Заявка с фото: всё, кроме автомойки (детейлинг, оклейка, стёкла и другие работы).
      Открывается кнопками «Узнать цену», только когда приём включён (site.requests.endpoint
      задан и сайт в hosts); до того те же кнопки открывают окно #booking с телефонами.
      Логика — js/request.js, грузится по первому нажатию. Отправка — только на адрес
@@ -48,8 +48,8 @@
 <dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку">{{icon:close}}</button></form>
   <h2 class="dialog__title" id="request-title" tabindex="-1">Заявка с фото</h2>
-  <p class="dialog__lead">Детейлинг, оклейка, стёкла и другие работы, кроме мойки. Мастер посмотрит фото, оценит объём работ и свяжется с вами.</p>
-  <p class="dialog__note request__wash" data-request-wash hidden><span data-request-wash-text></span> <button class="link-arrow" type="button" data-book data-request-wash-book>Записаться на мойку{{icon:arrow-right}}</button></p>
+  <p class="dialog__lead">Детейлинг, оклейка, стёкла и другие работы, кроме автомойки. Мастер посмотрит фото, оценит объём работ и свяжется с вами.</p>
+  <p class="dialog__note request__wash" data-request-wash hidden><span data-request-wash-text></span> <button class="link-arrow" type="button" data-book data-request-wash-book>Записаться на автомойку{{icon:arrow-right}}</button></p>
   <form class="request ym-hide-content" data-request-form novalidate>
     <fieldset class="request__card request__services">
       <legend class="request__legend">Работы <b aria-hidden="true">*</b></legend>

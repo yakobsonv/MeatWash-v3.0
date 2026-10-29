@@ -1,4 +1,4 @@
-// Реестр страниц Meat Auto (план §1.1, §3; поправки критика 29, 33, 34).
+// Реестр страниц Meat Wash (план §1.1, §3; поправки критика 29, 33, 34).
 // Все страницы собирает scripts/content.mjs: <head> (layout), тело из src/content/<body>,
 // общие части — scripts/pages.mjs по списку shared. Руками dist/*.html не править.
 //
@@ -41,8 +41,8 @@ export const ARTICLES = [
   {
     file: 'article-avto-k-zime.html', id: 'article-avto-k-zime',
     body: 'articles/avto-k-zime.html',
-    title: 'Автомобиль к зиме: что сделать до реагентов — Meat Auto',
-    description: 'Как подготовить автомобиль к зиме в Москве: защита кузова, сколы, стёкла, уплотнители и салон, уход в сезон реагентов. Цены — из каталога Meat Auto.',
+    title: 'Автомобиль к зиме: что сделать до реагентов — Meat Wash',
+    description: 'Как подготовить автомобиль к зиме в Москве: защита кузова, сколы, стёкла, уплотнители и салон, уход в сезон реагентов. Цены — из каталога Meat Wash.',
     headline: 'Автомобиль к зиме: что сделать до первых реагентов',
     lead: 'Реагенты, соль и мокрая грязь каждый день работают против лака, порогов, стёкол и уплотнителей. Что стоит сделать заранее и как ухаживать за машиной в сезон — по порядку и без лишних процедур.',
     date: '2026-10-01',
@@ -54,10 +54,10 @@ export const ARTICLES = [
 export const REGISTRY = [
   {
     file: 'index.html', id: 'home', kind: 'landing', body: 'home.html',
-    title: 'Meat Auto — мойка и детейлинг в Москве',
-    description: 'Car Care Club Meat Auto: мойка и детейлинг, привоз авто из-за рубежа, покупка и продажа автомобилей. Две студии в Москве — на Мясницкой и в Технопарке.',
-    ogTitle: 'Meat Auto — Car Care Club в Москве',
-    headline: 'Meat Auto', theme: 'home', header: 'over', cta: 'none',
+    title: 'Meat Wash — автомойка и детейлинг в Москве',
+    description: 'Car Care Club Meat Wash: автомойка и детейлинг, привоз авто из-за рубежа, покупка и продажа автомобилей. Две студии в Москве — на Мясницкой и в Технопарке.',
+    ogTitle: 'Meat Wash — Car Care Club в Москве',
+    headline: 'Meat Wash', theme: 'home', header: 'over', cta: 'none',
     shared: ALL, css: ['home.css'],
     // Имена v2 (WP2 копирует source/v2-design/img → assets/img/home).
     preload: [
@@ -69,8 +69,8 @@ export const REGISTRY = [
   },
   {
     file: 'services.html', id: 'services', kind: 'landing', body: 'services.html',
-    title: 'Автомойка / Детейлинг: услуги и цены — Meat Auto',
-    description: 'Мойка от {{min:wash}}, детейлинг, защита кузова и ремонт повреждений: химчистка, полировка, керамика, плёнка, стёкла. Мясницкая и Технопарк.',
+    title: 'Автомойка / Детейлинг: услуги и цены — Meat Wash',
+    description: 'Автомойка от {{min:wash}}, детейлинг, защита кузова и ремонт повреждений: химчистка, полировка, керамика, плёнка, стёкла. Мясницкая и Технопарк.',
     headline: 'Автомойка / Детейлинг', theme: 'dark', header: 'over', cta: 'book',
     shared: WITH_BOOK,
     // garage.css — окно 3D-гаража (решение Влада 27.10: гараж остаётся блоком на этой странице,
@@ -81,7 +81,7 @@ export const REGISTRY = [
   },
   {
     file: 'wrap.html', id: 'wrap', kind: 'landing', body: 'wrap.html', parent: 'services',
-    title: 'Оклейка полиуретаном — Meat Auto',
+    title: 'Оклейка полиуретаном — Meat Wash',
     description: 'Оклейка автомобиля защитной полиуретановой плёнкой в Москве: прозрачной или цветной, зоны риска, весь кузов, фары и лобовое стекло. Технопарк.',
     headline: 'Оклейка полиуретаном', theme: 'dark', header: 'solid', cta: 'technopark',
     shared: ALL, css: ['services.css'],
@@ -89,16 +89,16 @@ export const REGISTRY = [
   },
   {
     file: 'works.html', id: 'works', kind: 'landing', body: 'works.html', parent: 'services',
-    title: 'Наши работы — Meat Auto',
-    description: 'Работы Meat Auto: подготовка Lotus Eletre R к продаже, оклейка BMW M4 цветным полиуретаном, химчистка салона и полировка кузова в студиях в Москве.',
+    title: 'Наши работы — Meat Wash',
+    description: 'Работы Meat Wash: подготовка Lotus Eletre R к продаже, оклейка BMW M4 цветным полиуретаном, химчистка салона и полировка кузова в студиях в Москве.',
     headline: 'Наши работы', theme: 'dark', header: 'solid', cta: 'book',
     shared: WITH_BOOK, css: ['services.css'], ogImage: 'assets/img/auto-lotus-4.webp',
     date: '2026-10-27', sitemap: { changefreq: 'monthly', priority: '0.6' },
   },
   {
     file: 'import.html', id: 'import', kind: 'landing', body: 'import.html',
-    title: 'Привоз авто из-за рубежа — Meat Auto',
-    description: 'Привезём автомобиль из-за рубежа и подготовим его к жизни в России — например, сделаем русификацию. Обсудите задачу с Meat Auto в Telegram.',
+    title: 'Привоз авто из-за рубежа — Meat Wash',
+    description: 'Привезём автомобиль из-за рубежа и подготовим его к жизни в России — например, сделаем русификацию. Обсудите задачу с Meat Wash в Telegram.',
     headline: 'Привоз авто из-за рубежа', theme: 'dark', header: 'over', cta: 'import',
     shared: ALL, css: ['auto.css'],
     preload: heroA('import'), ogImage: 'assets/img/import/og.webp',
@@ -106,16 +106,16 @@ export const REGISTRY = [
   },
   {
     file: 'auto.html', id: 'auto', kind: 'landing', body: 'auto.html',
-    title: 'Покупка и продажа авто — Meat Auto',
-    description: 'Meat Auto: автомобили в продаже, продажа под реализацию, подготовка к продаже в наших студиях, подбор и покупка автомобиля под ключ в Москве.',
+    title: 'Покупка и продажа авто — Meat Wash',
+    description: 'Meat Wash: автомобили в продаже, продажа под реализацию, подготовка к продаже в наших студиях, подбор и покупка автомобиля под ключ в Москве.',
     headline: 'Покупка и продажа авто', theme: 'dark', header: 'solid', cta: 'auto',
     shared: ALL, css: ['auto.css'], ogImage: 'assets/img/auto-lotus-1.webp',
     date: '2026-10-27', sitemap: { changefreq: 'weekly', priority: '0.7' },
   },
   {
     file: 'about.html', id: 'about', kind: 'landing', body: 'about.html',
-    title: 'О нас — Meat Auto Car Care Club, Москва',
-    description: 'Meat Auto Car Care Club — ручной уход за автомобилем в Москве. Химия под покрытие, согласование на приёмке, проверка перед выдачей. Две студии.',
+    title: 'О нас — Meat Wash Car Care Club, Москва',
+    description: 'Meat Wash Car Care Club — ручной уход за автомобилем в Москве. Химия под покрытие, согласование на приёмке, проверка перед выдачей. Две студии.',
     headline: 'О нас', theme: 'dark', header: 'over', cta: 'book',
     shared: [...ALL, 'locations', 'membership'], css: ['about.css'],
     preload: heroA('about'), jsonLd: ['autowash'], ogImage: 'assets/img/about/og.webp',
@@ -123,9 +123,9 @@ export const REGISTRY = [
   },
   {
     file: 'articles.html', id: 'articles', kind: 'list',
-    title: 'Статьи об уходе за автомобилем — Meat Auto',
-    description: 'Статьи Meat Auto об уходе за автомобилем: мойка, защита кузова, стёкла и салон. Практичные советы и цены из каталога студий на Мясницкой и в Технопарке.',
-    ogTitle: 'Статьи — Meat Auto Car Care Club',
+    title: 'Статьи об уходе за автомобилем — Meat Wash',
+    description: 'Статьи Meat Wash об уходе за автомобилем: автомойка, защита кузова, стёкла и салон. Практичные советы и цены из каталога студий на Мясницкой и в Технопарке.',
+    ogTitle: 'Статьи — Meat Wash Car Care Club',
     headline: 'Статьи', theme: 'paper', header: 'solid', cta: 'book',
     shared: WITH_BOOK, css: ['reading.css'],
     sitemap: { changefreq: 'weekly', priority: '0.6' },
@@ -138,16 +138,16 @@ export const REGISTRY = [
   })),
   {
     file: 'privacy.html', id: 'privacy', kind: 'doc', body: 'privacy.html',
-    title: 'Политика обработки персональных данных — Meat Auto',
-    description: 'Политика обработки персональных данных посетителей сайта Meat Auto Car Care Club: какие данные, цели, cookie и Яндекс Метрика, права и отзыв согласия.',
+    title: 'Политика обработки персональных данных — Meat Wash',
+    description: 'Политика обработки персональных данных посетителей сайта Meat Wash Car Care Club: какие данные, цели, cookie и Яндекс Метрика, права и отзыв согласия.',
     headline: 'Политика обработки персональных данных', theme: 'paper', header: 'solid', cta: 'book',
     shared: ALL, css: ['reading.css'],
     sitemap: { changefreq: 'yearly', priority: '0.2' },
   },
   {
     file: 'consent.html', id: 'consent', kind: 'doc', body: 'consent.html',
-    title: 'Согласие на обработку персональных данных — Meat Auto',
-    description: 'Согласие посетителя сайта Meat Auto на обработку персональных данных с помощью cookie и сервиса Яндекс Метрика: данные, цель, срок и отзыв.',
+    title: 'Согласие на обработку персональных данных — Meat Wash',
+    description: 'Согласие посетителя сайта Meat Wash на обработку персональных данных с помощью cookie и сервиса Яндекс Метрика: данные, цель, срок и отзыв.',
     headline: 'Согласие на обработку персональных данных', theme: 'paper', header: 'solid', cta: 'book',
     shared: ALL, css: ['reading.css'],
     sitemap: { changefreq: 'yearly', priority: '0.2' },
@@ -155,8 +155,8 @@ export const REGISTRY = [
   // Согласие для заявки с фото — отдельный документ: другие данные и цель, чем у cookie.
   {
     file: 'consent-request.html', id: 'consent-request', kind: 'doc', body: 'consent-request.html',
-    title: 'Согласие на обработку персональных данных при отправке заявки — Meat Auto',
-    description: 'Согласие на обработку персональных данных при отправке заявки с фото на сайте Meat Auto: какие данные, цель, срок и как отозвать.',
+    title: 'Согласие на обработку персональных данных при отправке заявки — Meat Wash',
+    description: 'Согласие на обработку персональных данных при отправке заявки с фото на сайте Meat Wash: какие данные, цель, срок и как отозвать.',
     headline: 'Согласие на обработку персональных данных при отправке заявки', theme: 'paper', header: 'solid', cta: 'book',
     shared: ALL, css: ['reading.css'],
     sitemap: { changefreq: 'yearly', priority: '0.2' },
@@ -165,8 +165,8 @@ export const REGISTRY = [
   // превью, на meatwash.ru его не выкладывает prune-deploy; страниц сайта не 13 — их 12.
   {
     file: 'kit.html', id: 'kit', kind: 'landing', body: 'kit.html',
-    title: 'Набор компонентов — Meat Auto',
-    description: 'Служебная страница: компоненты дизайн-системы Meat Auto во всех вариантах для проверки переполнения и контраста.',
+    title: 'Набор компонентов — Meat Wash',
+    description: 'Служебная страница: компоненты дизайн-системы Meat Wash во всех вариантах для проверки переполнения и контраста.',
     headline: 'Набор компонентов', theme: 'dark', header: 'solid', cta: 'book',
     shared: WITH_BOOK, css: ['services.css', 'auto.css', 'about.css', 'reading.css'],
     robots: 'noindex, nofollow', sitemap: false,

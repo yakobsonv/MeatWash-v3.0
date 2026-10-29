@@ -1,4 +1,4 @@
-// Заявка с фото: всё, кроме мойки (детейлинг, оклейка, стёкла и другие работы).
+// Заявка с фото: всё, кроме автомойки (детейлинг, оклейка, стёкла и другие работы).
 // Окно — <dialog id="request"> из src/partials/dialogs.html; модуль грузит ui.js
 // по первому нажатию [data-request].
 //
@@ -265,14 +265,14 @@ export function setupRequest(dialog, { show }) {
   restore(); renderChips(); renderPhotos();
 
   // Открыть заявку: работы из кнопки (каталог, гараж, карточка направления)
-  // добавляются к уже выбранным. Если в том же выборе была мойка — окно
+  // добавляются к уже выбранным. Если в том же выборе была автомойка — окно
   // напоминает, что её можно записать онлайн.
   return function open({ services: list = [], category = '', washContext = '', washPrograms = '' } = {}) {
     const fromCategory = CATEGORIES.find((c) => c.id === category);
     addServices(list.length ? list : fromCategory && fromCategory.booking === 'request' ? [fromCategory.title + ' — подобрать с мастером'] : []);
     washNote.hidden = !washContext;
     if (washContext) {
-      washText.textContent = `Мойку из вашего выбора можно записать онлайн: ${washContext}.`;
+      washText.textContent = `Автомойку из вашего выбора можно записать онлайн: ${washContext}.`;
       washBook.dataset.bookContext = washContext;
       washBook.dataset.ycPrograms = washPrograms;
     }

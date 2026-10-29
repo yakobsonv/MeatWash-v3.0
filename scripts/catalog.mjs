@@ -2,7 +2,7 @@
 // - каталог на /services — подстановка {{catalog}} (renderCatalog) и сравнение программ
 //   {{compare}} (renderCompare); их вызывает scripts/pages.mjs при сборке страницы;
 // - dist/js/data.js — те же цены и филиалы для скриптов (гараж, окно услуги, карты).
-// Запуск: npm run catalog — пишет только dist/js/data.js (Meat Auto, WP0 27.10).
+// Запуск: npm run catalog — пишет только dist/js/data.js (Meat Wash, WP0 27.10).
 // Владелец: WP3 (разметка каталога по §4.3 плана, renderCompare, SECTION_LINKS; 27.10).
 import {readFile,writeFile} from 'node:fs/promises';
 import {readFileSync} from 'node:fs';
@@ -18,8 +18,8 @@ const number=n=>String(n+1).padStart(2,'0');
 export const priceText=price=>price==null?'После оценки':'от '+money(price);
 const priced=items=>items.map(([,price])=>price).filter(price=>price!=null);
 export const groupMin=id=>Math.min(...priced(d.groups.find(g=>g.id===id).items));
-// Цена «от» раздела для шторки, героев и description ({{min:<group>}}): у мойки — минимум
-// цен программ (позиции «Дополнительно на мойке» в «от» не входят), у остальных — минимум
+// Цена «от» раздела для шторки, героев и description ({{min:<group>}}): у автомойки — минимум
+// цен программ (позиции «Дополнительно на автомойке» в «от» не входят), у остальных — минимум
 // позиций с ценой.
 export const minFor=id=>{
  const group=d.groups.find(g=>g.id===id);
@@ -49,12 +49,20 @@ const icon=name=>{
  spriteVersion??=createHash('sha256').update(readFileSync(new URL('dist/assets/brand/sprite.svg',root))).digest('hex').slice(0,8);
  return `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=${spriteVersion}#i-${name}"/></svg>`;
 };
+// Ролик категории (media в JSON — «Оклейка», Влад 29.10): постер и <video data-video="hover"> —
+// как у тизеров /services (js/video.js: с мышью по наведению, на тач-экране — пока виден).
+// Версия ?v= — по содержимому файла, как у спрайта.
+const assetV=path=>`${path}?v=${createHash('sha256').update(readFileSync(new URL('dist/'+path,root))).digest('hex').slice(0,8)}`;
+const media=({video,poster,alt})=>`<figure class="vframe catalog__media" data-video-host>
+   <img src="${assetV(poster)}" width="720" height="1280" alt="${escape(alt)}" loading="lazy" decoding="async">
+   <video class="vframe__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="${assetV(video)}"></video>
+  </figure>`;
 // Подпись кнопки для экранного диктора: «Узнать цену: Химчистка руля».
 const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
-// Одно действие на позицию. Мойка (booking: yclients) — окно филиалов с этой работой
+// Одно действие на позицию. Автомойка (booking: yclients) — окно филиалов с этой работой
 // в корзине (ui.js → yclients.js); остальное — «Узнать цену» с этой работой (ui.js:
 // пока заявки с сайта не принимаются — окно с телефонами студий, потом — request.js).
-// У подраздела с onsite: true (продаётся только на месте, «Дополнительно на мойке»)
+// У подраздела с onsite: true (продаётся только на месте, «Дополнительно на автомойке»)
 // кнопки нет — подпись «добавим при приёмке».
 // Ключи data-* — побуквенно названия из JSON (typo() их не трогает, check сверяет).
 export const ONSITE_LABEL='добавим при приёмке';
@@ -73,10 +81,10 @@ export const SECTION_LINKS={
 // Пояснение под заголовком подраздела.
 const SECTION_NOTE={
  programs:'Каждая следующая включает предыдущую. Цена зависит от типа кузова.',
- onsite:'Записываться отдельно не нужно — скажите администратору, когда приедете на мойку.',
+ onsite:'Записываться отдельно не нужно — скажите администратору, когда приедете на автомойку.',
 };
 
-// Программы и пакеты мойки (P02): карточка — название, цена для выбранного кузова
+// Программы и пакеты автомойки (P02): карточка — название, цена для выбранного кузова
 // (js/catalog.js меняет её по data-prices), время, пояснение, состав в <details id="program-i">
 // (на него ведут ссылки #program-0…4) и запись с программой в корзине YCLIENTS.
 const programCard=([name,,time,description],i)=>`<li class="program-card">
@@ -89,7 +97,7 @@ const programCard=([name,,time,description],i)=>`<li class="program-card">
      </li>`;
 const programs=()=>`<fieldset class="body-types segmented"><legend class="sr">Тип кузова</legend>${d.bodyTypes.map((type,i)=>`<label><input type="radio" name="body-type" value="${i}"${i===0?' checked':''}><span>${escape(type)}</span></label>`).join('')}</fieldset>
     <p class="catalog__selection" id="body-price-label" aria-live="polite">Цены для типа кузова: ${escape(d.bodyTypes[0])}</p>
-    <ol class="programs" aria-label="Программы и пакеты мойки">
+    <ol class="programs" aria-label="Программы и пакеты автомойки">
      ${d.programs.map(programCard).join('\n     ')}
     </ol>
     ${renderCompare()}`;
@@ -112,7 +120,7 @@ const section=(group,s)=>`<section class="catalog__section${s.accent?' catalog__
 // Пока заявки с сайта не принимаются, цену называют по телефону (окно «Узнать цену»).
 const LEAD={yclients:'Запись онлайн — в выбранную студию.',request:'Стоимость для вашей машины назовёт администратор: нажмите «Узнать цену» у работы.'};
 
-// Каталог /services (§4.3 плана) — подстановка {{catalog}}. Четыре категории; без JS
+// Каталог /services (§4.3 плана) — подстановка {{catalog}}. Пять категорий; без JS
 // вкладки — ссылки на категории, панели идут подряд; js/catalog.js делает из них вкладки
 // (WAI-ARIA tabs: role="tablist" ставится на .anchor-tabs__track[data-catalog-tabs] —
 // вкладки его прямые потомки) и показывает одну. H1 стоит в герое, поэтому категории — h2,
@@ -129,6 +137,7 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
    <h2 class="catalog__panel-title" id="price-${escape(group.id)}-title">${escape(group.title)}</h2>
    <p class="catalog__panel-lead">${escape(group.desc)} ${LEAD[group.booking]}</p>
   </header>
+  ${group.media?media(group.media):''}
   ${group.sections.map(s=>section(group,s)).join('\n  ')}
  </section>`).join('\n')}
  </div>
@@ -136,7 +145,7 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
 </div>
 `}
 
-// Сравнение программ мойки (P04, §4.3 плана) — {{compare}}, стоит в #programs каталога.
+// Сравнение программ автомойки (P04, §4.3 плана) — {{compare}}, стоит в #programs каталога.
 // Строки — пункты состава в порядке появления, кроме первого пункта «Всё из …» у программ
 // 1–4; программа j отмечена в строках программ 0…j — буквальное правило «каждая следующая
 // включает предыдущую». Строки, общие для всех программ, помечены data-same: переключатель
@@ -164,7 +173,7 @@ export function renderCompare(){
      </div>
      <div class="compare__scroll" role="region" aria-labelledby="compare-title" tabindex="0" data-scroll-region>
       <table class="compare__table">
-       <caption class="sr">Состав программ мойки: каждая следующая включает предыдущую</caption>
+       <caption class="sr">Состав программ автомойки: каждая следующая включает предыдущую</caption>
        <thead><tr><th scope="col"><span class="sr">Работа</span></th>${names.map(name=>`<th scope="col">${escape(name)}</th>`).join('')}</tr></thead>
        <tbody>
 ${rows.map(row=>`        <tr${row.from===0?' data-same':''}><th scope="row">${escape(row.item)}</th>${names.map((_,j)=>cell(row,j)).join('')}</tr>`).join('\n')}
@@ -178,9 +187,9 @@ ${rows.map(row=>`        <tr${row.from===0?' data-same':''}><th scope="row">${es
     </div>`;
 }
 
-// Превью на главной (прежняя главная; на Meat Auto не используется) — четыре категории в порядке каталога, ссылка
+// Превью на главной (прежняя главная; на Meat Wash не используется) — четыре категории в порядке каталога, ссылка
 // ведёт на вкладку категории. Подпись — название и короткое описание, цена «от» —
-// минимальная в категории (у мойки — минимальная цена программ), всё из JSON.
+// минимальная в категории (у автомойки — минимальная цена программ), всё из JSON.
 // Кадры assets/shots — 1600×894, уменьшенные (-s) — 900 px.
 const shot=(id,size)=>`assets/shots/${id}${size==='s'?'-s':''}.webp`;
 const PREVIEW={
@@ -205,7 +214,7 @@ ${d.groups.map((group,i)=>{
 }
 
 // Модуль данных для скриптов страницы. Только то, что им нужно: цены программ по
-// кузову и их состав (гараж не берёт повторно работу, уже входящую в мойку:
+// кузову и их состав (гараж не берёт повторно работу, уже входящую в автомойку:
 // items — позиции каталога), цены работ по названию (null — после оценки),
 // позиции с пояснением, категорией и подразделом, четыре категории с подразделами,
 // настройка заявок и филиалы (карты в карточках, цель записи).
@@ -227,8 +236,8 @@ export const PROGRAMS = ${JSON.stringify(d.programs.map(([name,,time,description
 export const PRICES = ${JSON.stringify(prices,null,1)};
 // Позиции каталога: цена (null — после оценки), короткое пояснение, категория и подраздел.
 export const ITEMS = ${JSON.stringify(items,null,1)};
-// Четыре категории в порядке показа: booking yclients — запись в филиал, request —
-// заявка с фото; sections — подразделы (programs: true — программы и пакеты мойки,
+// Пять категорий в порядке показа: booking yclients — запись в филиал, request —
+// заявка с фото; sections — подразделы (programs: true — программы и пакеты автомойки,
 // accent: true — выделенный подраздел).
 export const CATEGORIES = ${JSON.stringify(categories,null,1)};
 // Заявка с фото: адрес приёма (null — отправка не подключена, форма предлагает позвонить)

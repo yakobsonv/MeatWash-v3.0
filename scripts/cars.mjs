@@ -11,7 +11,7 @@
 //   .car-card__head     название и год, факты через «·»
 //   .car-card__offer    цена (+ с НДС, если задана), «Спросить о машине» (Telegram) и «Позвонить»
 //                       (Мясницкая) — на компьютере колонка справа, на телефоне сразу после фактов
-//   .car-card__about    абзац, характеристики, «Подготовили в Meat Auto: …» (если задано)
+//   .car-card__about    абзац, характеристики, «Подготовили в Meat Wash: …» (если задано)
 // Названия проданных машин: слова с дефисом не рвутся (S-класс), номер модели не отрывается
 // от соседнего слова (BMW 740d, GLS 450 d) — как было в прежней разметке.
 // Владелец: WP4.
@@ -73,7 +73,7 @@ function card(car, index) {
         <ul class="car-card__specs">
           ${car.specs.map((s) => `<li>${text(s)}</li>`).join('\n          ')}
         </ul>
-${car.prepared ? `        <p class="car-card__prep"><b>Подготовили в Meat Auto:</b> ${text(car.prepared)}.</p>\n` : ''}      </div>
+${car.prepared ? `        <p class="car-card__prep"><b>Подготовили в Meat Wash:</b> ${text(car.prepared)}.</p>\n` : ''}      </div>
     </div>
   </article>`;
 }

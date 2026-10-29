@@ -1,5 +1,5 @@
 <!-- Тело главной (план §3.1). Владелец: WP2. Перенос утверждённой главной v2
-     (source/v2-design/index.html, 625ce74) как есть: герой, «Чем занимается Meat Auto»,
+     (source/v2-design/index.html, 625ce74) как есть: герой, «Чем занимается Meat Wash»,
      четыре плитки, карусель на телефоне. Изменения (Влад 27.10): общая шапка и общий подвал
      вместо своих, плитка 2 ведёт на страницу привоза вместо Telegram, ссылки относительные,
      числа в чипах — из данных (проданные машины, год, студии). Подпись плитки 2 Влад
@@ -12,12 +12,12 @@
 <section class="hero" aria-labelledby="page-title">
   <picture class="hero__media">
     <source media="(max-width: 699px)" srcset="assets/img/home/hero-m-poster-720.webp" width="720" height="1280">
-    <img src="assets/img/home/hero-wash-1920.webp" width="1920" height="1080" alt="Мойка чёрного седана в студии Meat Auto: пена и струя воды" fetchpriority="high" decoding="async">
+    <img src="assets/img/home/hero-wash-1920.webp" width="1920" height="1080" alt="Автомойка чёрного седана в студии Meat Wash: пена и струя воды" fetchpriority="high" decoding="async">
   </picture>
   <video class="hero__video" data-video="hero" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src-m="{{asset:assets/video/hero-m-720.mp4}}" data-src="{{asset:assets/video/hero-1280.mp4}}" data-src-hd="{{asset:assets/video/hero-1920.mp4}}"></video>
   <button class="hero__toggle" type="button" data-video-toggle aria-pressed="false" aria-label="Остановить видео" hidden>{{icon:pause:hero__pause}}{{icon:play:hero__play}}</button>
   <h1 class="hero__title" id="page-title">
-    <span class="hero__name" lang="en">Meat Auto</span>
+    <span class="hero__name" lang="en">Meat Wash</span>
     <span class="sr" lang="en">Car Care Club</span>
     {{icon:ccc:hero__script}}
   </h1>
@@ -32,13 +32,13 @@
     <article class="dir" data-reveal aria-labelledby="dir-1">
       <h3 class="dir__title" id="dir-1"><span class="dir__name">Автомойка / Детейлинг</span></h3>
       <div class="dir__card" data-video-host>
-        <img class="dir__img" style="--focus-xy: 68% 56%" src="assets/img/home/tile-1-800.webp" srcset="assets/img/home/tile-1-800.webp 800w, assets/img/home/tile-1-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 447px, (max-width: 759px) 55vh, 52vw" width="1240" height="1864" loading="lazy" decoding="async" alt="Lexus LX в активной пене в моечном боксе Meat Auto">
+        <img class="dir__img" style="--focus-xy: 68% 56%" src="assets/img/home/tile-1-800.webp" srcset="assets/img/home/tile-1-800.webp 800w, assets/img/home/tile-1-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 447px, (max-width: 759px) 55vh, 52vw" width="1240" height="1864" loading="lazy" decoding="async" alt="Lexus LX в активной пене в моечном боксе Meat Wash">
         <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/tile-detailing.mp4}}"></video>
         <a class="dir__hit" href="services" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
           <div class="dir__body">
-            <ul class="dir__tags"><li class="chip chip--photo">Мойка · химчистка · полировка · ремонт</li></ul>
-            <p class="dir__desc">Мойка, химчистка, полировка, защита кузова и ремонт сколов и вмятин.</p>
+            <ul class="dir__tags"><li class="chip chip--photo">Автомойка · химчистка · полировка · ремонт</li></ul>
+            <p class="dir__desc">Автомойка, химчистка, полировка, защита кузова и ремонт сколов и вмятин.</p>
           </div>
           <a class="dir__cta" href="services"><span class="dir__label">Услуги и цены</span><span class="sr">: автомойка и детейлинг</span>{{icon:cta-arrow:dir__arrow}}</a>
         </div>
@@ -80,14 +80,14 @@
       <div class="dir__card" data-video-host>
         <picture>
           <source media="(max-width: 759px)" srcset="assets/img/home/tile-4-m-860.webp 860w, assets/img/home/tile-4-m-1280.webp 1280w" sizes="(min-height: 810px) 447px, 55vh" width="1280" height="1924">
-          <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/tile-4-800.webp" srcset="assets/img/home/tile-4-800.webp 800w, assets/img/home/tile-4-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 1010px, (max-width: 759px) 125vh, (min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="825" loading="lazy" decoding="async" alt="Серый BMW 8 серии в зале студии Meat Auto">
+          <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/tile-4-800.webp" srcset="assets/img/home/tile-4-800.webp 800w, assets/img/home/tile-4-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 1010px, (max-width: 759px) 125vh, (min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="825" loading="lazy" decoding="async" alt="Серый BMW 8 серии в зале студии Meat Wash">
         </picture>
         <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/tile-about.mp4}}"></video>
         <a class="dir__hit" href="about" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
           <div class="dir__body">
             <ul class="dir__tags"><li class="chip chip--photo">С {{brand:since}} года · {{count:studios:студия}} в Москве</li></ul>
-            <p class="dir__desc"><span lang="en">Car Care Club Meat Auto</span>: студии на Мясницкой и в Технопарке, команда и наша история.</p>
+            <p class="dir__desc"><span lang="en">Car Care Club Meat Wash</span>: студии на Мясницкой и в Технопарке, команда и наша история.</p>
           </div>
           <a class="dir__cta" href="about"><span class="dir__label">О компании</span>{{icon:cta-arrow:dir__arrow}}</a>
         </div>
