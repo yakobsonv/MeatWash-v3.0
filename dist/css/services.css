@@ -15,13 +15,48 @@
    /services — герой A
    ========================================================================== */
 body[data-page="services"] .hero-a__media img { object-position: 50% 50%; }
+/* Ролики вкладок каталога (Влад 30.10, js/video.js data-video="tab"): .hero-a__media здесь —
+   div с фото и роликами; ролик проявляется поверх фото, затемнение снизу остаётся сверху.
+   Кнопка паузы (WCAG 2.2.2): на телефоне и планшете справа сверху под шапкой, от 1000 px —
+   справа внизу, рядом с заголовком. */
+.hero-a--tabs .hero-a__video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .9s var(--ease-out);
+}
+.hero-a--tabs .hero-a__video.is-shown { opacity: 1; }
+.hero-a--tabs .hero-a__video.is-top { z-index: 1; }
+.hero-a--tabs .hero-a__media::after { z-index: 2; }
+.hero-a__toggle {
+  grid-column: 2; grid-row: 1; justify-self: end; align-self: start;
+  position: relative; z-index: 1;
+  margin-top: calc(var(--header-h) + var(--sm));
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  border: 1px solid rgb(255 255 255 / .28); border-radius: 50%;
+  background: rgb(8 8 8 / .32);
+  color: #fff;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: background-color .3s var(--ease-out), border-color .3s var(--ease-out);
+}
+.hero-a__toggle[hidden] { display: none; }
+.hero-a__toggle:hover { background: rgb(8 8 8 / .55); border-color: rgb(255 255 255 / .5); }
+.hero-a__toggle svg { width: 18px; height: 18px; }
+.hero-a__toggle[aria-pressed="false"] .hero-a__play,
+.hero-a__toggle[aria-pressed="true"] .hero-a__pause { display: none; }
+@media (min-width: 1000px) {
+  .hero-a__toggle { align-self: end; margin: 0 0 var(--lg); }
+}
 
 /* ==========================================================================
    Каталог (§4.3). Вкладки — .anchor-tabs (WP1); role="tablist" на дорожке ставит
    js/catalog.js, выбранная — aria-selected (стиль у WP1).
    ========================================================================== */
 .catalog { padding-bottom: var(--xl); }
-/* Четыре раздела встают в ряд и на 360–390 px. */
+/* На 360–390 px ряд из пяти разделов листается вбок (стрелка и маска у края — WP1). */
 @media (max-width: 759px) {
   .catalog__tabs .anchor-tabs__track { padding-inline: 16px; gap: 2px; overflow-x: auto; scrollbar-width: none; }
   .catalog__tabs .anchor-tabs__track > a { padding-inline: 11px; }
@@ -336,7 +371,3 @@ body[data-page="services"] .teasers { padding-bottom: var(--xl); }
 .works-m4__links { margin-top: var(--xs); }
 
 .works-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: var(--lg); font-size: var(--fs-md); }
-
-/* Ролик категории «Оклейка» (Влад 29.10): вертикальный кадр под заголовком вкладки. */
-.catalog__media { margin: var(--lg) var(--basic) 0; max-width: 380px; aspect-ratio: 4 / 5; }
-.catalog__media > img { height: 100%; object-fit: cover; }

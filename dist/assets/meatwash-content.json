@@ -317,11 +317,6 @@
       "short": "Оклейка",
       "booking": "request",
       "desc": "Полиуретановая плёнка: зоны риска, полная оклейка и фары.",
-      "media": {
-        "video": "assets/video/clip-wrap-tab.mp4",
-        "poster": "assets/video/clip-wrap-tab-poster.webp",
-        "alt": "Мастер натягивает защитную плёнку на кузов BMW M4"
-      },
       "sections": [
         {
           "id": "price-film",

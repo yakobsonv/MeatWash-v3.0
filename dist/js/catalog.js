@@ -1,5 +1,5 @@
 // Каталог на services.html (разметку собирает scripts/catalog.mjs, контракт §4.3 плана):
-// - четыре категории — вкладки WAI-ARIA (tablist/tab/tabpanel, стрелки, Home/End,
+// - пять категорий — вкладки WAI-ARIA (tablist/tab/tabpanel, стрелки, Home/End,
 //   roving tabindex). Без JS переключатели — ссылки, панели идут подряд: прячет их
 //   только этот модуль. Якоря (#price-film, #program-2, #price-help…) открывают
 //   вкладку, в которой лежит цель;
@@ -73,6 +73,17 @@ function setupTabs(signal) {
       panels[j].hidden = j !== i;
     });
     if (focus) tabs[i].focus();
+    announce();
+  };
+  // Ролик шапки — по открытой категории (js/video.js, Влад 30.10). video.js может
+  // подключиться позже — он читает data-current. До разбора адреса молчим: по #price-wrap
+  // иначе сначала грузился бы ролик автомойки.
+  let settled = false;
+  const announce = () => {
+    const category = panels[tabs.findIndex((tab) => tab.tabIndex === 0)]?.dataset.category;
+    if (!settled || !category || root.dataset.current === category) return;
+    root.dataset.current = category;
+    dispatchEvent(new CustomEvent('mw:category', { detail: category }));
   };
   // Цель якоря в каталоге: открыть её вкладку и <details> программы.
   const reveal = (target) => {
@@ -126,6 +137,8 @@ function setupTabs(signal) {
     requestAnimationFrame(settle);
     document.fonts?.ready.then(() => requestAnimationFrame(settle));
   }
+  settled = true;
+  announce();
   // Хеш сменили на открытой странице (адресная строка, «назад»).
   addEventListener('hashchange', () => {
     const target = byHash(location.hash);

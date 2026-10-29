@@ -201,14 +201,24 @@
      видимая подпись «Иллюстрация, не работа студии» (решение Влада 27.10, поправка 9).
      Надзаголовков и нумерации блоков нет (решение Влада). Ролики студии в карточках оклейки
      и работ — по наведению (js/video.js). -->
-<section class="hero-a" aria-labelledby="page-title">
-  <picture class="hero-a__media">
-    <source media="(min-width: 760px)" srcset="assets/img/services/hero-1600.webp" width="1240" height="531">
-    <img src="assets/img/services/hero-900.webp" width="860" height="860" alt="Lexus LX в активной пене в моечном боксе" fetchpriority="high" decoding="async">
-  </picture>
+<!-- Шапка (Влад 30.10): ролик открытой вкладки каталога — data-category как у панели
+     #price-<id>; переключает js/video.js по событию mw:category из js/catalog.js. У «Помощи»
+     ролика нет — видно фото. Ролики: полоса 21:9 (-w, от 760 px) и квадрат (-m). -->
+<section class="hero-a hero-a--tabs" aria-labelledby="page-title">
+  <div class="hero-a__media">
+    <picture>
+      <source media="(min-width: 760px)" srcset="assets/img/services/hero-1600.webp" width="1240" height="531">
+      <img src="assets/img/services/hero-900.webp" width="860" height="860" alt="Lexus LX в активной пене в моечном боксе" fetchpriority="high" decoding="async">
+    </picture>
+    <video class="hero-a__video" data-video="tab" data-category="wash" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/svc-wash-w.mp4?v=176f82be" data-src-m="assets/video/svc-wash-m.mp4?v=cbee0f61"></video>
+    <video class="hero-a__video" data-video="tab" data-category="detailing" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/svc-detailing-w.mp4?v=1c37d6d4" data-src-m="assets/video/svc-detailing-m.mp4?v=f4c1e570"></video>
+    <video class="hero-a__video" data-video="tab" data-category="wrap" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/svc-wrap-w.mp4?v=271ab512" data-src-m="assets/video/svc-wrap-m.mp4?v=d39c7f02"></video>
+    <video class="hero-a__video" data-video="tab" data-category="protection" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/svc-protection-w.mp4?v=9733c7c6" data-src-m="assets/video/svc-protection-m.mp4?v=13eea1ce"></video>
+  </div>
+  <button class="hero-a__toggle" type="button" data-video-toggle aria-pressed="false" aria-label="Остановить видео" hidden><svg class="hero-a__pause" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=77c0400e#i-pause"/></svg><svg class="hero-a__play" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=77c0400e#i-play"/></svg></button>
   <div class="hero-a__body">
     <h1 id="page-title">Автомойка / Детейлинг</h1>
-    <p class="hero-a__lead">Четыре раздела: автомойка, детейлинг, защита и&nbsp;помощь. Автомойку запишем онлайн в&nbsp;выбранную студию, цену остальных работ назовёт администратор.</p>
+    <p class="hero-a__lead">Пять разделов: автомойка, детейлинг, оклейка, защита и&nbsp;помощь. Автомойку запишем онлайн в&nbsp;выбранную студию, цену остальных работ назовёт администратор.</p>
     <div class="hero-a__actions actions">
       <button class="btn btn--primary" type="button" data-book>Записаться</button>
       <a class="btn btn--secondary" href="#catalog">Смотреть цены</a>
@@ -227,7 +237,6 @@
    <h2 class="catalog__panel-title" id="price-wash-title">Автомойка</h2>
    <p class="catalog__panel-lead">Регулярный уход и&nbsp;программы автомойки. Запись онлайн&nbsp;— в&nbsp;выбранную студию.</p>
   </header>
-  
   <section class="catalog__section catalog__section--programs" id="programs" aria-labelledby="programs-title">
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="programs-title">Программы и&nbsp;пакеты</h3>
@@ -327,7 +336,6 @@
    <h2 class="catalog__panel-title" id="price-detailing-title">Детейлинг</h2>
    <p class="catalog__panel-lead">Глубокая очистка и&nbsp;уход за&nbsp;салоном. Стоимость для&nbsp;вашей машины назовёт администратор: нажмите «Узнать цену» у&nbsp;работы.</p>
   </header>
-  
   <section class="catalog__section" id="price-interior" aria-labelledby="price-interior-title">
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-interior-title">Химчистка салона</h3>
@@ -352,10 +360,6 @@
    <h2 class="catalog__panel-title" id="price-wrap-title">Оклейка</h2>
    <p class="catalog__panel-lead">Полиуретановая плёнка: зоны риска, полная оклейка и&nbsp;фары. Стоимость для&nbsp;вашей машины назовёт администратор: нажмите «Узнать цену» у&nbsp;работы.</p>
   </header>
-  <figure class="vframe catalog__media" data-video-host>
-   <img src="assets/video/clip-wrap-tab-poster.webp?v=f23bb94c" width="720" height="1280" alt="Мастер натягивает защитную плёнку на кузов BMW M4" loading="lazy" decoding="async">
-   <video class="vframe__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/clip-wrap-tab.mp4?v=6a2472b7"></video>
-  </figure>
   <section class="catalog__section" id="price-film" aria-labelledby="price-film-title">
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-film-title">Оклейка плёнкой</h3>
@@ -369,7 +373,6 @@
    <h2 class="catalog__panel-title" id="price-protection-title">Защита</h2>
    <p class="catalog__panel-lead">Полировка, керамика и&nbsp;защита стёкол. Стоимость для&nbsp;вашей машины назовёт администратор: нажмите «Узнать цену» у&nbsp;работы.</p>
   </header>
-  
   <section class="catalog__section" id="price-polish" aria-labelledby="price-polish-title">
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-polish-title">Полировка</h3>
@@ -394,7 +397,6 @@
    <h2 class="catalog__panel-title" id="price-help-title">Помощь</h2>
    <p class="catalog__panel-lead">Устранение повреждений и&nbsp;подготовка к&nbsp;продаже. Стоимость для&nbsp;вашей машины назовёт администратор: нажмите «Узнать цену» у&nbsp;работы.</p>
   </header>
-  
   <section class="catalog__section catalog__section--accent" id="price-glass-repair" aria-labelledby="price-glass-repair-title">
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-glass-repair-title">Ремонт стёкол</h3>

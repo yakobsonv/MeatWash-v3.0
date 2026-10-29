@@ -7,14 +7,24 @@
      видимая подпись «Иллюстрация, не работа студии» (решение Влада 27.10, поправка 9).
      Надзаголовков и нумерации блоков нет (решение Влада). Ролики студии в карточках оклейки
      и работ — по наведению (js/video.js). -->
-<section class="hero-a" aria-labelledby="page-title">
-  <picture class="hero-a__media">
-    <source media="(min-width: 760px)" srcset="assets/img/services/hero-1600.webp" width="1240" height="531">
-    <img src="assets/img/services/hero-900.webp" width="860" height="860" alt="Lexus LX в активной пене в моечном боксе" fetchpriority="high" decoding="async">
-  </picture>
+<!-- Шапка (Влад 30.10): ролик открытой вкладки каталога — data-category как у панели
+     #price-<id>; переключает js/video.js по событию mw:category из js/catalog.js. У «Помощи»
+     ролика нет — видно фото. Ролики: полоса 21:9 (-w, от 760 px) и квадрат (-m). -->
+<section class="hero-a hero-a--tabs" aria-labelledby="page-title">
+  <div class="hero-a__media">
+    <picture>
+      <source media="(min-width: 760px)" srcset="assets/img/services/hero-1600.webp" width="1240" height="531">
+      <img src="assets/img/services/hero-900.webp" width="860" height="860" alt="Lexus LX в активной пене в моечном боксе" fetchpriority="high" decoding="async">
+    </picture>
+    <video class="hero-a__video" data-video="tab" data-category="wash" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-wash-w.mp4}}" data-src-m="{{asset:assets/video/svc-wash-m.mp4}}"></video>
+    <video class="hero-a__video" data-video="tab" data-category="detailing" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-detailing-w.mp4}}" data-src-m="{{asset:assets/video/svc-detailing-m.mp4}}"></video>
+    <video class="hero-a__video" data-video="tab" data-category="wrap" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-wrap-w.mp4}}" data-src-m="{{asset:assets/video/svc-wrap-m.mp4}}"></video>
+    <video class="hero-a__video" data-video="tab" data-category="protection" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-protection-w.mp4}}" data-src-m="{{asset:assets/video/svc-protection-m.mp4}}"></video>
+  </div>
+  <button class="hero-a__toggle" type="button" data-video-toggle aria-pressed="false" aria-label="Остановить видео" hidden>{{icon:pause:hero-a__pause}}{{icon:play:hero-a__play}}</button>
   <div class="hero-a__body">
     <h1 id="page-title">Автомойка / Детейлинг</h1>
-    <p class="hero-a__lead">Четыре раздела: автомойка, детейлинг, защита и помощь. Автомойку запишем онлайн в выбранную студию, цену остальных работ назовёт администратор.</p>
+    <p class="hero-a__lead">Пять разделов: автомойка, детейлинг, оклейка, защита и помощь. Автомойку запишем онлайн в выбранную студию, цену остальных работ назовёт администратор.</p>
     <div class="hero-a__actions actions">
       <button class="btn btn--primary" type="button" data-book>Записаться</button>
       <a class="btn btn--secondary" href="#catalog">Смотреть цены</a>

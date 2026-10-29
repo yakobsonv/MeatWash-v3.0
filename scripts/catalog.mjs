@@ -49,14 +49,6 @@ const icon=name=>{
  spriteVersion??=createHash('sha256').update(readFileSync(new URL('dist/assets/brand/sprite.svg',root))).digest('hex').slice(0,8);
  return `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=${spriteVersion}#i-${name}"/></svg>`;
 };
-// Ролик категории (media в JSON — «Оклейка», Влад 29.10): постер и <video data-video="hover"> —
-// как у тизеров /services (js/video.js: с мышью по наведению, на тач-экране — пока виден).
-// Версия ?v= — по содержимому файла, как у спрайта.
-const assetV=path=>`${path}?v=${createHash('sha256').update(readFileSync(new URL('dist/'+path,root))).digest('hex').slice(0,8)}`;
-const media=({video,poster,alt})=>`<figure class="vframe catalog__media" data-video-host>
-   <img src="${assetV(poster)}" width="720" height="1280" alt="${escape(alt)}" loading="lazy" decoding="async">
-   <video class="vframe__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="${assetV(video)}"></video>
-  </figure>`;
 // Подпись кнопки для экранного диктора: «Узнать цену: Химчистка руля».
 const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
 // Одно действие на позицию. Автомойка (booking: yclients) — окно филиалов с этой работой
@@ -137,7 +129,6 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
    <h2 class="catalog__panel-title" id="price-${escape(group.id)}-title">${escape(group.title)}</h2>
    <p class="catalog__panel-lead">${escape(group.desc)} ${LEAD[group.booking]}</p>
   </header>
-  ${group.media?media(group.media):''}
   ${group.sections.map(s=>section(group,s)).join('\n  ')}
  </section>`).join('\n')}
  </div>
