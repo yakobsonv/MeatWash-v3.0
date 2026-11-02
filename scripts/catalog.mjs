@@ -59,9 +59,11 @@ const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
 // Ключи data-* — побуквенно названия из JSON (typo() их не трогает, check сверяет).
 export const ONSITE_LABEL='добавим при приёмке';
 const ACTION_CLASS='catalog__action btn btn--compact btn--secondary';
+// На телефоне от кнопки остаётся круглая стрелка (services.css), подпись — для диктора.
+const actionLabel=(label,name)=>`<span class="catalog__action-label">${label}</span>${forName(name)}${icon('arrow-right')}`;
 const action=(group,name)=>group.booking==='yclients'
- ?`<button class="${ACTION_CLASS}" type="button" data-book data-book-context="${escape(name)}" data-yc-items="${escape(name)}">Записаться${forName(name)}</button>`
- :`<button class="${ACTION_CLASS}" type="button" data-request data-request-category="${escape(group.id)}" data-request-services="${escape(name)}">Узнать цену${forName(name)}</button>`;
+ ?`<button class="${ACTION_CLASS}" type="button" data-book data-book-context="${escape(name)}" data-yc-items="${escape(name)}">${actionLabel('Записаться',name)}</button>`
+ :`<button class="${ACTION_CLASS}" type="button" data-request data-request-category="${escape(group.id)}" data-request-services="${escape(name)}">${actionLabel('Узнать цену',name)}</button>`;
 const itemRow=(group,section,[name,price,note])=>`<li class="catalog__item" data-price-item="${escape(name)}"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p>${note?`<p class="catalog__item-note">${escape(note)}</p>`:''}</div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${section.onsite?`<p class="catalog__item-onsite">${ONSITE_LABEL}</p>`:action(group,name)}</li>`;
 const itemOf=(group,name)=>group.items.find(([n])=>n===name)??(()=>{throw new Error(`Подраздел ${group.id}: нет позиции «${name}» в items`);})();
 
@@ -105,7 +107,14 @@ const sectionHead=section=>{
     <a class="link-arrow catalog__section-link" href="${link.href}">${escape(link.label)}${icon('arrow-right')}</a>`:''}
    </div>`;
 };
-const section=(group,s)=>`<section class="catalog__section${s.accent?' catalog__section--accent':''}${s.programs?' catalog__section--programs':''}" id="${escape(s.id)}" aria-labelledby="${escape(s.id)}-title">
+// data-summary — строка свёрнутого подраздела на телефоне (js/catalog.js): «4 позиции, от 2 000 ₽».
+// Склонение — как plural() в pages.mjs (тот импортирует этот модуль, поэтому здесь своё).
+const positions=n=>{const a=n%10,b=n%100;return `${n} ${a===1&&b!==11?'позиция':a>=2&&a<=4&&(b<12||b>14)?'позиции':'позиций'}`;};
+const summary=(group,s)=>{
+ const prices=priced(s.items.map(name=>itemOf(group,name)));
+ return `${positions(s.items.length)}${prices.length?`, от ${money(Math.min(...prices))}`:''}`;
+};
+const section=(group,s)=>`<section class="catalog__section${s.accent?' catalog__section--accent':''}${s.programs?' catalog__section--programs':''}" id="${escape(s.id)}" aria-labelledby="${escape(s.id)}-title"${s.items?` data-summary="${escape(summary(group,s))}"`:''}>
    ${sectionHead(s)}
    ${s.programs?programs():`<ul class="catalog__items" role="list">${s.items.map(name=>itemRow(group,s,itemOf(group,name))).join('')}</ul>`}
   </section>`;

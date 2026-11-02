@@ -91,6 +91,7 @@ function setupTabs(signal) {
     const panel = target.closest('[role="tabpanel"]');
     if (panel) select(panels.indexOf(panel));
     if (target.tagName === 'DETAILS') target.open = true;
+    unfold(target);
     return true;
   };
 
@@ -151,6 +152,81 @@ function setupTabs(signal) {
     const link = event.target.closest?.('a[href^="#"]');
     if (link) reveal(byHash(link.getAttribute('href')));
   }, { capture: true, signal });
+}
+
+// Телефон (Паша 30.10, идея — аккордеон-таблица с 21st.dev): прайс короче. В категории
+// раскрыт первый подраздел, остальные свёрнуты в строку «Кожа и пластик · 4 позиции,
+// от 2 000 ₽»; сравнение программ автомойки тоже свёрнуто. Заголовок становится кнопкой
+// (aria-expanded), содержимое — hidden. От 760 px всё раскрыто и кнопок нет, как было.
+// Якорь внутрь свёрнутого (#price-glass, #compare) раскрывает его — unfold() из reveal().
+const folds = [];
+const unfold = (target) => folds.forEach((fold) => { if (fold.root.contains(target)) fold.set(true); });
+
+function setupFolds(signal) {
+  const narrow = matchMedia('(max-width: 759px)');
+  const parts = [];
+  document.querySelectorAll('#catalog .catalog__panel').forEach((panel) => {
+    panel.querySelectorAll(':scope > .catalog__section').forEach((root, i) => {
+      if (root.classList.contains('catalog__section--programs')) return;
+      const heading = root.querySelector('.catalog__subhead');
+      const body = [...heading.parentElement.children, ...root.children]
+        .filter((el) => el !== heading && el !== heading.parentElement);
+      parts.push({ root, heading, body, summary: root.dataset.summary, open: i === 0 });
+    });
+  });
+  const compare = document.querySelector('#catalog .compare');
+  if (compare) {
+    const heading = compare.querySelector('.compare__title');
+    const body = [...heading.parentElement.children, ...compare.children]
+      .filter((el) => el !== heading && el !== heading.parentElement);
+    const count = compare.querySelectorAll('thead th[scope="col"]').length - 1;   // первая — «Работа»
+    parts.push({ root: compare, heading, body, summary: count ? `${count} программ` : '', open: false });
+  }
+  if (!parts.length) return;
+
+  const build = (part) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'catalog__fold';
+    const label = document.createElement('span');
+    label.className = 'catalog__fold-label';
+    label.append(...part.heading.childNodes);
+    button.append(label);
+    if (part.summary) {
+      const meta = document.createElement('span');
+      meta.className = 'catalog__fold-meta';
+      meta.textContent = part.summary;
+      button.append(meta);
+    }
+    button.insertAdjacentHTML('beforeend', '<svg class="icon catalog__fold-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    part.heading.append(button);
+    part.set = (open) => {
+      button.setAttribute('aria-expanded', String(open));
+      part.body.forEach((el) => { el.hidden = !open; });
+      part.root.classList.toggle('is-folded', !open);
+    };
+    button.addEventListener('click', () => part.set(button.getAttribute('aria-expanded') !== 'true'));
+    part.button = button;
+    part.set(part.open || part.root.contains(byHash(location.hash)) || part.root.contains(document.activeElement));
+    folds.push(part);
+  };
+  // Поворот телефона (ширина через 760 px и обратно): раскрытое человеком остаётся раскрытым,
+  // фокус с кнопки-свёртки переходит на заголовок, а не теряется.
+  const teardown = (part) => {
+    part.open = part.button.getAttribute('aria-expanded') === 'true';
+    const focused = document.activeElement === part.button;
+    part.heading.replaceChildren(...part.button.querySelector('.catalog__fold-label').childNodes);
+    part.body.forEach((el) => { el.hidden = false; });
+    part.root.classList.remove('is-folded');
+    if (focused) { part.heading.tabIndex = -1; part.heading.focus({ preventScroll: true }); }
+  };
+  const sync = () => {
+    if (narrow.matches && !folds.length) parts.forEach(build);
+    else if (!narrow.matches && folds.length) folds.splice(0).forEach(teardown);
+  };
+  sync();
+  narrow.addEventListener('change', sync, { signal });
+  signal.addEventListener('abort', () => folds.splice(0).forEach(teardown));
 }
 
 // Тип кузова: цены программ, подпись и контекст кнопок записи.
@@ -259,6 +335,7 @@ export function setupCatalog() {
   setupBody(abort.signal);
   setupScrollRegions(abort.signal);
   setupCompareBar(abort.signal);
+  setupFolds(abort.signal);
   markOnSite();
   return () => abort.abort();
 }
