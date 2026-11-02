@@ -83,11 +83,11 @@ body[data-page="home"] .site-header__book { display: inline-block; }
 }
 @media (pointer: coarse) { .site-header__menu { min-height: 44px; } }
 
-/* Главная — размеры утверждённой v2: полоса 84 / 100 / 128, бык 64–112 px. */
-:root[data-theme="home"] .site-header { --header-h: 84px; --bull-h: clamp(64px, 4vw + 44px, 112px); }
+/* Главная — полоса v2 84 / 100 / 128; бык 48–64 px (Влад 02.11: был 64–112, «огромный»). */
+:root[data-theme="home"] .site-header { --header-h: 84px; --bull-h: clamp(48px, 1.4vw + 34px, 64px); }
 @media (max-width: 374px) {
   /* 320–374 px: бык чуть меньше, чтобы остался ровно по центру рядом с кнопкой. */
-  :root[data-theme="home"] .site-header { --bull-h: 54px; }
+  :root[data-theme="home"] .site-header { --bull-h: 44px; }
   body[data-page="home"] .site-header__book { padding-inline: 8px; font-size: 13px; }
 }
 :root[data-theme="home"] .site-header--over { height: 104px; }
