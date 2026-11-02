@@ -115,11 +115,46 @@ body[data-page="services"] .hero-a__media img { object-position: 50% 50%; }
   display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: var(--r-pill);
   font-size: var(--fs-xs); font-weight: 400; color: var(--on-muted); box-shadow: inset 0 0 0 1px var(--on-line);
 }
+.catalog__action > .icon { display: none; }
+/* Телефон (Паша 30.10, идея — «Receipt Pricing» с 21st.dev): строка как в чеке — название
+   и пояснение слева, цена справа, действие — круглая стрелка (подпись остаётся для диктора).
+   Строка ~64 px вместо ~92. «добавим при приёмке» — мелко под ценой. */
 @media (max-width: 759px) {
-  .catalog__item { grid-template-columns: minmax(0, 1fr) auto; gap: 10px var(--sm); padding: 16px 0; }
-  .catalog__item-text { grid-column: 1 / -1; }
-  .catalog__item-price { text-align: left; }
-  .catalog__action { width: auto; }
+  .catalog__item { grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 2px 12px; min-height: 0; padding: 12px 0; }
+  .catalog__item-text { grid-column: 1; grid-row: 1 / span 2; }
+  .catalog__item-name { font-size: 15px; }
+  .catalog__item-note { font-size: 13px; line-height: 1.4; }
+  .catalog__item-price { grid-column: 2; grid-row: 1 / span 2; font-size: var(--fs-base); }
+  .catalog__item:has(.catalog__item-onsite) .catalog__item-price { grid-row: 1; align-self: end; }
+  .catalog__item-onsite { grid-column: 2 / -1; grid-row: 2; align-self: start; font-size: 12px; }
+  .catalog__action {
+    grid-column: 3; grid-row: 1 / span 2;
+    width: 40px; height: 40px; min-height: 40px; padding: 0; border-radius: 50%;
+  }
+  .catalog__action > .icon { display: block; width: 18px; height: 18px; }
+  .catalog__action-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  /* До 379 px «После оценки» — в две строки: иначе «Ремонт автомобильных стёкол» не помещается в колонку */
+  @media (max-width: 379px) { .catalog__item-price--estimate { width: min-content; white-space: normal; } }
+
+  /* Аккордеон подразделов (js/catalog.js, setupFolds): заголовок — кнопка на всю ширину,
+     справа шеврон; у свёрнутого под названием сводка «4 позиции, от 2 000 ₽». */
+  .catalog__fold {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px;
+    width: 100%; padding: 4px 0; border: 0; background: none; color: inherit;
+    font: inherit; text-align: left; cursor: pointer;
+  }
+  .catalog__fold-label { grid-column: 1; }
+  .catalog__fold-meta { grid-column: 1; font-size: var(--fs-sm); font-weight: 400; letter-spacing: 0; line-height: 1.4; color: var(--on-muted); }
+  .catalog__fold-icon { grid-column: 2; grid-row: 1 / span 2; width: 22px; height: 22px; color: var(--on-muted); transition: transform .25s var(--ease-out); }
+  .catalog__fold[aria-expanded="true"] .catalog__fold-icon { transform: rotate(180deg); }
+  .catalog__fold[aria-expanded="true"] .catalog__fold-meta { display: none; }
+  .catalog__fold:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--r-xs); }
+  .catalog__section.is-folded { margin-top: 0; padding-block: var(--sm); border-top: 1px solid var(--on-line); }
+  .catalog__section.is-folded .catalog__section-head { margin-bottom: 0; }
+  .catalog__section:not(.is-folded) + .catalog__section.is-folded { margin-top: var(--lg); }
+  .catalog__section--accent.is-folded { padding: var(--sm) var(--md); border-top: 0; }
+  .compare.is-folded { margin-top: var(--lg); padding-block: var(--sm); border-block: 1px solid var(--on-line); }
+  .compare.is-folded .compare__title, .compare .compare__title:has(.catalog__fold) { flex: 1 1 100%; }
 }
 
 /* ---------- Программы и пакеты мойки ---------- */

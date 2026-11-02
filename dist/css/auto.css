@@ -31,6 +31,58 @@
 
 /* «Сейчас в продаже» */
 .cars__list { display: grid; gap: calc(var(--xl) * 1.1); }
+
+/* Плитки (Паша 30.10, как модели на porsche.com): кадр 4:3 со скруглением, снизу затемнение,
+   название, год и цена слева, круглая стрелка справа. Две в ряд от 760 px, на телефоне — друг
+   под другом. Полная карточка — в окне #car-dialog (js/cars.js); без JS — якорь к ней ниже. */
+.car-tiles { display: grid; gap: var(--md); margin: 0; padding: 0; list-style: none; }
+@media (min-width: 760px) { .car-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.car-tile {
+  position: relative; isolation: isolate; display: block; overflow: hidden;
+  aspect-ratio: 4 / 3; border-radius: var(--r-lg);
+  background: var(--surface); color: #fff; text-decoration: none;
+}
+.car-tile__img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-out); }
+.car-tile::after { content: ""; position: absolute; inset: 45% 0 0; z-index: -1; background: linear-gradient(0deg, rgb(0 0 0 / .74), rgb(0 0 0 / 0)); }
+.car-tile__text { position: absolute; left: var(--md); right: calc(var(--md) + 64px); bottom: var(--md); display: grid; gap: 4px; }
+.car-tile__name { font-size: var(--fs-xl); font-weight: 400; line-height: 1.2; letter-spacing: -.015em; text-wrap: balance; }
+.car-tile__meta { font-size: var(--fs-sm); line-height: 1.4; color: rgb(255 255 255 / .82); font-variant-numeric: tabular-nums; }
+.car-tile__go {
+  position: absolute; right: var(--md); bottom: var(--md);
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+  background: rgb(255 255 255 / .16); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  transition: background-color .3s var(--ease-out);
+}
+.car-tile__go .icon { width: 22px; height: 22px; }
+.car-tile:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+@media (hover: hover) {
+  .car-tile:hover .car-tile__img { transform: scale(1.04); }
+  .car-tile:hover .car-tile__go { background: rgb(255 255 255 / .32); }
+}
+@media (prefers-reduced-motion: reduce) { .car-tile__img { transition: none; } }
+
+/* Окно машины: тёмное, как страница (у окон записи — «слоновая кость»), шире их; внутри та
+   же карточка. Токены и кнопки — обратно к тёмной теме страницы. */
+dialog.dialog--car {
+  color-scheme: dark;
+  --page: var(--bg);
+  --on: var(--fg); --on-rgb: var(--fg-rgb); --on-muted: rgb(var(--fg-rgb) / .66);
+  --on-line: rgb(var(--fg-rgb) / .14); --on-red: var(--red); --on-inverse: var(--ink);
+  --surface: rgb(var(--fg-rgb) / .06); --surface-2: rgb(var(--fg-rgb) / .10);
+  --line: rgb(var(--fg-rgb) / .14); --line-field: rgb(var(--fg-rgb) / .40);
+  --focus: var(--red);
+  --wide: var(--dlg-pad);
+  width: min(1240px, 100vw);
+  background: var(--bg); color: var(--fg);
+}
+dialog.dialog--car .btn:is(.btn--primary, .btn--secondary) { border-color: var(--btn-line); background: var(--btn-bg); color: var(--btn-fg); }
+dialog.dialog--car .btn:is(.btn--primary, .btn--secondary):hover { background: var(--btn-hover); }
+.car-dialog__slot { padding-top: 80px; }
+.car-dialog__slot .car-card__offer { top: 24px; }
+@media (max-width: 759px) {
+  dialog.dialog--car { height: calc(100dvh - 12px); }
+  .car-dialog__slot { padding-top: 72px; }
+}
 .cars__more { margin-top: var(--xl); }
 
 /* Карточка машины: лента фото на всю колонку и дальше до края экрана (как карусели Porsche),
@@ -82,6 +134,9 @@
 .car-card__body { display: grid; gap: var(--md); }
 .car-card__head, .car-card__about { max-width: 56rem; }
 .car-card__title { font-size: var(--fs-xl); font-weight: 400; line-height: 1.24; letter-spacing: -.015em; text-wrap: balance; }
+/* Фокус на название ставит js/cars.js при открытии окна (для диктора). Safari на iPhone
+   показывал вокруг него красную рамку (Паша 31.10) — у заголовка-не-кнопки рамка не нужна. */
+.car-card__title:focus { outline: none; }
 .car-card__year { color: var(--on-muted); }
 .car-card__facts { display: flex; flex-wrap: wrap; margin-top: var(--sm); font-size: var(--fs-md); line-height: 1.5; }
 .car-card__facts > span:not(.car-card__dot) { white-space: nowrap; }
@@ -97,6 +152,27 @@
   .car-card__offer { grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); align-items: center; }
 }
 
+/* Ключевые цифры (Паша 30.10, как у porsche.com): число крупно, единица мельче рядом, подпись
+   под ним. Три в ряд на любой ширине. Набегание чисел и проявление подписей — js/figures.js
+   (.is-armed — ждёт показа, .is-run — пошло); при «меньше движения» блок статичный. */
+.car-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sm); margin: 0; padding: var(--md) 0; border-block: 1px solid var(--line); }
+.car-figures__item { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 8px; min-width: 0; }
+.car-figures__value { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: .14em; margin: 0;
+  font-size: clamp(30px, 8.6vw, 72px); font-weight: 300; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.car-figures__num { display: inline-block; white-space: nowrap; }
+.car-figures__unit { font-size: max(15px, .34em); font-weight: 400; letter-spacing: 0; white-space: nowrap; }
+.car-figures__label { font-size: 14px; line-height: 1.4; color: var(--on-muted); text-wrap: balance; }
+@media (max-width: 379px) { .car-figures__label { font-size: 13px; } }   /* «Максимальная» в колонке 97 px на 360 */
+@media (max-width: 339px) { .car-figures__value { font-size: 27px; } }   /* «250 км/ч» в колонке ~83 px на 320 — иначе «км/ч» уходит под число */
+@media (min-width: 600px) { .car-figures__label { font-size: 15px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .car-figures.is-armed :is(.car-figures__label, .car-figures__unit) {
+    opacity: 0; transform: translateY(10px);
+    transition: opacity .7s var(--ease-out) var(--d, 0ms), transform .7s var(--ease-out) var(--d, 0ms);
+  }
+  .car-figures.is-run :is(.car-figures__label, .car-figures__unit) { opacity: 1; transform: none; }
+}
+
 .car-card__lead { max-width: 40em; font-size: var(--fs-md); line-height: 1.5; text-wrap: pretty; }
 ul.car-card__specs { margin: var(--md) 0 0; padding: 0; list-style: none; border-bottom: 1px solid var(--line); }
 .car-card__specs li { position: relative; padding: 14px 0 14px 34px; border-top: 1px solid var(--line); line-height: 1.5; text-wrap: pretty; }
@@ -107,10 +183,11 @@ ul.car-card__specs { margin: var(--md) 0 0; padding: 0; list-style: none; border
 .car-card__prep b { font-weight: 600; color: var(--on); }
 
 @media (min-width: 1000px) {
-  .car-card__body { grid-template-columns: minmax(0, 1fr) minmax(320px, 394px); grid-template-areas: "head offer" "about offer";
+  .car-card__body { grid-template-columns: minmax(0, 1fr) minmax(320px, 394px); grid-template-areas: "head offer" "figures offer" "about offer";
     column-gap: calc(2 * var(--md)); row-gap: var(--md); align-items: start; }
   .car-card__head { grid-area: head; }
   .car-card__about { grid-area: about; }
+  .car-figures { grid-area: figures; max-width: 56rem; }
   .car-card__offer { grid-area: offer; position: sticky; top: 86px; }
 }
 
