@@ -43,6 +43,21 @@ export function setupUI() {
  const lockWatch=new MutationObserver(records=>{if(records.some(r=>r.target.localName==='dialog'))syncLock();});
  lockWatch.observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
  document.addEventListener('close',e=>{if(e.target instanceof HTMLDialogElement)syncLock();},{capture:true,signal:abort.signal});
+ // Окно закрыли касанием или кликом: второе касание двойного «Закрыть» приходится в ту же точку,
+ // а там уже страница — на /auto под крестиком окна машины ряд якорей, и страница уезжала
+ // к «Как работаем» (QA 02.11). Гасим клик только в той же точке (до 40 px) и не позже 400 мс
+ // после закрытия: нажатие в другом месте проходит сразу, а Esc, «назад» и закрытие из скрипта
+ // защиту не включают (клика рядом нет). Клавиатура (detail 0) проходит всегда.
+ // Точка — у самого клика, а не у pointerup: Safari на телефоне задерживает клик после касания.
+ // Слушатель на window в фазе capture — раньше всех обработчиков document (shell.js, catalog.js).
+ let lastClick=null, ghost=null;
+ addEventListener('click',e=>{
+  if(!e.detail)return;
+  const t=performance.now();
+  if(ghost&&t-ghost.t<400&&Math.hypot(e.clientX-ghost.x,e.clientY-ghost.y)<=40&&!e.target.closest?.('dialog[open]')){e.preventDefault();e.stopImmediatePropagation();return;}
+  lastClick={x:e.clientX,y:e.clientY,t};
+ },{capture:true,signal:abort.signal});
+ document.addEventListener('close',e=>{if(!(e.target instanceof HTMLDialogElement))return;const t=performance.now();ghost=lastClick&&t-lastClick.t<250?{x:lastClick.x,y:lastClick.y,t}:null;},{capture:true,signal:abort.signal});
  // Шторка закрывается сразу (dialog.close() в shell.js), её уход только дорисовывается
  // анимацией. Перед своим окном на всякий случай закрываем её и здесь.
  const closeDrawer=()=>{if(drawer?.open)drawer.close();};
