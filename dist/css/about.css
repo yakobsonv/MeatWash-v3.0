@@ -394,11 +394,7 @@ html:has(> body[data-page="about"]) { scroll-padding-top: 72px; }
 .membership__media { aspect-ratio: auto; min-height: clamp(260px, 30vw, 420px); }   /* не фото: без 4:3 promo, иначе min-height через пропорцию растягивает ширину */
 .membership__mark { display: grid; justify-items: center; gap: clamp(10px, 1.2vw, 18px); color: var(--fg); }
 .membership__bull { display: block; width: clamp(132px, 15vw, 216px); height: auto; aspect-ratio: 1097 / 800; }
-.membership__name {
-  font: 300 clamp(34px, 3.6vw, 56px)/.95 var(--sans);
-  letter-spacing: -.035em; text-transform: uppercase; white-space: nowrap;
-  color: #fff;
-}
+.membership__name { display: block; width: clamp(175px, 18.5vw, 266px); height: auto; aspect-ratio: 1552 / 242; color: #fff; }
 .membership__ccc {
   display: block; width: clamp(150px, 15vw, 240px); height: auto; aspect-ratio: 1231 / 198; overflow: visible;
 }
@@ -439,6 +435,7 @@ html:has(> body[data-page="about"]) { scroll-padding-top: 72px; }
 
 /* Подпись полосы цитаты: «Meat Auto» и надпись «Car Care Club» из логотипа. */
 body[data-page="about"] .quote-band figcaption { white-space: nowrap; }
+svg.quote-band__mw { display: block; flex: none; width: auto; height: clamp(12px, .5vw + 9px, 17px); aspect-ratio: 1552 / 242; }
 svg.quote-band__ccc { display: block; flex: none; width: auto; height: clamp(20px, 1.2vw + 12px, 30px); aspect-ratio: 1231 / 198; overflow: visible; }
 
 /* ---------- Появление фото: только при обычном движении и со скриптом ---------- */

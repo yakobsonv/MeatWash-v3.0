@@ -107,12 +107,14 @@ body.no-tr, body.no-tr * { transition: none !important; }
 @media (min-width: 760px) {
   .hero__title { --w: min(calc(var(--fs-hero) * 6.3), calc((100vw - 2 * var(--ext) - var(--md)) / 2)); }
 }
-/* Имя — крупно, под ним дескриптор «Car Care Club» вектором из логотипа (Влад 22.10). */
+/* Имя — вектором «MEATWASH» из логотипа (фирменный Arsenal SC Bold, логобук с. 2; Влад 02.11),
+   ширина прежней строки Manrope; под ним дескриптор «Car Care Club» (Влад 22.10). */
 .hero__name {
   display: block;
-  font-size: calc(var(--fs-hero) * 1.12);
-  font-weight: 300; letter-spacing: -.035em; line-height: .95;
-  text-transform: uppercase;
+  width: calc(var(--fs-hero) * 5.7);
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1552 / 242;
   color: #fff;
 }
 .hero__script {
