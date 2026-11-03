@@ -490,3 +490,56 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .wd { opacity: 1; }
   .dirs__play { display: none !important; }
 }
+
+/* ---------- Клубная карта внизу (Влад 03.11): карта на чёрном | бордовая панель ---------- */
+/* Блок со своими цветами: страница под ним светлая или тёмная — не важно (body.is-dark). */
+.home-club {
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  width: 85vw;                                   /* как плитка-карусель на телефоне */
+  margin: var(--lg) auto calc(2 * var(--xl));
+}
+.home-club__media {
+  display: grid; place-items: center;
+  padding: var(--lg) var(--md);
+  overflow: hidden;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  background: #000;
+}
+.home-club__card { display: block; width: min(100%, 560px); height: auto; transition: transform .8s var(--ease-out); }
+.home-club__panel {
+  --focus: var(--fg);
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+  gap: var(--sm);
+  padding: var(--lg) var(--md);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  background: var(--oxblood); color: var(--fg);
+}
+.home-club__title { margin: 0; font: 400 var(--fs-xl)/1.31 var(--sans); letter-spacing: -.01em; color: var(--fg); }
+.home-club__panel p { margin: 0; max-width: 34em; color: rgb(var(--fg-rgb) / .84); text-wrap: pretty; }
+.home-club__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sm) var(--md); margin-top: var(--sm); }
+.home-club__link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 56px; padding: 16px 28px;
+  border-radius: var(--r-sm);
+  background: var(--fg); color: var(--ink);
+  font: 500 16px/1.2 var(--sans); text-decoration: none;
+  transition: background-color var(--t-fast) var(--ease);
+}
+.home-club__link:hover { background: #fff; }
+.home-club__link .icon { width: 20px; height: 20px; }
+.home-club__more { color: var(--fg); min-height: 44px; }
+@media (hover: hover) { .home-club__media:hover .home-club__card { transform: scale(1.03) rotate(-1deg); } }
+@media (max-width: 759px) {
+  .home-club__actions { display: grid; width: 100%; }
+}
+@media (min-width: 760px) {
+  /* Края — по плиткам направлений: колонка .dirs (94vw) минус отступ плиток --md с каждой стороны. */
+  .home-club { width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md)); grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); }
+  .home-club__media { min-height: clamp(320px, 32vw, 520px); padding: var(--lg); border-radius: var(--r-lg) 0 0 var(--r-lg); }
+  .home-club__panel { padding: var(--lg); border-radius: 0 var(--r-lg) var(--r-lg) 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .home-club__media[data-reveal]:not(.is-in) .home-club__card { opacity: 0; transform: translateY(24px) rotate(-3deg); }
+  .home-club__media[data-reveal].is-in .home-club__card { transition: opacity 1s var(--ease-out), transform 1.6s var(--expo); }
+}
+@media (prefers-reduced-motion: reduce) { .home-club__card { transition: none; } }

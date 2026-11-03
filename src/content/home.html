@@ -106,3 +106,20 @@
     <button class="dirs__play" type="button" aria-label="Остановить автопрокрутку" data-state="playing">{{icon:pause:i-pause}}{{icon:play:i-play}}</button>
   </div>
 </section>
+
+<!-- Клуб (Влад 03.11: «внизу карту, которая будет вести на клуб»): клубная карта — ссылка на её
+     оформление (wahelp, как «Оформить клубную карту» на «О нас», цель Метрики club_card по
+     data-club-card), рядом — «Подробнее о клубе» на /about#membership. Вид — home.css. -->
+<section class="home-club" aria-labelledby="home-club-title">
+  <a class="home-club__media" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card data-reveal tabindex="-1" aria-hidden="true">
+    <img class="home-club__card" src="assets/img/home/club-card-800.webp" srcset="assets/img/home/club-card-800.webp 800w, assets/img/home/club-card-1400.webp 1400w" sizes="(min-width: 760px) 50vw, 100vw" width="1400" height="933" alt="" loading="lazy" decoding="async">
+  </a>
+  <div class="home-club__panel">
+    <h2 class="home-club__title" id="home-club-title">Клубная карта</h2>
+    <p>Карта постоянного клиента <span lang="en"><span class="nw">Meat Wash</span> <span class="nw">Car Care Club</span></span>. Оформляется онлайн, условия клуба расскажет администратор.</p>
+    <div class="home-club__actions">
+      <a class="home-club__link" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить клубную карту{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
+      <a class="link-arrow home-club__more" href="about#membership">Подробнее о клубе{{icon:arrow-right}}</a>
+    </div>
+  </div>
+</section>
