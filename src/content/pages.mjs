@@ -55,7 +55,7 @@ export const REGISTRY = [
   {
     file: 'index.html', id: 'home', kind: 'landing', body: 'home.html',
     title: 'Meat Wash — автомойка и детейлинг в Москве',
-    description: 'Car Care Club Meat Wash: автомойка и детейлинг, привоз авто из-за рубежа, покупка и продажа автомобилей. Две студии в Москве — на Мясницкой и в Технопарке.',
+    description: 'Meat Wash Car Care Club: автомойка и детейлинг, привоз авто из-за рубежа, покупка и продажа автомобилей. Две студии в Москве — на Мясницкой и в Технопарке.',
     ogTitle: 'Meat Wash — Car Care Club в Москве',
     headline: 'Meat Wash', theme: 'home', header: 'over', cta: 'none',
     shared: ALL, css: ['home.css'],

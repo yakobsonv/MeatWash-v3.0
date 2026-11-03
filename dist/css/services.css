@@ -324,7 +324,7 @@ ol.programs {
 .catalog__note {
   margin-top: var(--lg); padding-inline: var(--basic);
   max-width: calc(46rem + 2 * var(--basic));
-  font-size: var(--fs-xs); line-height: 1.625; color: var(--on-muted);
+  font-size: var(--fs-sm); line-height: 1.625; color: var(--on-muted);
 }
 
 /* ==========================================================================
@@ -397,12 +397,7 @@ body[data-page="services"] .teasers { padding-bottom: var(--xl); }
 .works-project__text > p { font-size: var(--fs-md); line-height: 1.42; }
 @media (max-width: 899px) { .works-project__copy { grid-template-columns: minmax(0, 1fr); } }
 
-/* Кадра M4 нет — место под него с пометкой «нужно от клиента». */
-.works-m4__media {
-  display: grid; place-items: center; padding: var(--md);
-  outline: 1px dashed rgb(var(--fg-rgb) / .3); outline-offset: -12px;
-}
-.works-m4__todo { position: relative; max-width: 26ch; text-align: center; line-height: 1.6; }
+/* Кадра M4 нет (в роликах студии этой машины нет) — одна панель со ссылкой на видео. */
 .works-m4__links { margin-top: var(--xs); }
 
 .works-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: var(--lg); font-size: var(--fs-md); }

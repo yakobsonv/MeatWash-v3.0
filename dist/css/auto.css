@@ -212,6 +212,7 @@ ul.car-card__specs { margin: var(--md) 0 0; padding: 0; list-style: none; border
 .promo__tel b { font-size: var(--fs-md); font-weight: 500; font-variant-numeric: tabular-nums; text-decoration: underline 1px rgb(var(--fg-rgb) / .4); text-underline-offset: 5px; }
 .promo__tel:hover b { text-decoration-color: var(--fg); }
 .auto-contact .promo__media img { object-position: 50% 72%; }
+#auto-contact-title { text-wrap: balance; }
 .auto-links .teaser:nth-child(2) .teaser__img { object-position: 30% 50%; }
 
 /* ==========================================================================

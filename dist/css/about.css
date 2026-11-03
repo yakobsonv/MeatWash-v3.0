@@ -124,17 +124,16 @@ html:has(> body[data-page="about"]) { scroll-padding-top: 72px; }
 .location__retry[hidden] { display: none; }
 /* Под iframe ссылка заглушки недоступна (inert) — и не видна, чтобы не казаться кнопкой. */
 .location__map:is([data-state="loading"], [data-state="loaded"]) .location__external { visibility: hidden; }
-/* Слой для пальца (maps.js): только на сенсорном экране и только над картой. */
+/* Слой над картой (maps.js): и для пальца, и для мыши — иначе колесо масштабирует карту
+   вместо прокрутки страницы (аудит 03.11: на /about ниже карт колесом было не пройти). */
 .location__shield { display: none; }
-@media (pointer: coarse) {
-  .location__map:is([data-state="loading"], [data-state="loaded"]) .location__shield:not([hidden]) {
-    position: absolute; inset: 0; z-index: 3;
-    display: block; width: 100%; height: 100%;
-    padding: 0; border: 0;
-    background: transparent;
-    color: inherit; font: inherit;
-    cursor: pointer;
-  }
+.location__map:is([data-state="loading"], [data-state="loaded"]) .location__shield:not([hidden]) {
+  position: absolute; inset: 0; z-index: 3;
+  display: block; width: 100%; height: 100%;
+  padding: 0; border: 0;
+  background: transparent;
+  color: inherit; font: inherit;
+  cursor: pointer;
 }
 /* Плашки поверх карты: подпись слоя для пальца и «Карта долго грузится» (одна на месте другой).
    Тёмное стекло: читается и на светлой карте, и на тёмной заглушке. */

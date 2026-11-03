@@ -330,7 +330,7 @@ export function setupUI() {
   if(target&&reveal(target)&&location.hash===link.getAttribute('href')){e.preventDefault();target.scrollIntoView({behavior:'instant'});}
  },options);
 
- const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-in');observer.unobserve(entry.target);}},{threshold:.1});
+ const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-in');observer.unobserve(entry.target);}},{threshold:0,rootMargin:'0px 0px -6% 0px'});
  document.querySelectorAll('[data-reveal]').forEach(el=>observer.observe(el));
  setupAnalytics();
  // Пришли по «На карте» из подвала другой страницы: цель map_open — здесь, рядом с картой.
