@@ -45,7 +45,7 @@ import {readFileSync, existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {content, escape, money, minFor, renderCatalog, renderCompare} from './catalog.mjs';
-import {cars, renderSale, renderSold, renderCarsDate} from './cars.mjs';
+import {cars, renderSale, renderSold, renderSoldCards, renderCarsDate} from './cars.mjs';
 import {typo} from './typo.mjs';
 import {REGISTRY} from '../src/content/pages.mjs';
 
@@ -254,6 +254,7 @@ export function renderPartial(template, page) {
       case 'cars': {
         if (args[0] === 'sale') return renderSale();
         if (args[0] === 'sold') return renderSold();
+        if (args[0] === 'sold-cards') return renderSoldCards();
         if (args[0] === 'date') return escape(renderCarsDate());
         throw new Error(`Неизвестная подстановка ${token}`);
       }

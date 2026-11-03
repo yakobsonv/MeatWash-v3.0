@@ -45,7 +45,9 @@ def inventory(browser, base, pages, res):
       sold: document.querySelectorAll('li.sold-card').length, channel: [...document.querySelectorAll('a[href*="t.me/MEATWASH_Auto"], a[href*="t.me/meat"]')].length,
       date: document.body.innerText.replace(/\u00a0/g, ' ').includes('22 сентября 2026')})""")
     checks += [
-        ([x[0] for x in a['cards']] == ['lotus-eletre', 'bmw-740ld'] and sum(x[1] for x in a['cards']) == 18, f"машин {len(a['cards'])}, фото {sum(x[1] for x in a['cards'])} (2, 18)"),
+        # 03.11: BMW 740Ld продана (Влад); карточки проданных — для окна «Уже продали»
+        ([x[0] for x in a['cards']] == [c['id'] for c in cars['forSale'] + cars['sold']] and all(x[1] == len(c['photos']) for x, c in zip(a['cards'], cars['forSale'] + cars['sold'])),
+         f"карточек {len(a['cards'])} ({len(cars['forSale'])} в продаже + {len(cars['sold'])} проданных), фото {sum(x[1] for x in a['cards'])}"),
         (a['sold'] == len(cars['sold']) == 16, f"проданных {a['sold']} (16)"),
         (a['channel'] >= 1, 'ссылка на канал MEAT AUTO'),
         (a['date'], 'дата цен «22 сентября 2026»'),

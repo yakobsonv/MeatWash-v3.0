@@ -3,23 +3,28 @@
 // странице; адрес становится /auto#<id>: ссылкой можно поделиться, «назад» закрывает окно.
 // Прямой заход по /auto#<id> открывает окно сразу. Карточки остаются в разметке (без JS
 // плитка — якорь к карточке ниже); модуль их прячет и переносит нужную в окно.
+// «Уже продали» (Влад 03.11): карточки проданных открывают то же окно — фото и характеристики.
 // Окно — dialog.dialog: закрытие по фону, возврат фокуса и снятие блокировки прокрутки — ui.js.
-// Подключает site.js, когда на странице есть [data-car-tiles]. Разметка — scripts/cars.mjs.
+// Подключает site.js, когда на странице есть [data-car-tiles] или [data-sold-tiles]. Разметка — scripts/cars.mjs.
 export function setupCars() {
-  const tiles = document.querySelector('[data-car-tiles]');
-  const list = document.querySelector('[data-car-cards]');
+  const grids = [...document.querySelectorAll('[data-car-tiles], [data-sold-tiles]')];
+  const lists = [...document.querySelectorAll('[data-car-cards]')];
   const dialog = document.getElementById('car-dialog');
   const slot = dialog?.querySelector('[data-car-slot]');
-  if (!tiles || !list || !slot) return;
-  const cards = new Map([...list.querySelectorAll('article.car-card')].map((card) => [card.id, card]));
-  list.hidden = true;
+  if (!grids.length || !lists.length || !slot) return;
+  // Карточка → свой список: закрытая карточка возвращается туда, откуда её взяли.
+  const cards = new Map(), home = new Map();
+  for (const list of lists) {
+    list.hidden = true;
+    for (const card of list.querySelectorAll('article.car-card')) { cards.set(card.id, card); home.set(card, list); }
+  }
 
   const open = (id, push) => {
     const card = cards.get(id);
     if (!card) return;
     const shown = slot.firstElementChild;
     if (shown !== card) {
-      if (shown) list.append(shown);
+      if (shown) home.get(shown).append(shown);
       slot.append(card);
     }
     dialog.setAttribute('aria-labelledby', `car-${id}-title`);
@@ -41,7 +46,7 @@ export function setupCars() {
     title.focus({ preventScroll: true });
   };
 
-  tiles.addEventListener('click', (event) => {
+  for (const grid of grids) grid.addEventListener('click', (event) => {
     const tile = event.target.closest('[data-car-open]');
     if (!tile || event.button) return;
     event.stopPropagation();   // иначе ui.js прыгнул бы по якорю к спрятанной карточке
@@ -62,7 +67,9 @@ export function setupCars() {
 
   const arrival = location.hash.slice(1);
   if (cards.has(arrival)) {
-    document.getElementById('for-sale')?.scrollIntoView({ behavior: 'instant' });
+    // Под окном — раздел этой машины: «Сейчас в продаже» или «Уже продали».
+    const tile = document.querySelector(`[data-car-open="${CSS.escape(arrival)}"]`);
+    (tile?.closest('section') || document.getElementById('for-sale'))?.scrollIntoView({ behavior: 'instant' });
     open(arrival, false);
   }
 }

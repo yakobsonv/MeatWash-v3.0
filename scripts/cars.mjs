@@ -4,7 +4,10 @@
 //                  модели на porsche.com), под ними карточки article.car-card#<id> и окно #car-dialog.
 //                  Без JS плитка — якорь к карточке ниже; с JS (js/cars.js) карточки скрыты, плитка
 //                  открывает карточку в окне без перехода по странице, адрес — /auto#<id>
-//   {{cars:sold}}  «Уже продали»: li.sold-card × N (обёртку ul.sold-grid пишет страница)
+//   {{cars:sold}}  «Уже продали»: li.sold-card × N (обёртку ul.sold-grid[data-sold-tiles] пишет страница);
+//                  карточка — ссылка #<id>, с JS открывает окно машины (Влад 03.11)
+//   {{cars:sold-cards}}  полные карточки проданных машин для окна: та же car-card, вместо цены —
+//                  месяц продажи и «Подобрать похожую»; характеристики модели — с пометкой specsNote
 //   {{cars:date}}  дата цен: «22 сентября 2026 года»
 //   {{count:sale}}, {{count:sold}}, {{count:sold:машина}} — считает scripts/pages.mjs по этим данным.
 //
@@ -58,6 +61,28 @@ const figures = (list) => list?.length ? `
 
 const photo = (p, eager) => `<li><img src="${escape(p.src)}" width="${p.w}" height="${p.h}" alt="${escape(p.alt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async"></li>`;
 
+const SOLD_MONTHS = ['январе', 'феврале', 'марте', 'апреле', 'мае', 'июне', 'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре'];
+const soldIn = (ym) => { const [y, m] = ym.split('-').map(Number); return `Продан в ${SOLD_MONTHS[m - 1]} ${y}`; };
+
+// Вместо цены у проданной машины — месяц продажи и просьба подобрать похожую.
+const soldOffer = (car) => `
+      <div class="car-card__offer">
+        <p class="car-card__price">${soldIn(car.sold)}<span>Подберём похожую: расскажите, что ищете</span></p>
+        <div class="car-card__actions">
+          <a class="btn btn--primary btn--block" href="${escape(cars.contact)}" target="_blank" rel="noopener">Подобрать похожую${icon('arrow-up-right')}<span class="sr"> на ${escape(car.title)} в Telegram (откроется в новой вкладке)</span></a>
+          <a class="btn btn--secondary btn--block" href="tel:${escape(studio().tel)}">${icon('phone')}Позвонить<span class="sr"> в студию на Мясницкой, ${escape(studio().phone)}</span></a>
+        </div>
+      </div>`;
+
+const saleOffer = (car) => `
+      <div class="car-card__offer">
+        <p class="car-card__price">${money(car.price)}${car.priceVat ? ` <span>с НДС — ${money(car.priceVat)}</span>` : ''}</p>
+        <div class="car-card__actions">
+          <a class="btn btn--primary btn--block" href="${escape(cars.contact)}" target="_blank" rel="noopener">Спросить о машине${icon('arrow-up-right')}<span class="sr"> ${escape(car.title)} в Telegram (откроется в новой вкладке)</span></a>
+          <a class="btn btn--secondary btn--block" href="tel:${escape(studio().tel)}">${icon('phone')}Позвонить<span class="sr"> в студию на Мясницкой, ${escape(studio().phone)}</span></a>
+        </div>
+      </div>`;
+
 function card(car) {
   const id = escape(car.id);
   const strip = car.photos.map((p) => photo(p, false)).join('\n        ');
@@ -70,22 +95,12 @@ function card(car) {
     </div>
     <div class="car-card__body">
       <div class="car-card__head">
-        <h3 class="car-card__title" id="car-${id}-title">${escape(car.title)}<span class="car-card__year">, ${car.year}</span></h3>
-        <p class="car-card__facts">${car.facts.map((f) => `<span>${text(f)}</span>`).join('<span class="car-card__dot"> · </span>')}</p>
-      </div>${figures(car.figures)}
-      <div class="car-card__offer">
-        <p class="car-card__price">${money(car.price)}${car.priceVat ? ` <span>с НДС — ${money(car.priceVat)}</span>` : ''}</p>
-        <div class="car-card__actions">
-          <a class="btn btn--primary btn--block" href="${escape(cars.contact)}" target="_blank" rel="noopener">Спросить о машине${icon('arrow-up-right')}<span class="sr"> ${escape(car.title)} в Telegram (откроется в новой вкладке)</span></a>
-          <a class="btn btn--secondary btn--block" href="tel:${escape(studio().tel)}">${icon('phone')}Позвонить<span class="sr"> в студию на Мясницкой, ${escape(studio().phone)}</span></a>
-        </div>
-      </div>
+        <h3 class="car-card__title" id="car-${id}-title">${escape(car.title)}${car.year ? `<span class="car-card__year">, ${car.year}</span>` : ''}</h3>
+${car.facts?.length ? `        <p class="car-card__facts">${car.facts.map((f) => `<span>${text(f)}</span>`).join('<span class="car-card__dot"> · </span>')}</p>\n` : ''}      </div>${figures(car.figures)}${car.sold ? soldOffer(car) : saleOffer(car)}
       <div class="car-card__about">
-        <p class="car-card__lead">${text(car.lead)}</p>
-        <ul class="car-card__specs">
+${car.lead ? `        <p class="car-card__lead">${text(car.lead)}</p>\n` : ''}${car.specs?.length ? `        <ul class="car-card__specs">
           ${car.specs.map((s) => `<li>${text(s)}</li>`).join('\n          ')}
-        </ul>
-${car.prepared ? `        <p class="car-card__prep"><b>Подготовили в Meat Wash:</b> ${text(car.prepared)}.</p>\n` : ''}      </div>
+        </ul>\n` : ''}${car.prepared ? `        <p class="car-card__prep"><b>Подготовили в Meat Wash:</b> ${text(car.prepared)}.</p>\n` : ''}${car.specsNote ? `        <p class="car-card__note">${text(car.specsNote)}</p>\n` : ''}      </div>
     </div>
   </article>`;
 }
@@ -112,8 +127,15 @@ ${cars.forSale.map(card).join('\n')}
     <div class="car-dialog__slot" data-car-slot></div>
   </dialog>`;
 
+// Карточка «Уже продали» — ссылка на свою полную карточку (#<id>): с JS открывает окно машины.
+// Подпись ссылки — название; кадр декоративный (alt="") — его alt есть у первого фото в окне.
 export function renderSold() {
-  return cars.sold.map((car) => `<li class="sold-card"><img src="${escape(car.src)}" width="${car.w}" height="${car.h}" alt="${escape(car.alt)}" loading="lazy" decoding="async"><h3 class="sold-card__name">${modelName(car.title)}</h3><span class="chip chip--photo">Продан</span></li>`).join('\n');
+  return cars.sold.map((car) => `<li class="sold-card"><a class="sold-card__link" href="#${escape(car.id)}" data-car-open="${escape(car.id)}"><img src="${escape(car.src)}" width="${car.w}" height="${car.h}" alt="" loading="lazy" decoding="async"><h3 class="sold-card__name">${modelName(car.title)}</h3><span class="chip chip--photo">Продан</span></a></li>`).join('\n');
 }
+
+// Полные карточки проданных — после сетки; без JS видны как обычный раздел, с JS — только в окне.
+export const renderSoldCards = () => `<div class="cars__cards cars__cards--sold" data-car-cards>
+${cars.sold.map(card).join('\n')}
+  </div>`;
 
 export const renderCarsDate = () => longDate(cars.pricesDate);
