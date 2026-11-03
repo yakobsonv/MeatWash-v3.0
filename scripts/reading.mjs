@@ -79,6 +79,7 @@ export function renderArticle(page, body, minutes) {
   </header>
   <figure class="article__hero">
     ${img(page.image, {sizes: '(max-width: 759px) 100vw, (max-width: 1099px) 92vw, 70vw', alt: page.imageAlt, lazy: false, priority: true})}
+    ${page.imageNote ? `<figcaption class="article__hero-note">${escape(page.imageNote)}</figcaption>` : ''}
   </figure>
   <div class="article__layout">
     <aside class="article__aside" aria-label="Содержание статьи">

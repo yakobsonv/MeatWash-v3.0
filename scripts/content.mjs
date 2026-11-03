@@ -79,7 +79,7 @@ ${page.robots ? `<meta name="robots" content="${escape(page.robots)}">\n` : ''}<
 <meta property="og:type" content="${ogType}">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:url" content="${url}">
-${await ogMeta(page.ogImage || 'assets/img/og-meat-auto.webp')}
+${await ogMeta(page.ogImage || 'assets/img/og-meat-wash.jpg')}
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="${assetUrl(FONT)}" as="font" type="font/woff2" crossorigin>
 ${preloadTags(page)}<style>${fontFace()}</style>
@@ -132,7 +132,8 @@ function openingHours(lines) {
 const STREET = {myasnitskaya: 'Мясницкая ул., 11', technopark: 'просп. Андропова, 8, стр. 2'};
 // Фото студии в разметке — только своё (Мясницкая, автор — Роман Антонович): у фото
 // Технопарка автор «ГЕОмаркетинг», прав на него нет (поправка критика 10).
-const STUDIO_IMAGE = {myasnitskaya: 'assets/img/studio-myasnitskaya-1200.webp'};
+// Кадр без настенной вывески (старый знак вырезаем, созвон 28.10) — тот же, что на «О нас».
+const STUDIO_IMAGE = {myasnitskaya: 'assets/img/about/studio-myasnitskaya-700.webp'};
 const autoWash = () => d.locations.map((l) => ({
   '@context': 'https://schema.org', '@type': 'AutoWash',
   name: `${d.brand.name} — ${l.name}`, alternateName: d.brand.legacy,

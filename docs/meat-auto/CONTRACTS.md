@@ -35,7 +35,7 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
 | Пакет | Файлы |
 |---|---|
 | **WP1** оболочка и дизайн-система | `dist/css/tokens.css` (WP0 →), `base.css`, `components.css`, `shell.css`; `src/partials/header.html`, `footer.html` (WP0 →); `dist/js/shell.js`, `components.js` (WP0 →); `src/content/kit.html` (WP0 →); `server/404.html`; `dist/assets/brand/sprite.svg`, `bull.svg`, `car-care-club.svg` (WP0 →); `dist/assets/fonts/manrope-vf.woff2`, `source/fonts/*`, `scripts/font.sh` (WP0 →); `dist/assets/img/menu/*` |
-| **WP2** главная и чтение | `src/content/home.html` (WP0 →), `dist/css/home.css`, `dist/js/home.js` (WP0 →); `dist/assets/img/home/*`, `dist/assets/img/og-meat-auto.webp`; `scripts/reading.mjs` (WP0 →), `dist/css/reading.css`; `src/content/articles/*.html` |
+| **WP2** главная и чтение | `src/content/home.html` (WP0 →), `dist/css/home.css`, `dist/js/home.js` (WP0 →); `dist/assets/img/home/*`, `dist/assets/img/og-meat-wash.jpg`; `scripts/reading.mjs` (WP0 →), `dist/css/reading.css`; `src/content/articles/*.html` |
 | **WP3** мойка и детейлинг | `scripts/catalog.mjs`; `src/content/services.html`, `wrap.html`, `works.html` (WP0 →); `dist/css/services.css`; `dist/js/catalog.js`, `proof.js`; 3D-гараж: `dist/js/garage.js`, `config.js`, `porsche3d.bundle.js`, `dist/css/garage.css`, `src/porsche3d/**`, `source/3d/**`, `dist/assets/3d/**`, `scripts/bundle-3d.mjs`, `optimize-3d.mjs`, `check-3d.mjs`; `dist/assets/img/services/*` |
 | **WP4** привоз, покупка и продажа | `scripts/cars.mjs`, `src/data/cars.json` (WP0 →); `src/content/auto.html`, `import.html` (WP0 →); `dist/css/auto.css`; `dist/assets/img/import/*` |
 | **WP5** о нас и студии | `src/content/about.html` (WP0 →); `src/partials/locations.html`, `membership.html`; `dist/css/about.css`; `dist/js/maps.js`; `dist/assets/img/about/*` |
@@ -48,7 +48,7 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
 - **Реестр** `src/content/pages.mjs` — 12 страниц + `kit.html` (вне sitemap, `robots noindex`, ссылаться на неё нельзя —
   check). Поля и значения — в шапке файла. Имена картинок героя и og зафиксированы заранее:
   `assets/img/{services,import,about}/hero-900.webp` (1:1, до 760 px) и `hero-1600.webp` (21:9, от 760 px), `…/og.webp`
-  1200×630; главная — имена v2 в `assets/img/home/` и `assets/img/og-meat-auto.webp`. Положите файл — сборка сама
+  1200×630; главная — имена v2 в `assets/img/home/` и `assets/img/og-meat-wash.jpg`. Положите файл — сборка сама
   добавит `preload` и размеры og. Пока файла нет, check предупреждает.
 - **`<head>`** (`scripts/content.mjs`): `<html lang="ru" data-theme="dark|paper|home">`, класс `.js`, `theme-color` по теме,
   мета и og, preload шрифта и героя, `@font-face` с тем же `?v=`, 5 общих CSS (`tokens, base, components, shell, dialogs`)

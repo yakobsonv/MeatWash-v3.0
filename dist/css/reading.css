@@ -209,6 +209,8 @@
 }
 .article__meta { margin: var(--sm) 0 0; font: 400 var(--fs-sm)/1.55 var(--sans); color: var(--on-muted); }
 .article__hero { margin: var(--lg) 0 0; padding-inline: var(--basic); }
+/* Постановочный кадр — та же пометка, что у пар «до/после» на /services (аудит 03.11). */
+.article__hero-note { margin-top: var(--xs); font: 400 var(--fs-sm)/1.55 var(--sans); color: var(--on-muted); }
 .article__hero img {
   display: block;
   width: 100%; height: auto;

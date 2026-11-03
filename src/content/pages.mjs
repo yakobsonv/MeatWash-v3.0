@@ -47,6 +47,7 @@ export const ARTICLES = [
     lead: 'Реагенты, соль и мокрая грязь каждый день работают против лака, порогов, стёкол и уплотнителей. Что стоит сделать заранее и как ухаживать за машиной в сезон — по порядку и без лишних процедур.',
     date: '2026-10-01',
     image: 'cf-sill-low',
+    imageNote: 'Иллюстрация, не работа студии',
     imageAlt: 'Порог и колесо Porsche в зимней грязи: с кузова стекает вода с реагентами',
   },
 ];
@@ -64,7 +65,7 @@ export const REGISTRY = [
       { href: 'assets/img/home/hero-m-poster-720.webp', media: '(max-width: 699px)' },   // постеры роликов героя (js/video.js)
       { href: 'assets/img/home/hero-wash-1920.webp', media: '(min-width: 700px)' },
     ],
-    jsonLd: ['autowash'], ogImage: 'assets/img/og-meat-auto.webp',
+    jsonLd: ['autowash'], ogImage: 'assets/img/og-meat-wash.jpg',
     date: '2026-10-27', sitemap: { changefreq: 'monthly', priority: '1.0' },
   },
   {
