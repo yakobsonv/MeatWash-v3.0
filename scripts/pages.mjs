@@ -74,7 +74,7 @@ export function assetUrl(path) {
   return `${path}?v=${hashes.get(path)}`;
 }
 export const SPRITE = 'assets/brand/sprite.svg';
-const ICON_BOX = {bull: '0 0 1097 800', ccc: '0 0 1231 198', mw: '0 0 1552 242'};
+const ICON_BOX = {bull: '0 0 1097 800', ccc: '0 0 1231 198', mw: '0 0 1552 242', mwccc: '0 0 1320 349'};
 export function icon(name, cls) {
   const box = ICON_BOX[name];
   const klass = cls || (box ? name : 'icon');
