@@ -157,21 +157,24 @@
 </section>
 
 <!-- Клуб — «журнальный разворот» (Влад 05.11: «блок с клубной картой выглядит пусто и скучно… чтобы
-     прям хотелось вступить в этот клуб»). Слева — крупная фраза и короткий текст, справа — кадр зоны
-     ожидания (ролик clip-lounge-15, постер club-lounge-720), поверх кадра — красная карта без фона
-     (Влад 03.11: «чёрный фон за карты убери»), она выходит за край кадра. Снизу — строка фактов.
-     Только подтверждённое: карта постоянного клиента, оформление онлайн, с 2021 года, две студии,
-     5,0 на Яндекс Картах, 2 часа паркинга на Мясницкой. Условий клуба (скидки, баллы) в данных нет — не пишем.
+     прям хотелось вступить в этот клуб»). Блок — тёплая панель чуть глубже фона страницы (особое
+     место между «Нашими работами» и отзывами), за картой — мягкое красное свечение. Слева — крупная
+     фраза и короткий текст, справа — кадр зоны ожидания (ролик clip-lounge-club — только диван у окна
+     в бокс, без пультов и приставки; постер club-lounge-720 — его первый кадр, тёплая цветокоррекция),
+     поверх кадра — красная карта без фона (Влад 03.11: «чёрный фон за карты убери»). Снизу — три факта.
+     Только подтверждённое (meatwash-content.json, locations): две студии, каждый день до 22:00,
+     2 часа закрытого паркинга на Мясницкой включены в визит. Условий клуба (скидки, баллы) в данных
+     нет — не пишем; «кофе» и студию кадра не называем (не подтверждены).
      Карта ведёт на оформление (wahelp, цель Метрики club_card по data-club-card); главная кнопка —
      «Оставьте заявку» с темой «Клубная карта».
-     Движение (home.js, home.css): карта и кадр расходятся при прокрутке (параллакс без инерции);
-     с мышью карта наклоняется к курсору и ловит блик, ролик играет по наведению (video.js);
-     «меньше движения» — всё на месте, без движения. -->
+     Движение (home.js, home.css): карта поднимается над кадром при прокрутке (без инерции, не на
+     телефоне); с мышью карта наклоняется к курсору и ловит блик, ролик играет по наведению (video.js),
+     на сенсорных экранах ролика нет — постер; «меньше движения» — всё на месте, без движения. -->
 <section class="home-club" aria-labelledby="home-club-title">
   <div class="home-club__copy" data-reveal>
-    <p class="home-club__eyebrow"><span class="home-club__rule" aria-hidden="true"></span>Клубная карта<span aria-hidden="true"> · </span><span class="nw" lang="en">Car Care Club</span></p>
-    <h2 class="home-club__title" id="home-club-title">Клуб для тех, кто <em>возвращается</em></h2>
-    <p class="home-club__lead">Карта постоянного клиента <span lang="en"><span class="nw">Meat Wash</span> <span class="nw">Car Care Club</span></span>. Оформите её онлайн или оставьте заявку — расскажем об&nbsp;условиях клуба.</p>
+    <p class="home-club__eyebrow"><span class="home-club__rule" aria-hidden="true"></span>Клубная карта<span class="home-club__sep" aria-hidden="true"> · </span><span class="nw home-club__brand" lang="en">Car Care Club</span></p>
+    <h2 class="home-club__title" id="home-club-title">Клуб для&nbsp;тех, <span class="home-club__keep">кто <em>возвращается</em></span></h2>
+    <p class="home-club__lead">Карта постоянного клиента — тем, кто приезжает к&nbsp;нам снова. Оформите&nbsp;её онлайн или оставьте заявку — расскажем об&nbsp;условиях клуба.</p>
     <div class="home-club__actions">
       <button class="home-club__request" type="button" data-request data-request-category="club" data-request-services="Клубная карта">Оставьте заявку<span class="sr"> на клубную карту</span>{{icon:arrow-right}}</button>
       <div class="home-club__links">
@@ -183,9 +186,9 @@
 
   <figure class="home-club__stage" data-club-tilt data-video-host data-reveal>
     <div class="home-club__frame">
-      <img class="home-club__photo" src="assets/img/home/club-lounge-720.webp" width="720" height="1280" alt="Зона ожидания студии: диван у окна в бокс" loading="lazy" decoding="async">
-      <video class="home-club__photo home-club__video" data-video="hover" data-video-touch="off" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/clip-lounge-15.mp4}}"></video>
-      <span class="home-club__chip">Зона ожидания · <span class="nw">Wi-Fi</span> и&nbsp;кофе</span>
+      <img class="home-club__photo" src="{{asset:assets/img/home/club-lounge-720.webp}}" width="720" height="1280" alt="Зона ожидания студии: диван у окна в бокс" loading="lazy" decoding="async">
+      <video class="home-club__photo home-club__video" data-video="hover" data-video-touch="off" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/clip-lounge-club.mp4}}"></video>
+      <span class="home-club__chip">Зона ожидания · окно в&nbsp;бокс</span>
     </div>
     <div class="home-club__float">
       <a class="home-club__card" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card tabindex="-1" aria-hidden="true">
@@ -196,10 +199,9 @@
   </figure>
 
   <ul class="home-club__facts" role="list" data-reveal>
-    <li class="home-club__fact"><span class="home-club__num">{{brand:since}}</span><span class="home-club__label">год, с&nbsp;которого работает <span lang="en" class="nw">Meat Wash</span> <span lang="en" class="nw">Car Care Club</span></span></li>
-    <li class="home-club__fact"><span class="home-club__num">{{count:studios}}</span><span class="home-club__label">студии в&nbsp;Москве: на&nbsp;Мясницкой и&nbsp;в&nbsp;Технопарке</span></li>
+    <li class="home-club__fact"><span class="home-club__num">{{count:studios}}<small>студии</small></span><span class="home-club__label">в&nbsp;Москве: на&nbsp;Мясницкой и&nbsp;в&nbsp;Технопарке</span></li>
     <li class="home-club__fact"><span class="home-club__num">22:00</span><span class="home-club__label">до&nbsp;этого часа обе студии открыты каждый день</span></li>
-    <li class="home-club__fact"><span class="home-club__num">2&nbsp;ч</span><span class="home-club__label">закрытого паркинга на&nbsp;Мясницкой включены в&nbsp;автомойку</span></li>
+    <li class="home-club__fact"><span class="home-club__num">2<small>часа</small></span><span class="home-club__label">закрытого паркинга на&nbsp;Мясницкой включены в&nbsp;визит</span></li>
   </ul>
   <p class="home-club__note" data-reveal>Подарочные сертификаты и&nbsp;уход за&nbsp;корпоративным автопарком — обсудим в&nbsp;заявке.</p>
 </section>

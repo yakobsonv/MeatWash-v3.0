@@ -179,11 +179,21 @@ function setupClub(reduce) {
     card.style.setProperty('--gy', `${(50 + py * 45).toFixed(1)}%`);
   };
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(apply); } };
+  // Размеры сцены и центр карты читаются один раз — при входе мыши и после прокрутки или смены
+  // размера окна (параллакс сдвигает карту), а не на каждое движение: без лишнего пересчёта раскладки.
+  let box = null;
+  const forget = () => { box = null; };
+  stage.addEventListener('pointerenter', forget);
+  window.addEventListener('scroll', forget, { passive: true });
+  window.addEventListener('resize', forget);
   stage.addEventListener('pointermove', (e) => {
     if (!fine.matches || reduce.matches || e.pointerType !== 'mouse') return;
-    const s = stage.getBoundingClientRect(), c = card.getBoundingClientRect();
-    px = clamp((e.clientX - (c.left + c.width / 2)) / (s.width / 2));
-    py = clamp((e.clientY - (c.top + c.height / 2)) / (s.height / 2));
+    if (!box) {
+      const s = stage.getBoundingClientRect(), c = card.getBoundingClientRect();
+      box = { cx: c.left + c.width / 2, cy: c.top + c.height / 2, hw: s.width / 2, hh: s.height / 2 };
+    }
+    px = clamp((e.clientX - box.cx) / box.hw);
+    py = clamp((e.clientY - box.cy) / box.hh);
     card.classList.add('is-tilting');
     queue();
   });
