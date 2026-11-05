@@ -547,12 +547,15 @@ body.no-tr, body.no-tr * { transition: none !important; }
 /* Слева — подзаголовок с красной чертой, крупная лёгкая фраза (как «Наши работы»), текст и кнопки;
    справа — кадр зоны ожидания (скругление и затемнение — как у плашек работ), поверх — красная карта
    без фона (вырезка club-card-cut), выходит за левый и нижний край кадра. Снизу — строка фактов.
-   Движение (home.js): --club-y (px) — параллакс: карта едет на --club-y, кадр внутри рамки — на −0,35 от
-   него; без инерции, только при прокрутке. Наклон к курсору — --px, --py (−1…1), блик — --gx, --gy. */
+   Сноска — отдельной строкой сетки: на компьютере внизу левой колонки (вровень с низом кадра), на
+   телефоне и до 999 px — под фактами, чтобы не разрывать «призыв → картинка».
+   Движение (home.js): --club-y (px, 0…−60) — параллакс: карта только поднимается над кадром (вниз к
+   фактам не едет), кадр внутри рамки — на −0,35 от него; без инерции, только при прокрутке; на
+   телефоне выключен. Наклон к курсору — --px, --py (−1…1), блик — --gx, --gy. */
 .home-club {
   --frame-r: clamp(20px, 1.4vw + 8px, 36px);
   display: grid; grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "copy" "stage" "facts";
+  grid-template-areas: "copy" "stage" "facts" "note";
   row-gap: var(--lg);
   width: 100%;
   margin: 0 auto;
@@ -602,7 +605,8 @@ body.no-tr, body.no-tr * { transition: none !important; }
 .home-club__more { color: var(--on); min-height: 44px; }
 /* Сноска под кнопками — мелко и серым, с тонкой линией (как сноска «Наших работ»). */
 .home-club__note {
-  max-width: 26em; margin: var(--lg) 0 0; padding-top: var(--sm);
+  grid-area: note;
+  max-width: 26em; margin: 0; padding-top: var(--sm);
   border-top: 1px solid var(--on-line);
   font-size: var(--fs-sm); line-height: 1.5;
   color: var(--on-muted); text-wrap: pretty;
@@ -612,7 +616,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
 /* Кадр и карта. Фигура — хозяин ролика (data-video-host) и зона наклона (data-club-tilt). */
 .home-club__stage {
   grid-area: stage; position: relative;
-  margin: 0 0 18%;                                   /* место под карту, вышедшую за низ кадра */
+  margin: 0 0 calc(18% + 32px);                      /* место под карту, вышедшую за низ кадра */
   min-width: 0;
 }
 .home-club__frame {
@@ -625,7 +629,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
 .home-club__photo {
   position: absolute; left: 0; top: -6%; z-index: -2;
   display: block; width: 100%; height: 112%; max-width: none;
-  object-fit: cover; object-position: 46% 62%;
+  object-fit: cover; object-position: 46% 82%;      /* диван и красный откос, без окна-засвета и потолка */
   transform: translate3d(0, calc(var(--club-y, 0) * -.35px), 0);
 }
 .home-club__video { opacity: 0; pointer-events: none; transition: opacity .6s var(--ease); }
@@ -734,24 +738,29 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .home-club__float { left: -28%; bottom: -12%; width: 84%; }
 }
 @media (min-width: 760px) and (max-width: 999px) {
-  .home-club { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "copy copy" "stage stage" "facts facts"; }
+  .home-club { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "copy copy" "stage stage" "facts facts" "note note"; }
   .home-club__stage { width: 64%; }
 }
 @media (min-width: 1000px) {
-  /* Разворот: текст | кадр. Края — по плиткам направлений, как у «Наших работ». */
+  /* Разворот: текст | кадр. Края — по плиткам направлений, как у «Наших работ». Кадр 4:4,5 — ниже,
+     чем 4:5: левая колонка (текст по центру, сноска внизу) заполняет его высоту без пустоты. */
   .home-club {
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-    grid-template-areas: "copy stage" "facts facts";
-    column-gap: clamp(56px, 6vw, 140px); row-gap: clamp(120px, 9vw + 16px, 200px);
-    align-items: start;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    grid-template-areas: "copy stage" "note stage" "facts facts";
+    column-gap: clamp(56px, 6vw, 140px); row-gap: 0;
     width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md));
     padding-inline: 0;
     overflow-x: visible;
   }
-  .home-club__stage { width: min(100%, 680px, calc(88vh * .8)); margin-bottom: 0; }
-  .home-club__float { left: -30%; bottom: -13%; width: 82%; }
-  .home-club__copy { padding-top: clamp(24px, 6vw - 20px, 120px); }
-  .home-club__note { margin-top: clamp(48px, 5vw, 96px); max-width: min(26em, 62%); }
+  .home-club__copy { align-self: center; padding-block: var(--md) var(--lg); }
+  .home-club__note { align-self: end; max-width: min(26em, 62%); }
+  .home-club__stage { align-self: start; width: min(100%, 680px, calc(88vh * .9)); margin-bottom: 0; }
+  .home-club__frame { aspect-ratio: 4 / 4.5; }
+  /* Карта заходит в просвет между колонками, но не на ссылки текста (кадр ниже — карта выше). */
+  .home-club__float { left: -8%; bottom: -13%; width: 82%; }
+  /* Под карту, вышедшую за низ кадра, — запас до черт фактов (не меньше ~50 px). */
+  .home-club__facts { margin-top: clamp(150px, 7vw + 56px, 230px); }
 }
 
 /* Появление (ui.js ставит is-in): текст поднимается, кадр проявляется, карта влетает и ложится
@@ -762,7 +771,8 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .home-club__copy.is-in > :nth-child(2) { transition-delay: .06s; }
   .home-club__copy.is-in > :nth-child(3) { transition-delay: .12s; }
   .home-club__copy.is-in > :nth-child(4) { transition-delay: .18s; }
-  .home-club__copy.is-in > :nth-child(5) { transition-delay: .24s; }
+  .js .home-club__note[data-reveal]:not(.is-in) { opacity: 0; transform: translateY(16px); }
+  .home-club__note[data-reveal].is-in { transition: opacity 1s var(--ease-out) .2s, transform 1.4s var(--expo) .2s, color 1.2s var(--ease-color), border-color 1.2s var(--ease-color); }
   .js .home-club__copy:not(.is-in) .home-club__rule { transform: scaleX(0); }
   .home-club__copy.is-in .home-club__rule { transition: transform 1.2s var(--expo) .2s; }
 

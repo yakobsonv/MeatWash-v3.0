@@ -5,7 +5,7 @@
 //  2) слова заголовка секции светлеют по мере прокрутки (redomedia.co, 22.10);
 //  3) на телефоне направления — карусель с пагинатором: активная точка заполняется за 9,5 s,
 //     затем следующий слайд; пауза — кнопкой, касанием, фокусом;
-//  4) клуб: карта и кадр расходятся при прокрутке (параллакс), карта наклоняется к курсору (до 8°)
+//  4) клуб: карта поднимается над кадром при прокрутке (параллакс, не на телефоне), наклоняется к курсору (до 8°)
 //     и ловит блик (наклон — только мышь; всё — без «меньше движения»);
 //  5) ряды «Наших работ» на телефоне (лента): фокус с клавиатуры прокручивает ленту к плашке.
 // Своего наблюдения [data-reveal] нет: класс is-in ставит ui.js (план §3.1).
@@ -134,12 +134,14 @@ export function setupHome() {
 }
 
 // 4. Клуб — «журнальный разворот» (Влад 05.11). Две вещи, обе без инерции:
-//  а) параллакс: пока фигура на экране, --club-y (px) = (0,5 − доля прохода фигуры через окно) × размах;
-//     карта едет на --club-y, кадр внутри рамки — на −0,35 от него (home.css). Только чтение прокрутки
-//     в rAF и transform — прокрутку не держит; вне экрана не считается;
+//  а) параллакс: пока фигура на экране, --club-y (px) = −доля прохода фигуры через окно × 60 — карта
+//     только поднимается над кадром (к цифрам фактов не наезжает), кадр внутри рамки — на −0,35 от
+//     неё (home.css). Только чтение прокрутки в rAF и transform — прокрутку не держит; вне экрана
+//     не считается;
 //  б) наклон к курсору над фигурой до 8° и пятно блика (--px, --py от −1 до 1 — от центра карты,
 //     --gx, --gy в процентах). Отклик сразу (переход .16 s); курсор ушёл — карта ровно ложится обратно.
-// Сенсорные экраны — только параллакс; «меньше движения» — ни того, ни другого.
+// Телефон (до 759 px) — ни параллакса, ни наклона: карта стоит, ролик не играет (video.js,
+// data-video-touch="off"); «меньше движения» — тоже без движения.
 function setupClub(reduce) {
   const stage = document.querySelector('[data-club-tilt]');
   const card = stage?.querySelector('.home-club__card');
@@ -148,15 +150,15 @@ function setupClub(reduce) {
   const phone = window.matchMedia('(max-width: 759px)');
   const clamp = (v) => Math.max(-1, Math.min(1, v));
 
-  // а) Параллакс.
+  // а) Параллакс: карта только поднимается над кадром (0 → −60 px), вниз к фактам не едет.
+  // На телефоне и при «меньше движения» — выключен (карта стоит, прокрутке ничего не мешает).
   let inView = false, parQueued = false;
   const parallax = () => {
     parQueued = false;
-    if (reduce.matches) { stage.style.removeProperty('--club-y'); return; }
+    if (reduce.matches || phone.matches) { stage.style.removeProperty('--club-y'); return; }
     const r = stage.getBoundingClientRect(), vh = window.innerHeight;
     const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
-    const amp = phone.matches ? 56 : 120;
-    stage.style.setProperty('--club-y', ((0.5 - p) * amp).toFixed(1));
+    stage.style.setProperty('--club-y', (-p * 60).toFixed(1));
   };
   const queuePar = () => { if (inView && !parQueued) { parQueued = true; requestAnimationFrame(parallax); } };
   if ('IntersectionObserver' in window) {

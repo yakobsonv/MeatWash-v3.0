@@ -10,6 +10,8 @@
 //                       экранах (клиент 28.10: «ролик к каждому блоку» — смотрят с телефона)
 //                       играет сам, пока карточка видна на 60 % и больше: в карусели главной это
 //                       только слайд по центру. Ушла с экрана — пауза; ролик грузится при первом показе.
+//                       data-video-touch="off" — на сенсорных экранах не играет вовсе, виден постер (клуб
+//                       главной, 05.11: ролик зоны ожидания на телефоне показывал пульты вместо дивана).
 //  data-video="tab"   — шапка /services (Влад 30.10): по ролику на категорию каталога
 //                       (data-category), виден ролик открытой вкладки (#catalog[data-current],
 //                       событие mw:category из catalog.js). data-src-m — до 759 px. Ролик
@@ -132,7 +134,7 @@ export function setupVideo() {
     });
     host.addEventListener('pointerleave', () => { if (fine.matches) video.pause(); });
     host.__video = video;
-    inView.observe(host);
+    if (video.dataset.videoTouch !== 'off') inView.observe(host);
   });
   // Вкладка в фоне — все ролики карточек на паузе; вернулись — на сенсорных снова играет видимый.
   document.addEventListener('visibilitychange', () => {
