@@ -1,18 +1,24 @@
-<!-- Тело /wrap (план §3.3). Владелец: WP3. Прежнее тело — git show fd8d88d:src/content/wrap.html:
-     все его тексты здесь. Герой C (P05) без фото: водяной знак «PPF»; переключатель
-     «Прозрачная / Цветная» меняет строку под заголовком без JS (services.css, :has).
-     Фото Технопарка (автор «ГЕОмаркетинг») на новые страницы не ставим, пока нет ответа
-     о правах (поправка 10). Оклеивают только в Технопарке — финальный блок со звонком туда,
-     общего блока записи на автомойку здесь нет. Надзаголовков и нумерации шагов нет (решение Влада). -->
+<!-- Тело /wrap «Оклейка автомобиля плёнкой» (задание Влада 05.11, исполнитель D). Скелет — research/PLAN.md
+     и research/privecar-structure.md (хаб оклейки), тексты свои. Только Технопарк: оклейка есть только там.
+     В каталоге только полиуретан (прозрачный и цветной): зоны риска, весь кузов, фары, лобовое — винила нет,
+     о нём не писать. «Премиальные материалы и гарантия качества» убраны: марки плёнок и гарантия — пометки
+     «нужно от клиента». BMW M4 как работа студии не упоминается (нет подтверждения, аудит 03.11).
+     Цены — подстановками из каталога; строки цен подраздела price-film — подстановка prices
+     (якорь #price-film); лобовое стекло — ценой и кнопкой в карточке «Фары и лобовое стекло»: его подраздел
+     price-glass стоит на /detailing.
+     Якоря #wrap-kind, #wrap-prices, #wrap-steps, #wrap-call проверяет check (старые ссылки).
+     Стили — блок «D: wrap + bodywork» в конце dist/css/section.css (классы ds-*); герой и переключатель
+     плёнки — services.css (wrap-hero). Призывы — только «Оставьте заявку» (data-request, тема wrap).
+     В комментариях фигурные скобки подстановок не писать. -->
 <section class="hero-c wrap-hero" aria-labelledby="page-title" data-page-bar-after>
-  <a class="back-link" href="services">{{icon:chevron-left}}<span>Автомойка / Детейлинг</span></a>
+  <a class="back-link" href="services">{{icon:chevron-left}}<span>Услуги и цены</span></a>
   <p class="hero-c__mark" aria-hidden="true" lang="en" data-mark="PPF"></p>
   <fieldset class="segmented wrap-hero__kind">
     <legend class="sr">Плёнка</legend>
     <label><input type="radio" name="wrap-kind" value="clear" checked><span>Прозрачная</span></label>
     <label><input type="radio" name="wrap-kind" value="color"><span>Цветная</span></label>
   </fieldset>
-  <h1 id="page-title">Оклейка полиуретаном</h1>
+  <h1 id="page-title">Оклейка автомобиля плёнкой</h1>
   <p class="chip wrap-hero__where">Только в Технопарке</p>
   <div class="hero-c__lead wrap-hero__lines" aria-live="polite">
     <p class="wrap-hero__line" data-kind="clear">Машина остаётся в заводском цвете, а лак — под защитой от сколов, песка и реагентов.</p>
@@ -20,39 +26,62 @@
   </div>
   <p class="hero-c__price">Фары — {{price:Оклейка фар плёнкой}} · зоны риска и весь кузов — после осмотра</p>
   <div class="hero-c__actions actions">
-    <button class="btn btn--primary" type="button" data-request data-request-category="wrap" data-request-services="Оклейка плёнкой">Узнать цену</button>
-    <a class="btn btn--secondary" href="tel:{{loc:technopark:tel}}">Позвонить в Технопарк</a>
-    <a class="btn btn--ghost" href="works">Наши работы</a>
+    <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на оклейку плёнкой</span></button>
+    <a class="btn btn--secondary" href="#wrap-prices">Что оклеиваем</a>
   </div>
 </section>
 
 <div class="page-bar" data-page-bar>
-  <p class="page-bar__title">Оклейка полиуретаном</p>
+  <p class="page-bar__title">Оклейка плёнкой</p>
   <div class="page-bar__actions">
-    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap" data-request-services="Оклейка плёнкой">Узнать цену</button>
-    <a class="btn btn--compact btn--secondary" href="tel:{{loc:technopark:tel}}">Позвонить<span class="sr"> в Технопарк</span></a>
+    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на оклейку плёнкой</span></button>
   </div>
   <span class="page-bar__progress" aria-hidden="true"></span>
 </div>
 
+<section class="section section--tight ds-facts" aria-label="Коротко о цене и месте">
+  <ul class="number-tiles col-basic" role="list">
+    <li class="number-tile"><b>{{price:Оклейка фар плёнкой}}</b><span>оклейка фар</span></li>
+    <li class="number-tile"><b>{{price:Бронирование лобового стекла}}</b><span>плёнка на лобовое стекло</span></li>
+    <li class="number-tile"><b>После осмотра</b><span>зоны риска и весь кузов</span></li>
+    <li class="number-tile"><b>Технопарк</b><span>{{loc:technopark:floor}}</span></li>
+  </ul>
+</section>
+
+<section class="section" id="wrap-protect" aria-labelledby="wrap-protect-title">
+  <header class="section-head">
+    <h2 id="wrap-protect-title">Зачем клеить плёнку</h2>
+    <p class="section-head__lead">Полиуретановая плёнка — эластичный слой поверх заводского лака. Удар, песок и химия сначала достаются ей, а не краске.</p>
+  </header>
+  <div class="col-basic ds-split">
+    <ul class="ds-ticks" role="list">
+      <li><b>Сколы.</b> Камни из-под колёс впереди идущих машин бьют в капот, бампер и фары.</li>
+      <li><b>Пескоструй.</b> На трассе песок постепенно матирует переднюю часть кузова.</li>
+      <li><b>Мелкие царапины.</b> Ветки, сумки, ключи и ногти у дверных ручек.</li>
+      <li><b>Реагенты и соль.</b> Зимой они оседают на порогах и нижней части дверей.</li>
+      <li><b>Насекомые и смола.</b> Летом налёт въедается в лак, если его вовремя не смыть.</li>
+    </ul>
+    <p class="ds-note">Плёнка заметно снижает риск повреждений, но не делает кузов неуязвимым: крупный камень на скорости может повредить и её. Тогда меняют плёнку на детали, а лак под ней обычно остаётся целым.</p>
+  </div>
+</section>
+
 <section class="section" id="wrap-kind" aria-labelledby="wrap-kind-title">
   <header class="section-head">
     <h2 id="wrap-kind-title">Прозрачная или цветная</h2>
-    <p class="section-head__lead">Полиуретан — прочная защитная плёнка, прозрачная или цветная. Прозрачная бережёт заводской лак от сколов, песка и реагентов. Цветная ещё и меняет цвет машины. Премиальные материалы и гарантия качества.</p>
+    <p class="section-head__lead">Обе плёнки — полиуретан, разница в том, что вы видите на машине.</p>
   </header>
-  <div class="cards cards--3 col-basic wrap-kinds">
-    <article class="card wrap-kinds__item">
+  <div class="cards cards--3 col-basic">
+    <article class="card">
       <h3>Прозрачная плёнка</h3>
-      <p>Машина остаётся в заводском цвете, а лак — под защитой от сколов, царапин и реагентов.</p>
+      <p>Почти не видна на кузове. Машина остаётся в заводском цвете, лак — под защитой.</p>
     </article>
-    <article class="card wrap-kinds__item">
+    <article class="card">
       <h3>Цветная плёнка</h3>
-      <p>Новый цвет и та же защита. Например, BMW M4 стал серым — цвет Brooklyn Grey.</p>
-      <a class="link-arrow" href="https://t.me/meat_wash/4" target="_blank" rel="noopener">Видео работы{{icon:arrow-up-right}}<span class="sr"> в Telegram (откроется в новой вкладке)</span></a>
+      <p>Меняет цвет машины без покраски и защищает так же, как прозрачная. Заводской цвет остаётся под плёнкой — к нему можно вернуться.</p>
     </article>
-    <article class="card card--outline wrap-kinds__item">
+    <article class="card card--outline">
       <h3>Где оклеиваем</h3>
-      <p>Только в детейлинг-центре Технопарк: {{loc:technopark:floor}}.</p>
+      <p>Только в детейлинг-центре Технопарк: {{loc:technopark:address}}, {{loc:technopark:floor}}.</p>
       <a class="link-arrow" href="{{locations}}#map-technopark">На карте{{icon:arrow-right}}</a>
     </article>
   </div>
@@ -61,35 +90,26 @@
 <section class="section" id="wrap-prices" aria-labelledby="wrap-prices-title">
   <header class="section-head">
     <h2 id="wrap-prices-title">Что оклеиваем</h2>
-    <p class="section-head__lead">Цену для вашей машины назовёт администратор Технопарка.</p>
+    <p class="section-head__lead">Можно защитить только то, что чаще страдает, а можно весь кузов. Объём подберём на осмотре вместе с вами.</p>
   </header>
-  <div class="col-basic">
-  <ul class="cards wrap-prices" role="list">
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Зоны риска</h3>
-      <p>Капот, фары, бампер и пороги — сюда первыми летят камни и реагенты.</p>
-      <p class="wrap-price__value">{{price:Оклейка зон риска}}</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Оклейка зон риска">Узнать цену<span class="sr">: зоны риска</span></button>
-    </li>
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Весь кузов</h3>
-      <p>Полная оклейка прозрачной или цветной плёнкой.</p>
-      <p class="wrap-price__value">{{price:Полная оклейка}}</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Полная оклейка">Узнать цену<span class="sr">: весь кузов</span></button>
-    </li>
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Фары</h3>
-      <p>Защитная плёнка на фары.</p>
-      <p class="wrap-price__value">{{price:Оклейка фар плёнкой}}</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Оклейка фар плёнкой">Узнать цену<span class="sr">: фары</span></button>
-    </li>
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Лобовое стекло</h3>
-      <p>Защитная плёнка на лобовое стекло.</p>
-      <p class="wrap-price__value">{{price:Бронирование лобового стекла}}</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="protection" data-request-services="Бронирование лобового стекла">Узнать цену<span class="sr">: лобовое стекло</span></button>
-    </li>
-  </ul>
+  <div class="cards cards--3 col-basic">
+    <article class="card">
+      <h3>Зоны риска</h3>
+      <p>Капот, передний бампер, фары, передние крылья, зеркала и пороги — детали, которые первыми принимают камни и реагенты. Точный набор зависит от модели и того, как вы ездите.</p>
+    </article>
+    <article class="card">
+      <h3>Весь кузов</h3>
+      <p>Плёнка на все окрашенные детали: прозрачная — для защиты, цветная — для нового цвета и защиты сразу.</p>
+    </article>
+    <article class="card">
+      <h3>Фары и лобовое стекло</h3>
+      <p>Отдельные работы: плёнка бережёт фары от сколов и помутнения, лобовое — от мелких сколов и трещин из-за них.</p>
+      <p class="ds-card-price">Фары — {{price:Оклейка фар плёнкой}}<br>Лобовое стекло — {{price:Бронирование лобового стекла}}</p>
+      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Бронирование лобового стекла">Оставьте заявку<span class="sr">: плёнка на лобовое стекло</span></button>
+    </article>
+  </div>
+  <div class="ds-prices">
+    {{prices:price-film}}
   </div>
 </section>
 
@@ -100,43 +120,156 @@
   <div class="col-basic">
   <ol class="steps">
     <li class="steps__item">
-      <h3>Расчёт</h3>
-      <p>Позвоните в Технопарк — администратор подскажет цену для вашей машины. Стоимость зон риска и всего кузова называем после осмотра.</p>
+      <h3>Заявка</h3>
+      <p>Оставьте заявку: марка и модель, что хотите защитить, прозрачная или цветная плёнка. Администратор Технопарка свяжется и пригласит на осмотр.</p>
     </li>
     <li class="steps__item">
-      <h3>Подготовка</h3>
-      <p>Моем и обезжириваем кузов. Если нужно — полируем перед плёнкой.</p>
+      <h3>Осмотр и расчёт</h3>
+      <p>Смотрим лак при хорошем свете, отмечаем сколы и царапины, предлагаем набор деталей. Цену зон риска и всего кузова называем здесь.</p>
     </li>
     <li class="steps__item">
-      <h3>Оклейка и выдача</h3>
-      <p>Оклеиваем в студии и вместе с вами проверяем результат перед выдачей.</p>
+      <h3>Подготовка и оклейка</h3>
+      <p>Моем и обезжириваем кузов, при необходимости полируем: под плёнкой дефекты становятся заметнее. Затем клеим с подгонкой кромок и стыков.</p>
+    </li>
+    <li class="steps__item">
+      <h3>Проверка и выдача</h3>
+      <p>Вместе осматриваем кромки и стыки и рассказываем, как ухаживать за машиной первое время.</p>
     </li>
   </ol>
+  <p class="ds-aside">Сколько дней займёт работа: {{todo:сроки оклейки — зоны риска, весь кузов, фары, лобовое}}</p>
   </div>
 </section>
 
-<section class="section section--tight wrap-more" aria-labelledby="wrap-more-title">
-  <h2 class="sr" id="wrap-more-title">Ещё по теме</h2>
+<section class="section ds-works" id="wrap-works" aria-labelledby="wrap-works-title">
+  <header class="section-head">
+    <h2 id="wrap-works-title">Наши работы</h2>
+    <p class="section-head__lead">Кадры из Технопарка: подготовка кузова и оклейка полиуретаном.</p>
+  </header>
   <div class="col-basic">
-  <ul class="link-rows link-rows--single" role="list">
-    <li><a href="works#works-m4">Работа студии: BMW M4 в цветной плёнке</a></li>
-    <li><a href="services#price-wrap">Цены на оклейку</a></li>
-    <li><a href="services#price-protection">Полировка, керамика и защита стёкол</a></li>
-  </ul>
+    {{works:wrap}}
   </div>
 </section>
 
-<section class="promo col-ext" id="wrap-call" aria-labelledby="wrap-call-title">
-  <div class="promo__panel wrap-call">
-    <div class="wrap-call__head">
-      <h2 id="wrap-call-title">Узнать цену оклейки</h2>
-      <p>Оклеиваем только в Технопарке. Позвоните — администратор подскажет цену для вашей машины.</p>
+<section class="section" id="wrap-when" aria-labelledby="wrap-when-title">
+  <header class="section-head">
+    <h2 id="wrap-when-title">Кому и когда стоит оклеить машину</h2>
+  </header>
+  <ul class="cards cards--3 col-basic" role="list">
+    <li class="card">
+      <h3>Новая машина</h3>
+      <p>Лучший момент — сразу после покупки, пока на лаке нет ни одного скола.</p>
+    </li>
+    <li class="card">
+      <h3>Много трассы</h3>
+      <p>На скорости камни и песок бьют в переднюю часть сильнее всего — зоны риска окупаются быстрее.</p>
+    </li>
+    <li class="card">
+      <h3>Перед зимой</h3>
+      <p>Реагенты и грязная каша — тяжёлый сезон для порогов, бампера и нижней части дверей.</p>
+    </li>
+    <li class="card">
+      <h3>После полировки</h3>
+      <p>Лак выглядит как новый — плёнка сохранит это состояние дольше.</p>
+    </li>
+    <li class="card">
+      <h3>Хочется другой цвет</h3>
+      <p>Цветная плёнка меняет вид машины без покраски, и это решение можно отменить.</p>
+    </li>
+    <li class="card">
+      <h3>Машина с пробегом</h3>
+      <p>Сначала осмотрим лак: сколы до грунта лучше отремонтировать, царапины — отполировать, и только потом клеить.</p>
+    </li>
+  </ul>
+</section>
+
+{{reviews:wrap}}
+
+<section class="section" id="wrap-faq" aria-labelledby="wrap-faq-title">
+  <header class="section-head">
+    <h2 id="wrap-faq-title">Вопросы и ответы</h2>
+  </header>
+  <div class="col-basic accordions">
+    <details class="accordion">
+      <summary class="accordion__head">Сколько стоит оклейка?</summary>
+      <div class="accordion__body">
+        <p>Фары — {{price:Оклейка фар плёнкой}}, лобовое стекло — {{price:Бронирование лобового стекла}}. Зоны риска и весь кузов считаем после осмотра: цена зависит от размера машины, сложности деталей, состояния лака и выбранной плёнки.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Сколько времени занимает работа?</summary>
+      <div class="accordion__body">
+        <p>{{todo:сроки — зоны риска, весь кузов, фары, лобовое стекло}}</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Чем отличаются прозрачная и цветная плёнка?</summary>
+      <div class="accordion__body">
+        <p>Обе — полиуретан и обе защищают лак. Прозрачная сохраняет заводской цвет, цветная меняет его. Если захотите вернуть исходный цвет, цветную плёнку можно снять.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Можно оклеить только часть машины?</summary>
+      <div class="accordion__body">
+        <p>Да. Чаще всего защищают зоны риска или отдельные детали — например, фары. Позже защиту можно расширить до всего кузова.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Нужно ли готовить машину к оклейке?</summary>
+      <div class="accordion__body">
+        <p>Мойку и обезжиривание делаем сами. Если на лаке паутинка или царапины, предложим <a href="{{to:detailing}}">полировку</a>: под плёнкой дефекты видны сильнее. Сколы до грунта сначала стоит <a href="{{to:bodywork}}#chips">отремонтировать</a>.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Защитит ли плёнка от любого скола?</summary>
+      <div class="accordion__body">
+        <p>Нет. Мелкие удары и песок в основном достаются плёнке, но сильный удар может повредить и плёнку, и лак под ней.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Не испортит ли плёнка лак, когда её снимут?</summary>
+      <div class="accordion__body">
+        <p>Исправный заводской лак при аккуратном снятии обычно не страдает. Риск выше у перекрашенных деталей и там, где лак уже повреждён, — поэтому смотрим кузов до оклейки.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Как ухаживать за машиной после оклейки?</summary>
+      <div class="accordion__body">
+        <p>{{todo:уход после оклейки — когда можно мыть, какую химию и мойку высоким давлением нельзя}}</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Какие плёнки используете и есть ли гарантия?</summary>
+      <div class="accordion__body">
+        <p>{{todo:марки плёнок (прозрачной и цветной) и условия гарантии}}</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section ds-related" id="wrap-related" aria-labelledby="wrap-related-title">
+  <header class="section-head">
+    <h2 id="wrap-related-title">С оклейкой часто делают</h2>
+    <p class="section-head__lead">Полировку и керамику — до плёнки или на открытые детали, ремонт сколов — до оклейки.</p>
+  </header>
+  <div class="col-basic">
+    {{related:detailing,bodywork}}
+    <ul class="link-rows link-rows--single ds-related__links" role="list">
+      <li><a href="article-avto-k-zime">Автомобиль к зиме: что сделать до реагентов</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="promo col-ext ds-call" id="wrap-call" aria-labelledby="wrap-call-title">
+  <div class="promo__panel ds-call__panel">
+    <div class="ds-call__head">
+      <h2 id="wrap-call-title">Оставьте заявку на оклейку</h2>
+      <p>Напишите марку и модель и что хотите защитить. Администратор Технопарка свяжется, ответит на вопросы и пригласит на осмотр.</p>
+      <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на оклейку плёнкой</span></button>
     </div>
-    <div class="wrap-call__contact">
-      <p class="wrap-call__studio"><strong>{{loc:technopark:name}}</strong> <span>{{loc:technopark:type}}</span></p>
-      <p class="wrap-call__address">{{loc:technopark:address}}<br>{{loc:technopark:floor}}<br>{{loc:technopark:hours}}</p>
-      <p class="wrap-call__phone">{{loc:technopark:phone}}</p>
-      <a class="btn btn--primary" href="tel:{{loc:technopark:tel}}">Позвонить в Технопарк</a>
+    <div class="ds-call__contact">
+      <p class="ds-call__studio"><strong>{{loc:technopark:name}}</strong> <span>{{loc:technopark:type}}</span></p>
+      <p class="ds-call__address">{{loc:technopark:address}}<br>{{loc:technopark:floor}}<br>{{loc:technopark:hours}}</p>
+      <a class="ds-call__phone" href="tel:{{loc:technopark:tel}}">{{loc:technopark:phone}}</a>
     </div>
   </div>
 </section>

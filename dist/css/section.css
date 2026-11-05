@@ -1,225 +1,107 @@
-/* ==========================================================================
-   section.css — страницы направлений: /wash, /detailing, /wrap, /bodywork (задание Влада 05.11).
-   Подключается после services.css (строки цен — подстановка prices, разметка каталога /services)
-   и tiles.css (плашки работ и направлений, отзывы — пишет исполнитель главной) полем css реестра
-   src/content/pages.mjs (SECTION_CSS). Владелец — исполнитель «Автомойки» и «Детейлинга» (C);
-   исполнитель «Оклейки» и «Кузовных работ» (D) дописывает в конец своим блоком с комментарием.
-   Цвета — только из --on* и --page (tokens.css): блоки работают и на тёмной теме, и на «бумаге».
+/* ===================================================================
 
-   Каркас страницы направления (разметка — src/content/wash.html, detailing.html):
-     section.hero-a.sec-hero          герой A (components.css) + строка «где делаем»
-       … .hero-a__body > p.sec-hero__where > svg.icon + span
-     ul.sec-facts.col-wide            коротко в цифрах: 3–4 пункта
-       > li.sec-facts__item > b.sec-facts__value («от 2 150 ₽») + span.sec-facts__label
-     nav.anchor-tabs[data-anchor-tabs]  вкладки-якоря (components.css)
-     section.section.sec-block        обычный блок: header.section-head.col-title + содержимое
-       .sec-block--prices             блок со строками цен (подстановка prices внутри секции)
-     ol|ul.sec-points.col-ext         тезисы в ряд с линией сверху: li.sec-points__item > h3 + p
-     ul.sec-zones.col-ext             плитки зон раздела-ссылки: li > a.sec-zone > h3.sec-zone__title
-                                      + p.sec-zone__text + span.sec-zone__price + span.sec-zone__go
-     ul.sec-choice.col-basic          строки «ситуация → предложение → кнопка»:
-                                      li.sec-choice__item > .sec-choice__text (h3 + p)
-                                      + p.sec-choice__offer (span.sec-choice__name + span.sec-choice__price)
-                                      + button.sec-choice__action
-     ol.steps.sec-steps (в .col-ext)  шаги (components.css)
-     ul.sec-limits.col-ext            честные ограничения: li.sec-limits__item > h3 + p + a.link-arrow?
-     ul.sec-why.col-ext               почему мы (только подтверждённое): li.sec-why__item > h3 + p
-     .sec-tiles.col-ext               обёртка подстановок works и related
-     .sec-reviews                     обёртка подстановки reviews (вид отзывов — tiles.css)
-     .accordions.sec-faq.col-basic    вопросы (details.accordion, components.css)
-     section.section.sec-seo.col-narrow  короткий текст для поиска: h2 + p
-     section.sec-cta#leave-request    финальная заявка и студии:
-       .sec-cta__inner > .sec-cta__head (h2.sec-cta__title + p.sec-cta__lead + .actions)
-       + ul.sec-studios > li.sec-studio > h3.sec-studio__name, p.sec-studio__type,
-         p.sec-studio__address, p.sec-studio__hours, a.sec-studio__phone, p.sec-studio__links
-     .catalog.catalog--prices.sec-glass  свои строки в разметке каталога (подраздел целиком
-                                      ставить нельзя): та же разметка, что выдаёт prices
+/* D: wrap + bodywork */
+/* ==========================================================================
+   /wrap «Оклейка автомобиля плёнкой» и /bodywork «Кузовные работы» (исполнитель D, 05.11).
+   Классы ds-* только этих двух страниц; общие правила выше (C) не меняются. Компоненты —
+   из components.css: hero-c, number-tiles, cards, steps, accordions, promo; строки цен —
+   подстановка prices (services.css), плашки и отзывы — tiles.css.
    ========================================================================== */
 
-/* ── Герой: строка «где делаем» под кнопками ─────────────────────────────── */
-.sec-hero__where {
-  display: flex; align-items: flex-start; gap: 8px;
-  margin-top: var(--sm);
-  color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.45;
+/* Плашки-факты под героем: ближе к герою, чем обычная секция. */
+.ds-facts { padding-top: 0; }
+
+/* Текст + пояснение рядом (список «от чего защищает», «что написать в заявке», приёмка). */
+.ds-split { display: grid; gap: var(--md); align-items: start; }
+@media (min-width: 1000px) { .ds-split { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--lg); } }
+.ds-note {
+  padding: var(--md); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--on-muted);
 }
-.sec-hero__where .icon { flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--on-red); }
-@media (min-width: 1000px) {
-  .sec-hero__where { color: rgb(var(--fg-rgb) / .82); text-shadow: 0 0 18px rgb(0 0 0 / .4); }
+.ds-aside { margin-top: var(--md); color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.55; max-width: 72ch; }
+
+/* Список с красной чертой вместо маркера. */
+.ds-ticks { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.ds-ticks > li { position: relative; padding-left: 28px; line-height: 1.5; }
+.ds-ticks > li::before {
+  content: ""; position: absolute; left: 0; top: .75em;
+  width: 16px; height: 2px; background: var(--on-red);
+}
+.ds-ticks b { font-weight: 600; }
+
+/* «Сначала — заводское покрытие»: три ступени по порядку (ol без номеров, решение Влада). */
+.ds-order { margin: 0; padding-inline: var(--basic); list-style: none; }
+.ds-order > .card { box-shadow: inset 0 2px 0 var(--on-red); }
+
+/* Строки цен (подстановка prices): поля колонки задаёт сам каталог (services.css), здесь — только
+   отступы, чтобы список шёл сразу под заголовком секции. */
+.ds-prices .catalog { padding-bottom: 0; }
+.ds-prices .catalog__section:first-child { margin-top: var(--lg); }
+/* Цена внутри карточки (лобовое стекло на /wrap). */
+.card > .ds-card-price { margin-top: auto; padding-top: var(--xs); color: var(--on); font-variant-numeric: tabular-nums; line-height: 1.6; }
+
+/* Таблица «повреждение → способ → цена»: на телефоне строки становятся карточками. */
+.ds-fix { width: 100%; font-variant-numeric: tabular-nums; }
+.ds-fix th, .ds-fix td { padding: 18px 16px; text-align: left; vertical-align: top; box-shadow: inset 0 -1px 0 var(--on-line); }
+.ds-fix thead th { padding-block: 10px; color: var(--on-muted); font-size: var(--fs-sm); font-weight: 400; }
+.ds-fix tbody th { width: 44%; font-weight: 600; }
+.ds-fix td:last-child { white-space: nowrap; text-align: right; }
+.ds-fix a { color: var(--on); text-underline-offset: 4px; text-decoration-color: rgb(var(--on-rgb) / .35); }
+.ds-fix a:hover { text-decoration-color: var(--on-red); }
+@media (max-width: 759px) {
+  .ds-fix, .ds-fix tbody, .ds-fix tr, .ds-fix th, .ds-fix td { display: block; width: auto; }
+  .ds-fix thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ds-fix tbody { display: grid; gap: 12px; }
+  .ds-fix tr { padding: var(--md); border-radius: var(--r-lg); background: var(--surface); }
+  .ds-fix th, .ds-fix td { padding: 0; box-shadow: none; }
+  .ds-fix tbody th { width: auto; margin-bottom: 10px; }
+  .ds-fix td { margin-top: 10px; }
+  .ds-fix td:last-child { white-space: normal; text-align: left; }
+  .ds-fix td::before { content: attr(data-label); display: block; color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.6; }
 }
 
-/* ── Коротко в цифрах: цены «от» и студии ─────────────────────────────────
-   Значение «от 15 000 ₽» склеено неразрывными пробелами (typo) — колонка не уже 150 px. */
-.sec-facts {
-  display: grid; gap: var(--md);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
-  margin: 0; padding-block: var(--lg) var(--md);
-  list-style: none;
+/* Блоки работ (#pdr, #chips, #paint): текст слева, карточка цены справа (на телефоне — под текстом). */
+.ds-block + .ds-block { padding-top: 0; }
+.ds-block__grid { display: grid; gap: var(--md); align-items: start; }
+@media (min-width: 1000px) { .ds-block__grid { grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: var(--lg); } }
+.ds-block__text { display: grid; gap: var(--sm); justify-items: start; }
+.ds-block__text > h2 { margin-bottom: var(--xs); }
+.ds-block__text > h3 { margin-top: var(--sm); font-size: var(--fs-md); font-weight: 600; line-height: 1.42; letter-spacing: 0; }
+.ds-block__text > p { color: var(--on-muted); max-width: 64ch; }
+.ds-block__text > p a { color: var(--on); text-underline-offset: 4px; }
+.ds-block__text > .ds-aside { margin-top: 0; }
+.ds-block__price {
+  display: grid; gap: 8px; justify-items: start;
+  padding: var(--md); border-radius: var(--r-lg); background: var(--surface);
 }
-@media (min-width: 1000px) { .sec-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-block: var(--lg); } }
-.sec-facts__item {
-  position: relative; min-width: 0;
-  display: grid; align-content: start; gap: 6px;
-  padding-top: var(--sm);
-  border-top: 1px solid var(--on-line);
-}
-.sec-facts__item::before, .sec-points__item::before {
-  content: ""; position: absolute; left: 0; top: -1px;
-  width: 36px; height: 1px; background: var(--on-red);
-}
-.sec-facts__value {
-  font: 300 var(--fs-xl)/1.15 var(--sans); letter-spacing: -.02em;
+@media (min-width: 1000px) { .ds-block__price { position: sticky; top: calc(var(--sticky-h, 62px) + var(--md)); } }
+.ds-block__name { font-weight: 600; }
+.ds-block__value { font-size: var(--fs-xl); font-weight: 300; line-height: 1.2; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.ds-block__note { color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.55; }
+.ds-block__price > .btn { margin-top: var(--xs); }
+
+/* Ссылки и ответы FAQ. */
+:is(body[data-page="wrap"], body[data-page="bodywork"]) .accordion__body a { color: var(--on); text-underline-offset: 4px; }
+
+/* Смежные направления + ссылка на статью. */
+.ds-related__links { margin-top: var(--md); }
+
+/* Финальный блок: заявка + контакты Технопарка (без фото, панель промо). */
+.ds-call { padding-block: var(--lg) var(--xl); }
+.ds-call__panel.promo__panel { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--lg); align-items: start; }
+.ds-call__head { display: grid; gap: var(--sm); justify-items: start; }
+.ds-call__head > h2 { font-size: var(--fs-xl); font-weight: 400; line-height: 1.31; letter-spacing: -.01em; }
+.ds-call__head > p { max-width: 34rem; color: var(--on-muted); }
+.ds-call__head > .btn { margin-top: var(--xs); }
+.ds-call__contact { display: grid; gap: 10px; justify-items: start; }
+.ds-call__studio strong { font-size: var(--fs-lg); font-weight: 400; }
+.ds-call__studio span { display: block; font-size: var(--fs-sm); color: var(--on-muted); }
+.ds-call__address { line-height: 1.6; }
+.ds-call__phone {
+  color: var(--on); font-size: var(--fs-xl); font-weight: 300; letter-spacing: -.01em;
   font-variant-numeric: tabular-nums; white-space: nowrap;
+  text-decoration: underline 1px rgb(var(--on-rgb) / .3); text-underline-offset: 6px;
 }
-.sec-facts__label { max-width: 32ch; color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.5; }
-
-/* ── Обычный блок раздела ────────────────────────────────────────────────── */
-.sec-block { scroll-margin-top: var(--sticky-h); }
-.sec-block .section-head__lead a, .sec-faq a, .sec-seo a {
-  color: var(--on); text-decoration: underline; text-decoration-color: rgb(var(--on-rgb) / .35);
-  text-underline-offset: 4px;
-}
-.sec-block .section-head__lead a:hover, .sec-faq a:hover, .sec-seo a:hover { text-decoration-color: var(--on-red); }
-
-/* Строки цен внутри блока: заголовок блока уже есть — каталожные отступы сверху и снизу убираем. */
-.sec-block--prices .catalog--prices { padding-bottom: 0; }
-.sec-block--prices .catalog--prices > .catalog__section:first-child { margin-top: 0; }
-.sec-block--prices .catalog--prices + .catalog--prices { margin-top: var(--xl); }
-.sec-block--prices .catalog--prices:has(+ .catalog--prices) > .catalog__note { display: none; }
-/* «Не является публичной офертой» — один раз, под последним блоком цен страницы. */
-.sec-block--prices:has(~ .sec-block--prices) .catalog__note { display: none; }
-.sec-block--prices .catalog__note { padding-inline: var(--basic); }
-
-/* ── Тезисы в ряд (как принципы на «О нас»): линия сверху, красный штрих ── */
-.sec-points, .sec-limits, .sec-why {
-  display: grid; gap: var(--lg) var(--md);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-  margin: 0; padding-block: 0;
-  list-style: none;
-}
-.sec-points__item { position: relative; min-width: 0; padding-top: var(--md); border-top: 1px solid var(--on-line); }
-.sec-points__item > h3, .sec-limits__item > h3, .sec-why__item > h3 {
-  margin: 0 0 8px; font: 400 var(--fs-lg)/1.3 var(--sans); letter-spacing: -.005em; text-wrap: balance;
-}
-.sec-points__item > p, .sec-limits__item > p, .sec-why__item > p { margin: 0; color: var(--on-muted); }
-.sec-points__action { display: inline-block; margin-top: var(--sm); }
-@media (min-width: 1000px) { .sec-points--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-/* ── Плитки зон раздела: тёмные карточки-ссылки, стрелка в круге справа внизу ── */
-.sec-zones {
-  display: grid; gap: var(--sm);
-  grid-template-columns: minmax(0, 1fr);
-  margin: 0; padding-block: 0; list-style: none;
-}
-@media (min-width: 600px) { .sec-zones { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sec-zone { min-height: 220px; } }
-@media (min-width: 1100px) { .sec-zones { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.sec-zone {
-  position: relative; isolation: isolate; overflow: hidden;
-  display: grid; grid-template-rows: auto 1fr auto; gap: var(--xs);
-  height: 100%; min-height: 168px;
-  padding: var(--md) var(--md) calc(var(--md) + 2px);
-  border-radius: var(--r-xl);
-  background: var(--surface); color: var(--on); text-decoration: none;
-  transition: background-color var(--t-fast) var(--ease), transform .4s var(--ease);
-}
-.sec-zone::after {
-  content: ""; position: absolute; inset: auto -20% -60% auto; z-index: -1;
-  width: 70%; aspect-ratio: 1; border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(var(--red-rgb) / .14), transparent);
-  opacity: 0; transition: opacity .5s var(--ease);
-}
-.sec-zone__title { font: 400 var(--fs-xl)/1.2 var(--sans); letter-spacing: -.015em; }
-.sec-zone__text { color: var(--on-muted); max-width: 34ch; }
-.sec-zone__price { align-self: end; padding-right: 56px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.sec-zone__go {
-  position: absolute; right: var(--md); bottom: var(--md);
-  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
-  background: var(--frost-strong); color: var(--on);
-  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
-  transition: background-color var(--t-fast) var(--ease);
-}
-.sec-zone__go .icon { width: 22px; height: 22px; transition: transform .4s var(--ease); }
-.sec-zone:hover { background-color: var(--surface-2); }
-.sec-zone:hover::after { opacity: 1; }
-.sec-zone:hover .sec-zone__go { background-color: var(--on-red); color: var(--fg); }
-.sec-zone:hover .sec-zone__go .icon { transform: translateX(3px); }
-.sec-zone:focus-visible { outline-offset: 4px; }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) { .sec-zone:hover { transform: scale(1.008); } }
-
-/* ── «Какую выбрать»: строки ситуация → предложение → кнопка ─────────────── */
-.sec-choice { margin: 0; padding-block: 0; list-style: none; }
-.sec-choice__item {
-  display: grid; gap: var(--sm) var(--md); align-items: center;
-  padding-block: var(--md);
-  border-top: 1px solid var(--on-line);
-}
-.sec-choice__item:last-child { border-bottom: 1px solid var(--on-line); }
-.sec-choice__text > h3 { font: 400 var(--fs-lg)/1.3 var(--sans); letter-spacing: -.005em; }
-.sec-choice__text > p { margin-top: 4px; color: var(--on-muted); max-width: 52ch; }
-.sec-choice__offer { display: grid; gap: 2px; margin: 0; }
-.sec-choice__name { font-weight: 600; }
-.sec-choice__price { color: var(--on-muted); font-variant-numeric: tabular-nums; }
-.sec-choice__action { justify-self: start; }
-/* Планшет: ситуация во всю строку, под ней предложение и кнопка; компьютер — три колонки. */
-@media (min-width: 600px) {
-  .sec-choice__item { grid-template-columns: minmax(0, 1fr) auto; }
-  .sec-choice__text { grid-column: 1 / -1; }
-  .sec-choice__action { justify-self: end; }
-}
-@media (min-width: 1100px) {
-  .sec-choice__item { grid-template-columns: minmax(0, 1fr) minmax(0, 15rem) auto; }
-  .sec-choice__text { grid-column: auto; }
-}
-
-/* ── Шаги: на компьютере четыре в ряд ────────────────────────────────────── */
-@media (min-width: 1100px) { .sec-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-
-/* ── Ограничения: карточки с обводкой, ссылка внизу ──────────────────────── */
-.sec-limits__item {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
-  min-width: 0; padding: var(--md);
-  border-radius: var(--r-lg); box-shadow: inset 0 0 0 1px var(--on-line);
-}
-.sec-limits__item > .link-arrow { margin-top: auto; padding-top: var(--sm); }
-@media (min-width: 760px) { .sec-limits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-/* ── Почему мы: плотные карточки на --surface ────────────────────────────── */
-.sec-why { gap: var(--sm); }
-.sec-why__item { min-width: 0; padding: var(--md); border-radius: var(--r-lg); background: var(--surface); }
-
-/* ── Вопросы ─────────────────────────────────────────────────────────────── */
-.sec-faq .todo { display: inline-block; }
-
-/* ── Коротко для поиска: спокойный текст в узкой колонке ─────────────────── */
-.sec-seo { padding-block: var(--lg); }
-.sec-seo > h2 { font: 400 var(--fs-lg)/1.3 var(--sans); letter-spacing: -.005em; }
-.sec-seo > p { margin-top: var(--sm); max-width: 68ch; color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.65; }
-
-/* ── Финальная заявка и студии ───────────────────────────────────────────── */
-.sec-cta {
-  padding: var(--xl) var(--ext) calc(var(--xl) + var(--sm));
-  border-top: 1px solid var(--on-line);
-  scroll-margin-top: var(--sticky-h);
-}
-.sec-cta__inner { display: grid; gap: var(--lg) var(--md); }
-@media (min-width: 1000px) { .sec-cta__inner { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; } }
-.sec-cta__title { font: 300 var(--fs-3xl)/1.15 var(--sans); letter-spacing: -.025em; }
-.sec-cta__lead { margin-top: var(--md); max-width: 36ch; color: var(--on-muted); font-size: var(--fs-md); line-height: 1.45; }
-.sec-cta__head > .actions { margin-top: var(--md); }
-.sec-studios { display: grid; gap: var(--md); margin: 0; padding: 0; list-style: none; }
-@media (min-width: 600px) { .sec-studios { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.sec-studio {
-  display: flex; flex-direction: column; align-items: flex-start;
-  min-width: 0; padding: var(--md);
-  border-radius: var(--r-lg); background: var(--surface);
-}
-.sec-studio__name { font: 400 var(--fs-xl)/1.2 var(--sans); letter-spacing: -.015em; }
-.sec-studio__type { margin-top: 2px; color: var(--on-muted); }
-.sec-studio__address { margin-top: var(--md); font-size: var(--fs-sm); line-height: 1.55; }
-.sec-studio__hours { margin-top: 4px; color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.55; font-variant-numeric: tabular-nums; }
-.sec-studio__phone {
-  margin-top: var(--sm);
-  color: var(--on); font-size: var(--fs-md); font-weight: 500; font-variant-numeric: tabular-nums;
-  text-decoration: none; white-space: nowrap;
-}
-.sec-studio__phone:hover { text-decoration: underline; text-decoration-color: var(--on-red); text-underline-offset: 5px; }
-.sec-studio__links { display: flex; flex-wrap: wrap; gap: 8px var(--md); margin-top: auto; padding-top: var(--md); font-size: var(--fs-sm); }
+.ds-call__phone:hover { text-decoration-color: var(--on); }
+@media (max-width: 899px) { .ds-call__panel.promo__panel { grid-template-columns: minmax(0, 1fr); gap: var(--md); } }
+@media (max-width: 759px) { .ds-call__head > .btn { width: 100%; } }
