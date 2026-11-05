@@ -1,13 +1,16 @@
 /* ==========================================================================
-   home.css — главная Meat Auto (план §3.1). Владелец: WP2.
-   Перенос утверждённой главной v2 (source/v2-design/v2.css, 625ce74) без изменений
-   вида: герой, «Чем занимается Meat Auto», четыре плитки, карусель на телефоне.
-   Из v2 убрано то, что теперь общее: токены (tokens.css), шрифт (@font-face в <head>),
-   шапка и подвал (shell.css, WP1), сброс и .sr (base.css).
+   home.css — главная Meat Wash. Владелец: исполнитель главной (B).
+   Порядок блоков (задание 05.11): первый экран → шесть направлений → «Наши работы» →
+   клубная карта → отзывы → общий подвал. Плашки работ и отзывы — общие с разделами
+   (tiles.css), здесь только их место на главной.
    Тема страницы — data-theme="home" на <html> (tokens.css): светлая страница; пока
    направления на экране, body получает .is-dark (home.js) — и холст, и всё, что берёт
-   цвета из --on* (подвал, нижняя кнопка), меняют цвет за 1,2 s, как в v2.
+   цвета из --on* (ряды работ, отзывы, подвал), меняют цвет за 1,2 s.
+   Нижняя кнопка .mobile-cta на главной есть (как на остальных страницах): своя зона под
+   неё (--cta-zone, shell.css) не отменяется.
    ========================================================================== */
+
+/* ---------- Цвет страницы: светлая ↔ тёмная (ref CarRange__toDark) ---------- */
 
 /* ---------- Цвет страницы: светлая ↔ тёмная (ref CarRange__toDark) ---------- */
 [data-theme="home"] body {
@@ -25,9 +28,9 @@
   --line-field: rgb(var(--fg-rgb) / .40);
   color-scheme: dark;
 }
-/* Нижней кнопки .mobile-cta на главной нет (в утверждённой v2 её не было; запись — в шторке,
-   в подвале и на страницах направлений), поэтому и зоны под неё нет. */
-:root[data-theme="home"] { --cta-zone: 0px; }
+/* Первое состояние без перехода (перезагрузка посреди страницы). */
+body.no-tr, body.no-tr * { transition: none !important; }
+
 /* Первое состояние без перехода (перезагрузка посреди страницы). */
 body.no-tr, body.no-tr * { transition: none !important; }
 
@@ -121,7 +124,8 @@ body.no-tr, body.no-tr * { transition: none !important; }
 
 @keyframes home-rise-in { from { transform: translateY(40px); } to { transform: none; } }
 
-/* ---------- Направления (ref: «Ihr Porsche Abenteuer beginnt jetzt.») ---------- */
+
+/* ---------- Направления: шесть плиток (ref: «Ihr Porsche Abenteuer beginnt jetzt.») ---------- */
 .dirs {
   position: relative;
   isolation: isolate;
@@ -164,9 +168,11 @@ body.no-tr, body.no-tr * { transition: none !important; }
 .dirs__head.is-in .ln__in { transition: transform 1.5s var(--expo); }
 .dirs__head.is-in .ln:nth-child(2) .ln__in { transition-delay: .09s; }
 
+
 .dirs__grid { margin: 0; padding: 0; list-style: none; }
 
-/* Направление = подпись + карточка. */
+/* Направление = подпись + карточка. Наведение двигает только фото внутри карточки
+   (scale), размеры плиток и соседи не меняются. */
 .dir { position: relative; }
 .dir__title {
   display: grid; justify-items: center;
@@ -174,7 +180,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
   font: 400 clamp(25px, 1.4vw + 12px, 40px)/1.1 var(--sans);
   letter-spacing: -.025em;
   text-align: center;
-  white-space: nowrap;
+  text-wrap: balance;
   color: var(--fg);
   pointer-events: none;
 }
@@ -195,26 +201,22 @@ body.no-tr, body.no-tr * { transition: none !important; }
   object-position: var(--focus-xy, 50% 50%);
   transition: transform 1.8s var(--expo);
 }
-.dir:hover .dir__img { transform: scale(1.035); }
+.dir:hover .dir__img, .dir:has(.dir__cta:focus-visible) .dir__img { transform: scale(1.045); }
 /* Ролик плитки по наведению (js/video.js) — поверх фото, проявляется, когда пошёл. */
 .dir__video { z-index: 2; object-position: 50% 50%; opacity: 0; transition: opacity .6s var(--ease-out), transform 1.8s var(--expo); }
 .dir__video.is-playing { opacity: 1; }
 /* Появление: карточка открывается вверх от нижнего края, фото садится из лёгкого
-   увеличения; подпись и текст — следом (сдвиг по колонке). */
+   увеличения; подпись и текст — следом. --d — сдвиг по колонке (задаётся ниже по сетке). */
 .js .dir:not(.is-in) .dir__card { clip-path: inset(18% 0 0 0 round var(--r)); }
 .js .dir:not(.is-in) .dir__img { transform: scale(1.14); }
 .js .dir:not(.is-in) .dir__title,
 .js .dir:not(.is-in) .dir__content { opacity: 0; transform: translateY(24px); }
-.dir.is-in .dir__card { clip-path: inset(0 0 0 0 round var(--r)); transition: clip-path 1.5s var(--expo); }
+.dir.is-in .dir__card { clip-path: inset(0 0 0 0 round var(--r)); transition: clip-path 1.5s var(--expo) var(--d, 0s); }
 .dir.is-in .dir__img { transition: transform 1.8s var(--expo); }
-.dir.is-in .dir__title, .dir.is-in .dir__content { transition: opacity 1.2s .2s var(--expo), transform 1.4s .2s var(--expo); }
-@media (min-width: 760px) {
-  .dir.is-in:nth-child(even) .dir__card { transition-delay: .12s; }
-  .dir.is-in:nth-child(even) .dir__title, .dir.is-in:nth-child(even) .dir__content { transition-delay: .32s; }
+.dir.is-in .dir__title, .dir.is-in .dir__content {
+  transition: opacity 1.2s var(--expo) calc(.2s + var(--d, 0s)), transform 1.4s var(--expo) calc(.2s + var(--d, 0s));
 }
-/* Затемнения на плитке (ref: сверху 20 %, снизу 25 % на компьютере; снизу 70 % на телефоне).
-   Где плитка ниже, чем на 1366+, та же кривая занимает больше, одинаково на всех плитках:
-   сверху не меньше 110 px, снизу 36 % на 1100–1365 и 88 % / 62 % в планшетной раскладке. */
+/* Затемнения на плитке: сверху — под подписью, снизу — под текстом. */
 .dir__card::before, .dir__card::after {
   content: ""; position: absolute; left: 0; right: 0; z-index: 5;
   pointer-events: none;
@@ -232,8 +234,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
   color: var(--fg);
 }
 .dir__tags { display: flex; flex-wrap: wrap; gap: var(--sm); margin: 0; padding: 0; list-style: none; }
-/* Чип на фото (ref: 14/21.75, frosted-strong + blur). Тёмная подложка держит 4,5:1
-   для слоновой кости над самым светлым фото (пена на плитке 1). */
+/* Чип на фото: тёмная подложка держит 4,5:1 для слоновой кости над самым светлым кадром. */
 .dir__tags .chip {
   display: inline-block;
   min-height: 0;
@@ -294,12 +295,14 @@ body.no-tr, body.no-tr * { transition: none !important; }
   /* Подпись — над слайдом, на странице. */
   .dir__title {
     margin: var(--md) auto;
-    font-size: clamp(25px, 7vw, 32px);
+    font-size: clamp(22px, 6.4vw, 32px);
+    white-space: nowrap;
     color: var(--on);
     transition: color 1.2s var(--ease-color);
   }
-  /* Высота слайда — как в утверждённой v2 (625ce74). */
-  .dir__card { height: 78vh; height: 78svh; max-height: 40em; min-height: 430px; }
+  /* Высота слайда — как в утверждённой v2 (78svh), но подпись, слайд и точки помещаются
+     над нижней кнопкой «Оставьте заявку» (--cta-zone): кнопка не закрывает листание. */
+  .dir__card { height: 78vh; height: min(78svh, calc(100svh - var(--cta-zone) - 170px)); max-height: 40em; min-height: 380px; }
   .dir__card::before { display: none; }
   .dir__card::after { height: 70%; }
   .dir__content { padding: 0 var(--md) var(--md); }
@@ -373,28 +376,23 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .dirs__play .i-play, .dirs__play[data-state="paused"] .i-pause { display: none; }
   .dirs__play[data-state="paused"] .i-play { display: block; }
 }
-@media (max-width: 390px) { .dir__card { height: 74vh; height: 74svh; } }
-@media (max-width: 375px) { .dir__card { height: 72vh; height: 72svh; } }
+@media (max-width: 390px) { .dir__card { height: 74vh; height: min(74svh, calc(100svh - var(--cta-zone) - 170px)); } }
+@media (max-width: 375px) { .dir__card { height: 72vh; height: min(72svh, calc(100svh - var(--cta-zone) - 170px)); } }
 /* Уже 360 px слайд узок для самого длинного чипа в 14 px. */
 @media (max-width: 359px) { .dir__tags .chip { font-size: 13px; padding-inline: 10px; } }
 
 @keyframes dot-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-/* ---------- Компьютер и планшет: плитки 2 × 2 ---------- */
+/* ---------- Планшет 760–1099: 2 колонки × 3 ряда; от 1100: 3 × 2 ---------- */
 @media (min-width: 760px) {
   .dirs__grid {
-    display: flex; flex-wrap: wrap; justify-content: center;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--md);
-    padding-top: var(--md);
+    padding: var(--md) var(--md) 0;
   }
-  .dir {
-    width: calc(50% - 1.5 * var(--md));
-    height: 45vw;
-    transition: width .6s var(--ease-out);
-  }
-  .dir:nth-child(odd) { margin-left: var(--md); }
-  .dir:nth-child(even) { margin-right: var(--md); }
-  /* Подпись: по центру, на fluid-md ниже верха плитки, строка 36 px. */
+  .dir { height: clamp(420px, 50vw, 560px); }
+  .dir:nth-child(even) { --d: .12s; }
+  /* Подпись: по центру, на fluid-md ниже верха плитки; длинная переносится на две строки. */
   .dir__title {
     position: absolute; top: 0; left: 0; right: 0; z-index: 6;
     margin: var(--md) auto;
@@ -402,15 +400,15 @@ body.no-tr, body.no-tr * { transition: none !important; }
   }
   .dir__card { position: absolute; inset: 0; }
   .dir__content {
-    display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--md);
-    margin: var(--md) 0;
-    padding: 0 var(--md);
+    display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; gap: var(--sm);
+    padding: 0 var(--md) var(--md);
   }
   .dir__tags { margin-bottom: var(--sm); }
-  /* Две строки в запасе: чипы и первые строки в ряду стоят ровно. */
-  .dir__desc { margin-right: 12px; min-height: 48px; }
+  .dir__desc { min-height: 72px; }
+  .dir__card::after { height: 66%; }
 
-  /* В покое — круглая кнопка со стрелкой (ref p-link-pure, hide-label, compact). */
+  /* В покое — круглая кнопка со стрелкой; при наведении/фокусе — капсула с подписью
+     (растёт только сама кнопка, вправо). */
   .dir__cta { padding: calc(.6 * var(--xs)); }
   .dir__cta::before {
     content: ""; position: absolute; inset: -2px; z-index: -1;
@@ -424,112 +422,204 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .dir__cta:focus-visible::before { outline: 2px solid var(--focus); outline-offset: 2px; }
   .dir__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
-@media (min-width: 1300px) { .dir { height: calc(7vh + 39vw); } }
-@media (min-width: 1760px) { .dir { height: calc(51vh + 10vw); max-height: 54em; } }
-/* Три строки в запасе там, где длинному тексту они нужны (1100–1365 px, покой и наведение). */
-@media (min-width: 1100px) and (max-width: 1365px) { .dir__desc { min-height: 72px; } .dir__card::after { height: 36%; } }
-
-/* Активная плитка (≥ 1100 px, мышь): капсула с подписью сразу; двигаются только
-   ширины ряда, 55 / 45 за 0,6 s. */
+@media (min-width: 1100px) {
+  .dirs__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dir { height: clamp(500px, 24vw + 210px, 800px); }
+  .dir:nth-child(even) { --d: 0s; }
+  .dir:nth-child(3n+2) { --d: .1s; }
+  .dir:nth-child(3n) { --d: .2s; }
+  .dir__title { font-size: clamp(25px, 1.25vw + 10px, 38px); }
+  .dir__card::after { height: 58%; }
+}
 @media (min-width: 1100px) and (hover: hover) {
-  .dir:nth-child(odd):hover { width: calc(55% - 1.5 * var(--md)); }
-  .dir:nth-child(odd):hover + .dir { width: calc(45% - 1.5 * var(--md)); }
-  .dir:nth-child(even):hover { width: calc(55% - 1.5 * var(--md)); }
-  .dir:nth-child(odd):has(+ .dir:hover) { width: calc(45% - 1.5 * var(--md)); }
-  .dir:hover .dir__desc { margin-right: 8px; }
   .dir:hover .dir__cta { padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
   .dir:hover .dir__cta::before { border-radius: var(--r-xs); }
   .dir:hover .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
 }
-/* Фокус с клавиатуры = то же состояние, что наведение (ref 5.3). */
+/* Фокус с клавиатуры = то же состояние, что наведение. */
 @media (min-width: 1100px) {
-  .dir:nth-child(odd):has(.dir__cta:focus-visible) { width: calc(55% - 1.5 * var(--md)); }
-  .dir:nth-child(odd):has(.dir__cta:focus-visible) + .dir { width: calc(45% - 1.5 * var(--md)); }
-  .dir:nth-child(even):has(.dir__cta:focus-visible) { width: calc(55% - 1.5 * var(--md)); }
-  .dir:nth-child(odd):has(+ .dir .dir__cta:focus-visible) { width: calc(45% - 1.5 * var(--md)); }
-  .dir:has(.dir__cta:focus-visible) .dir__desc { margin-right: 8px; }
   .dir .dir__cta:focus-visible { padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
   .dir .dir__cta:focus-visible::before { border-radius: var(--r-xs); }
   .dir .dir__cta:focus-visible .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
 }
-/* Планшеты и узкие окна (760–1099 px) и сенсорные экраны: у каждой кнопки подпись
-   под текстом, текст занимает всю ширину плитки, при наведении ничего не перестраивается. */
+/* Планшеты и сенсорные экраны: подпись кнопки всегда видна. */
 @media (min-width: 760px) and (max-width: 1099px), (min-width: 760px) and (hover: none) {
-  .dir__content { grid-template-columns: 1fr; gap: var(--sm); }
-  .dir__desc { margin-right: 0; min-height: 72px; }
-  .dir__cta { justify-self: start; padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
+  .dir__cta { padding: calc(.6 * var(--xs)) calc(.9 * var(--xs)) calc(.6 * var(--xs)) var(--sm); }
   .dir__cta::before { border-radius: var(--r-xs); background: var(--frost-strong); }
   .dir__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
-  .dir__card::after { height: 62%; }
-}
-@media (min-width: 760px) and (max-width: 999px) { .dir__card::after { height: 88%; } }
-@media (min-width: 1024px) and (max-width: 1099px), (min-width: 1024px) and (hover: none) {
-  .dir__desc { min-height: 48px; }
 }
 
 /* ---------- Меньше движения: конечные состояния без переходов ---------- */
 @media (prefers-reduced-motion: reduce) {
-  [data-theme="home"] body, .hero__title, .dirs *, .dirs *::before, .dirs *::after {
+  [data-theme="home"] body, .hero__title, .dirs *, .dirs *::before, .dirs *::after,
+  .home-works *, .home-club *, .home-club *::before, .home-club *::after, .reviews * {
     animation: none !important; transition: none !important;
   }
   .js .dirs__head:not(.is-in) .ln__in,
   .js .dir:not(.is-in) .dir__title, .js .dir:not(.is-in) .dir__content,
   .js .dir:not(.is-in) .dir__img { opacity: 1; transform: none; }
   .js .dir:not(.is-in) .dir__card { clip-path: none; }
-  .dir:hover .dir__img { transform: none; }
+  .dir:hover .dir__img, .dir:has(.dir__cta:focus-visible) .dir__img { transform: none; }
   .wd { opacity: 1; }
   .dirs__play { display: none !important; }
 }
 
-/* ---------- Клубная карта внизу (Влад 03.11): карта без фона | бордовая панель ---------- */
-/* Карта — вырезка с прозрачными углами (club-card-cut-*), тень — CSS: лежит прямо на странице. */
-.home-club {
-  display: grid; grid-template-columns: minmax(0, 1fr);
-  width: 85vw;                                   /* как плитка-карусель на телефоне */
-  margin: var(--lg) auto calc(2 * var(--xl));
+/* ---------- Наши работы: ряд плашек на направление (плашки — tiles.css) ---------- */
+/* Светлая часть страницы (body.is-dark снимается после направлений): цвета — из --on*. */
+.home-works {
+  --tiles-gutter: 7.5vw; --tiles-bleed: 7.5vw;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--xl) 7.5vw var(--lg);
+  color: var(--on);
+  transition: color 1.2s var(--ease-color);
 }
-.home-club { gap: var(--md); }
-.home-club__media { display: grid; place-items: center; padding: var(--sm) 0; border-radius: 4%; }
-.home-club__card {
-  display: block; width: min(100%, 560px); height: auto;
-  filter: drop-shadow(0 18px 28px rgb(8 8 8 / .28)) drop-shadow(0 4px 8px rgb(8 8 8 / .18));
-  transition: transform .8s var(--ease-out);
+.home-works__head { max-width: 46em; margin-bottom: var(--lg); }
+.home-works__title {
+  margin: 0;
+  font: 300 clamp(2.15rem, 3.4vw + 1.1rem, 5.4rem)/1.02 var(--sans);
+  letter-spacing: -.035em;
+  color: var(--on);
+  text-wrap: balance;
+  transition: color 1.2s var(--ease-color);
 }
-.home-club__panel {
-  --focus: var(--fg);
-  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-  gap: var(--sm);
-  padding: var(--lg) var(--md);
-  border-radius: var(--r-lg);
-  background: var(--oxblood); color: var(--fg);
+.home-works__lead { margin: var(--sm) 0 0; max-width: 34em; font-size: var(--fs-md); line-height: 1.5; color: var(--on-muted); text-wrap: pretty; transition: color 1.2s var(--ease-color); }
+.home-works__row + .home-works__row { margin-top: var(--lg); }
+.home-works__row-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: var(--xs) var(--md);
+  margin-bottom: var(--md);
 }
-.home-club__title { margin: 0; font: 400 var(--fs-xl)/1.31 var(--sans); letter-spacing: -.01em; color: var(--fg); }
-.home-club__panel p { margin: 0; max-width: 34em; color: rgb(var(--fg-rgb) / .84); text-wrap: pretty; }
-.home-club__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sm) var(--md); margin-top: var(--sm); }
-.home-club__link {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 56px; padding: 16px 28px;
-  border-radius: var(--r-sm);
-  background: var(--fg); color: var(--ink);
-  font: 500 16px/1.2 var(--sans); text-decoration: none;
-  transition: background-color var(--t-fast) var(--ease);
-}
-.home-club__link:hover { background: #fff; }
-.home-club__link .icon { width: 20px; height: 20px; }
-.home-club__more { color: var(--fg); min-height: 44px; }
-@media (hover: hover) { .home-club__media:hover .home-club__card { transform: scale(1.03) rotate(-1deg); } }
-@media (max-width: 759px) {
-  .home-club__actions { display: grid; width: 100%; }
-}
+.home-works__name { margin: 0; font: 400 var(--fs-xl)/1.2 var(--sans); letter-spacing: -.015em; color: var(--on); transition: color 1.2s var(--ease-color); }
+.home-works__more { font-size: var(--fs-sm); white-space: nowrap; transition: color 1.2s var(--ease-color), text-decoration-color var(--t-fast) var(--ease); }
+.home-works .work-tiles__item { --d: 0s; }
 @media (min-width: 760px) {
-  /* Края — по плиткам направлений: колонка .dirs (94vw) минус отступ плиток --md с каждой стороны. */
-  .home-club { width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md)); grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); }
-  .home-club { gap: var(--lg); align-items: center; }
-  .home-club__media { padding: var(--md); }
-  .home-club__panel { min-height: clamp(320px, 32vw, 520px); padding: var(--lg); }
+  /* Края — по плиткам направлений: колонка .dirs (94vw) минус отступ плиток --md. */
+  .home-works { --tiles-gutter: calc(3vw + var(--md)); --tiles-bleed: calc(3vw + var(--md)); padding-inline: calc(3vw + var(--md)); max-width: 1880px; }
+}
+@media (min-width: 1000px) {
+  .home-works { --tiles-gutter: 0px; --tiles-bleed: 0px; width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md)); padding-inline: 0; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .js .home-club__media[data-reveal]:not(.is-in) .home-club__card { opacity: 0; transform: translateY(24px) rotate(-3deg); }
-  .home-club__media[data-reveal].is-in .home-club__card { transition: opacity 1s var(--ease-out), transform 1.6s var(--expo); }
+  .js .home-works__head[data-reveal]:not(.is-in) { opacity: 0; transform: translateY(24px); }
+  .home-works__head[data-reveal].is-in { transition: opacity 1s var(--ease-out), transform 1.4s var(--expo); }
 }
-@media (prefers-reduced-motion: reduce) { .home-club__card { transition: none; } }
+
+/* ---------- Клубная карта: тёмная сцена, карта в 3D, бордовое свечение ---------- */
+/* Блок всегда тёмный (свои --on*), страница вокруг может быть светлой. Края — по плиткам. */
+.home-club {
+  --on: var(--fg); --on-rgb: var(--fg-rgb); --on-muted: rgb(var(--fg-rgb) / .72);
+  --on-line: rgb(var(--fg-rgb) / .16); --on-red: var(--red); --on-inverse: var(--ink);
+  --page: var(--bg); --line-field: rgb(var(--fg-rgb) / .42); --focus: var(--fg);
+  position: relative; isolation: isolate; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  width: 85vw;
+  margin: var(--lg) auto var(--xl);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(70% 60% at 30% 38%, rgb(var(--oxblood-rgb) / .95), rgb(var(--oxblood-rgb) / 0) 72%),
+    radial-gradient(50% 50% at 100% 100%, rgb(var(--red-rgb) / .12), rgb(var(--red-rgb) / 0) 70%),
+    #0a0a0a;
+  color: var(--fg);
+}
+/* Точечное поле, как под направлениями, гаснет к краям. */
+.home-club::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(circle, rgb(var(--fg-rgb) / .10) 1px, transparent 1.4px) 0 0 / 22px 22px;
+  -webkit-mask: radial-gradient(80% 80% at 30% 45%, #000, transparent 75%);
+  mask: radial-gradient(80% 80% at 30% 45%, #000, transparent 75%);
+  pointer-events: none;
+}
+.home-club__stage {
+  display: grid; place-items: center;
+  padding: var(--lg) var(--md) var(--sm);
+  perspective: 1200px;
+}
+.home-club__media { display: block; width: min(100%, 620px); -webkit-tap-highlight-color: transparent; }
+/* Поза в покое — лёгкий наклон; курсор добавляет до ±9° (home.js пишет --px, --py от −1 до 1). */
+.home-club__card {
+  position: relative; display: block;
+  border-radius: 3.8% / 6%;
+  transform:
+    rotateX(calc(7deg - var(--py, 0) * 9deg))
+    rotateY(calc(-12deg + var(--px, 0) * 11deg))
+    rotateZ(2deg);
+  transition: transform .9s var(--expo);
+  box-shadow: 0 50px 70px -30px rgb(0 0 0 / .85), 0 18px 30px -10px rgb(0 0 0 / .5), inset 0 0 0 1px rgb(255 255 255 / .06);
+  will-change: transform;
+}
+.home-club__card.is-tilting { transition-duration: .18s; transition-timing-function: var(--ease-out); }
+.home-club__img { display: block; width: 100%; height: auto; border-radius: inherit; }
+/* Блик: пятно света следует за курсором (--gx, --gy), полоса проходит по карте при появлении. */
+.home-club__glare {
+  position: absolute; inset: 0; overflow: hidden;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 28%) var(--gy, 18%), rgb(255 255 255 / .34), rgb(255 255 255 / .06) 32%, rgb(255 255 255 / 0) 58%);
+  mix-blend-mode: soft-light;
+  opacity: .75;
+  pointer-events: none;
+  transition: opacity .5s var(--ease-out);
+}
+.home-club__card.is-tilting .home-club__glare { opacity: 1; }
+.home-club__glare::after {
+  content: ""; position: absolute; inset: -20% -60%;
+  background: linear-gradient(105deg, rgb(255 255 255 / 0) 42%, rgb(255 255 255 / .28) 50%, rgb(255 255 255 / 0) 58%);
+  transform: translateX(-60%);
+  opacity: 0;
+}
+.home-club__panel {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: var(--sm);
+  padding: var(--md) var(--md) var(--lg);
+}
+.home-club__eyebrow { margin: 0; font: 500 12px/1.4 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: rgb(var(--fg-rgb) / .62); }
+.home-club__title {
+  margin: 0;
+  font: 300 clamp(2.5rem, 4.4vw + 1rem, 6.6rem)/.98 var(--sans);
+  letter-spacing: -.04em;
+  color: var(--fg);
+  text-wrap: balance;
+}
+.home-club__text { margin: var(--xs) 0 0; max-width: 30em; font-size: var(--fs-md); line-height: 1.5; color: rgb(var(--fg-rgb) / .8); text-wrap: pretty; }
+.home-club__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: var(--sm); }
+.home-club__actions .btn .icon { margin-right: -4px; }
+.home-club__more { margin-top: var(--xs); color: var(--fg); }
+@media (max-width: 759px) {
+  .home-club__actions { display: grid; width: 100%; }
+  .home-club__actions .btn { width: 100%; }
+}
+@media (min-width: 760px) {
+  .home-club {
+    width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md));
+    grid-template-columns: minmax(0, 54fr) minmax(0, 46fr);
+    align-items: center;
+    min-height: clamp(440px, 38vw, 700px);
+  }
+  .home-club__stage { padding: var(--lg); }
+  .home-club__panel { padding: var(--lg) var(--lg) var(--lg) 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .home-club__media[data-reveal]:not(.is-in) { opacity: 0; transform: translateY(40px); }
+  .home-club__media[data-reveal].is-in { transition: opacity 1s var(--ease-out), transform 1.6s var(--expo); }
+  .home-club__media[data-reveal].is-in .home-club__glare::after { animation: club-sheen 1.8s var(--ease-out) .5s both; }
+}
+@keyframes club-sheen {
+  0% { opacity: 0; transform: translateX(-60%); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(60%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-club__card { transform: rotateX(7deg) rotateY(-12deg) rotateZ(2deg); }
+}
+
+/* ---------- Отзывы (разметка — подстановка reviews, общий вид — tiles.css) ---------- */
+[data-theme="home"] .reviews {
+  --tiles-gutter: 7.5vw; --tiles-bleed: 7.5vw;
+  width: 100%; max-width: none;
+  margin: 0 auto;
+  padding: var(--lg) 7.5vw calc(2 * var(--xl));
+  transition: color 1.2s var(--ease-color);
+}
+@media (min-width: 760px) {
+  [data-theme="home"] .reviews { --tiles-gutter: 0px; --tiles-bleed: 0px; width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md)); padding-inline: 0; }
+}
