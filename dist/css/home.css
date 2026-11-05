@@ -824,16 +824,288 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .home-club__float, .home-club__photo { transform: none; }
 }
 
-/* ---------- Отзывы (разметка — подстановка reviews, общий вид — tiles.css) ---------- */
-/* Колонка — по плиткам направлений; цвета страницы (--on*). */
-[data-theme="home"] .reviews {
-  --tiles-gutter: 7.5vw; --tiles-bleed: 7.5vw;
+/* ---------- Отзывы — «тёмная сцена» (Влад 06.11: «такой же стильный и анимированный», как клуб) ---------- */
+/* Разметка — {{reviews:home}} (pages.mjs, renderReviewsStage); общий вид отзывов направлений (tiles.css)
+   сюда не доходит: свои классы rv*. Своя тёмная панель на светлой странице (фон страницы не трогаем):
+   глубокий тёплый чёрный, точечная сетка как под направлениями, красный свет из угла и пятно света
+   за курсором (--gx, --gy — home.js). Сверху — подзаголовок с красной чертой, двухстрочный заголовок
+   с красным словом и рейтинги студий: «5,0» досчитывается от нуля, звёзды загораются по очереди.
+   Ниже — карусель стеклянных карточек: активная — в центре, ярче и крупнее, соседи гаснут и
+   уменьшаются (--d — расстояние до центра, 0…1, home.js по прокрутке ленты); лента листается
+   свайпом, перетаскиванием мышью, стрелками и клавишами; автопрокрутка — 6,5 s на отзыв, полоса хода
+   заполняется красным, пауза — кнопкой, наведением, фокусом, касанием, вне экрана. */
+[data-theme="home"] .reviews[data-stage] {
   width: 100%; max-width: none;
   margin: 0 auto;
-  padding: var(--lg) 7.5vw calc(2 * var(--xl));
-  transition: color 1.2s var(--ease-color);
+  padding: 0 0 var(--xl);
 }
-[data-theme="home"] .reviews__title { transition: color 1.2s var(--ease-color); }
+.rv {
+  --rv-px: 7.5vw;
+  --panel-r: clamp(28px, 1.6vw + 16px, 48px);
+  --card: 78vw; --gap: 12px; --fade-edge: 3%;
+  --page: #0d0b0a;
+  --on: var(--fg); --on-rgb: var(--fg-rgb); --on-muted: rgb(var(--fg-rgb) / .64);
+  --on-line: rgb(var(--fg-rgb) / .14); --on-red: var(--red); --on-inverse: var(--ink);
+  --focus: var(--red);
+  position: relative; isolation: isolate; overflow: clip;
+  padding: var(--xl) var(--rv-px) var(--lg);
+  background: var(--page);
+  color: var(--on);
+  color-scheme: dark;
+}
+/* Точечная сетка (как под направлениями) гаснет к краям; красный свет — из правого верхнего угла
+   и слабее из левого нижнего. Слои статичные: не перерисовываются. */
+.rv::before, .rv::after { content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none; }
+.rv::before {
+  background: radial-gradient(circle, rgb(var(--fg-rgb) / .12) 1px, transparent 1.4px) 0 0 / 24px 24px;
+  -webkit-mask: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 100%);
+  mask: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 100%);
+}
+.rv::after {
+  background:
+    radial-gradient(ellipse 55% 60% at 100% 0%, rgb(var(--red-rgb) / .34), rgb(var(--red-rgb) / .1) 45%, rgb(var(--red-rgb) / 0) 75%),
+    radial-gradient(ellipse 45% 50% at 0% 100%, rgb(var(--red-rgb) / .14), rgb(var(--red-rgb) / 0) 70%);
+}
+/* Пятно света за курсором: только мышь (home.js), сдвиг — transform. */
+.rv__glow {
+  position: absolute; left: 0; top: 0; z-index: -1;
+  width: 640px; height: 640px; margin: -320px 0 0 -320px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(var(--red-rgb) / .2), rgb(var(--red-rgb) / .07) 50%, rgb(var(--red-rgb) / 0));
+  opacity: 0;
+  transform: translate3d(var(--gx, 50vw), var(--gy, 0px), 0);
+  transition: opacity .6s var(--ease-out), transform .45s var(--ease-out);
+  pointer-events: none;
+}
+.rv.is-lit .rv__glow { opacity: 1; }
+
+/* Шапка: текст | рейтинги. */
+.rv__head { display: grid; gap: var(--lg); margin-bottom: var(--lg); }
+.rv__copy { min-width: 0; }
+.rv__kicker {
+  margin: 0 0 var(--md);
+  font: 600 12px/1.6 var(--sans); letter-spacing: .16em; text-transform: uppercase;
+  color: var(--on-muted);
+}
+.rv__rule { display: inline-block; vertical-align: middle; width: 44px; height: 2px; margin: -2px 14px 0 0; background: var(--on-red); transform-origin: left; }
+.rv__title {
+  margin: 0;
+  font: 300 clamp(2.3rem, 3.7vw + 1.05rem, 6.4rem)/1.02 var(--sans);
+  letter-spacing: -.035em;
+  color: var(--on);
+}
+.rv__title em { font-style: normal; color: var(--on-red); }
+.rv__ln { display: block; overflow: clip; padding: .04em .06em .14em; margin: -.04em -.06em -.14em; }
+.rv__in { display: inline-block; }
+.rv__asof { margin: var(--md) 0 0; font-size: var(--fs-sm); line-height: 1.5; color: var(--on-muted); }
+
+.rv__scores {
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  gap: var(--md);
+  margin: 0; padding: 0; list-style: none;
+}
+/* Рейтинг студии — как факты клуба: тонкая линия с красным отрезком, крупная лёгкая цифра. */
+.rv-score {
+  position: relative; min-width: 0;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: end; gap: 6px var(--sm);
+  padding-top: var(--sm);
+  border-top: 1px solid var(--on-line);
+}
+.rv-score::before {
+  content: ""; position: absolute; left: 0; top: -1px;
+  width: 40px; height: 2px; background: var(--on-red);
+  transform-origin: left;
+}
+.rv-score > p { margin: 0; }
+.rv-score__name { grid-column: 1 / -1; font: 600 12px/1.6 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--on-muted); }
+.rv-score__rating { grid-column: 1 / -1; display: flex; align-items: flex-end; flex-wrap: wrap; gap: 4px var(--sm); }
+.rv-score__num {
+  font: 200 clamp(4rem, 3.2vw + 2.6rem, 7.6rem)/.86 var(--sans);
+  letter-spacing: -.045em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.rv-score__stars { gap: 4px; padding-bottom: .5em; }
+.rv-score__stars .review__star { width: 22px; height: 22px; }
+.rv-score__count { grid-column: 1 / -1; font-size: var(--fs-sm); color: var(--on-muted); }
+.rv-score__link { grid-column: 1 / -1; justify-self: start; font-size: var(--fs-sm); }
+
+/* Карусель: лента до краёв панели (поля панели — в отступах лент), края гаснут. */
+.rv__carousel { position: relative; margin-inline: calc(-1 * var(--rv-px)); }
+.rv__track {
+  position: relative;
+  display: flex; align-items: stretch; gap: var(--gap);
+  margin: 0; padding: 28px 0 32px; list-style: none;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 var(--fade-edge), #000 calc(100% - var(--fade-edge)), transparent);
+  mask: linear-gradient(90deg, transparent, #000 var(--fade-edge), #000 calc(100% - var(--fade-edge)), transparent);
+  cursor: grab;
+}
+.rv__track::-webkit-scrollbar { display: none; }
+.rv__track.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.rv__track:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; border-radius: var(--r-lg); }
+/* Поля, чтобы первая и последняя карточки вставали в центр (padding у flex-ленты Safari не держит). */
+.rv__track::before, .rv__track::after { content: ""; flex: 0 0 max(1px, calc((100% - var(--card)) / 2 - var(--gap))); }
+.rv-item {
+  flex: 0 0 var(--card); min-width: 0;
+  display: flex;
+  scroll-snap-align: center;
+  opacity: calc(1 - .58 * var(--d, 0));
+  scale: calc(1 - .07 * var(--d, 0));
+}
+.rv-card {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; gap: var(--md);
+  width: 100%; margin: 0;
+  padding: clamp(24px, 2vw + 12px, 44px);
+  border-radius: clamp(22px, 1vw + 16px, 32px);
+  background: linear-gradient(155deg, rgb(var(--fg-rgb) / .085), rgb(var(--fg-rgb) / .025) 60%);
+  box-shadow: inset 0 0 0 1px rgb(var(--fg-rgb) / .12), 0 30px 60px -30px rgb(0 0 0 / .6);
+  transition: box-shadow .6s var(--ease-out);
+}
+/* Активная: граница ярче, сверху вырастает красная черта (как над фактами клуба). */
+.rv-card::before {
+  content: ""; position: absolute; left: clamp(24px, 2vw + 12px, 44px); top: 0;
+  width: 56px; height: 2px; background: var(--on-red);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .9s var(--expo);
+}
+.rv-item.is-active .rv-card { box-shadow: inset 0 0 0 1px rgb(var(--fg-rgb) / .26), 0 40px 80px -30px rgb(0 0 0 / .8); }
+.rv-item.is-active .rv-card::before { transform: scaleX(1); }
+.rv-card__q {
+  position: absolute; right: clamp(18px, 1.6vw + 8px, 36px); top: clamp(-6px, -1vw + 8px, 4px);
+  font: 200 clamp(110px, 6vw + 60px, 170px)/1 var(--sans);
+  color: var(--on-red);
+  opacity: .5;
+  transform: translateY(8px);
+  transition: opacity .8s var(--ease-out), transform 1.2s var(--expo);
+  pointer-events: none;
+}
+.rv-item.is-active .rv-card__q { opacity: 1; transform: none; }
+.rv-card__stars { gap: 3px; }
+.rv-card__stars .review__star { width: 18px; height: 18px; }
+.rv-card__text {
+  margin: 0;
+  font: 400 clamp(1.02rem, .32vw + .94rem, 1.3rem)/1.55 var(--sans);
+  color: var(--on); text-wrap: pretty;
+}
+.rv-card__text p { margin: 0; }
+.rv-card__text p + p { margin-top: .6em; }
+.rv-card__meta { display: flex; align-items: center; gap: 14px; margin-top: auto; padding-top: var(--xs); }
+.rv-card__ava {
+  display: grid; place-items: center; flex: none;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: rgb(var(--red-rgb) / .16);
+  box-shadow: inset 0 0 0 1px rgb(var(--red-rgb) / .45);
+  font: 500 18px/1 var(--sans); color: var(--fg);
+}
+.rv-card__who { display: grid; gap: 2px; min-width: 0; }
+.rv-card__who .review__author { font-weight: 600; color: var(--on); }
+.rv-card__where { font-size: var(--fs-sm); color: var(--on-muted); }
+
+/* Управление: стрелки, полоса хода (отрезок на отзыв), счётчик, пауза. */
+.rv__controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sm) 10px; }
+.rv__btn {
+  appearance: none; -webkit-appearance: none;
+  display: grid; place-items: center; flex: none;
+  width: 52px; height: 52px; margin: 0; padding: 0;
+  border: 0; border-radius: 50%;
+  background: rgb(var(--fg-rgb) / .06);
+  box-shadow: inset 0 0 0 1px rgb(var(--fg-rgb) / .2);
+  color: var(--on);
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.rv__btn svg { width: 22px; height: 22px; transition: transform .5s var(--expo); }
+.rv__btn:hover { background: var(--fg); color: var(--ink); box-shadow: none; }
+.rv__prev:hover svg { transform: translateX(-3px); }
+.rv__next:hover svg { transform: translateX(3px); }
+.rv__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.rv__play .i-play, .rv__play[data-state="paused"] .i-pause { display: none; }
+.rv__play[data-state="paused"] .i-play { display: block; }
+.rv__bar { display: flex; gap: 6px; flex: 1 1 100%; order: -1; min-width: 0; }
+.rv__seg { position: relative; overflow: hidden; flex: 1 1 0; height: 2px; border-radius: 1px; background: rgb(var(--fg-rgb) / .16); }
+.rv__seg::after {
+  content: ""; position: absolute; inset: 0;
+  background: var(--fg); opacity: .5;
+  transform: scaleX(0); transform-origin: left;
+}
+.rv__seg.is-past::after { transform: scaleX(1); }
+.rv__seg.is-active::after { transform: scaleX(1); background: var(--red); opacity: 1; }
+.rv.is-auto .rv__seg.is-active::after { animation: rv-progress 6.5s linear both paused; }
+.rv.is-auto.is-playing .rv__seg.is-active::after { animation-play-state: running; }
+.rv__count { margin-left: auto; font: 400 15px/1 var(--sans); font-variant-numeric: tabular-nums; color: var(--on-muted); white-space: nowrap; }
+.rv__now { font-weight: 600; color: var(--on); }
+@keyframes rv-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
 @media (min-width: 760px) {
-  [data-theme="home"] .reviews { --tiles-gutter: 0px; --tiles-bleed: 0px; width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md)); padding-inline: 0; }
+  [data-theme="home"] .reviews[data-stage] { width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md)); }
+  .rv {
+    --rv-px: clamp(28px, 3.4vw + 4px, 88px);
+    --card: 62%; --gap: 20px; --fade-edge: 7%;
+    padding: clamp(48px, 4vw + 16px, 112px) var(--rv-px) clamp(36px, 3vw + 12px, 80px);
+    border-radius: var(--panel-r);
+  }
+  .rv__scores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rv__bar { flex: 1 1 auto; order: 0; margin-inline: var(--md); }
+  .rv__count { margin-left: 0; }
+}
+@media (min-width: 1000px) {
+  .rv { --card: clamp(440px, 40%, 600px); --gap: 24px; }
+  .rv__head { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: end; column-gap: clamp(48px, 5vw, 120px); }
+}
+@media (max-width: 759px) {
+  .rv__glow { display: none; }
+  .rv-score__stars .review__star { width: 17px; height: 17px; }
+}
+/* Телефон от 360 px: рейтинги студий рядом (звёзды — под цифрой), блок короче. */
+@media (min-width: 360px) and (max-width: 759px) {
+  .rv__scores { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--md) 18px; }
+  .rv-score__num { font-size: clamp(3.4rem, 10vw + 1rem, 4.4rem); }
+  .rv-score__stars { padding-bottom: 0; }
+  .rv-score__count, .rv-score__link { font-size: 13px; }
+}
+@media (max-width: 374px) {
+  .rv__title { font-size: 2.05rem; }
+  .rv__btn { width: 46px; height: 46px; }
+}
+
+/* Появление (ui.js ставит is-in): черта растёт, строки заголовка поднимаются, рейтинги — линии,
+   звёзды загораются по одной (досчёт «5,0» — home.js), карточки выезжают справа по очереди. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .rv__copy:not(.is-in) .rv__rule { transform: scaleX(0); }
+  .rv__copy.is-in .rv__rule { transition: transform 1.2s var(--expo) .15s; }
+  .js .rv__copy:not(.is-in) .rv__kicker, .js .rv__copy:not(.is-in) .rv__asof { opacity: 0; transform: translateY(16px); }
+  .rv__copy.is-in .rv__kicker, .rv__copy.is-in .rv__asof { transition: opacity 1s var(--ease-out), transform 1.4s var(--expo); }
+  .rv__copy.is-in .rv__asof { transition-delay: .3s; }
+  .js .rv__copy:not(.is-in) .rv__in { transform: translateY(125%); }
+  .rv__copy.is-in .rv__in { transition: transform 1.5s var(--expo); }
+  .rv__copy.is-in .rv__ln + .rv__ln .rv__in { transition-delay: .09s; }
+
+  .js .rv__scores:not(.is-in) .rv-score { opacity: 0; transform: translateY(24px); }
+  .js .rv__scores:not(.is-in) .rv-score::before { transform: scaleX(0); }
+  .js .rv__scores:not(.is-in) .rv-score__stars .review__star { opacity: .14; scale: .55; }
+  .rv__scores.is-in .rv-score { transition: opacity 1s var(--ease-out) calc(var(--k) * .12s), transform 1.4s var(--expo) calc(var(--k) * .12s); }
+  .rv__scores.is-in .rv-score::before { transition: transform 1.2s var(--expo) calc(.3s + var(--k) * .12s); }
+  .rv__scores.is-in .rv-score__stars .review__star { transition: opacity .45s var(--ease-out) var(--sd), scale .9s var(--expo) var(--sd); }
+  .rv-score__stars .review__star:nth-child(1) { --sd: calc(.35s + var(--k) * .5s); }
+  .rv-score__stars .review__star:nth-child(2) { --sd: calc(.47s + var(--k) * .5s); }
+  .rv-score__stars .review__star:nth-child(3) { --sd: calc(.59s + var(--k) * .5s); }
+  .rv-score__stars .review__star:nth-child(4) { --sd: calc(.71s + var(--k) * .5s); }
+  .rv-score__stars .review__star:nth-child(5) { --sd: calc(.83s + var(--k) * .5s); }
+
+  .js .rv__carousel:not(.is-in) .rv-card { opacity: 0; translate: 160px 0; }
+  .rv__carousel.is-in .rv-card {
+    transition: opacity .9s var(--ease-out) calc(.1s + var(--i) * .09s), translate 1.5s var(--expo) calc(.1s + var(--i) * .09s), box-shadow .6s var(--ease-out);
+  }
+  .js .rv__carousel:not(.is-in) ~ .rv__controls { opacity: 0; }
+  .rv__carousel.is-in ~ .rv__controls { transition: opacity 1s var(--ease-out) .6s; }
+}
+/* «Меньше движения»: всё на месте и видно; карточки не уменьшаются, соседи гаснут слабее. */
+@media (prefers-reduced-motion: reduce) {
+  .rv-item { scale: none; opacity: calc(1 - .3 * var(--d, 0)); }
+  .rv__glow { display: none; }
+  .rv__play { display: none !important; }
+  .rv-card__q { transform: none; }
 }
