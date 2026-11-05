@@ -467,7 +467,7 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
 
   // Плашки работ и направлений: страница из реестра, позиция каталога, машина, файлы кадров.
   const tiles = [...Object.entries(d.works || {}).filter(([k, v]) => k !== '_comment' && Array.isArray(v)).flatMap(([k, v]) => v.map((x) => [`works.${k}`, x])), ...(d.directions?.items || []).map((x) => [`directions.${x.id}`, x])];
-  ok(same(Object.keys(d.works || {}).filter((k) => k !== '_comment'), ['wash', 'detailing', 'wrap', 'bodywork', 'sales', 'about']), 'works: ряды wash, detailing, wrap, bodywork, sales, about');
+  ok(same(Object.keys(d.works || {}).filter((k) => k !== '_comment'), ['home', 'wash', 'detailing', 'wrap', 'bodywork', 'sales', 'about']), 'works: ряды home (один ряд на главной), wash, detailing, wrap, bodywork, sales, about');
   ok(same((d.directions?.items || []).map((x) => x.id), ['wash', 'detailing', 'wrap', 'bodywork', 'sales', 'about']), 'directions: шесть направлений в порядке Влада (05.11)');
   for (const [where, x] of tiles) {
     const target = byId[x.page];

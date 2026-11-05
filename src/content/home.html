@@ -143,57 +143,17 @@
   </div>
 </section>
 
-<!-- Наши работы (Влад 05.11: «маленькие плашки как у Порше с фото»): по ряду плашек на направление
-     услуг, в порядке направлений (подстановка works). Ряда «О нас» здесь нет: интерьер студии — не работа
-     (кадры works.about остаются в данных). Кузовные работы — плашки-услуги с кадром works/bodywork-1…3
-     и чипом цены «от»; кадры — кузов в студии, не результат ремонта (alt говорит, что на кадре).
-     Под рядами — серая сноска с оговоркой о ценах, как у porsche.com. -->
+<!-- Наши работы (Влад 05.11, вечер: «блок нашей работы должен быть один и подписан как наши работы»):
+     один ряд из трёх плашек как у porsche.com — данные works.home (кадры из рядов мойки, детейлинга, оклейки). -->
 <section class="home-works" aria-labelledby="works-title">
   <div class="home-works__head" data-reveal>
     <h2 class="home-works__title" id="works-title">Наши работы</h2>
   </div>
 
   <div class="home-works__row" data-reveal>
-    <div class="home-works__row-head">
-      <h3 class="home-works__name">Автомойка</h3>
-      <a class="link-arrow home-works__more" href="wash">Программы и цены<span class="sr">: автомойка</span>{{icon:arrow-right}}</a>
-    </div>
-    {{works:wash}}
+    {{works:home}}
   </div>
 
-  <div class="home-works__row" data-reveal>
-    <div class="home-works__row-head">
-      <h3 class="home-works__name">Детейлинг</h3>
-      <a class="link-arrow home-works__more" href="detailing">Услуги и цены<span class="sr">: детейлинг</span>{{icon:arrow-right}}</a>
-    </div>
-    {{works:detailing}}
-  </div>
-
-  <div class="home-works__row" data-reveal>
-    <div class="home-works__row-head">
-      <h3 class="home-works__name">Оклейка плёнкой</h3>
-      <a class="link-arrow home-works__more" href="wrap">Услуги и цены<span class="sr">: оклейка плёнкой</span>{{icon:arrow-right}}</a>
-    </div>
-    {{works:wrap}}
-  </div>
-
-  <div class="home-works__row" data-reveal>
-    <div class="home-works__row-head">
-      <h3 class="home-works__name">Кузовные работы</h3>
-      <a class="link-arrow home-works__more" href="bodywork">Услуги и цены<span class="sr">: кузовные работы</span>{{icon:arrow-right}}</a>
-    </div>
-    {{works:bodywork}}
-  </div>
-
-  <div class="home-works__row" data-reveal>
-    <div class="home-works__row-head">
-      <h3 class="home-works__name">Продажа автомобилей</h3>
-      <a class="link-arrow home-works__more" href="auto">Все машины{{icon:arrow-right}}</a>
-    </div>
-    {{works:sales}}
-  </div>
-
-  <p class="home-works__note">Цены «от» — по прайсу Meat Wash. Точную стоимость кузовных работ и оклейки называем на осмотре в Технопарке.</p>
 </section>
 
 <!-- Клуб (Влад 03.11: «внизу карту, которая будет вести на клуб»; «чёрный фон за карты убери»): вид
