@@ -4,14 +4,16 @@
 //     верх секции ≤ 12 % высоты окна, низ — ниже 49 %, в обе стороны);
 //  2) слова заголовка секции светлеют по мере прокрутки (redomedia.co, 22.10);
 //  3) на телефоне направления — карусель с пагинатором: активная точка заполняется за 9,5 s,
-//     затем следующий слайд; пауза — кнопкой, касанием, фокусом.
+//     затем следующий слайд; пауза — кнопкой, касанием, фокусом;
+//  4) клубная карта наклоняется за курсором и ловит блик (только мышь, без «меньше движения»).
 // Своего наблюдения [data-reveal] нет: класс is-in ставит ui.js (план §3.1).
-// Подключает site.js, когда на странице есть .dirs. Владелец: WP2.
+// Подключает site.js, когда на странице есть .dirs. Владелец: исполнитель главной (B).
 export function setupHome() {
   const body = document.body;
   const dirs = document.querySelector('.dirs');
   if (!dirs) return;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  setupClubTilt(reduce);
 
   // 1. Цвет страницы.
   let queued = false;
@@ -126,4 +128,37 @@ export function setupHome() {
     new IntersectionObserver((entries) => { inView = entries[0].isIntersecting; sync(); }, { threshold: 0.5 }).observe(track);
   }
   sync();
+}
+
+// 4. Клубная карта: наклон до ±9–11° за курсором над сценой и пятно блика (--px, --py от −1 до 1,
+// --gx, --gy в процентах; поза и переходы — home.css). Отклик сразу (переход .18 s, без инерции);
+// курсор ушёл — карта плавно возвращается в позу покоя. Сенсорные экраны и «меньше движения» — без наклона.
+function setupClubTilt(reduce) {
+  const stage = document.querySelector('[data-club-tilt]');
+  const card = stage?.querySelector('.home-club__card');
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  if (!card) return;
+  let px = 0, py = 0, queued = false;
+  const clamp = (v) => Math.max(-1, Math.min(1, v));
+  const apply = () => {
+    queued = false;
+    card.style.setProperty('--px', px.toFixed(3));
+    card.style.setProperty('--py', py.toFixed(3));
+    card.style.setProperty('--gx', `${(50 + px * 45).toFixed(1)}%`);
+    card.style.setProperty('--gy', `${(50 + py * 45).toFixed(1)}%`);
+  };
+  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(apply); } };
+  stage.addEventListener('pointermove', (e) => {
+    if (!fine.matches || reduce.matches || e.pointerType !== 'mouse') return;
+    const r = stage.getBoundingClientRect();
+    px = clamp(((e.clientX - r.left) / r.width) * 2 - 1);
+    py = clamp(((e.clientY - r.top) / r.height) * 2 - 1);
+    card.classList.add('is-tilting');
+    queue();
+  });
+  stage.addEventListener('pointerleave', () => {
+    px = 0; py = 0;
+    card.classList.remove('is-tilting');
+    queue();
+  });
 }

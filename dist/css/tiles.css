@@ -1,7 +1,208 @@
 /* Плашки работ и направлений (.work-tiles, .work-tile, .work-tile--text, .work-tiles--related)
    и блок отзывов (.reviews, .review…) — разметку выдают подстановки works, related и reviews
    (scripts/pages.mjs, классы — в его комментарии и в docs/meat-auto/CONTRACTS.md). Референс
-   плашек — porsche.com: фото с крупным скруглением, тёмный градиент снизу, белый заголовок
-   в 1–2 строки слева внизу, круглая полупрозрачная кнопка-стрелка справа внизу, 3 в ряд.
+   плашек — porsche.com: фото 4:3 с крупным скруглением, тёмный градиент снизу, белый заголовок
+   в 1–2 строки слева внизу, круглая полупрозрачная кнопка-стрелка справа внизу, 3 в ряд;
+   наведение — лёгкое приближение фото. Плашки сами тёмные — читаются на светлой и тёмной
+   странице; отзывы берут цвета страницы (--on*).
    Подключают главная и страницы направлений (поле css реестра). Владелец — исполнитель главной;
-   страницы направлений поправки пишут в section.css. Заглушка интегратора: правил пока нет. */
+   страницы направлений поправки пишут в section.css.
+   Настройки места (задаёт страница на родителе ряда или блока отзывов):
+     --tiles-gutter — отступ первой плашки в ленте на телефоне (по умолчанию 0);
+     --tiles-bleed  — на сколько лента выходит за края колонки, чтобы листаться от края экрана
+                      (обычно равен отступу колонки; по умолчанию 0). */
+
+/* ---------- Ряд плашек: 3 в ряд; уже 1000 px — горизонтальная лента со snap ---------- */
+.work-tiles {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--md);
+  margin: 0; padding: 0;
+  list-style: none;
+}
+.work-tiles__item { min-width: 0; }
+.work-tile {
+  --pad: clamp(18px, 1.5vw + 6px, 34px);
+  --go: clamp(44px, 2.4vw + 18px, 64px);
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  aspect-ratio: 4 / 3;
+  padding: var(--pad) calc(var(--pad) + var(--go) + 12px) var(--pad) var(--pad);
+  border-radius: clamp(20px, 1.4vw + 8px, 36px);
+  background: #141414;
+  color: #fff;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0);                      /* скругление держит и при scale фото в Safari */
+}
+.work-tile:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }   /* внутрь: лента обрезает внешнее */
+/* Затемнение снизу под заголовком (кривая --fade, как на плитках направлений). */
+.work-tile::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(0deg, var(--fade)) bottom / 100% 64% no-repeat;
+  pointer-events: none;
+}
+.work-tile__img {
+  position: absolute; inset: 0; z-index: -2;
+  display: block; width: 100%; height: 100%; max-width: none;
+  object-fit: cover;
+  transition: transform 1.2s var(--expo);
+}
+.work-tile:hover .work-tile__img, .work-tile:focus-visible .work-tile__img { transform: scale(1.05); }
+/* Заголовок: последняя строка — по центру круглой кнопки. */
+.work-tile__title {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  margin-bottom: max(0px, calc((var(--go) - 1.22em) / 2));
+  font: 400 clamp(19px, .85vw + 11px, 30px)/1.22 var(--sans);
+  letter-spacing: -.012em;
+  text-wrap: balance;
+  text-shadow: 0 1px 12px rgb(0 0 0 / .25);
+}
+.work-tile__go {
+  position: absolute; right: var(--pad); bottom: var(--pad);
+  display: grid; place-items: center;
+  width: var(--go); height: var(--go);
+  border-radius: 50%;
+  background: rgb(120 120 124 / .42);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  color: #fff;
+  transition: background-color .35s var(--ease);
+}
+.work-tile__go .icon { width: 46%; height: 46%; margin: 0; transition: transform .6s var(--expo); }
+.work-tile:hover .work-tile__go, .work-tile:focus-visible .work-tile__go { background: var(--red-ink); }
+.work-tile:hover .work-tile__go .icon, .work-tile:focus-visible .work-tile__go .icon { transform: translateX(3px); }
+
+/* Плашка-услуга без фото (кузовные работы): тёмная карточка того же размера, бордовое свечение;
+   цена «от» — сверху слева, название — снизу, как у плашек с фото. */
+.work-tile--text {
+  background:
+    radial-gradient(90% 85% at 100% 0%, rgb(var(--oxblood-rgb) / .9), rgb(var(--oxblood-rgb) / 0) 70%),
+    linear-gradient(160deg, #1d1d1d, #0b0b0b 70%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .07);
+}
+.work-tile--text::after {
+  inset: 0; z-index: -1;
+  background: radial-gradient(70% 70% at 100% 0%, rgb(var(--red-rgb) / .28), rgb(var(--red-rgb) / 0) 70%);
+  opacity: 0;
+  transition: opacity .6s var(--ease-out);
+}
+.work-tile--text:hover::after, .work-tile--text:focus-visible::after { opacity: 1; }
+.work-tile__price {
+  order: -1;
+  align-self: flex-start;
+  margin-bottom: auto;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: rgb(255 255 255 / .1);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .12);
+  font: 500 14px/22px var(--sans);
+  color: rgb(255 255 255 / .9);
+  white-space: nowrap;
+}
+
+/* Телефон и узкий планшет: лента со snap от края экрана, следующая плашка выглядывает. */
+@media (max-width: 999px) {
+  .work-tiles {
+    display: flex; gap: 12px;
+    margin-inline: calc(-1 * var(--tiles-bleed, 0px));
+    padding-inline: var(--tiles-gutter, 0px);
+    scroll-padding-inline: var(--tiles-gutter, 0px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .work-tiles::-webkit-scrollbar { display: none; }
+  .work-tiles__item { flex: 0 0 min(78vw, 400px); scroll-snap-align: start; }
+  /* Правый отступ после последней плашки (padding прокрутки в flex Safari не держит). */
+  .work-tiles::after { content: ""; flex: 0 0 max(1px, calc(var(--tiles-gutter, 0px) - 12px)); }
+}
+@media (min-width: 760px) and (max-width: 999px) { .work-tiles__item { flex-basis: 42vw; } }
+@media (prefers-reduced-motion: reduce) {
+  .work-tile__img, .work-tile__go, .work-tile__go .icon, .work-tile--text::after { transition: none; }
+  .work-tile:hover .work-tile__img, .work-tile:focus-visible .work-tile__img { transform: none; }
+}
+
+/* ---------- Отзывы с Яндекс Карт ---------- */
+.reviews {
+  padding: var(--xl) var(--ext);
+  color: var(--on);
+}
+.reviews__head {
+  display: grid; gap: var(--md);
+  margin-bottom: var(--lg);
+}
+.reviews__title {
+  margin: 0;
+  font: 300 clamp(2.15rem, 3.4vw + 1.1rem, 5.4rem)/1.02 var(--sans);
+  letter-spacing: -.035em;
+  color: var(--on);
+  text-wrap: balance;
+}
+.reviews__studios {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 12px;
+  margin: 0; padding: 0; list-style: none;
+}
+.reviews__studio {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end;
+  gap: 4px var(--sm);
+  padding: var(--md);
+  border-radius: var(--r-lg);
+  background: rgb(var(--on-rgb) / .045);
+  box-shadow: inset 0 0 0 1px var(--on-line);
+}
+.reviews__studio > p { margin: 0; }
+.reviews__studio-name { grid-column: 1 / -1; font-weight: 500; }
+.reviews__rating { display: flex; align-items: center; gap: 10px; }
+.reviews__score { font: 300 clamp(2.4rem, 1.6vw + 1.6rem, 3.8rem)/1 var(--sans); letter-spacing: -.03em; }
+.reviews__count { padding-bottom: 6px; font-size: var(--fs-sm); color: var(--on-muted); text-align: right; }
+.reviews__link { grid-column: 1 / -1; justify-self: start; margin-top: var(--xs); font-size: var(--fs-sm); }
+.reviews__asof { margin: 0; font-size: var(--fs-sm); color: var(--on-muted); }
+.review__stars { display: inline-flex; gap: 2px; color: var(--on-red); }
+.review__star { display: block; width: 18px; height: 18px; }
+.review__star--off { color: var(--on-line); }
+
+/* Карточки: на компьютере 3 колонки (кладка по высоте текста), на планшете 2, на телефоне — лента. */
+.reviews__list {
+  margin: 0; padding: 0; list-style: none;
+  columns: 3; column-gap: var(--md);
+}
+.reviews__item { break-inside: avoid; margin-bottom: var(--md); }
+.review {
+  display: flex; flex-direction: column; gap: var(--sm);
+  margin: 0;
+  padding: var(--md);
+  border-radius: var(--r-lg);
+  background: rgb(var(--on-rgb) / .045);
+  box-shadow: inset 0 0 0 1px var(--on-line);
+}
+.review__text { margin: 0; font-size: var(--fs-base); line-height: 1.6; color: var(--on); text-wrap: pretty; }
+.review__text p { margin: 0; }
+.review__text p + p { margin-top: .6em; }
+.review__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; margin-top: auto; font-size: var(--fs-sm); color: var(--on-muted); }
+.review__author { color: var(--on); font-weight: 500; }
+.review__studio::before { content: "· "; }
+.review__date::before { content: "· "; }
+
+@media (min-width: 1000px) {
+  .reviews__head { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: end; column-gap: var(--lg); }
+  .reviews__asof { grid-column: 2; }
+}
+@media (min-width: 760px) and (max-width: 1099px) { .reviews__list { columns: 2; } }
+@media (max-width: 759px) {
+  .reviews__list {
+    display: flex; align-items: flex-start; gap: 12px;
+    columns: auto;
+    margin-inline: calc(-1 * var(--tiles-bleed, 0px));
+    padding-inline: var(--tiles-gutter, 0px);
+    scroll-padding-inline: var(--tiles-gutter, 0px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .reviews__list::-webkit-scrollbar { display: none; }
+  .reviews__list::after { content: ""; flex: 0 0 max(1px, calc(var(--tiles-gutter, 0px) - 12px)); }
+  .reviews__item { flex: 0 0 min(84vw, 380px); margin: 0; scroll-snap-align: start; }
+}
