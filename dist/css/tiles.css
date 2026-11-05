@@ -107,6 +107,13 @@
   color: rgb(255 255 255 / .9);
   white-space: nowrap;
 }
+/* Плашка-услуга с кадром (кузовные работы): чип цены — слева сверху, на тёмной матовой подложке. */
+.work-tile:not(.work-tile--text) .work-tile__price {
+  position: absolute; top: var(--pad); left: var(--pad);
+  margin: 0;
+  background: rgb(20 20 20 / .55);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
 
 /* Телефон и узкий планшет: лента со snap от края экрана, следующая плашка выглядывает. */
 @media (max-width: 999px) {

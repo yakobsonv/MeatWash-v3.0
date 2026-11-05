@@ -67,7 +67,7 @@ export const REGISTRY = [
     title: 'Meat Wash — автомойка и детейлинг в Москве',
     description: 'Meat Wash Car Care Club: автомойка, детейлинг, оклейка плёнкой, кузовные работы и продажа автомобилей. Две студии в Москве — на Мясницкой и в Технопарке.',
     ogTitle: 'Meat Wash — Car Care Club в Москве',
-    headline: 'Meat Wash', theme: 'home', header: 'over', cta: 'request',
+    headline: 'Meat Wash', theme: 'home', header: 'over', cta: 'none',   // нижней кнопки на главной нет (как прежде): заявка — в шапке
     shared: ALL, css: ['tiles.css', 'home.css'],
     // Имена v2 (WP2 копирует source/v2-design/img → assets/img/home).
     preload: [

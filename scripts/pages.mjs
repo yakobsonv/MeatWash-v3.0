@@ -198,6 +198,7 @@ const MOBILE_CTA = {
 //         > span.work-tile__title (заголовок, 1–2 строки, белый поверх затемнения снизу)
 //         > span.work-tile__go (круглая кнопка-стрелка, aria-hidden)
 //     плашка без фото — a.work-tile.work-tile--text: без img, span.work-tile__price («от N ₽»)
+//     плашка-услуга с кадром (img + price) — img, span.work-tile__price, заголовок, кнопка
 //     плашка машины (car) — ещё span.work-tile__badge «В продаже» или --sold «Продано» (по cars.json)
 //   section.reviews#reviews[aria-labelledby=reviews-title]
 //     > header.reviews__head > h2.reviews__title#reviews-title
@@ -247,11 +248,18 @@ function workTile(item, entry, token) {
     return `<a class="work-tile" href="${href}"><img class="work-tile__img" src="${escape(src)}" sizes="${TILE_SIZES}" width="${w}" height="${h}" alt="${escape(car.alt || photo.alt)}" loading="lazy" decoding="async">${badge}<span class="work-tile__title">${escape(car.title)}</span>${tileGo()}</a>`;
   }
   if (!item.title) throw new Error(`${token}: у плашки нет title`);
-  if (item.img) return `<a class="work-tile" href="${href}">${tileImg(item)}<span class="work-tile__title">${escape(item.title)}</span>${tileGo()}</a>`;
+  // Плашка-услуга (price) с кадром (img): фото + чип цены «от». Пока файла кадра нет в dist
+  // (кадры кладёт исполнитель фото), выходит плашка без фото — ссылка на файл не битая;
+  // файл лёг — следующая сборка покажет фото.
+  const hasImg = item.img && (!item.price || DIMS[`${item.img}-${(item.widths || IMG_WIDTHS)[0]}.webp`]);
+  let price = '';
+  if (item.price) {
+    if (!(item.price in catalogPrice)) throw new Error(`${token}: нет позиции «${item.price}» в каталоге`);
+    price = `<span class="work-tile__price">${escape(catalogPrice[item.price] == null ? 'стоимость после осмотра' : 'от ' + money(catalogPrice[item.price]))}</span>`;
+  }
+  if (hasImg) return `<a class="work-tile" href="${href}">${tileImg(item)}${price}<span class="work-tile__title">${escape(item.title)}</span>${tileGo()}</a>`;
   if (!item.price) throw new Error(`${token}: плашка «${item.title}» без фото — нужна price (позиция каталога)`);
-  if (!(item.price in catalogPrice)) throw new Error(`${token}: нет позиции «${item.price}» в каталоге`);
-  const price = catalogPrice[item.price] == null ? 'стоимость после осмотра' : 'от ' + money(catalogPrice[item.price]);
-  return `<a class="work-tile work-tile--text" href="${href}"><span class="work-tile__title">${escape(item.title)}</span><span class="work-tile__price">${escape(price)}</span>${tileGo()}</a>`;
+  return `<a class="work-tile work-tile--text" href="${href}"><span class="work-tile__title">${escape(item.title)}</span>${price}${tileGo()}</a>`;
 }
 const tileList = (cls, attr, tiles) => `<ul class="${cls}" role="list" ${attr}>\n${tiles.map((t) => `  <li class="work-tiles__item">${t}</li>`).join('\n')}\n</ul>`;
 function renderWorks(dir, entry, token) {

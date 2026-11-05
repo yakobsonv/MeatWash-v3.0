@@ -85,11 +85,12 @@ def inventory(browser, base, pages, res):
           return {phones: phones.every(p => t.includes(p)), meta: t.includes('Instagram принадлежит компании Meta'), articles: Boolean(f && f.querySelector('a[href="articles"], a[href="#"][aria-current], a[href=""]')) || t.includes('Статьи'),
                   cta: cta ? (cta.hasAttribute('data-request') ? 'request:' + (cta.dataset.requestCategory || '') + ':' + cta.textContent.replace(/\u00a0/g, ' ').trim() : cta.getAttribute('href') || '?') : null, visible: Boolean(cta && cs.display !== 'none' && cs.visibility !== 'hidden')}; }""", phones)
         # Влад 05.11: нижняя кнопка «Оставьте заявку» на всех страницах, и на главной; тема — страницы.
-        cta_ok = r['cta'] == f"request:{p['topic']}:Оставьте заявку" and r['visible']
+        # Главная — без нижней кнопки, как прежняя главная (Влад 05.11: «главная как была»).
+        cta_ok = (r['cta'] is None) if p['id'] == 'home' else (r['cta'] == f"request:{p['topic']}:Оставьте заявку" and r['visible'])
         if not (r['phones'] and r['meta'] and r['articles'] and cta_ok):
             per.append(f"/{p['path']}: телефоны {r['phones']}, Meta {r['meta']}, «Статьи» {r['articles']}, нижняя кнопка {r['cta']} видна {r['visible']}")
     c2.close()
-    checks.append((not per, f'на всех {len(pages)} страницах: телефоны обеих студий, пометка о Meta, «Статьи» в подвале, нижняя кнопка «Оставьте заявку» с темой страницы на 390'))
+    checks.append((not per, f'на всех {len(pages)} страницах: телефоны обеих студий, пометка о Meta, «Статьи» в подвале, нижняя кнопка «Оставьте заявку» с темой страницы на 390 (на главной её нет)'))
     sitemap = (DIST / 'sitemap.xml').read_text(encoding='utf-8')
     locs = re.findall(r'<loc>([^<]+)</loc>', sitemap)
     checks.append((len(locs) == 15 and not any(l.endswith('.html') for l in locs), f'адресов в sitemap {len(locs)} (15: + /wash, /detailing, /bodywork 05.11), без .html'))

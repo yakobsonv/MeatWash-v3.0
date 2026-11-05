@@ -300,7 +300,8 @@ for (const page of REGISTRY) {
     ok(!/t\.me\/(?!MEATWASH_Auto|meat_wash\/)/.test(sharedOf(text, 'header') + sharedOf(text, 'footer')), `${file}: в шапке или подвале ссылка на личный Telegram`);
   }
   if (page.cta === 'request') ok(text.includes(`<button class="btn btn--primary mobile-cta" ${`type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`}`), `${file}: нижняя кнопка на телефоне — не «${REQUEST_LABEL}» с темой страницы`);
-  else fail(`${file}: нижняя кнопка — cta: 'request' на всех страницах (Влад 05.11)`);
+  // Главная — без нижней кнопки, как прежняя главная (Влад 05.11: «главная как была»): заявка в шапке видна и на телефоне.
+  else if (!(page.id === 'home' && page.cta === 'none' && !text.includes('mobile-cta'))) fail(`${file}: нижняя кнопка — cta: 'request' на всех страницах, кроме главной (там cta: 'none')`);
   if (page.topic && !topicIds.has(page.topic)) fail(`${file}: topic «${page.topic}» — нет такой темы в site.requests.topics`);
   // Роман (Влад 05.11): ни имени, ни личного Telegram — кроме реквизитов оператора ПДн в документах.
   {
@@ -476,6 +477,7 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
     if (x.img) {
       ok(x.alt && x.title, `${where}: у кадра нужны title и alt`);
       for (const w of x.widths || [800, 1240]) if (!await exists(resolve(dist, `${x.img}-${w}.webp`))) soft(`${where}: нет файла ${x.img}-${w}.webp (кадры кладёт исполнитель фото; на странице с плашкой это ошибка)`);
+      if (x.price) ok(x.price in itemPrice, `${where}: price «${x.price}» — нет такой позиции в каталоге`);
     } else ok(x.title && x.price in itemPrice, `${where}: плашка без фото — title и price (позиция каталога)`);
   }
 }
