@@ -5,7 +5,8 @@
 //  2) слова заголовка секции светлеют по мере прокрутки (redomedia.co, 22.10);
 //  3) на телефоне направления — карусель с пагинатором: активная точка заполняется за 9,5 s,
 //     затем следующий слайд; пауза — кнопкой, касанием, фокусом;
-//  4) клубная карта наклоняется к курсору (до 6°) и ловит блик (только мышь, без «меньше движения»);
+//  4) клуб: карта и кадр расходятся при прокрутке (параллакс), карта наклоняется к курсору (до 8°)
+//     и ловит блик (наклон — только мышь; всё — без «меньше движения»);
 //  5) ряды «Наших работ» на телефоне (лента): фокус с клавиатуры прокручивает ленту к плашке.
 // Своего наблюдения [data-reveal] нет: класс is-in ставит ui.js (план §3.1).
 // Подключает site.js, когда на странице есть .dirs. Владелец: исполнитель главной.
@@ -14,7 +15,7 @@ export function setupHome() {
   const dirs = document.querySelector('.dirs');
   if (!dirs) return;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  setupClubTilt(reduce);
+  setupClub(reduce);
   setupWorksFocus(reduce);
 
   // 1. Цвет страницы.
@@ -132,16 +133,42 @@ export function setupHome() {
   sync();
 }
 
-// 4. Клубная карта: наклон к курсору над картой до 6° и пятно блика (--px, --py от −1 до 1,
-// --gx, --gy в процентах; углы и переходы — home.css). Отклик сразу (переход .16 s, без инерции);
-// курсор ушёл — карта ровно ложится обратно. Сенсорные экраны и «меньше движения» — без наклона.
-function setupClubTilt(reduce) {
+// 4. Клуб — «журнальный разворот» (Влад 05.11). Две вещи, обе без инерции:
+//  а) параллакс: пока фигура на экране, --club-y (px) = (0,5 − доля прохода фигуры через окно) × размах;
+//     карта едет на --club-y, кадр внутри рамки — на −0,35 от него (home.css). Только чтение прокрутки
+//     в rAF и transform — прокрутку не держит; вне экрана не считается;
+//  б) наклон к курсору над фигурой до 8° и пятно блика (--px, --py от −1 до 1 — от центра карты,
+//     --gx, --gy в процентах). Отклик сразу (переход .16 s); курсор ушёл — карта ровно ложится обратно.
+// Сенсорные экраны — только параллакс; «меньше движения» — ни того, ни другого.
+function setupClub(reduce) {
   const stage = document.querySelector('[data-club-tilt]');
   const card = stage?.querySelector('.home-club__card');
+  if (!stage || !card) return;
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
-  if (!card) return;
-  let px = 0, py = 0, queued = false;
+  const phone = window.matchMedia('(max-width: 759px)');
   const clamp = (v) => Math.max(-1, Math.min(1, v));
+
+  // а) Параллакс.
+  let inView = false, parQueued = false;
+  const parallax = () => {
+    parQueued = false;
+    if (reduce.matches) { stage.style.removeProperty('--club-y'); return; }
+    const r = stage.getBoundingClientRect(), vh = window.innerHeight;
+    const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    const amp = phone.matches ? 56 : 120;
+    stage.style.setProperty('--club-y', ((0.5 - p) * amp).toFixed(1));
+  };
+  const queuePar = () => { if (inView && !parQueued) { parQueued = true; requestAnimationFrame(parallax); } };
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => { inView = entries[0].isIntersecting; queuePar(); }, { rootMargin: '120px 0px' }).observe(stage);
+  } else inView = true;
+  window.addEventListener('scroll', queuePar, { passive: true });
+  window.addEventListener('resize', queuePar);
+  reduce.addEventListener?.('change', () => { inView = true; queuePar(); });
+  parallax();
+
+  // б) Наклон.
+  let px = 0, py = 0, queued = false;
   const apply = () => {
     queued = false;
     card.style.setProperty('--px', px.toFixed(3));
@@ -152,9 +179,9 @@ function setupClubTilt(reduce) {
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(apply); } };
   stage.addEventListener('pointermove', (e) => {
     if (!fine.matches || reduce.matches || e.pointerType !== 'mouse') return;
-    const r = stage.getBoundingClientRect();
-    px = clamp(((e.clientX - r.left) / r.width) * 2 - 1);
-    py = clamp(((e.clientY - r.top) / r.height) * 2 - 1);
+    const s = stage.getBoundingClientRect(), c = card.getBoundingClientRect();
+    px = clamp((e.clientX - (c.left + c.width / 2)) / (s.width / 2));
+    py = clamp((e.clientY - (c.top + c.height / 2)) / (s.height / 2));
     card.classList.add('is-tilting');
     queue();
   });
