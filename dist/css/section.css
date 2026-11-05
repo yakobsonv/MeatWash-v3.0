@@ -3,3 +3,109 @@
    полем css реестра src/content/pages.mjs (SECTION_CSS). Владелец — исполнитель «Автомойки» и
    «Детейлинга»; исполнитель «Оклейки» и «Кузовных работ» дописывает в конец своим блоком
    с комментарием. Заглушка интегратора: правил пока нет. */
+
+/* D: wrap + bodywork */
+/* ==========================================================================
+   /wrap «Оклейка автомобиля плёнкой» и /bodywork «Кузовные работы» (исполнитель D, 05.11).
+   Классы ds-* только этих двух страниц; общие правила выше (C) не меняются. Компоненты —
+   из components.css: hero-c, number-tiles, cards, steps, accordions, promo; строки цен —
+   подстановка prices (services.css), плашки и отзывы — tiles.css.
+   ========================================================================== */
+
+/* Плашки-факты под героем: ближе к герою, чем обычная секция. */
+.ds-facts { padding-top: 0; }
+
+/* Текст + пояснение рядом (список «от чего защищает», «что написать в заявке», приёмка). */
+.ds-split { display: grid; gap: var(--md); align-items: start; }
+@media (min-width: 1000px) { .ds-split { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--lg); } }
+.ds-note {
+  padding: var(--md); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--on-muted);
+}
+.ds-aside { margin-top: var(--md); color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.55; max-width: 72ch; }
+
+/* Список с красной чертой вместо маркера. */
+.ds-ticks { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.ds-ticks > li { position: relative; padding-left: 28px; line-height: 1.5; }
+.ds-ticks > li::before {
+  content: ""; position: absolute; left: 0; top: .75em;
+  width: 16px; height: 2px; background: var(--on-red);
+}
+.ds-ticks b { font-weight: 600; }
+
+/* «Сначала — заводское покрытие»: три ступени по порядку (ol без номеров, решение Влада). */
+.ds-order { margin: 0; padding-inline: var(--basic); list-style: none; }
+.ds-order > .card { box-shadow: inset 0 2px 0 var(--on-red); }
+
+/* Строки цен (подстановка prices): поля колонки задаёт сам каталог (services.css), здесь — только
+   отступы, чтобы список шёл сразу под заголовком секции. */
+.ds-prices .catalog { padding-bottom: 0; }
+.ds-prices .catalog__section:first-child { margin-top: var(--lg); }
+/* Цена внутри карточки (лобовое стекло на /wrap). */
+.card > .ds-card-price { margin-top: auto; padding-top: var(--xs); color: var(--on); font-variant-numeric: tabular-nums; line-height: 1.6; }
+
+/* Таблица «повреждение → способ → цена»: на телефоне строки становятся карточками. */
+.ds-fix { width: 100%; font-variant-numeric: tabular-nums; }
+.ds-fix th, .ds-fix td { padding: 18px 16px; text-align: left; vertical-align: top; box-shadow: inset 0 -1px 0 var(--on-line); }
+.ds-fix thead th { padding-block: 10px; color: var(--on-muted); font-size: var(--fs-sm); font-weight: 400; }
+.ds-fix tbody th { width: 44%; font-weight: 600; }
+.ds-fix td:last-child { white-space: nowrap; text-align: right; }
+.ds-fix a { color: var(--on); text-underline-offset: 4px; text-decoration-color: rgb(var(--on-rgb) / .35); }
+.ds-fix a:hover { text-decoration-color: var(--on-red); }
+@media (max-width: 759px) {
+  .ds-fix, .ds-fix tbody, .ds-fix tr, .ds-fix th, .ds-fix td { display: block; width: auto; }
+  .ds-fix thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ds-fix tbody { display: grid; gap: 12px; }
+  .ds-fix tr { padding: var(--md); border-radius: var(--r-lg); background: var(--surface); }
+  .ds-fix th, .ds-fix td { padding: 0; box-shadow: none; }
+  .ds-fix tbody th { width: auto; margin-bottom: 10px; }
+  .ds-fix td { margin-top: 10px; }
+  .ds-fix td:last-child { white-space: normal; text-align: left; }
+  .ds-fix td::before { content: attr(data-label); display: block; color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.6; }
+}
+
+/* Блоки работ (#pdr, #chips, #paint): текст слева, карточка цены справа (на телефоне — под текстом). */
+.ds-block + .ds-block { padding-top: 0; }
+.ds-block__grid { display: grid; gap: var(--md); align-items: start; }
+@media (min-width: 1000px) { .ds-block__grid { grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: var(--lg); } }
+.ds-block__text { display: grid; gap: var(--sm); justify-items: start; }
+.ds-block__text > h2 { margin-bottom: var(--xs); }
+.ds-block__text > h3 { margin-top: var(--sm); font-size: var(--fs-md); font-weight: 600; line-height: 1.42; letter-spacing: 0; }
+.ds-block__text > p { color: var(--on-muted); max-width: 64ch; }
+.ds-block__text > p a { color: var(--on); text-underline-offset: 4px; }
+.ds-block__text > .ds-aside { margin-top: 0; }
+.ds-block__price {
+  display: grid; gap: 8px; justify-items: start;
+  padding: var(--md); border-radius: var(--r-lg); background: var(--surface);
+}
+@media (min-width: 1000px) { .ds-block__price { position: sticky; top: calc(var(--sticky-h, 62px) + var(--md)); } }
+.ds-block__name { font-weight: 600; }
+.ds-block__value { font-size: var(--fs-xl); font-weight: 300; line-height: 1.2; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.ds-block__note { color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.55; }
+.ds-block__price > .btn { margin-top: var(--xs); }
+
+/* Ссылки и ответы FAQ. */
+:is(body[data-page="wrap"], body[data-page="bodywork"]) .accordion__body a { color: var(--on); text-underline-offset: 4px; }
+
+/* Смежные направления + ссылка на статью. */
+.ds-related__links { margin-top: var(--md); }
+
+/* Финальный блок: заявка + контакты Технопарка (без фото, панель промо). */
+.ds-call { padding-block: var(--lg) var(--xl); }
+.ds-call__panel.promo__panel { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--lg); align-items: start; }
+.ds-call__head { display: grid; gap: var(--sm); justify-items: start; }
+.ds-call__head > h2 { font-size: var(--fs-xl); font-weight: 400; line-height: 1.31; letter-spacing: -.01em; }
+.ds-call__head > p { max-width: 34rem; color: var(--on-muted); }
+.ds-call__head > .btn { margin-top: var(--xs); }
+.ds-call__contact { display: grid; gap: 10px; justify-items: start; }
+.ds-call__studio strong { font-size: var(--fs-lg); font-weight: 400; }
+.ds-call__studio span { display: block; font-size: var(--fs-sm); color: var(--on-muted); }
+.ds-call__address { line-height: 1.6; }
+.ds-call__phone {
+  color: var(--on); font-size: var(--fs-xl); font-weight: 300; letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  text-decoration: underline 1px rgb(var(--on-rgb) / .3); text-underline-offset: 6px;
+}
+.ds-call__phone:hover { text-decoration-color: var(--on); }
+@media (max-width: 899px) { .ds-call__panel.promo__panel { grid-template-columns: minmax(0, 1fr); gap: var(--md); } }
+@media (max-width: 759px) { .ds-call__head > .btn { width: 100%; } }
