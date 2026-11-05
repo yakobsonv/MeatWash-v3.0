@@ -66,7 +66,8 @@ export function setupShell() {
     drawer.showModal();
     opener.setAttribute('aria-expanded', 'true');
     // С клавиатуры — первый пункт, а не «×»: сразу идём по разделам. Мышью — корень шторки.
-    focus(viaKeyboard ? items[0] : root);
+    // items — только кнопки разделов; первый пункт корня — ссылка (Автомойка), он и нужен.
+    focus(viaKeyboard ? drawer.querySelector('.drawer__panel--root .drawer__item') || items[0] : root);
     root?.scrollTo(0, 0);
   };
   const close = () => { if (drawer.open) drawer.close(); };

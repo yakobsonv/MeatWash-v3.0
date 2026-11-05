@@ -75,9 +75,9 @@ export function setupUI() {
  let openedAt=0;
  const show=dialog=>{
   if(!dialog||dialog.open) return;
-  // Длинное окно открывается с начала, а не с места, где его закрыли в прошлый раз.
-  dialog.scrollTop=0;
-  dialog.showModal(); openedAt=performance.now(); syncLock();
+  // Длинное окно открывается с начала, а не с места, где его закрыли в прошлый раз:
+  // у закрытого окна scrollTop не действует — сбрасываем после showModal.
+  dialog.showModal(); dialog.scrollTop=0; openedAt=performance.now(); syncLock();
  };
  const settling=e=>e.detail>1||performance.now()-openedAt<400;
  const closeDialogs=()=>{ requestDialog?.close(); closeDrawer(); };
@@ -100,8 +100,9 @@ export function setupUI() {
   if(control.hasAttribute('data-book'))return {book:true,programs:indexes(d.program,d.ycPrograms),items:list(d.ycItems),services:list(d.requestServices),context:d.bookContext||'',contextPrefix:'Вы выбрали: ',from};
   if(control.hasAttribute('data-membership'))return {category:'club',services:['Клубная карта'],context:d.membership||'',from};
   // Гараж услуг: мойка и другие работы вместе — программы мойки идут в ту же заявку.
-  if(d.requestContext)return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.requestContext,from};
-  return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.washContext||'',contextPrefix:d.washContext?'Вы выбрали: ':'',from};
+  // data-request-studio — студия кнопки (myasnitskaya, technopark): её телефон в окне первым.
+  if(d.requestContext)return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.requestContext,studio:d.requestStudio||'',from};
+  return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.washContext||'',contextPrefix:d.washContext?'Вы выбрали: ':'',studio:d.requestStudio||'',from};
  };
  const openRequest=control=>{
   rememberOpener(control);

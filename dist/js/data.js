@@ -743,9 +743,7 @@ export const REQUEST_TOPICS = [
   "id": "club",
   "title": "Клубная карта",
   "items": [],
-  "options": [
-   "Клубная карта"
-  ]
+  "options": []
  },
  {
   "id": "other",

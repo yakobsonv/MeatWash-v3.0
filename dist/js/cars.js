@@ -56,6 +56,12 @@ export function setupCars() {
     open(tile.dataset.carOpen, true);
   });
   dialog.addEventListener('close', () => {
+    // Прямой заход /auto#<id>: фокуса до окна не было — возвращаем его на плитку этой машины.
+    const id = slot.firstElementChild?.id;
+    const active = document.activeElement;
+    if (id && (!active || active === document.body || dialog.contains(active))) {
+      document.querySelector(`[data-car-open="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
+    }
     if (history.state?.car) history.back();
     else if (cards.has(location.hash.slice(1))) history.replaceState(null, '', location.pathname + location.search);
   });

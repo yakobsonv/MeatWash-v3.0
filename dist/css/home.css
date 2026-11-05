@@ -588,6 +588,12 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .home-club__actions { display: grid; width: 100%; }
   .home-club__actions .btn { width: 100%; }
 }
+/* Узкая панель (телефон, планшет): кнопки столбиком на всю ширину и с меньшими полями —
+   «Оформить клубную карту ↗» помещается в одну строку, стрелка не отрывается (nw в разметке). */
+@media (max-width: 1099px) {
+  .home-club__actions { display: grid; }
+  .home-club__actions .btn { padding-inline: 16px; }
+}
 @media (min-width: 760px) {
   .home-club {
     width: calc(94vw - 2 * var(--md)); max-width: calc(1880px - 2 * var(--md));

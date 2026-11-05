@@ -48,11 +48,15 @@ const mb = (bytes) => bytes < 1024 * 1024
 const TOPICS = Array.isArray(REQUEST_TOPICS) ? REQUEST_TOPICS : [];
 const PROGRAM_NAMES = PROGRAMS.map((p) => p.name);
 const topicById = (id) => TOPICS.find((t) => t.id === id) || null;
-const worksOf = (topic) => topic ? [...(topic.programs ? PROGRAM_NAMES : []), ...(topic.items || []), ...(topic.options || [])] : [];
+// Название самой темы среди работ не повторяем («Клубная карта» в теме «Клубная карта»).
+const worksOf = (topic) => topic ? [...(topic.programs ? PROGRAM_NAMES : []), ...(topic.items || []), ...(topic.options || [])].filter((name) => name !== topic.title) : [];
 // Тема работы: та, в чьих программах, позициях или вариантах она есть; название темы — сама тема.
 const topicOfWork = (name) => TOPICS.find((t) => t.title === name || worksOf(t).includes(name))?.id || '';
 // Технопарк первым — где работу делают только там (оклейка, кузов: данные каталога).
 const TECHNOPARK_FIRST = new Set(['wrap', 'bodywork']);
+// Где студия «в/на» — для строки «„Трёхфазная“ — только в Технопарке».
+const BRANCH_IN = { myasnitskaya: 'на Мясницкой', technopark: 'в Технопарке' };
+const quoted = (name) => /[«»]/.test(name) ? name : `«${name}»`;
 
 // Телефон: российский номер — маской +7 (999) 123-45-67; начатый с «+» и другим кодом страны —
 // как ввели (только цифры, пробелы, скобки и дефисы).
@@ -90,7 +94,7 @@ export function setupRequest(dialog, { show }) {
   const context = $('#request-context');
   const chipsEl = $('[data-request-chips]'), addSelect = $('[data-request-add]'), addBox = $('[data-request-add-box]'), servicesBox = $('[data-request-services-box]');
   const online = $('[data-request-online]'), onlineNote = $('[data-request-online-note]');
-  const branchLinks = [...online.querySelectorAll('a[data-branch]')];
+  const branchLinks = [...online.querySelectorAll('a[data-branch]')], branchSep = online.querySelector('[data-branch-sep]');
   const photosBox = $('[data-request-photos]'), previewsEl = $('[data-request-previews]'), filesInput = $('[data-request-files]');
   const formError = $('[data-request-error]'), offline = $('[data-request-offline]'), phones = $('[data-request-phones]');
   const submitBtn = $('[data-request-submit]'), done = $('[data-request-done]');
@@ -102,6 +106,9 @@ export function setupRequest(dialog, { show }) {
   const services = Array.isArray(draft.services) ? draft.services.filter((s) => typeof s === 'string') : [];
   const photos = [];   // {file, url}
   let sending = false, opener = '';
+  // Чей телефон первым в «Заявка не отправлена»: студия кнопки (data-request-studio) или
+  // единственная студия, где есть выбранная программа (onlyBranch, renderOnline).
+  let studioFirst = '', onlyBranch = '';
   // Подписанная метка времени от сервера (антиспам): когда получена и сколько ждать.
   let token = null, tokenAt = 0, tokenWait = 0, tokenLoading = null;
 
@@ -113,6 +120,8 @@ export function setupRequest(dialog, { show }) {
   }
   // Фото — только когда приём подключён; без него их некуда отправить.
   photosBox.hidden = !endpoint;
+  // Обещание звонка — только когда заявка действительно уходит администратору.
+  if (endpoint) $('#request-lead').textContent = 'Администратор студии перезвонит и ответит на вопросы.';
   // Ссылки онлайн-записи — как в разметке, пока корзина не собрана.
   for (const link of branchLinks) link.dataset.href = link.getAttribute('href');
 
@@ -179,22 +188,35 @@ export function setupRequest(dialog, { show }) {
     const spec = washSpec();
     const show = topicId() === 'wash' || spec.programs.length + spec.items.length > 0;
     online.hidden = !show;
-    for (const link of branchLinks) if (link.dataset.href) link.setAttribute('href', link.dataset.href);
-    onlineNote.hidden = true;
+    for (const link of branchLinks) { if (link.dataset.href) link.setAttribute('href', link.dataset.href); link.hidden = false; }
+    if (branchSep) branchSep.hidden = false;
+    onlineNote.hidden = true; onlyBranch = '';
     if (!show || !(spec.programs.length || spec.items.length)) return;
     const job = ++ycJob;
     loadYc().then(() => {
       if (job !== ycJob || !yc) return;
       const body = getBody();
-      let missing = [];
+      let missing = [], absent = [];
+      // Программы нет в студии совсем — её ссылку прячем, вторая студия — единственная.
       for (const link of branchLinks) {
+        const names = yc.unavailable?.(link.dataset.branch, spec) || [];
+        link.hidden = names.length > 0 && branchLinks.some((l) => l !== link && !(yc.unavailable?.(l.dataset.branch, spec) || []).length);
+        if (link.hidden) absent = names;
+      }
+      const shown = branchLinks.filter((link) => !link.hidden);
+      if (branchSep) branchSep.hidden = shown.length < branchLinks.length;
+      if (shown.length === 1 && shown.length < branchLinks.length) onlyBranch = shown[0].dataset.branch;
+      for (const link of shown) {
         const result = yc.resolve(link.dataset.branch, spec, body);
         const url = yc.bookingUrl(link.dataset.branch, result.ids);
         if (url) link.href = url;
         if (result.missing.length > missing.length) missing = result.missing;
       }
       // Часть работ в онлайн-записи не продаётся: их добавит мастер при приёмке.
-      if (missing.length) { onlineNote.textContent = nb(`${missing.join(', ')} мастер добавит при приёмке.`); onlineNote.hidden = false; }
+      const notes = [];
+      if (onlyBranch) notes.push(`${absent.map(quoted).join(', ')} — только ${BRANCH_IN[onlyBranch] || onlyBranch}.`);
+      if (missing.length) notes.push(`${missing.join(', ')} мастер добавит при приёмке.`);
+      if (notes.length) { onlineNote.textContent = nb(notes.join(' ')); onlineNote.hidden = false; }
     }).catch(() => { /* карта не загрузилась — ссылки остаются обычным выбором услуг */ });
   }
   // Тип кузова сменили на странице — цены программ в YCLIENTS другие.
@@ -276,14 +298,14 @@ export function setupRequest(dialog, { show }) {
     set('topic', topicId() ? '' : 'Выберите направление.', topicSelect);
     set('name', form.elements.name.value.trim() ? '' : 'Как к вам обращаться?', form.elements.name);
     const phone = phoneInput.value.trim();
-    set('phone', !phone ? 'Укажите телефон — администратор перезвонит.' : phoneOk(phone) ? '' : 'Номер неполный: нужен +7 и 10 цифр.', phoneInput);
+    set('phone', !phone ? (endpoint ? 'Укажите телефон — администратор перезвонит.' : 'Укажите телефон.') : phoneOk(phone) ? '' : 'Номер неполный: нужен +7 и 10 цифр.', phoneInput);
     set('consent', form.elements.consent.checked ? '' : 'Без согласия заявку не отправить.', form.elements.consent);
     return errors;
   }
 
   // Приёма нет: заявка не отправлена — так и пишем, с телефонами обеих студий. Порядок — по теме.
   function showOffline() {
-    const first = TECHNOPARK_FIRST.has(topicId()) ? 'technopark' : 'myasnitskaya';
+    const first = studioFirst || onlyBranch || (TECHNOPARK_FIRST.has(topicId()) ? 'technopark' : 'myasnitskaya');
     const links = [...phones.querySelectorAll('[data-phone]')];
     phones.append(...links.sort((a, b) => (b.dataset.phone === first) - (a.dataset.phone === first)));
     offline.hidden = false;
@@ -385,7 +407,13 @@ export function setupRequest(dialog, { show }) {
   form.addEventListener('change', (e) => {
     if (e.target === filesInput) { addFiles([...filesInput.files]); filesInput.value = ''; return; }
     if (e.target === addSelect) { if (addSelect.value) addServices([addSelect.value]); addSelect.value = ''; return; }
-    if (e.target === topicSelect) { renderAdd(); renderOnline(); save(); if (topicSelect.getAttribute('aria-invalid') === 'true') validate(); return; }
+    if (e.target === topicSelect) {
+      // Новая тема: работы прежней темы и строка «Вы выбрали: …» о них к ней больше не относятся.
+      const allowed = worksOf(topicById(topicId()));
+      let dropped = false;
+      for (let i = services.length - 1; i >= 0; i--) if (!allowed.includes(services[i])) { services.splice(i, 1); dropped = true; }
+      if (dropped) { context.textContent = ''; context.hidden = true; }
+      renderChips(); save(); if (topicSelect.getAttribute('aria-invalid') === 'true') validate(); return; }
     if (e.target.name === 'consent' && e.target.getAttribute('aria-invalid') === 'true') validate();
   });
   form.addEventListener('submit', (e) => { e.preventDefault(); submit(); });
@@ -414,7 +442,8 @@ export function setupRequest(dialog, { show }) {
   //   from      — где была кнопка (для цели).
   // Тема: у кнопки с работой — тема этой работы, иначе — из категории, иначе пусто. Работы из
   // кнопки заменяют прежний выбор; кнопка без работ оставляет только работы своей темы.
-  return function open({ book = false, category = '', services: list = [], programs = [], items = [], context: note = '', contextPrefix = '', from = '' } = {}) {
+  return function open({ book = false, category = '', services: list = [], programs = [], items = [], context: note = '', contextPrefix = '', studio = '', from = '' } = {}) {
+    studioFirst = BRANCH_IN[studio] ? studio : '';
     const works = [...programs.map((i) => PROGRAM_NAMES[i]).filter(Boolean), ...items, ...list];
     const firstWork = list.map(topicOfWork).find(Boolean) || '';
     const topic = book ? 'wash' : firstWork || (topicById(category) ? category : CATEGORY_TOPIC[category] || '');

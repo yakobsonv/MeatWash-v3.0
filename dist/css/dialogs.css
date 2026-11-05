@@ -235,7 +235,10 @@ legend.request__legend + * { clear: both; }
 .request select:focus-visible,
 .request input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus-visible,
 .request textarea:focus-visible { outline: none; border-color: var(--red-ink); box-shadow: 0 0 0 1px var(--red-ink); }
-.request [aria-invalid="true"] { border-color: var(--red-ink); }
+/* Ошибка сильнее обычной рамки поля: у правила input:not(…) специфичность (0,4,1). */
+.request [aria-invalid="true"],
+.request input[aria-invalid="true"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]) { border-color: var(--red-ink); }
+.request .request__consent input[aria-invalid="true"] { border-color: var(--red-ink); box-shadow: 0 0 0 1px var(--red-ink); }
 .request__select { position: relative; display: block; }
 .request__select select { appearance: none; -webkit-appearance: none; padding-right: 48px; cursor: pointer; text-overflow: ellipsis; }
 .request__select .icon { position: absolute; right: 16px; top: 16px; pointer-events: none; }

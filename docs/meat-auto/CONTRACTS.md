@@ -28,6 +28,7 @@
   - `data-request-services="A|B"` — позиции каталога, названия подразделов, названия тем или их варианты (`options`):
     «Русификация», «Продажа автомобиля», «Подбор и покупка автомобиля», «Клубная карта»… (`check` сверяет).
   - `data-request-context="…"` — строка «о чём заявка» (машина и т. п.): форма показывает её в `p#request-context`.
+  - `data-request-studio="myasnitskaya|technopark"` — студия кнопки: её телефон первым в «Заявка не отправлена» (карточки студий).
 - `[data-book]` остаётся только у автомойки (строки мойки в каталоге и `{{prices}}`, карточки программ, гараж, статья):
   ведёт в ту же `#request` с темой `wash` и программой (`data-program="0…4"`) / работами (`data-yc-items`), контекст —
   `data-book-context`. В форме при теме «Автомойка» видна мелкая строка `[data-request-online]` «или запишитесь онлайн» со
@@ -59,13 +60,17 @@
 - `{{works:wash|detailing|wrap|bodywork|sales|about}}` → `ul.work-tiles[data-works]` > `li.work-tiles__item` > `a.work-tile` >
   `img.work-tile__img` (srcset 800/1240, кадр обрезать CSS `object-fit: cover`) + `span.work-tile__title` + `span.work-tile__go`
   (круглая стрелка, aria-hidden). Без фото — `a.work-tile.work-tile--text` с `span.work-tile__price` («от N ₽» из каталога):
-  ряд `bodywork`. Данные — `works` в `meatwash-content.json`.
+  ряд `bodywork`. Плашка машины (`car`, ряд `sales`) — ещё `span.work-tile__badge` «В продаже» или `.work-tile__badge--sold` «Продано».
+  Данные — `works` в `meatwash-content.json`.
 - `{{related:detailing,wrap}}` → `ul.work-tiles.work-tiles--related[data-related]` — плашки направлений (`directions`).
 - `{{reviews}}` / `{{reviews:wrap}}` → `section.reviews#reviews` с `h2#reviews-title` «Отзывы клиентов», `ul.reviews__studios`
   (`.reviews__studio-name`, `.reviews__rating` > `b.reviews__score` «5,0» + `span.review__stars`, `.reviews__count` «211 оценок»,
   `a.reviews__link` «Все отзывы на Яндекс Картах»), `p.reviews__asof` «Рейтинг и отзывы — с Яндекс Карт на 5 ноября 2026 г.»,
   `ul.reviews__list` > `li.reviews__item` > `figure.review` > `span.review__stars` (svg `.review__star`, погашенная —
   `--off`), `blockquote.review__text > p`, `figcaption.review__meta` > `.review__author`, `.review__studio`, `time.review__date`.
+  `ul.reviews__list` фокусируемый (`tabindex=0`, `aria-label`): ленту на телефоне листают стрелками. Рейтинг — у студий темы:
+  мойка и детейлинг — обе студии, оклейка и кузов — студия отзывов темы (Технопарк); меньше трёх отзывов по теме —
+  добираются отзывы той же студии.
   Один блок на странице. Разметки Review/AggregateRating нет. Стили `.work-tile*` и `.reviews*` — `tiles.css` (B).
 
 ### Якоря, на которые ведут плашки и ссылки (страница обязана их иметь)

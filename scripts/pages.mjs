@@ -26,7 +26,7 @@
 // Данные (meatwash-content.json, src/data/cars.json):
 //   {{loc:<id>:<поле>}}    name type address hours floor phone tel booking map route card
 //   {{price:<позиция>}}    «от 1 000 ₽» или «стоимость после оценки»
-//   {{program:<i>}}        «Трёхфазная» (в кавычках); {{program:<i>:name|time|price}} — имя,
+//   {{program:<i>}}        «Трёхфазная» (в кавычках; Пакет «Премиум» — как есть); {{program:<i>:name|time|price}} — имя,
 //                          «30 минут», «от 2 150 ₽»; {{program-from:<i>}}, {{program-includes:<i>}}
 //   {{min:<раздел>}}       «2 150 ₽» — минимальная цена раздела каталога (у автомойки — программ)
 //   {{count:sale|sold|studios}}  число; {{count:sold:машина}} → «16 машин» (склонение)
@@ -130,7 +130,8 @@ function textValue(kind, args, token) {
       if (!program || args[0] === '') throw new Error(`Нет программы: ${token}`);
       const i = Number(args[0]);
       switch (args[1] ?? '') {
-        case '': return `«${program[0]}»`;
+        // Название с кавычками внутри (Пакет «Премиум») — без вторых кавычек.
+        case '': return /[«»]/.test(program[0]) ? program[0] : `«${program[0]}»`;
         case 'name': return program[0];
         case 'time': return program[2];
         case 'price': return 'от ' + money(Math.min(...d.programPrices[i]));
@@ -197,6 +198,7 @@ const MOBILE_CTA = {
 //         > span.work-tile__title (заголовок, 1–2 строки, белый поверх затемнения снизу)
 //         > span.work-tile__go (круглая кнопка-стрелка, aria-hidden)
 //     плашка без фото — a.work-tile.work-tile--text: без img, span.work-tile__price («от N ₽»)
+//     плашка машины (car) — ещё span.work-tile__badge «В продаже» или --sold «Продано» (по cars.json)
 //   section.reviews#reviews[aria-labelledby=reviews-title]
 //     > header.reviews__head > h2.reviews__title#reviews-title
 //         + ul.reviews__studios > li.reviews__studio > p.reviews__studio-name, p.reviews__rating
@@ -237,10 +239,12 @@ const tileGo = () => `<span class="work-tile__go" aria-hidden="true">${icon('arr
 function workTile(item, entry, token) {
   const href = escape(tileHref(item, entry, token));
   if (item.car) {
-    const car = [...cars.sold, ...cars.forSale].find((c) => c.id === item.car);
+    const sold = cars.sold.find((c) => c.id === item.car), car = sold || cars.forSale.find((c) => c.id === item.car);
     if (!car) throw new Error(`${token}: нет машины «${item.car}» в src/data/cars.json`);
     const photo = car.photos[0], src = car.src || photo.src, w = car.w || photo.w, h = car.h || photo.h;
-    return `<a class="work-tile" href="${href}"><img class="work-tile__img" src="${escape(src)}" sizes="${TILE_SIZES}" width="${w}" height="${h}" alt="${escape(car.alt || photo.alt)}" loading="lazy" decoding="async"><span class="work-tile__title">${escape(car.title)}</span>${tileGo()}</a>`;
+    // Метка — по списку cars.json: проданная машина не выдаётся за продающуюся.
+    const badge = `<span class="work-tile__badge${sold ? ' work-tile__badge--sold' : ''}">${sold ? 'Продано' : 'В продаже'}</span>`;
+    return `<a class="work-tile" href="${href}"><img class="work-tile__img" src="${escape(src)}" sizes="${TILE_SIZES}" width="${w}" height="${h}" alt="${escape(car.alt || photo.alt)}" loading="lazy" decoding="async">${badge}<span class="work-tile__title">${escape(car.title)}</span>${tileGo()}</a>`;
   }
   if (!item.title) throw new Error(`${token}: у плашки нет title`);
   if (item.img) return `<a class="work-tile" href="${href}">${tileImg(item)}<span class="work-tile__title">${escape(item.title)}</span>${tileGo()}</a>`;
@@ -263,13 +267,19 @@ function renderRelated(ids, entry, token) {
 const stars = (n) => Array.from({length: 5}, (_, i) => icon('star', i < Math.round(n) ? 'review__star' : 'review__star review__star--off')).join('');
 const score = (n) => n.toFixed(1).replace('.', ',');
 const shortDate = (iso) => humanDate(iso).replace(/ г\.$/, '');
+const BOTH_STUDIOS = new Set(['wash', 'detailing']);
 function renderReviews(topic, token) {
   const r = d.reviews;
   if (!r?.items?.length) throw new Error(`${token}: нет отзывов в meatwash-content.json (reviews)`);
   if (topic && !TOPIC_IDS.has(topic)) throw new Error(`${token}: нет темы «${topic}»`);
   const items = topic ? r.items.filter((x) => x.topics?.includes(topic)) : r.items;
   if (!items.length) throw new Error(`${token}: нет отзывов с темой «${topic}»`);
-  const studios = topic ? r.studios.filter((s) => items.some((x) => x.studio === s.id)) : r.studios;
+  // Где делают работу темы: оклейка и кузов — только в Технопарке (студии отзывов темы),
+  // мойка и детейлинг — в обеих студиях: рейтинг показываем у каждой студии темы.
+  const topicStudios = topic && !BOTH_STUDIOS.has(topic) ? new Set(items.map((x) => x.studio)) : new Set(r.studios.map((s) => s.id));
+  // Меньше трёх отзывов по теме — добираем отзывы той же студии (ряд не пустует).
+  for (const x of r.items) if (items.length < 3 && !items.includes(x) && topicStudios.has(x.studio)) items.push(x);
+  const studios = r.studios.filter((s) => topicStudios.has(s.id));
   const name = (id) => loc(id)?.name ?? (() => { throw new Error(`reviews: нет студии ${id}`); })();
   return `<section class="reviews" id="reviews" aria-labelledby="reviews-title">
   <header class="reviews__head">
@@ -284,7 +294,7 @@ ${studios.map((s) => `      <li class="reviews__studio">
     </ul>
     <p class="reviews__asof">Рейтинг и отзывы — с Яндекс Карт на ${escape(humanDate(r.asOf))}</p>
   </header>
-  <ul class="reviews__list" role="list">
+  <ul class="reviews__list" role="list" tabindex="0" aria-label="Отзывы клиентов">
 ${items.map((x) => `    <li class="reviews__item">
       <figure class="review">
         <span class="review__stars" role="img" aria-label="Оценка ${x.rating} из 5">${stars(x.rating)}</span>

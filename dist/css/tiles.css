@@ -48,6 +48,14 @@
   transition: transform 1.2s var(--expo);
 }
 .work-tile:hover .work-tile__img, .work-tile:focus-visible .work-tile__img { transform: scale(1.05); }
+/* Метка машины в ряду «Продажа»: «В продаже» или «Продано» (по cars.json) — слева сверху. */
+.work-tile__badge {
+  position: absolute; top: var(--pad); left: var(--pad);
+  padding: 6px 12px; border-radius: 999px;
+  background: rgb(255 255 255 / .92); color: #141414;
+  font: 500 13px/1.2 var(--sans); letter-spacing: .01em;
+}
+.work-tile__badge--sold { background: rgb(20 20 20 / .62); color: #fff; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 /* Заголовок: последняя строка — по центру круглой кнопки. */
 .work-tile__title {
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
@@ -169,6 +177,8 @@
   columns: 3; column-gap: var(--md);
 }
 .reviews__item { break-inside: avoid; margin-bottom: var(--md); }
+/* Список фокусируемый (tabindex=0): на телефоне ленту листают стрелками и в Safari. */
+.reviews__list:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: var(--r-lg); }
 .review {
   display: flex; flex-direction: column; gap: var(--sm);
   margin: 0;

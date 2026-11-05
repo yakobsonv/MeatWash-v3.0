@@ -353,7 +353,7 @@
     </li>
     <li class="sec-limits__item">
       <h3>Керамика не&nbsp;остановит камень</h3>
-      <p>Покрытие защищает лак от&nbsp;грязи, реагентов и&nbsp;мелких царапин при&nbsp;мойке. От&nbsp;сколов защищает только плёнка.</p>
+      <p>Покрытие защищает лак от&nbsp;грязи и&nbsp;реагентов и&nbsp;снижает риск мелких царапин при&nbsp;мойке. От&nbsp;сколов защищает только плёнка.</p>
       <a class="link-arrow" href="wrap#price-film">Оклейка плёнкой<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
     </li>
     <li class="sec-limits__item">
@@ -484,7 +484,7 @@
     </ul>
     <p class="reviews__asof">Рейтинг и&nbsp;отзывы&nbsp;— с&nbsp;Яндекс Карт на&nbsp;5&nbsp;ноября 2026&nbsp;г.</p>
   </header>
-  <ul class="reviews__list" role="list">
+  <ul class="reviews__list" role="list" tabindex="0" aria-label="Отзывы клиентов">
     <li class="reviews__item">
       <figure class="review">
         <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
@@ -502,7 +502,7 @@
     <li class="reviews__item">
       <figure class="review">
         <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
-        <blockquote class="review__text"><p>Обратился к&nbsp;ребятам отполировать автомобиль, ребята предложили комплект:полировка, керамика, химчистка по&nbsp;очень вкусной цене. […] ребята уделили четкое внимание к&nbsp;каждой зоне автомобиля, дали рекомендации по&nbsp;уходу в&nbsp;дальнейшем. Теперь автомобиль сияет, из-за&nbsp;этого сияю и&nbsp;я!</p></blockquote>
+        <blockquote class="review__text"><p>Обратился к&nbsp;ребятам отполировать автомобиль, ребята предложили комплект:полировка, керамика, химчистка по&nbsp;очень вкусной цене. […] ребята уделили четкое внимание к&nbsp;каждой зоне автомобиля, дали рекомендации по&nbsp;уходу в&nbsp;дальнейшем. Теперь автомобиль сияет, из-за&nbsp;этого сияю и&nbsp;я! […]</p></blockquote>
         <figcaption class="review__meta"><span class="review__author">Илмир</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-07-22">22&nbsp;июля 2026</time></figcaption>
       </figure>
     </li>
@@ -737,12 +737,14 @@
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
   <h2 class="dialog__title" id="request-title" tabindex="-1">Оставьте заявку</h2>
   <p class="dialog__context" id="request-context" hidden></p>
-  <p class="dialog__lead" id="request-lead">Администратор студии перезвонит и&nbsp;ответит на&nbsp;вопросы.</p>
+  <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
+       «Администратор студии перезвонит и ответит на вопросы». -->
+  <p class="dialog__lead" id="request-lead">Расскажите, что&nbsp;нужно машине,&nbsp;— или&nbsp;позвоните в&nbsp;студию.</p>
   <form class="request ym-hide-content" data-request-form novalidate>
     <div class="request__card request__about">
       <label class="request__field"><span>Направление <b aria-hidden="true">*</b></span><span class="request__select"><select name="topic" required aria-describedby="request-topic-error" data-request-topic><option value="">Выберите направление</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></span><small class="request__error" id="request-topic-error" data-error-for="topic"></small></label>
       <div class="request__online" data-request-online hidden>
-        <p class="request__online-line">или&nbsp;запишитесь онлайн: <a href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">Мясницкая<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a> · <a href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark">Технопарк<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a></p>
+        <p class="request__online-line">или&nbsp;запишитесь онлайн: <a href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">Мясницкая<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a><span data-branch-sep> · </span><a href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark">Технопарк<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a></p>
         <p class="request__online-note" data-request-online-note hidden></p>
         <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
       </div>

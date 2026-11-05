@@ -22,12 +22,14 @@
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку">{{icon:close}}</button></form>
   <h2 class="dialog__title" id="request-title" tabindex="-1">Оставьте заявку</h2>
   <p class="dialog__context" id="request-context" hidden></p>
-  <p class="dialog__lead" id="request-lead">Администратор студии перезвонит и ответит на вопросы.</p>
+  <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
+       «Администратор студии перезвонит и ответит на вопросы». -->
+  <p class="dialog__lead" id="request-lead">Расскажите, что нужно машине, — или позвоните в студию.</p>
   <form class="request ym-hide-content" data-request-form novalidate>
     <div class="request__card request__about">
       <label class="request__field"><span>Направление <b aria-hidden="true">*</b></span><span class="request__select"><select name="topic" required aria-describedby="request-topic-error" data-request-topic><option value="">Выберите направление</option></select>{{icon:chevron-down}}</span><small class="request__error" id="request-topic-error" data-error-for="topic"></small></label>
       <div class="request__online" data-request-online hidden>
-        <p class="request__online-line">или запишитесь онлайн: <a href="{{loc:myasnitskaya:booking}}" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">{{loc:myasnitskaya:name}}<span class="sr"> — онлайн-запись на автомойку, откроется в новой вкладке</span></a> · <a href="{{loc:technopark:booking}}" target="_blank" rel="noopener noreferrer" data-branch="technopark">{{loc:technopark:name}}<span class="sr"> — онлайн-запись на автомойку, откроется в новой вкладке</span></a></p>
+        <p class="request__online-line">или запишитесь онлайн: <a href="{{loc:myasnitskaya:booking}}" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">{{loc:myasnitskaya:name}}<span class="sr"> — онлайн-запись на автомойку, откроется в новой вкладке</span></a><span data-branch-sep> · </span><a href="{{loc:technopark:booking}}" target="_blank" rel="noopener noreferrer" data-branch="technopark">{{loc:technopark:name}}<span class="sr"> — онлайн-запись на автомойку, откроется в новой вкладке</span></a></p>
         <p class="request__online-note" data-request-online-note hidden></p>
         <p class="dialog__yc">Онлайн-запись откроется в YCLIENTS <span class="nw">(<span lang="en">{{brand:legacy}}</span>)</span></p>
       </div>

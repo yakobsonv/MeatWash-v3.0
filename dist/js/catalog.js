@@ -265,12 +265,16 @@ function setupBody(signal) {
 function setupScrollRegions(signal) {
   const regions = [...document.querySelectorAll('[data-scroll-region]')];
   if (!regions.length || !('ResizeObserver' in window)) return;
+  // Пока справа есть что листать — класс has-more: край ленты гаснет (services.css), видно,
+  // что таблица продолжается.
+  const edge = (el) => el.classList.toggle('has-more', el.scrollWidth - el.clientWidth - el.scrollLeft > 4);
   const sync = (el) => {
     if (el.scrollWidth > el.clientWidth + 1) el.setAttribute('tabindex', '0');
     else if (document.activeElement !== el) el.removeAttribute('tabindex');
+    edge(el);
   };
   const observer = new ResizeObserver((entries) => entries.forEach((entry) => sync(entry.target)));
-  regions.forEach((el) => { sync(el); observer.observe(el); });
+  regions.forEach((el) => { sync(el); observer.observe(el); el.addEventListener('scroll', () => edge(el), { passive: true, signal }); });
   signal.addEventListener('abort', () => observer.disconnect());
 }
 

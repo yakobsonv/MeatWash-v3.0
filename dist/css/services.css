@@ -289,6 +289,8 @@ ol.programs {
   scrollbar-width: thin; scrollbar-color: rgb(var(--on-rgb) / .24) transparent;
 }
 .compare__scroll:focus-visible { outline-offset: 4px; }
+/* Таблица шире окна: правый край гаснет, пока есть что листать (класс has-more — catalog.js). */
+.compare__scroll.has-more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent); }
 .compare__table { width: 100%; min-width: 680px; font-variant-numeric: tabular-nums; }
 .compare__table th, .compare__table td {
   padding: 14px 10px;

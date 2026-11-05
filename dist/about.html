@@ -243,7 +243,7 @@
       </ul>
       <p class="location__detail">Подземный паркинг, −1&nbsp;этаж.<br>Два часа парковки, Wi-Fi&nbsp;и&nbsp;зона ожидания.</p>
       <div class="location__actions">
-        <button class="btn btn--primary location__book" type="button" data-request data-request-context="Студия на Мясницкой">Оставьте заявку<span class="sr">: студия Мясницкая</span></button>
+        <button class="btn btn--primary location__book" type="button" data-request data-request-studio="myasnitskaya" data-request-context="Студия на Мясницкой">Оставьте заявку<span class="sr">: студия Мясницкая</span></button>
         <a class="btn btn--secondary location__route" href="https://yandex.ru/maps/?rtext=~55.761864%2C37.632492&amp;rtt=auto" target="_blank" rel="noopener noreferrer">Маршрут<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> до&nbsp;студии Мясницкая в&nbsp;Яндекс Картах (откроется в&nbsp;новой вкладке)</span></a>
       </div>
     </div>
@@ -269,7 +269,7 @@
       </ul>
       <p class="location__detail">ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж.<br>Полировка, керамика, плёнка, кузовной ремонт и&nbsp;порошковая покраска дисков. Принимаем топливные карты.</p>
       <div class="location__actions">
-        <button class="btn btn--primary location__book" type="button" data-request data-request-context="Студия в Технопарке">Оставьте заявку<span class="sr">: студия Технопарк</span></button>
+        <button class="btn btn--primary location__book" type="button" data-request data-request-studio="technopark" data-request-context="Студия в Технопарке">Оставьте заявку<span class="sr">: студия Технопарк</span></button>
         <a class="btn btn--secondary location__route" href="https://yandex.ru/maps/?rtext=~55.697146%2C37.666144&amp;rtt=auto" target="_blank" rel="noopener noreferrer">Маршрут<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> до&nbsp;студии Технопарк в&nbsp;Яндекс Картах (откроется в&nbsp;новой вкладке)</span></a>
       </div>
     </div>
@@ -426,12 +426,12 @@
 <section class="section about-team" id="team" aria-labelledby="team-title">
   <header class="section-head col-title">
     <h2 id="team-title">Наша команда</h2>
-    <p class="section-head__lead">Всё делаем своей командой: работу с&nbsp;машиной, сопровождение клиента и&nbsp;организацию.</p>
+    <p class="section-head__lead">Студии, сопровождение клиента и&nbsp;организация&nbsp;— на&nbsp;нашей команде, а&nbsp;где&nbsp;задача шире, подключаем партнёров.</p>
   </header>
   <ul class="team col-basic" role="list">
     <li class="team__row">
       <h3>Мастера студий</h3>
-      <p>Автомойка, детейлинг, полировка, оклейка и&nbsp;восстановление&nbsp;— на&nbsp;Мясницкой и&nbsp;в&nbsp;Технопарке.</p>
+      <p>Автомойка, детейлинг и&nbsp;полировка&nbsp;— на&nbsp;Мясницкой и&nbsp;в&nbsp;Технопарке, оклейка плёнкой&nbsp;— в&nbsp;Технопарке.</p>
     </li>
     <li class="team__row">
       <h3>Сопровождение</h3>
@@ -562,12 +562,14 @@
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
   <h2 class="dialog__title" id="request-title" tabindex="-1">Оставьте заявку</h2>
   <p class="dialog__context" id="request-context" hidden></p>
-  <p class="dialog__lead" id="request-lead">Администратор студии перезвонит и&nbsp;ответит на&nbsp;вопросы.</p>
+  <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
+       «Администратор студии перезвонит и ответит на вопросы». -->
+  <p class="dialog__lead" id="request-lead">Расскажите, что&nbsp;нужно машине,&nbsp;— или&nbsp;позвоните в&nbsp;студию.</p>
   <form class="request ym-hide-content" data-request-form novalidate>
     <div class="request__card request__about">
       <label class="request__field"><span>Направление <b aria-hidden="true">*</b></span><span class="request__select"><select name="topic" required aria-describedby="request-topic-error" data-request-topic><option value="">Выберите направление</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></span><small class="request__error" id="request-topic-error" data-error-for="topic"></small></label>
       <div class="request__online" data-request-online hidden>
-        <p class="request__online-line">или&nbsp;запишитесь онлайн: <a href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">Мясницкая<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a> · <a href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark">Технопарк<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a></p>
+        <p class="request__online-line">или&nbsp;запишитесь онлайн: <a href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">Мясницкая<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a><span data-branch-sep> · </span><a href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark">Технопарк<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a></p>
         <p class="request__online-note" data-request-online-note hidden></p>
         <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
       </div>
