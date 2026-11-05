@@ -197,20 +197,23 @@
 </section>
 
 <!-- SHARED:book:START -->
-<!-- Блок записи в конце страницы (план §4.2; есть на «Автомойке и детейлинге», «Работах», «Статьях»
-     и статье). Владелец: WP6, вид — css/dialogs.css. Две карточки студий — прямые ссылки в их
-     онлайн-запись YCLIENTS; телефонов здесь нет — они в подвале сразу ниже. Цвета — из --on*:
-     один и тот же блок работает на тёмной странице и на «бумаге». -->
+<!-- Блок заявки в конце страницы (план §4.2; есть на «Услугах и ценах», «Работах», «Статьях»
+     и статье). Владелец: WP6, тексты 05.11 — исполнитель E, вид — css/dialogs.css. Влад 05.11:
+     все призывы — «Оставьте заявку» (тема страницы — подстановка topic); онлайн-запись YCLIENTS —
+     только мелкой строкой внутри формы, здесь её нет. Карточки студий — звонок в студию.
+     Цвета — из --on*: один и тот же блок работает на тёмной странице и на «бумаге». -->
 <section class="book-block" id="book" aria-labelledby="book-title">
   <div class="book-block__inner">
     <div class="book-block__head">
-      <h2 class="book-block__title" id="book-title">Записаться</h2>
-      <p class="book-block__lead">Выберите студию. Услугу и&nbsp;время&nbsp;— в&nbsp;её&nbsp;<span class="nw">онлайн-записи</span>. Онлайн-запись доступна круглосуточно.</p>
-      <p class="book-block__note">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
+      <h2 class="book-block__title" id="book-title">Оставьте заявку</h2>
+      <p class="book-block__lead">Опишите задачу в&nbsp;заявке или&nbsp;позвоните в&nbsp;студию: администратор подскажет цену и&nbsp;время.</p>
+      <div class="book-block__note actions">
+        <button class="btn btn--primary" type="button" data-request data-request-category="">Оставьте заявку</button>
+      </div>
     </div>
     <div class="book-block__studios">
-      <a class="studio-link" href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer"><strong class="studio-link__name">Мясницкая</strong><span class="studio-link__type">Премиальная автомойка</span><span class="studio-link__address">ул. Мясницкая, 11</span><span class="studio-link__hours">Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
-      <a class="studio-link" href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer"><strong class="studio-link__name">Технопарк</strong><span class="studio-link__type">Детейлинг-центр</span><span class="studio-link__address">пр-т&nbsp;Андропова, 8, стр. 2</span><span class="studio-link__hours">Ежедневно 08:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
+      <a class="studio-link" href="tel:+79300352325"><strong class="studio-link__name">Мясницкая</strong><span class="studio-link__type">Премиальная автомойка</span><span class="studio-link__address">ул. Мясницкая, 11</span><span class="studio-link__hours">+7 (930) 035-23-25</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg></span><span class="sr">&nbsp;— позвонить в&nbsp;студию</span></a>
+      <a class="studio-link" href="tel:+79324916991"><strong class="studio-link__name">Технопарк</strong><span class="studio-link__type">Детейлинг-центр</span><span class="studio-link__address">пр-т&nbsp;Андропова, 8, стр. 2</span><span class="studio-link__hours">+7 (932) 491-69-91</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg></span><span class="sr">&nbsp;— позвонить в&nbsp;студию</span></a>
     </div>
   </div>
 </section>
@@ -288,101 +291,78 @@
 <!-- SHARED:footer:END -->
 
 <!-- SHARED:dialogs:START -->
-<!-- Окна записи, разговора и заявки (план §4.2, §4.7). Владелец: WP6.
+<!-- Окно «Оставьте заявку» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
-     js/request.js и проверок; менять только вместе с ними. В комментариях фигурные скобки
-     подстановок не писать: сборка их подставит или упадёт.
+     js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
+     В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — своя у страницы (поле cta в src/content/pages.mjs):
-     запись на автомойку, звонок в Технопарк на оклейке, вопрос о машине на продаже авто и привозе. -->
+     Нижняя кнопка на телефоне — «Оставьте заявку» с темой страницы (поле topic в src/content/pages.mjs). -->
 <button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="">Оставьте заявку</button>
 
-<!-- Запись: у Мясницкой и Технопарка разные компании в YCLIENTS, поэтому ссылки ведут
-     в свою онлайн-запись, а не на общий адрес. В YCLIENTS обе компании пока называются
-     прежним именем — об этом строка под студиями (поправка критика 17).
-     То же окно без студий — разговор с администратором (js/ui.js, data-mode="talk"):
-     «Обсудить условия» клуба и «Узнать цену», пока заявки с сайта не принимаются
-     (site.requests.endpoint пуст): тогда главное в окне — телефоны. -->
-<dialog class="dialog dialog--booking" id="booking" aria-labelledby="booking-title" data-mode="book">
-  <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <!-- Начальный фокус — на заголовке: на ссылке студии он выглядел выбором по умолчанию. -->
-  <h2 class="dialog__title" id="booking-title" tabindex="-1" autofocus>Записаться</h2>
-  <p class="dialog__context" id="booking-context" hidden></p>
-  <p class="dialog__lead" id="booking-lead" hidden>Администратор ответит на&nbsp;вопросы и&nbsp;подберёт время.</p>
-  <p class="dialog__lead" id="booking-hint">Выберите студию. Услугу и&nbsp;время&nbsp;— в&nbsp;её&nbsp;<span class="nw">онлайн-записи</span>.</p>
-  <div class="dialog__branches">
-    <a class="dialog__branch studio-link" href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya"><strong class="studio-link__name">Мясницкая</strong><span class="studio-link__type dialog__branch-type">Премиальная автомойка</span><span class="studio-link__address">ул. Мясницкая, 11</span><span class="studio-link__hours dialog__branch-hours">Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
-    <a class="dialog__branch studio-link" href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark"><strong class="studio-link__name">Технопарк</strong><span class="studio-link__type dialog__branch-type">Детейлинг-центр</span><span class="studio-link__address">пр-т&nbsp;Андропова, 8, стр. 2</span><span class="studio-link__hours dialog__branch-hours">Ежедневно 08:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
-  </div>
-  <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
-  <!-- Автомойка и другие работы выбраны вместе (гараж): цену остального — «Узнать цену». -->
-  <p class="dialog__note dialog__note--request" id="booking-request" hidden><span data-booking-request-text></span> <button class="link-arrow" type="button" data-request data-booking-request>Узнать цену<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></p>
-  <p class="dialog__aside" id="booking-other">Химчистка, полировка, плёнка, ремонт&nbsp;— по&nbsp;телефону: администратор назовёт цену.</p>
-  <!-- Порядок телефонов меняет ui.js: про плёнку и защиту первым звонят в Технопарк. -->
-  <div class="dialog__phones">
-    <a href="tel:+79300352325" data-phone="myasnitskaya"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая&nbsp;— автомойка</span><strong>+7 (930) 035-23-25</strong></a>
-    <a href="tel:+79324916991" data-phone="technopark"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк&nbsp;— детейлинг и&nbsp;плёнка</span><strong>+7 (932) 491-69-91</strong></a>
-  </div>
-</dialog>
-
-<!-- Заявка с фото: всё, кроме автомойки (детейлинг, оклейка, стёкла и другие работы).
-     Открывается кнопками «Узнать цену», только когда приём включён (site.requests.endpoint
-     задан и сайт в hosts); до того те же кнопки открывают окно #booking с телефонами.
-     Логика — js/request.js, грузится по первому нажатию. Отправка — только на адрес
-     site.requests.endpoint (meatwash-content.json; на meatwash.ru — api/request.php); пока
-     его нет, форма не отправляет и не пишет «отправлено» — предлагает позвонить в студию.
-     Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
+<!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
+     data-request-services, о чём заявка — data-request-context) и data-book у автомойки (тема
+     «Автомойка», программа или работы мойки). Логика — js/request.js, грузится по первому нажатию.
+     Отправка — только на адрес site.requests.endpoint (meatwash-content.json; на meatwash.ru —
+     api/request.php) и только на сайтах из hosts. Пока адреса нет, «Отправить» проверяет поля и
+     честно говорит, что заявка не отправлена, с телефонами студий; введённое остаётся черновиком.
+     Онлайн-запись YCLIENTS — только мелкой строкой при теме «Автомойка»: у Мясницкой и Технопарка
+     разные компании в YCLIENTS, ссылки ведут каждая в свою запись (с выбранной программой в корзине,
+     js/yclients.js). Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
      это обещает Политика, п. 2.1. -->
-<dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title">
+<dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Заявка с&nbsp;фото</h2>
-  <p class="dialog__lead">Детейлинг, оклейка, стёкла и&nbsp;другие работы, кроме автомойки. Мастер посмотрит фото, оценит объём работ и&nbsp;свяжется с&nbsp;вами.</p>
-  <p class="dialog__note request__wash" data-request-wash hidden><span data-request-wash-text></span> <button class="link-arrow" type="button" data-book data-request-wash-book>Записаться на&nbsp;автомойку<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></p>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставьте заявку</h2>
+  <p class="dialog__context" id="request-context" hidden></p>
+  <p class="dialog__lead" id="request-lead">Администратор студии перезвонит и&nbsp;ответит на&nbsp;вопросы.</p>
   <form class="request ym-hide-content" data-request-form novalidate>
-    <fieldset class="request__card request__services">
-      <legend class="request__legend">Работы <b aria-hidden="true">*</b></legend>
-      <ul class="request__chips" data-request-chips aria-label="Выбранные работы"></ul>
-      <label class="request__add"><span class="visually-hidden">Добавить работу</span><select data-request-add aria-describedby="request-services-error"><option value="">+ Добавить работу</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></label>
-      <p class="request__error" id="request-services-error" data-error-for="services"></p>
-    </fieldset>
+    <div class="request__card request__about">
+      <label class="request__field"><span>Направление <b aria-hidden="true">*</b></span><span class="request__select"><select name="topic" required aria-describedby="request-topic-error" data-request-topic><option value="">Выберите направление</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></span><small class="request__error" id="request-topic-error" data-error-for="topic"></small></label>
+      <div class="request__online" data-request-online hidden>
+        <p class="request__online-line">или&nbsp;запишитесь онлайн: <a href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">Мясницкая<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a> · <a href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark">Технопарк<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a></p>
+        <p class="request__online-note" data-request-online-note hidden></p>
+        <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
+      </div>
+      <div class="request__services" data-request-services-box hidden>
+        <p class="request__legend" id="request-services-label">Работы</p>
+        <ul class="request__chips" data-request-chips aria-labelledby="request-services-label"></ul>
+        <label class="request__add request__select" data-request-add-box><span class="visually-hidden">Добавить работу</span><select data-request-add><option value="">+ Добавить работу</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></label>
+      </div>
+    </div>
     <div class="request__card">
       <div class="request__grid">
         <label class="request__field"><span>Имя <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="name" autocomplete="name" required maxlength="80" aria-describedby="request-name-error"><small class="request__error" id="request-name-error" data-error-for="name"></small></label>
-        <label class="request__field"><span>Телефон или&nbsp;Telegram <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="contact" autocomplete="tel" required maxlength="100" aria-describedby="request-contact-hint request-contact-error"><small id="request-contact-hint">Как&nbsp;с&nbsp;вами связаться</small><small class="request__error" id="request-contact-error" data-error-for="contact"></small></label>
-        <label class="request__field request__field--wide"><span>Автомобиль</span><input class="ym-disable-keys" name="car" maxlength="120" placeholder="Марка, модель, год" autocomplete="off"></label>
+        <label class="request__field"><span>Телефон <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="24" placeholder="+7 (___) ___-__-__" aria-describedby="request-phone-error"><small class="request__error" id="request-phone-error" data-error-for="phone"></small></label>
       </div>
-      <fieldset class="request__branch">
-        <legend class="request__legend">Студия</legend>
-        <label><input type="radio" name="branch" value="Любая" checked><span>Любая</span></label>
-        <label><input type="radio" name="branch" value="Мясницкая"><span>Мясницкая</span></label>
-        <label><input type="radio" name="branch" value="Технопарк"><span>Технопарк</span></label>
-      </fieldset>
-      <label class="request__field"><span>Комментарий</span><textarea class="ym-disable-keys" name="comment" rows="3" maxlength="1000"></textarea></label>
+      <label class="request__field"><span>Комментарий <span class="request__optional">— необязательно</span></span><textarea class="ym-disable-keys" name="comment" rows="3" maxlength="1000" placeholder="Автомобиль, что нужно сделать, удобное время"></textarea></label>
     </div>
-    <div class="request__card request__photos" role="group" aria-labelledby="request-photos-label">
-      <p class="request__legend" id="request-photos-label">Фото</p>
+    <!-- Фото — только когда приём заявок подключён (без адреса приёма их некуда отправить). -->
+    <div class="request__card request__photos" role="group" aria-labelledby="request-photos-label" data-request-photos hidden>
+      <p class="request__legend" id="request-photos-label">Фото <span class="request__optional">— необязательно</span></p>
       <p class="request__rules" id="request-photos-rules" data-request-rules>До&nbsp;5&nbsp;фото: JPG, PNG, WebP или&nbsp;HEIC, до&nbsp;10&nbsp;МБ&nbsp;каждое.</p>
       <ul class="request__previews" data-request-previews></ul>
       <label class="btn btn--secondary request__pick">Добавить фото<input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple data-request-files aria-describedby="request-photos-rules request-photos-error"></label>
       <p class="request__error" id="request-photos-error" role="status" aria-live="polite" data-error-for="photos"></p>
     </div>
     <div class="request__card request__send">
-      <label class="request__consent"><input type="checkbox" name="consent" required aria-describedby="request-consent-error"><span>Даю <a href="consent-request" target="_blank" rel="noopener">согласие на&nbsp;обработку персональных данных</a> для&nbsp;ответа на&nbsp;заявку. Подробнее&nbsp;— в&nbsp;<a href="privacy" target="_blank" rel="noopener">Политике</a>.</span></label>
+      <label class="request__consent"><input type="checkbox" name="consent" required aria-describedby="request-consent-error"><span>Даю <a href="consent-request" target="_blank" rel="noopener">согласие на&nbsp;обработку моих персональных данных</a> для&nbsp;ответа на&nbsp;заявку. Подробнее&nbsp;— в&nbsp;<a href="privacy" target="_blank" rel="noopener">Политике</a>.</span></label>
       <p class="request__error" id="request-consent-error" data-error-for="consent"></p>
       <!-- Ловушка для спам-ботов (api/request.php отклоняет заявку, если поле заполнено):
            человек его не видит, Tab на него не попадает, скринридер его не читает. -->
       <div class="visually-hidden" aria-hidden="true"><label>Не&nbsp;заполняйте это&nbsp;поле <input name="mw_extra" tabindex="-1" autocomplete="off"></label></div>
       <p class="request__error request__error--form" role="alert" data-request-error hidden></p>
-      <div class="request__actions" data-request-actions hidden>
+      <div class="request__actions" data-request-actions>
         <button class="btn btn--primary btn--block" type="submit" data-request-submit>Отправить заявку</button>
       </div>
-      <div class="request__offline" data-request-offline hidden>
-        <p><strong>Отправка заявок с&nbsp;сайта пока не&nbsp;подключена.</strong> Позвоните в&nbsp;студию&nbsp;— администратор примет заявку. Введённое здесь сохранится до&nbsp;закрытия вкладки.</p>
-        <div class="dialog__phones">
-          <a href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая</span><strong>+7 (930) 035-23-25</strong></a>
-          <a href="tel:+79324916991"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк</span><strong>+7 (932) 491-69-91</strong></a>
+      <!-- Адреса приёма нет: после проверки полей — это сообщение (фокус на нём), введённое
+           остаётся. Порядок телефонов меняет request.js: по оклейке и кузову первым — Технопарк. -->
+      <div class="request__offline" data-request-offline role="alert" tabindex="-1" hidden>
+        <p class="request__offline-title"><strong>Заявка не&nbsp;отправлена: приём заявок с&nbsp;сайта подключаем.</strong></p>
+        <p>Позвоните в&nbsp;студию&nbsp;— администратор примет заявку по&nbsp;телефону. Введённое здесь сохранится до&nbsp;закрытия вкладки.</p>
+        <div class="dialog__phones" data-request-phones>
+          <a href="tel:+79300352325" data-phone="myasnitskaya"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая&nbsp;— Премиальная автомойка</span><strong>+7 (930) 035-23-25</strong></a>
+          <a href="tel:+79324916991" data-phone="technopark"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк&nbsp;— Детейлинг-центр</span><strong>+7 (932) 491-69-91</strong></a>
         </div>
       </div>
       <p class="request__required"><b aria-hidden="true">*</b>&nbsp;— обязательные поля</p>
@@ -390,7 +370,7 @@
   </form>
   <div class="request__done" data-request-done hidden tabindex="-1">
     <p class="request__donetitle">Заявка отправлена</p>
-    <p>Мастер посмотрит фото и&nbsp;свяжется с&nbsp;вами по&nbsp;указанному контакту.</p>
+    <p>Администратор студии свяжется с&nbsp;вами по&nbsp;указанному телефону.</p>
     <form method="dialog"><button class="btn btn--secondary">Закрыть</button></form>
   </div>
 </dialog>

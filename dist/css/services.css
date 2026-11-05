@@ -401,3 +401,7 @@ body[data-page="services"] .teasers { padding-bottom: var(--xl); }
 .works-m4__links { margin-top: var(--xs); }
 
 .works-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: var(--lg); font-size: var(--fs-md); }
+
+/* Плашки направлений под первым экраном (интеграция 05.11): четыре плашки — в один ряд,
+   а не 3 + 1; до 1000 px — лента tiles.css. */
+@media (min-width: 1000px) { .services-dirs .work-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

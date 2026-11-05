@@ -78,8 +78,9 @@ const mainOf = (text) => text.match(/<main id="main">([\s\S]*?)<\/main>/)?.[1] ?
 // Нарушения ТОЛЬКО в этих местах — предупреждения (в check:release — ошибки); в шапке, шторке,
 // подвале, нижней кнопке и на новых страницах — ошибки сразу. На сведении интегратор удаляет
 // из списков всё, что исполнители сдали (пустые списки — цель).
-const PENDING_BODIES = new Set(['index.html', 'services.html', 'wrap.html', 'works.html', 'import.html', 'auto.html', 'about.html', 'articles.html', 'article-avto-k-zime.html', 'kit.html']);
-const PENDING_SHARED = new Set(['dialogs', 'book', 'locations', 'membership']);
+// Сведение 05.11 (шаг 3): все тела и общие части сданы — списки пусты, любое нарушение — ошибка.
+const PENDING_BODIES = new Set([]);
+const PENDING_SHARED = new Set([]);
 // Где в странице стоит позиция: общая часть (SHARED:<имя>), тело <main> или оболочка.
 const placeOf = (text, at) => {
   for (const [, name, body] of text.matchAll(/<!-- SHARED:([\w-]+):START -->([\s\S]*?)<!-- SHARED:\1:END -->/g)) {

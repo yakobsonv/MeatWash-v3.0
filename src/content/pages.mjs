@@ -103,7 +103,7 @@ export const REGISTRY = [
     shared: WITH_BOOK,
     // garage.css — окно 3D-гаража (решение Влада 27.10: гараж остаётся блоком на этой странице,
     // 3D грузится только по нажатию). Владелец garage.css / garage.js / config.js — WP3.
-    css: ['services.css', 'garage.css'],
+    css: ['services.css', 'tiles.css', 'garage.css'],
     preload: heroA('services'), ogImage: 'assets/img/services/og.webp',
     date: '2026-10-27', sitemap: { changefreq: 'monthly', priority: '0.9' },
   },

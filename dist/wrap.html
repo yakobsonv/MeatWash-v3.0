@@ -181,21 +181,27 @@
 <!-- SHARED:header:END -->
 
 <main id="main">
-<!-- Тело /wrap (план §3.3). Владелец: WP3. Прежнее тело — git show fd8d88d:src/content/wrap.html:
-     все его тексты здесь. Герой C (P05) без фото: водяной знак «PPF»; переключатель
-     «Прозрачная / Цветная» меняет строку под заголовком без JS (services.css, :has).
-     Фото Технопарка (автор «ГЕОмаркетинг») на новые страницы не ставим, пока нет ответа
-     о правах (поправка 10). Оклеивают только в Технопарке — финальный блок со звонком туда,
-     общего блока записи на автомойку здесь нет. Надзаголовков и нумерации шагов нет (решение Влада). -->
+<!-- Тело /wrap «Оклейка автомобиля плёнкой» (задание Влада 05.11, исполнитель D). Скелет — research/PLAN.md
+     и research/privecar-structure.md (хаб оклейки), тексты свои. Только Технопарк: оклейка есть только там.
+     В каталоге только полиуретан (прозрачный и цветной): зоны риска, весь кузов, фары, лобовое — винила нет,
+     о нём не писать. «Премиальные материалы и гарантия качества» убраны: марки плёнок и гарантия — пометки
+     «нужно от клиента». BMW M4 как работа студии не упоминается (нет подтверждения, аудит 03.11).
+     Цены — подстановками из каталога; строки цен подраздела price-film — подстановка prices
+     (якорь #price-film); лобовое стекло — ценой и кнопкой в карточке «Фары и лобовое стекло»: его подраздел
+     price-glass стоит на /detailing.
+     Якоря #wrap-kind, #wrap-prices, #wrap-steps, #wrap-call проверяет check (старые ссылки).
+     Стили — блок «D: wrap + bodywork» в конце dist/css/section.css (классы ds-*); герой и переключатель
+     плёнки — services.css (wrap-hero). Призывы — только «Оставьте заявку» (data-request, тема wrap).
+     В комментариях фигурные скобки подстановок не писать. -->
 <section class="hero-c wrap-hero" aria-labelledby="page-title" data-page-bar-after>
-  <a class="back-link" href="services"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-left"/></svg><span>Автомойка / Детейлинг</span></a>
+  <a class="back-link" href="services"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-left"/></svg><span>Услуги и&nbsp;цены</span></a>
   <p class="hero-c__mark" aria-hidden="true" lang="en" data-mark="PPF"></p>
   <fieldset class="segmented wrap-hero__kind">
     <legend class="sr">Плёнка</legend>
     <label><input type="radio" name="wrap-kind" value="clear" checked><span>Прозрачная</span></label>
     <label><input type="radio" name="wrap-kind" value="color"><span>Цветная</span></label>
   </fieldset>
-  <h1 id="page-title">Оклейка полиуретаном</h1>
+  <h1 id="page-title">Оклейка автомобиля плёнкой</h1>
   <p class="chip wrap-hero__where">Только в&nbsp;Технопарке</p>
   <div class="hero-c__lead wrap-hero__lines" aria-live="polite">
     <p class="wrap-hero__line" data-kind="clear">Машина остаётся в&nbsp;заводском цвете, а&nbsp;лак&nbsp;— под&nbsp;защитой от&nbsp;сколов, песка и&nbsp;реагентов.</p>
@@ -203,39 +209,62 @@
   </div>
   <p class="hero-c__price">Фары&nbsp;— от&nbsp;10&nbsp;000&nbsp;₽ · зоны риска и&nbsp;весь кузов&nbsp;— после осмотра</p>
   <div class="hero-c__actions actions">
-    <button class="btn btn--primary" type="button" data-request data-request-category="wrap" data-request-services="Оклейка плёнкой">Узнать цену</button>
-    <a class="btn btn--secondary" href="tel:+79324916991">Позвонить в&nbsp;Технопарк</a>
-    <a class="btn btn--ghost" href="works">Наши работы</a>
+    <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на&nbsp;оклейку плёнкой</span></button>
+    <a class="btn btn--secondary" href="#wrap-prices">Что&nbsp;оклеиваем</a>
   </div>
 </section>
 
 <div class="page-bar" data-page-bar>
-  <p class="page-bar__title">Оклейка полиуретаном</p>
+  <p class="page-bar__title">Оклейка плёнкой</p>
   <div class="page-bar__actions">
-    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap" data-request-services="Оклейка плёнкой">Узнать цену</button>
-    <a class="btn btn--compact btn--secondary" href="tel:+79324916991">Позвонить<span class="sr"> в&nbsp;Технопарк</span></a>
+    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на&nbsp;оклейку плёнкой</span></button>
   </div>
   <span class="page-bar__progress" aria-hidden="true"></span>
 </div>
 
+<section class="section section--tight ds-facts" aria-label="Коротко о цене и месте">
+  <ul class="number-tiles col-basic" role="list">
+    <li class="number-tile"><b>от&nbsp;10&nbsp;000&nbsp;₽</b><span>оклейка фар</span></li>
+    <li class="number-tile"><b>от&nbsp;30&nbsp;000&nbsp;₽</b><span>плёнка на&nbsp;лобовое стекло</span></li>
+    <li class="number-tile"><b>После осмотра</b><span>зоны риска и&nbsp;весь кузов</span></li>
+    <li class="number-tile"><b>Технопарк</b><span>ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж</span></li>
+  </ul>
+</section>
+
+<section class="section" id="wrap-protect" aria-labelledby="wrap-protect-title">
+  <header class="section-head">
+    <h2 id="wrap-protect-title">Зачем клеить плёнку</h2>
+    <p class="section-head__lead">Полиуретановая плёнка&nbsp;— эластичный слой поверх заводского лака. Удар, песок и&nbsp;химия сначала достаются ей, а&nbsp;не&nbsp;краске.</p>
+  </header>
+  <div class="col-basic ds-split">
+    <ul class="ds-ticks" role="list">
+      <li><b>Сколы.</b> Камни из-под&nbsp;колёс впереди идущих машин бьют в&nbsp;капот, бампер и&nbsp;фары.</li>
+      <li><b>Пескоструй.</b> На&nbsp;трассе песок постепенно матирует переднюю часть кузова.</li>
+      <li><b>Мелкие царапины.</b> Ветки, сумки, ключи и&nbsp;ногти у&nbsp;дверных ручек.</li>
+      <li><b>Реагенты и&nbsp;соль.</b> Зимой они оседают на&nbsp;порогах и&nbsp;нижней части дверей.</li>
+      <li><b>Насекомые и&nbsp;смола.</b> Летом налёт въедается в&nbsp;лак, если его&nbsp;вовремя не&nbsp;смыть.</li>
+    </ul>
+    <p class="ds-note">Плёнка заметно снижает риск повреждений, но&nbsp;не&nbsp;делает кузов неуязвимым: крупный камень на&nbsp;скорости может повредить и&nbsp;её. Тогда меняют плёнку на&nbsp;детали, а&nbsp;лак под&nbsp;ней обычно остаётся целым.</p>
+  </div>
+</section>
+
 <section class="section" id="wrap-kind" aria-labelledby="wrap-kind-title">
   <header class="section-head">
     <h2 id="wrap-kind-title">Прозрачная или&nbsp;цветная</h2>
-    <p class="section-head__lead">Полиуретан&nbsp;— прочная защитная плёнка, прозрачная или&nbsp;цветная. Прозрачная бережёт заводской лак от&nbsp;сколов, песка и&nbsp;реагентов. Цветная ещё и&nbsp;меняет цвет машины. Премиальные материалы и&nbsp;гарантия качества.</p>
+    <p class="section-head__lead">Обе плёнки&nbsp;— полиуретан, разница в&nbsp;том, что&nbsp;вы&nbsp;видите на&nbsp;машине.</p>
   </header>
-  <div class="cards cards--3 col-basic wrap-kinds">
-    <article class="card wrap-kinds__item">
+  <div class="cards cards--3 col-basic">
+    <article class="card">
       <h3>Прозрачная плёнка</h3>
-      <p>Машина остаётся в&nbsp;заводском цвете, а&nbsp;лак&nbsp;— под&nbsp;защитой от&nbsp;сколов, царапин и&nbsp;реагентов.</p>
+      <p>Почти не&nbsp;видна на&nbsp;кузове. Машина остаётся в&nbsp;заводском цвете, лак&nbsp;— под&nbsp;защитой.</p>
     </article>
-    <article class="card wrap-kinds__item">
+    <article class="card">
       <h3>Цветная плёнка</h3>
-      <p>Новый цвет и&nbsp;та&nbsp;же защита. Например, BMW M4&nbsp;стал серым&nbsp;— цвет Brooklyn Grey.</p>
-      <a class="link-arrow" href="https://t.me/meat_wash/4" target="_blank" rel="noopener">Видео работы<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> в&nbsp;Telegram (откроется в&nbsp;новой вкладке)</span></a>
+      <p>Меняет цвет машины без&nbsp;покраски и&nbsp;защищает так&nbsp;же, как&nbsp;прозрачная. Заводской цвет остаётся под&nbsp;плёнкой&nbsp;— к&nbsp;нему можно вернуться.</p>
     </article>
-    <article class="card card--outline wrap-kinds__item">
+    <article class="card card--outline">
       <h3>Где&nbsp;оклеиваем</h3>
-      <p>Только в&nbsp;детейлинг-центре Технопарк: ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж.</p>
+      <p>Только в&nbsp;детейлинг-центре Технопарк: пр-т&nbsp;Андропова, 8, стр. 2, ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж.</p>
       <a class="link-arrow" href="about#map-technopark">На&nbsp;карте<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
     </article>
   </div>
@@ -244,35 +273,34 @@
 <section class="section" id="wrap-prices" aria-labelledby="wrap-prices-title">
   <header class="section-head">
     <h2 id="wrap-prices-title">Что&nbsp;оклеиваем</h2>
-    <p class="section-head__lead">Цену для&nbsp;вашей машины назовёт администратор Технопарка.</p>
+    <p class="section-head__lead">Можно защитить только то, что&nbsp;чаще страдает, а&nbsp;можно весь кузов. Объём подберём на&nbsp;осмотре вместе с&nbsp;вами.</p>
   </header>
-  <div class="col-basic">
-  <ul class="cards wrap-prices" role="list">
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Зоны риска</h3>
-      <p>Капот, фары, бампер и&nbsp;пороги&nbsp;— сюда первыми летят камни и&nbsp;реагенты.</p>
-      <p class="wrap-price__value">стоимость после оценки</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Оклейка зон риска">Узнать цену<span class="sr">: зоны риска</span></button>
-    </li>
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Весь кузов</h3>
-      <p>Полная оклейка прозрачной или&nbsp;цветной плёнкой.</p>
-      <p class="wrap-price__value">стоимость после оценки</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Полная оклейка">Узнать цену<span class="sr">: весь кузов</span></button>
-    </li>
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Фары</h3>
-      <p>Защитная плёнка на&nbsp;фары.</p>
-      <p class="wrap-price__value">от&nbsp;10&nbsp;000&nbsp;₽</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Оклейка фар плёнкой">Узнать цену<span class="sr">: фары</span></button>
-    </li>
-    <li class="card wrap-price">
-      <h3 class="wrap-price__name">Лобовое стекло</h3>
-      <p>Защитная плёнка на&nbsp;лобовое стекло.</p>
-      <p class="wrap-price__value">от&nbsp;30&nbsp;000&nbsp;₽</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="protection" data-request-services="Бронирование лобового стекла">Узнать цену<span class="sr">: лобовое стекло</span></button>
-    </li>
-  </ul>
+  <div class="cards cards--3 col-basic">
+    <article class="card">
+      <h3>Зоны риска</h3>
+      <p>Капот, передний бампер, фары, передние крылья, зеркала и&nbsp;пороги&nbsp;— детали, которые первыми принимают камни и&nbsp;реагенты. Точный набор зависит от&nbsp;модели и&nbsp;того, как&nbsp;вы&nbsp;ездите.</p>
+    </article>
+    <article class="card">
+      <h3>Весь кузов</h3>
+      <p>Плёнка на&nbsp;все&nbsp;окрашенные детали: прозрачная&nbsp;— для&nbsp;защиты, цветная&nbsp;— для&nbsp;нового цвета и&nbsp;защиты сразу.</p>
+    </article>
+    <article class="card">
+      <h3>Фары и&nbsp;лобовое стекло</h3>
+      <p>Отдельные работы: плёнка бережёт фары от&nbsp;сколов и&nbsp;помутнения, лобовое&nbsp;— от&nbsp;мелких сколов и&nbsp;трещин из-за&nbsp;них.</p>
+      <p class="ds-card-price">Фары&nbsp;— от&nbsp;10&nbsp;000&nbsp;₽<br>Лобовое стекло&nbsp;— от&nbsp;30&nbsp;000&nbsp;₽</p>
+      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Бронирование лобового стекла">Оставьте заявку<span class="sr">: плёнка на&nbsp;лобовое стекло</span></button>
+    </article>
+  </div>
+  <div class="ds-prices">
+    <div class="catalog catalog--prices" data-prices>
+  <section class="catalog__section" id="price-film" aria-labelledby="price-film-title" data-summary="3 позиции, от 10 000 ₽">
+   <div class="catalog__section-head">
+    <h3 class="catalog__subhead" id="price-film-title">Оклейка плёнкой</h3>
+   </div>
+   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Оклейка зон риска"><div class="catalog__item-text"><p class="catalog__item-name">Оклейка зон риска</p><p class="catalog__item-note">Защитная плёнка на&nbsp;участки кузова, которые первыми принимают удары камней. Стоимость&nbsp;— после осмотра автомобиля.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="wrap" data-request-services="Оклейка зон риска"><span class="catalog__action-label">Оставьте заявку</span><span class="sr">: Оклейка зон риска</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Полная оклейка"><div class="catalog__item-text"><p class="catalog__item-name">Полная оклейка</p><p class="catalog__item-note">Защитная плёнка на&nbsp;весь кузов. Стоимость&nbsp;— после осмотра автомобиля.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="wrap" data-request-services="Полная оклейка"><span class="catalog__action-label">Оставьте заявку</span><span class="sr">: Полная оклейка</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Оклейка фар плёнкой"><div class="catalog__item-text"><p class="catalog__item-name">Оклейка фар плёнкой</p><p class="catalog__item-note">Защитная плёнка на&nbsp;фары.</p></div><p class="catalog__item-price">от&nbsp;10&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="wrap" data-request-services="Оклейка фар плёнкой"><span class="catalog__action-label">Оставьте заявку</span><span class="sr">: Оклейка фар плёнкой</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
+  </section>
+  <p class="catalog__note">Стоимость зависит от&nbsp;типа кузова и&nbsp;состояния автомобиля. Итоговый объём и&nbsp;цену согласуем перед работой. Не&nbsp;является публичной офертой.</p>
+ </div>
   </div>
 </section>
 
@@ -283,43 +311,192 @@
   <div class="col-basic">
   <ol class="steps">
     <li class="steps__item">
-      <h3>Расчёт</h3>
-      <p>Позвоните в&nbsp;Технопарк&nbsp;— администратор подскажет цену для&nbsp;вашей машины. Стоимость зон риска и&nbsp;всего кузова называем после осмотра.</p>
+      <h3>Заявка</h3>
+      <p>Оставьте заявку: марка и&nbsp;модель, что&nbsp;хотите защитить, прозрачная или&nbsp;цветная плёнка. Администратор Технопарка свяжется и&nbsp;пригласит на&nbsp;осмотр.</p>
     </li>
     <li class="steps__item">
-      <h3>Подготовка</h3>
-      <p>Моем и&nbsp;обезжириваем кузов. Если нужно&nbsp;— полируем перед плёнкой.</p>
+      <h3>Осмотр и&nbsp;расчёт</h3>
+      <p>Смотрим лак при&nbsp;хорошем свете, отмечаем сколы и&nbsp;царапины, предлагаем набор деталей. Цену зон риска и&nbsp;всего кузова называем здесь.</p>
     </li>
     <li class="steps__item">
-      <h3>Оклейка и&nbsp;выдача</h3>
-      <p>Оклеиваем в&nbsp;студии и&nbsp;вместе с&nbsp;вами проверяем результат перед выдачей.</p>
+      <h3>Подготовка и&nbsp;оклейка</h3>
+      <p>Моем и&nbsp;обезжириваем кузов, при&nbsp;необходимости полируем: под&nbsp;плёнкой дефекты становятся заметнее. Затем клеим с&nbsp;подгонкой кромок и&nbsp;стыков.</p>
+    </li>
+    <li class="steps__item">
+      <h3>Проверка и&nbsp;выдача</h3>
+      <p>Вместе осматриваем кромки и&nbsp;стыки и&nbsp;рассказываем, как&nbsp;ухаживать за&nbsp;машиной первое время.</p>
     </li>
   </ol>
+  <p class="ds-aside">Сколько дней займёт работа: <span class="todo" data-no-typo>[нужно от клиента: сроки оклейки — зоны риска, весь кузов, фары, лобовое]</span></p>
   </div>
 </section>
 
-<section class="section section--tight wrap-more" aria-labelledby="wrap-more-title">
-  <h2 class="sr" id="wrap-more-title">Ещё по&nbsp;теме</h2>
+<section class="section ds-works" id="wrap-works" aria-labelledby="wrap-works-title">
+  <header class="section-head">
+    <h2 id="wrap-works-title">Наши работы</h2>
+    <p class="section-head__lead">Кадры из&nbsp;Технопарка: подготовка кузова и&nbsp;оклейка полиуретаном.</p>
+  </header>
   <div class="col-basic">
-  <ul class="link-rows link-rows--single" role="list">
-    <li><a href="works#works-m4">Работа студии: BMW M4&nbsp;в&nbsp;цветной плёнке</a></li>
-    <li><a href="services#price-wrap">Цены на&nbsp;оклейку</a></li>
-    <li><a href="services#price-protection">Полировка, керамика и&nbsp;защита стёкол</a></li>
-  </ul>
+    <ul class="work-tiles" role="list" data-works="wrap">
+  <li class="work-tiles__item"><a class="work-tile" href="#price-film"><img class="work-tile__img" src="assets/img/works/wrap-1-800.webp" srcset="assets/img/works/wrap-1-800.webp 800w, assets/img/works/wrap-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Чёрный внедорожник со снятым бампером и открытым капотом в светлом зале, рядом мастер" loading="lazy" decoding="async"><span class="work-tile__title">Подготовка к&nbsp;оклейке</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="#price-film"><img class="work-tile__img" src="assets/img/works/wrap-2-800.webp" srcset="assets/img/works/wrap-2-800.webp 800w, assets/img/works/wrap-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер прикатывает ракелем прозрачную плёнку на тёмном кузове, на плёнке капли воды" loading="lazy" decoding="async"><span class="work-tile__title">Работа ракелем</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="#price-film"><img class="work-tile__img" src="assets/img/works/wrap-3-800.webp" srcset="assets/img/works/wrap-3-800.webp 800w, assets/img/works/wrap-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер натягивает лист прозрачной плёнки на дверь чёрного внедорожника" loading="lazy" decoding="async"><span class="work-tile__title">Плёнка на&nbsp;двери</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
   </div>
 </section>
 
-<section class="promo col-ext" id="wrap-call" aria-labelledby="wrap-call-title">
-  <div class="promo__panel wrap-call">
-    <div class="wrap-call__head">
-      <h2 id="wrap-call-title">Узнать цену оклейки</h2>
-      <p>Оклеиваем только в&nbsp;Технопарке. Позвоните&nbsp;— администратор подскажет цену для&nbsp;вашей машины.</p>
+<section class="section" id="wrap-when" aria-labelledby="wrap-when-title">
+  <header class="section-head">
+    <h2 id="wrap-when-title">Кому и&nbsp;когда стоит оклеить машину</h2>
+  </header>
+  <ul class="cards cards--3 col-basic" role="list">
+    <li class="card">
+      <h3>Новая машина</h3>
+      <p>Лучший момент&nbsp;— сразу после покупки, пока на&nbsp;лаке нет ни&nbsp;одного скола.</p>
+    </li>
+    <li class="card">
+      <h3>Много трассы</h3>
+      <p>На&nbsp;скорости камни и&nbsp;песок бьют в&nbsp;переднюю часть сильнее всего&nbsp;— зоны риска окупаются быстрее.</p>
+    </li>
+    <li class="card">
+      <h3>Перед зимой</h3>
+      <p>Реагенты и&nbsp;грязная каша&nbsp;— тяжёлый сезон для&nbsp;порогов, бампера и&nbsp;нижней части дверей.</p>
+    </li>
+    <li class="card">
+      <h3>После полировки</h3>
+      <p>Лак выглядит как&nbsp;новый&nbsp;— плёнка сохранит это&nbsp;состояние дольше.</p>
+    </li>
+    <li class="card">
+      <h3>Хочется другой цвет</h3>
+      <p>Цветная плёнка меняет вид машины без&nbsp;покраски, и&nbsp;это&nbsp;решение можно отменить.</p>
+    </li>
+    <li class="card">
+      <h3>Машина с&nbsp;пробегом</h3>
+      <p>Сначала осмотрим лак: сколы до&nbsp;грунта лучше отремонтировать, царапины&nbsp;— отполировать, и&nbsp;только потом клеить.</p>
+    </li>
+  </ul>
+</section>
+
+<section class="reviews" id="reviews" aria-labelledby="reviews-title">
+  <header class="reviews__head">
+    <h2 class="reviews__title" id="reviews-title">Отзывы клиентов</h2>
+    <ul class="reviews__studios" role="list">
+      <li class="reviews__studio">
+        <p class="reviews__studio-name">Технопарк</p>
+        <p class="reviews__rating"><b class="reviews__score">5,0</b><span class="review__stars" role="img" aria-label="Рейтинг 5,0 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span></p>
+        <p class="reviews__count">108&nbsp;оценок</p>
+        <a class="reviews__link link-arrow" href="https://yandex.ru/maps/org/meat_wash_tekhnopark/122667992007/reviews/" target="_blank" rel="noopener noreferrer">Все&nbsp;отзывы на&nbsp;Яндекс Картах<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr">: Технопарк (откроется в&nbsp;новой вкладке)</span></a>
+      </li>
+    </ul>
+    <p class="reviews__asof">Рейтинг и&nbsp;отзывы&nbsp;— с&nbsp;Яндекс Карт на&nbsp;5&nbsp;ноября 2026&nbsp;г.</p>
+  </header>
+  <ul class="reviews__list" role="list">
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Обслуживание шикарное, приехал просто помыть машину, но&nbsp;в&nbsp;итоге решил оставить её&nbsp;на&nbsp;полный детейлинг, трёхэтапную полировку, керамику, полную химчистку, реставрацию четырёх дисков, мойку подвески и&nbsp;оклейку зон риска, удалось пообщаться с&nbsp;управляющими, ребята очень отзывчивые, всё объясняют по&nbsp;факту, без&nbsp;лишней воды и&nbsp;навязывания, в&nbsp;итоге забрал машину как&nbsp;новую, очень рад что&nbsp;попал именно к&nbsp;ним</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Amin S.</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-05-27">27&nbsp;мая 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>В&nbsp;первую очередь хочу поблагодарить мастеров которые оклеивали мой автомобиль, настоящие профессионалы своего дела, […] качество оклейки отличное, отдал им&nbsp;второй автомобиль и&nbsp;во&nbsp;второй раз доволен результатом, спасибо большое !)</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Константин К.</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-07-01">1&nbsp;июля 2026</time></figcaption>
+      </figure>
+    </li>
+  </ul>
+</section>
+
+<section class="section" id="wrap-faq" aria-labelledby="wrap-faq-title">
+  <header class="section-head">
+    <h2 id="wrap-faq-title">Вопросы и&nbsp;ответы</h2>
+  </header>
+  <div class="col-basic accordions">
+    <details class="accordion">
+      <summary class="accordion__head">Сколько стоит оклейка?</summary>
+      <div class="accordion__body">
+        <p>Фары&nbsp;— от&nbsp;10&nbsp;000&nbsp;₽, лобовое стекло&nbsp;— от&nbsp;30&nbsp;000&nbsp;₽. Зоны риска и&nbsp;весь кузов считаем после осмотра: цена зависит от&nbsp;размера машины, сложности деталей, состояния лака и&nbsp;выбранной плёнки.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Сколько времени занимает работа?</summary>
+      <div class="accordion__body">
+        <p><span class="todo" data-no-typo>[нужно от клиента: сроки — зоны риска, весь кузов, фары, лобовое стекло]</span></p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Чем&nbsp;отличаются прозрачная и&nbsp;цветная плёнка?</summary>
+      <div class="accordion__body">
+        <p>Обе&nbsp;— полиуретан и&nbsp;обе защищают лак. Прозрачная сохраняет заводской цвет, цветная меняет его. Если захотите вернуть исходный цвет, цветную плёнку можно снять.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Можно оклеить только часть машины?</summary>
+      <div class="accordion__body">
+        <p>Да. Чаще всего защищают зоны риска или&nbsp;отдельные детали&nbsp;— например, фары. Позже защиту можно расширить до&nbsp;всего кузова.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Нужно&nbsp;ли готовить машину к&nbsp;оклейке?</summary>
+      <div class="accordion__body">
+        <p>Мойку и&nbsp;обезжиривание делаем сами. Если на&nbsp;лаке паутинка или&nbsp;царапины, предложим <a href="detailing#price-polish">полировку</a>: под&nbsp;плёнкой дефекты видны сильнее. Сколы до&nbsp;грунта сначала стоит <a href="bodywork#chips">отремонтировать</a>.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Защитит&nbsp;ли плёнка от&nbsp;любого скола?</summary>
+      <div class="accordion__body">
+        <p>Нет. Мелкие удары и&nbsp;песок в&nbsp;основном достаются плёнке, но&nbsp;сильный удар может повредить и&nbsp;плёнку, и&nbsp;лак под&nbsp;ней.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Не&nbsp;испортит&nbsp;ли плёнка лак, когда её&nbsp;снимут?</summary>
+      <div class="accordion__body">
+        <p>Исправный заводской лак при&nbsp;аккуратном снятии обычно не&nbsp;страдает. Риск выше у&nbsp;перекрашенных деталей и&nbsp;там, где&nbsp;лак уже повреждён,&nbsp;— поэтому смотрим кузов до&nbsp;оклейки.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Как&nbsp;ухаживать за&nbsp;машиной после оклейки?</summary>
+      <div class="accordion__body">
+        <p><span class="todo" data-no-typo>[нужно от клиента: уход после оклейки — когда можно мыть, какую химию и мойку высоким давлением нельзя]</span></p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Какие плёнки используете и&nbsp;есть&nbsp;ли гарантия?</summary>
+      <div class="accordion__body">
+        <p><span class="todo" data-no-typo>[нужно от клиента: марки плёнок (прозрачной и цветной) и условия гарантии]</span></p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section ds-related" id="wrap-related" aria-labelledby="wrap-related-title">
+  <header class="section-head">
+    <h2 id="wrap-related-title">С&nbsp;оклейкой часто делают</h2>
+    <p class="section-head__lead">Полировку и&nbsp;керамику&nbsp;— до&nbsp;плёнки или&nbsp;на&nbsp;открытые детали, ремонт сколов&nbsp;— до&nbsp;оклейки.</p>
+  </header>
+  <div class="col-basic">
+    <ul class="work-tiles work-tiles--related" role="list" data-related>
+  <li class="work-tiles__item"><a class="work-tile" href="detailing"><img class="work-tile__img" src="assets/img/home/dir-detailing-800.webp" srcset="assets/img/home/dir-detailing-800.webp 800w, assets/img/home/dir-detailing-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="1200" alt="Мастер полирует чёрный кузов полировальной машинкой" loading="lazy" decoding="async"><span class="work-tile__title">Детейлинг</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="bodywork"><img class="work-tile__img" src="assets/img/home/dir-bodywork-800.webp" srcset="assets/img/home/dir-bodywork-800.webp 800w, assets/img/home/dir-bodywork-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="1200" alt="Отражения ламп на глянцевой чёрной двери автомобиля, дверная ручка крупно" loading="lazy" decoding="async"><span class="work-tile__title">Кузовные работы</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
+    <ul class="link-rows link-rows--single ds-related__links" role="list">
+      <li><a href="article-avto-k-zime">Автомобиль к&nbsp;зиме: что&nbsp;сделать до&nbsp;реагентов</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="promo col-ext ds-call" id="wrap-call" aria-labelledby="wrap-call-title">
+  <div class="promo__panel ds-call__panel">
+    <div class="ds-call__head">
+      <h2 id="wrap-call-title">Оставьте заявку на&nbsp;оклейку</h2>
+      <p>Напишите марку и&nbsp;модель и&nbsp;что&nbsp;хотите защитить. Администратор Технопарка свяжется, ответит на&nbsp;вопросы и&nbsp;пригласит на&nbsp;осмотр.</p>
+      <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на&nbsp;оклейку плёнкой</span></button>
     </div>
-    <div class="wrap-call__contact">
-      <p class="wrap-call__studio"><strong>Технопарк</strong> <span>Детейлинг-центр</span></p>
-      <p class="wrap-call__address">пр-т&nbsp;Андропова, 8, стр. 2<br>ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж<br>Ежедневно 08:00–22:00</p>
-      <p class="wrap-call__phone">+7 (932) 491-69-91</p>
-      <a class="btn btn--primary" href="tel:+79324916991">Позвонить в&nbsp;Технопарк</a>
+    <div class="ds-call__contact">
+      <p class="ds-call__studio"><strong>Технопарк</strong> <span>Детейлинг-центр</span></p>
+      <p class="ds-call__address">пр-т&nbsp;Андропова, 8, стр. 2<br>ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж<br>Ежедневно 08:00–22:00</p>
+      <a class="ds-call__phone" href="tel:+79324916991">+7 (932) 491-69-91</a>
     </div>
   </div>
 </section>
@@ -396,101 +573,78 @@
 <!-- SHARED:footer:END -->
 
 <!-- SHARED:dialogs:START -->
-<!-- Окна записи, разговора и заявки (план §4.2, §4.7). Владелец: WP6.
+<!-- Окно «Оставьте заявку» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
-     js/request.js и проверок; менять только вместе с ними. В комментариях фигурные скобки
-     подстановок не писать: сборка их подставит или упадёт.
+     js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
+     В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — своя у страницы (поле cta в src/content/pages.mjs):
-     запись на автомойку, звонок в Технопарк на оклейке, вопрос о машине на продаже авто и привозе. -->
+     Нижняя кнопка на телефоне — «Оставьте заявку» с темой страницы (поле topic в src/content/pages.mjs). -->
 <button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="wrap">Оставьте заявку</button>
 
-<!-- Запись: у Мясницкой и Технопарка разные компании в YCLIENTS, поэтому ссылки ведут
-     в свою онлайн-запись, а не на общий адрес. В YCLIENTS обе компании пока называются
-     прежним именем — об этом строка под студиями (поправка критика 17).
-     То же окно без студий — разговор с администратором (js/ui.js, data-mode="talk"):
-     «Обсудить условия» клуба и «Узнать цену», пока заявки с сайта не принимаются
-     (site.requests.endpoint пуст): тогда главное в окне — телефоны. -->
-<dialog class="dialog dialog--booking" id="booking" aria-labelledby="booking-title" data-mode="book">
-  <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <!-- Начальный фокус — на заголовке: на ссылке студии он выглядел выбором по умолчанию. -->
-  <h2 class="dialog__title" id="booking-title" tabindex="-1" autofocus>Записаться</h2>
-  <p class="dialog__context" id="booking-context" hidden></p>
-  <p class="dialog__lead" id="booking-lead" hidden>Администратор ответит на&nbsp;вопросы и&nbsp;подберёт время.</p>
-  <p class="dialog__lead" id="booking-hint">Выберите студию. Услугу и&nbsp;время&nbsp;— в&nbsp;её&nbsp;<span class="nw">онлайн-записи</span>.</p>
-  <div class="dialog__branches">
-    <a class="dialog__branch studio-link" href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya"><strong class="studio-link__name">Мясницкая</strong><span class="studio-link__type dialog__branch-type">Премиальная автомойка</span><span class="studio-link__address">ул. Мясницкая, 11</span><span class="studio-link__hours dialog__branch-hours">Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
-    <a class="dialog__branch studio-link" href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark"><strong class="studio-link__name">Технопарк</strong><span class="studio-link__type dialog__branch-type">Детейлинг-центр</span><span class="studio-link__address">пр-т&nbsp;Андропова, 8, стр. 2</span><span class="studio-link__hours dialog__branch-hours">Ежедневно 08:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
-  </div>
-  <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
-  <!-- Автомойка и другие работы выбраны вместе (гараж): цену остального — «Узнать цену». -->
-  <p class="dialog__note dialog__note--request" id="booking-request" hidden><span data-booking-request-text></span> <button class="link-arrow" type="button" data-request data-booking-request>Узнать цену<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></p>
-  <p class="dialog__aside" id="booking-other">Химчистка, полировка, плёнка, ремонт&nbsp;— по&nbsp;телефону: администратор назовёт цену.</p>
-  <!-- Порядок телефонов меняет ui.js: про плёнку и защиту первым звонят в Технопарк. -->
-  <div class="dialog__phones">
-    <a href="tel:+79300352325" data-phone="myasnitskaya"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая&nbsp;— автомойка</span><strong>+7 (930) 035-23-25</strong></a>
-    <a href="tel:+79324916991" data-phone="technopark"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк&nbsp;— детейлинг и&nbsp;плёнка</span><strong>+7 (932) 491-69-91</strong></a>
-  </div>
-</dialog>
-
-<!-- Заявка с фото: всё, кроме автомойки (детейлинг, оклейка, стёкла и другие работы).
-     Открывается кнопками «Узнать цену», только когда приём включён (site.requests.endpoint
-     задан и сайт в hosts); до того те же кнопки открывают окно #booking с телефонами.
-     Логика — js/request.js, грузится по первому нажатию. Отправка — только на адрес
-     site.requests.endpoint (meatwash-content.json; на meatwash.ru — api/request.php); пока
-     его нет, форма не отправляет и не пишет «отправлено» — предлагает позвонить в студию.
-     Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
+<!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
+     data-request-services, о чём заявка — data-request-context) и data-book у автомойки (тема
+     «Автомойка», программа или работы мойки). Логика — js/request.js, грузится по первому нажатию.
+     Отправка — только на адрес site.requests.endpoint (meatwash-content.json; на meatwash.ru —
+     api/request.php) и только на сайтах из hosts. Пока адреса нет, «Отправить» проверяет поля и
+     честно говорит, что заявка не отправлена, с телефонами студий; введённое остаётся черновиком.
+     Онлайн-запись YCLIENTS — только мелкой строкой при теме «Автомойка»: у Мясницкой и Технопарка
+     разные компании в YCLIENTS, ссылки ведут каждая в свою запись (с выбранной программой в корзине,
+     js/yclients.js). Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
      это обещает Политика, п. 2.1. -->
-<dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title">
+<dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Заявка с&nbsp;фото</h2>
-  <p class="dialog__lead">Детейлинг, оклейка, стёкла и&nbsp;другие работы, кроме автомойки. Мастер посмотрит фото, оценит объём работ и&nbsp;свяжется с&nbsp;вами.</p>
-  <p class="dialog__note request__wash" data-request-wash hidden><span data-request-wash-text></span> <button class="link-arrow" type="button" data-book data-request-wash-book>Записаться на&nbsp;автомойку<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></p>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставьте заявку</h2>
+  <p class="dialog__context" id="request-context" hidden></p>
+  <p class="dialog__lead" id="request-lead">Администратор студии перезвонит и&nbsp;ответит на&nbsp;вопросы.</p>
   <form class="request ym-hide-content" data-request-form novalidate>
-    <fieldset class="request__card request__services">
-      <legend class="request__legend">Работы <b aria-hidden="true">*</b></legend>
-      <ul class="request__chips" data-request-chips aria-label="Выбранные работы"></ul>
-      <label class="request__add"><span class="visually-hidden">Добавить работу</span><select data-request-add aria-describedby="request-services-error"><option value="">+ Добавить работу</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></label>
-      <p class="request__error" id="request-services-error" data-error-for="services"></p>
-    </fieldset>
+    <div class="request__card request__about">
+      <label class="request__field"><span>Направление <b aria-hidden="true">*</b></span><span class="request__select"><select name="topic" required aria-describedby="request-topic-error" data-request-topic><option value="">Выберите направление</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></span><small class="request__error" id="request-topic-error" data-error-for="topic"></small></label>
+      <div class="request__online" data-request-online hidden>
+        <p class="request__online-line">или&nbsp;запишитесь онлайн: <a href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">Мясницкая<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a> · <a href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark">Технопарк<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a></p>
+        <p class="request__online-note" data-request-online-note hidden></p>
+        <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
+      </div>
+      <div class="request__services" data-request-services-box hidden>
+        <p class="request__legend" id="request-services-label">Работы</p>
+        <ul class="request__chips" data-request-chips aria-labelledby="request-services-label"></ul>
+        <label class="request__add request__select" data-request-add-box><span class="visually-hidden">Добавить работу</span><select data-request-add><option value="">+ Добавить работу</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></label>
+      </div>
+    </div>
     <div class="request__card">
       <div class="request__grid">
         <label class="request__field"><span>Имя <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="name" autocomplete="name" required maxlength="80" aria-describedby="request-name-error"><small class="request__error" id="request-name-error" data-error-for="name"></small></label>
-        <label class="request__field"><span>Телефон или&nbsp;Telegram <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="contact" autocomplete="tel" required maxlength="100" aria-describedby="request-contact-hint request-contact-error"><small id="request-contact-hint">Как&nbsp;с&nbsp;вами связаться</small><small class="request__error" id="request-contact-error" data-error-for="contact"></small></label>
-        <label class="request__field request__field--wide"><span>Автомобиль</span><input class="ym-disable-keys" name="car" maxlength="120" placeholder="Марка, модель, год" autocomplete="off"></label>
+        <label class="request__field"><span>Телефон <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="24" placeholder="+7 (___) ___-__-__" aria-describedby="request-phone-error"><small class="request__error" id="request-phone-error" data-error-for="phone"></small></label>
       </div>
-      <fieldset class="request__branch">
-        <legend class="request__legend">Студия</legend>
-        <label><input type="radio" name="branch" value="Любая" checked><span>Любая</span></label>
-        <label><input type="radio" name="branch" value="Мясницкая"><span>Мясницкая</span></label>
-        <label><input type="radio" name="branch" value="Технопарк"><span>Технопарк</span></label>
-      </fieldset>
-      <label class="request__field"><span>Комментарий</span><textarea class="ym-disable-keys" name="comment" rows="3" maxlength="1000"></textarea></label>
+      <label class="request__field"><span>Комментарий <span class="request__optional">— необязательно</span></span><textarea class="ym-disable-keys" name="comment" rows="3" maxlength="1000" placeholder="Автомобиль, что нужно сделать, удобное время"></textarea></label>
     </div>
-    <div class="request__card request__photos" role="group" aria-labelledby="request-photos-label">
-      <p class="request__legend" id="request-photos-label">Фото</p>
+    <!-- Фото — только когда приём заявок подключён (без адреса приёма их некуда отправить). -->
+    <div class="request__card request__photos" role="group" aria-labelledby="request-photos-label" data-request-photos hidden>
+      <p class="request__legend" id="request-photos-label">Фото <span class="request__optional">— необязательно</span></p>
       <p class="request__rules" id="request-photos-rules" data-request-rules>До&nbsp;5&nbsp;фото: JPG, PNG, WebP или&nbsp;HEIC, до&nbsp;10&nbsp;МБ&nbsp;каждое.</p>
       <ul class="request__previews" data-request-previews></ul>
       <label class="btn btn--secondary request__pick">Добавить фото<input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple data-request-files aria-describedby="request-photos-rules request-photos-error"></label>
       <p class="request__error" id="request-photos-error" role="status" aria-live="polite" data-error-for="photos"></p>
     </div>
     <div class="request__card request__send">
-      <label class="request__consent"><input type="checkbox" name="consent" required aria-describedby="request-consent-error"><span>Даю <a href="consent-request" target="_blank" rel="noopener">согласие на&nbsp;обработку персональных данных</a> для&nbsp;ответа на&nbsp;заявку. Подробнее&nbsp;— в&nbsp;<a href="privacy" target="_blank" rel="noopener">Политике</a>.</span></label>
+      <label class="request__consent"><input type="checkbox" name="consent" required aria-describedby="request-consent-error"><span>Даю <a href="consent-request" target="_blank" rel="noopener">согласие на&nbsp;обработку моих персональных данных</a> для&nbsp;ответа на&nbsp;заявку. Подробнее&nbsp;— в&nbsp;<a href="privacy" target="_blank" rel="noopener">Политике</a>.</span></label>
       <p class="request__error" id="request-consent-error" data-error-for="consent"></p>
       <!-- Ловушка для спам-ботов (api/request.php отклоняет заявку, если поле заполнено):
            человек его не видит, Tab на него не попадает, скринридер его не читает. -->
       <div class="visually-hidden" aria-hidden="true"><label>Не&nbsp;заполняйте это&nbsp;поле <input name="mw_extra" tabindex="-1" autocomplete="off"></label></div>
       <p class="request__error request__error--form" role="alert" data-request-error hidden></p>
-      <div class="request__actions" data-request-actions hidden>
+      <div class="request__actions" data-request-actions>
         <button class="btn btn--primary btn--block" type="submit" data-request-submit>Отправить заявку</button>
       </div>
-      <div class="request__offline" data-request-offline hidden>
-        <p><strong>Отправка заявок с&nbsp;сайта пока не&nbsp;подключена.</strong> Позвоните в&nbsp;студию&nbsp;— администратор примет заявку. Введённое здесь сохранится до&nbsp;закрытия вкладки.</p>
-        <div class="dialog__phones">
-          <a href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая</span><strong>+7 (930) 035-23-25</strong></a>
-          <a href="tel:+79324916991"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк</span><strong>+7 (932) 491-69-91</strong></a>
+      <!-- Адреса приёма нет: после проверки полей — это сообщение (фокус на нём), введённое
+           остаётся. Порядок телефонов меняет request.js: по оклейке и кузову первым — Технопарк. -->
+      <div class="request__offline" data-request-offline role="alert" tabindex="-1" hidden>
+        <p class="request__offline-title"><strong>Заявка не&nbsp;отправлена: приём заявок с&nbsp;сайта подключаем.</strong></p>
+        <p>Позвоните в&nbsp;студию&nbsp;— администратор примет заявку по&nbsp;телефону. Введённое здесь сохранится до&nbsp;закрытия вкладки.</p>
+        <div class="dialog__phones" data-request-phones>
+          <a href="tel:+79300352325" data-phone="myasnitskaya"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая&nbsp;— Премиальная автомойка</span><strong>+7 (930) 035-23-25</strong></a>
+          <a href="tel:+79324916991" data-phone="technopark"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк&nbsp;— Детейлинг-центр</span><strong>+7 (932) 491-69-91</strong></a>
         </div>
       </div>
       <p class="request__required"><b aria-hidden="true">*</b>&nbsp;— обязательные поля</p>
@@ -498,7 +652,7 @@
   </form>
   <div class="request__done" data-request-done hidden tabindex="-1">
     <p class="request__donetitle">Заявка отправлена</p>
-    <p>Мастер посмотрит фото и&nbsp;свяжется с&nbsp;вами по&nbsp;указанному контакту.</p>
+    <p>Администратор студии свяжется с&nbsp;вами по&nbsp;указанному телефону.</p>
     <form method="dialog"><button class="btn btn--secondary">Закрыть</button></form>
   </div>
 </dialog>

@@ -47,8 +47,10 @@ def booking(browser, base, pages, res):
         pg = c.page()
         for p in pages:
             load(pg, f"{base}/{p['path']}")
-            # Первая видимая «Оставьте заявку» (в шапке на компьютере, нижняя кнопка на телефоне).
-            btn = pg.locator('[data-request]:visible').first
+            # Общая «Оставьте заявку» страницы: в шапке на компьютере, нижняя кнопка на телефоне.
+            # Кнопки в теле страницы (клубная карта на главной, работы на /works) несут свою тему —
+            # их проверяют сценарии ниже, а здесь — тема страницы из реестра (05.11).
+            btn = pg.locator('.site-header__book:visible, .mobile-cta:visible').first
             btn.scroll_into_view_if_needed()
             label = btn.inner_text().replace('\u00a0', ' ').strip()
             btn.click()

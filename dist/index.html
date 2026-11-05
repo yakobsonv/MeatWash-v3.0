@@ -182,17 +182,15 @@
 <!-- SHARED:header:END -->
 
 <main id="main">
-<!-- Тело главной (план §3.1). Владелец: WP2. Перенос утверждённой главной v2
-     (source/v2-design/index.html, 625ce74) как есть: герой, «Чем занимается Meat Wash»,
-     четыре плитки, карусель на телефоне. Изменения (Влад 27.10): общая шапка и общий подвал
-     вместо своих, плитка 2 ведёт на страницу привоза вместо Telegram, ссылки относительные,
-     числа в чипах — из данных (проданные машины, год, студии). Подпись плитки 2 Влад
-     не менял («Обсудить привоз»); «Подробнее о привозе» (поправка 8) — вопрос Владу.
-     Видео (27.10): фон героя и ролик плитки 1 по наведению — js/video.js, кадры без номеров.
-     28.10 (разговор Влада с Романом: ролик к каждому из четырёх блоков): плитка 1 «Автомойка / Детейлинг»
-     (Паша 28.10) — оклейка BMW M4 в Brooklyn Grey, 14,8 с, плитка 4 — ролик студии; на телефоне ролик играет у слайда по центру. Плитки 2 и 3 — фото,
-     пока нет роликов о привозе и продаже авто (их готовит Роман).
-     Стили — dist/css/home.css, поведение — dist/js/home.js. -->
+<!-- Тело главной. Порядок блоков (задание 05.11, research/PLAN.md): первый экран → шесть направлений →
+     «Наши работы» по направлениям (плашки как на porsche.com) → клубная карта → отзывы → общий подвал.
+     Первый экран — без изменений (связка MEATWASH + Car Care Club, ролик js/video.js).
+     Направления: плитки 2:3 home/dir-* (кадры без номеров), «Продажа» — tile-3, «О нас» — tile-4-m.
+     Ролики по наведению — только по смыслу плитки: мойка (svc-wash), детейлинг (svc-detailing), о нас
+     (tile-about). Ролик оклейки M4 (tile-detailing, svc-wrap) не ставим: машина не подтверждена.
+     Ряды работ, подписи и цены — подстановки works и reviews из meatwash-content.json; на главной
+     пометок «нужно от клиента» нет. Чип «Уже продали N машин» ждёт check.
+     Стили — dist/css/home.css (плашки и отзывы — tiles.css), поведение — dist/js/home.js. -->
 <section class="hero" aria-labelledby="page-title">
   <picture class="hero__media">
     <source media="(max-width: 699px)" srcset="assets/img/home/hero-m-poster-720.webp" width="720" height="1280">
@@ -213,40 +211,71 @@
 
   <div class="dirs__grid">
     <article class="dir" data-reveal aria-labelledby="dir-1">
-      <h3 class="dir__title" id="dir-1"><span class="dir__name">Автомойка / Детейлинг</span></h3>
+      <h3 class="dir__title" id="dir-1"><span class="dir__name">Автомойка</span></h3>
       <div class="dir__card" data-video-host>
-        <img class="dir__img" style="--focus-xy: 68% 56%" src="assets/img/home/tile-1-800.webp" srcset="assets/img/home/tile-1-800.webp 800w, assets/img/home/tile-1-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 447px, (max-width: 759px) 55vh, 52vw" width="1240" height="1864" loading="lazy" decoding="async" alt="Lexus LX в активной пене в моечном боксе Meat Wash">
-        <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/tile-detailing.mp4?v=e0474c56"></video>
-        <a class="dir__hit" href="services" tabindex="-1" aria-hidden="true"></a>
+        <img class="dir__img" style="--focus-xy: 50% 55%" src="assets/img/home/dir-wash-800.webp" srcset="assets/img/home/dir-wash-800.webp 800w, assets/img/home/dir-wash-1240.webp 1240w" sizes="(max-width: 759px) 55vh, (max-width: 1099px) 46vw, 31vw" width="1240" height="1860" loading="lazy" decoding="async" alt="Чёрный BMW 8 серии в активной пене, вид спереди, в моечном боксе">
+        <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/svc-wash-m.mp4?v=cbee0f61"></video>
+        <a class="dir__hit" href="wash" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
           <div class="dir__body">
-            <ul class="dir__tags"><li class="chip chip--photo">Автомойка · химчистка · полировка · ремонт</li></ul>
-            <p class="dir__desc">Автомойка, химчистка, полировка, защита кузова и&nbsp;ремонт сколов и&nbsp;вмятин.</p>
+            <ul class="dir__tags"><li class="chip chip--photo">Программы от&nbsp;2&nbsp;150&nbsp;₽</li></ul>
+            <p class="dir__desc">Мойка кузова по&nbsp;программам&nbsp;— от&nbsp;трёхфазной до&nbsp;пакета «Премиум», на&nbsp;Мясницкой и&nbsp;в&nbsp;Технопарке.</p>
           </div>
-          <a class="dir__cta" href="services"><span class="dir__label">Услуги и&nbsp;цены</span><span class="sr">: автомойка и&nbsp;детейлинг</span><svg class="dir__arrow" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-cta-arrow"/></svg></a>
+          <a class="dir__cta" href="wash"><span class="dir__label">Программы и&nbsp;цены</span><span class="sr">: автомойка</span><svg class="dir__arrow" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-cta-arrow"/></svg></a>
         </div>
       </div>
     </article>
 
     <article class="dir" data-reveal aria-labelledby="dir-2">
-      <h3 class="dir__title" id="dir-2"><span class="dir__name">Привоз авто <span class="nw">из-за</span> рубежа</span></h3>
-      <div class="dir__card">
-        <img class="dir__img" style="--focus-xy: 60% 50%" src="assets/img/home/tile-2-800.webp" srcset="assets/img/home/tile-2-800.webp 800w, assets/img/home/tile-2-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 1010px, (max-width: 759px) 125vh, (min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="825" loading="lazy" decoding="async" alt="Чёрный Mercedes-AMG G 63 с красными суппортами в подземном паркинге">
-        <a class="dir__hit" href="import" tabindex="-1" aria-hidden="true"></a>
+      <h3 class="dir__title" id="dir-2"><span class="dir__name">Детейлинг</span></h3>
+      <div class="dir__card" data-video-host>
+        <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/dir-detailing-800.webp" srcset="assets/img/home/dir-detailing-800.webp 800w, assets/img/home/dir-detailing-1240.webp 1240w" sizes="(max-width: 759px) 55vh, (max-width: 1099px) 46vw, 31vw" width="1240" height="1860" loading="lazy" decoding="async" alt="Мастер полирует чёрный кузов полировальной машинкой">
+        <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/svc-detailing-m.mp4?v=82f0d3c1"></video>
+        <a class="dir__hit" href="detailing" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
           <div class="dir__body">
-            <ul class="dir__tags"><li class="chip chip--photo">Привоз и&nbsp;подготовка</li></ul>
-            <p class="dir__desc">Привезём автомобиль <span class="nw">из-за</span> рубежа и&nbsp;подготовим его&nbsp;к&nbsp;жизни в&nbsp;России&nbsp;— например, сделаем русификацию.</p>
+            <ul class="dir__tags"><li class="chip chip--photo">Салон · кузов · узлы</li></ul>
+            <p class="dir__desc">Химчистка салона, уход за&nbsp;кожей, полировка и&nbsp;защитные покрытия, детейлинг дисков и&nbsp;подвески.</p>
           </div>
-          <a class="dir__cta" href="import"><span class="dir__label">Обсудить привоз</span><span class="sr">: привоз авто <span class="nw">из-за</span> рубежа</span><svg class="dir__arrow" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-cta-arrow"/></svg></a>
+          <a class="dir__cta" href="detailing"><span class="dir__label">Услуги и&nbsp;цены</span><span class="sr">: детейлинг</span><svg class="dir__arrow" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-cta-arrow"/></svg></a>
         </div>
       </div>
     </article>
 
     <article class="dir" data-reveal aria-labelledby="dir-3">
-      <h3 class="dir__title" id="dir-3"><span class="dir__name">Покупка и&nbsp;продажа авто</span></h3>
+      <h3 class="dir__title" id="dir-3"><span class="dir__name">Оклейка плёнкой</span></h3>
       <div class="dir__card">
-        <img class="dir__img" style="--focus-xy: 75% 70%" src="assets/img/home/tile-3-800.webp" srcset="assets/img/home/tile-3-800.webp 800w, assets/img/home/tile-3-1080.webp 1080w" sizes="(max-width: 759px) and (min-height: 810px) 538px, (max-width: 759px) 66vh, 52vw" width="1080" height="1350" loading="lazy" decoding="async" alt="Серый BMW 7 серии на закате на фоне городских высоток">
+        <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/dir-wrap-800.webp" srcset="assets/img/home/dir-wrap-800.webp 800w, assets/img/home/dir-wrap-1240.webp 1240w" sizes="(max-width: 759px) 55vh, (max-width: 1099px) 46vw, 31vw" width="1240" height="1860" loading="lazy" decoding="async" alt="Мастер подгоняет прозрачную плёнку в нишу дверной ручки тёмного автомобиля">
+        <a class="dir__hit" href="wrap" tabindex="-1" aria-hidden="true"></a>
+        <div class="dir__content">
+          <div class="dir__body">
+            <ul class="dir__tags"><li class="chip chip--photo">В&nbsp;Технопарке</li></ul>
+            <p class="dir__desc">Защитная плёнка на&nbsp;зоны риска или&nbsp;на&nbsp;весь кузов, плёнка на&nbsp;фары.</p>
+          </div>
+          <a class="dir__cta" href="wrap"><span class="dir__label">Услуги и&nbsp;цены</span><span class="sr">: оклейка плёнкой</span><svg class="dir__arrow" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-cta-arrow"/></svg></a>
+        </div>
+      </div>
+    </article>
+
+    <article class="dir" data-reveal aria-labelledby="dir-4">
+      <h3 class="dir__title" id="dir-4"><span class="dir__name">Кузовные работы</span></h3>
+      <div class="dir__card">
+        <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/dir-bodywork-800.webp" srcset="assets/img/home/dir-bodywork-800.webp 800w, assets/img/home/dir-bodywork-1240.webp 1240w" sizes="(max-width: 759px) 55vh, (max-width: 1099px) 46vw, 31vw" width="1240" height="1860" loading="lazy" decoding="async" alt="Отражения ламп на глянцевой чёрной двери автомобиля, дверная ручка крупно">
+        <a class="dir__hit" href="bodywork" tabindex="-1" aria-hidden="true"></a>
+        <div class="dir__content">
+          <div class="dir__body">
+            <ul class="dir__tags"><li class="chip chip--photo">От&nbsp;5&nbsp;000&nbsp;₽ · в&nbsp;Технопарке</li></ul>
+            <p class="dir__desc">Удаление вмятин без&nbsp;покраски, покраска элемента и&nbsp;ремонт сколов с&nbsp;подкраской.</p>
+          </div>
+          <a class="dir__cta" href="bodywork"><span class="dir__label">Услуги и&nbsp;цены</span><span class="sr">: кузовные работы</span><svg class="dir__arrow" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-cta-arrow"/></svg></a>
+        </div>
+      </div>
+    </article>
+
+    <article class="dir" data-reveal aria-labelledby="dir-5">
+      <h3 class="dir__title" id="dir-5"><span class="dir__name">Продажа автомобилей</span></h3>
+      <div class="dir__card">
+        <img class="dir__img" style="--focus-xy: 75% 70%" src="assets/img/home/tile-3-800.webp" srcset="assets/img/home/tile-3-800.webp 800w, assets/img/home/tile-3-1080.webp 1080w" sizes="(max-width: 759px) 66vh, (max-width: 1099px) 46vw, 31vw" width="1080" height="1350" loading="lazy" decoding="async" alt="Серый BMW 7 серии на закате на фоне городских высоток">
         <a class="dir__hit" href="auto" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
           <div class="dir__body">
@@ -258,13 +287,10 @@
       </div>
     </article>
 
-    <article class="dir" data-reveal aria-labelledby="dir-4">
-      <h3 class="dir__title" id="dir-4"><span class="dir__name">О&nbsp;нас</span></h3>
+    <article class="dir" data-reveal aria-labelledby="dir-6">
+      <h3 class="dir__title" id="dir-6"><span class="dir__name">О&nbsp;нас</span></h3>
       <div class="dir__card" data-video-host>
-        <picture>
-          <source media="(max-width: 759px)" srcset="assets/img/home/tile-4-m-860.webp 860w, assets/img/home/tile-4-m-1280.webp 1280w" sizes="(min-height: 810px) 447px, 55vh" width="1280" height="1924">
-          <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/tile-4-800.webp" srcset="assets/img/home/tile-4-800.webp 800w, assets/img/home/tile-4-1240.webp 1240w" sizes="(max-width: 759px) and (min-height: 810px) 1010px, (max-width: 759px) 125vh, (min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="825" loading="lazy" decoding="async" alt="Серый BMW 8 серии в зале студии Meat Wash">
-        </picture>
+        <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/tile-4-m-860.webp" srcset="assets/img/home/tile-4-m-860.webp 860w, assets/img/home/tile-4-m-1280.webp 1280w" sizes="(max-width: 759px) 55vh, (max-width: 1099px) 46vw, 31vw" width="1280" height="1924" loading="lazy" decoding="async" alt="Серый BMW 8 серии в зале студии Meat Wash">
         <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/tile-about.mp4?v=5bec6221"></video>
         <a class="dir__hit" href="about" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
@@ -280,30 +306,213 @@
 
   <div class="dirs__controls" role="group" aria-label="Листание направлений">
     <div class="dirs__dots">
-      <button class="dirs__dot" type="button" aria-label="1 из 4: Автомойка / Детейлинг" aria-current="true"><span></span></button>
-      <button class="dirs__dot" type="button" aria-label="2 из 4: Привоз авто из-за рубежа"><span></span></button>
-      <button class="dirs__dot" type="button" aria-label="3 из 4: Покупка и продажа авто"><span></span></button>
-      <button class="dirs__dot" type="button" aria-label="4 из 4: О нас"><span></span></button>
+      <button class="dirs__dot" type="button" aria-label="1 из 6: Автомойка" aria-current="true"><span></span></button>
+      <button class="dirs__dot" type="button" aria-label="2 из 6: Детейлинг"><span></span></button>
+      <button class="dirs__dot" type="button" aria-label="3 из 6: Оклейка плёнкой"><span></span></button>
+      <button class="dirs__dot" type="button" aria-label="4 из 6: Кузовные работы"><span></span></button>
+      <button class="dirs__dot" type="button" aria-label="5 из 6: Продажа автомобилей"><span></span></button>
+      <button class="dirs__dot" type="button" aria-label="6 из 6: О нас"><span></span></button>
     </div>
     <button class="dirs__play" type="button" aria-label="Остановить автопрокрутку" data-state="playing"><svg class="i-pause" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-pause"/></svg><svg class="i-play" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-play"/></svg></button>
   </div>
 </section>
 
-<!-- Клуб (Влад 03.11: «внизу карту, которая будет вести на клуб»): клубная карта — ссылка на её
-     оформление (wahelp, как «Оформить клубную карту» на «О нас», цель Метрики club_card по
-     data-club-card), рядом — «Подробнее о клубе» на /about#membership. Вид — home.css. -->
-<section class="home-club" aria-labelledby="home-club-title">
-  <a class="home-club__media" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card data-reveal tabindex="-1" aria-hidden="true">
-    <img class="home-club__card" src="assets/img/home/club-card-cut-800.webp" srcset="assets/img/home/club-card-cut-800.webp 800w, assets/img/home/club-card-cut-1400.webp 1400w" sizes="(min-width: 760px) 44vw, 85vw" width="1400" height="880" alt="" loading="lazy" decoding="async">
-  </a>
-  <div class="home-club__panel">
-    <h2 class="home-club__title" id="home-club-title">Клубная карта</h2>
-    <p>Карта постоянного клиента <span lang="en"><span class="nw">Meat Wash</span> <span class="nw">Car Care Club</span></span>. Оформляется онлайн, условия клуба расскажет администратор.</p>
-    <div class="home-club__actions">
-      <a class="home-club__link" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить клубную карту<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a>
-      <a class="link-arrow home-club__more" href="about#membership">Подробнее о&nbsp;клубе<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
-    </div>
+<!-- Наши работы: по ряду плашек на направление (подстановка works). У кузовных работ своих кадров
+     нет — плашки-услуги без фото с ценой «от» из каталога. -->
+<section class="home-works" aria-labelledby="works-title">
+  <div class="home-works__head" data-reveal>
+    <h2 class="home-works__title" id="works-title">Наши работы</h2>
+    <p class="home-works__lead">По&nbsp;каждому направлению&nbsp;— кадры из&nbsp;наших студий и&nbsp;машины, которые мы&nbsp;уже продали.</p>
   </div>
+
+  <div class="home-works__row">
+    <div class="home-works__row-head">
+      <h3 class="home-works__name">Автомойка</h3>
+      <a class="link-arrow home-works__more" href="wash">Программы и&nbsp;цены<span class="sr">: автомойка</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+    </div>
+    <ul class="work-tiles" role="list" data-works="wash">
+  <li class="work-tiles__item"><a class="work-tile" href="wash#programs"><img class="work-tile__img" src="assets/img/works/wash-1-800.webp" srcset="assets/img/works/wash-1-800.webp 800w, assets/img/works/wash-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер смывает пену с чёрного BMW 8 серии струёй высокого давления в моечном боксе" loading="lazy" decoding="async"><span class="work-tile__title">Мойка кузова</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="wash#programs"><img class="work-tile__img" src="assets/img/works/wash-2-800.webp" srcset="assets/img/works/wash-2-800.webp 800w, assets/img/works/wash-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Серый BMW 8 серии Gran Coupe в водяной дымке после ополаскивания, вид сзади" loading="lazy" decoding="async"><span class="work-tile__title">Ополаскивание кузова</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="wash#programs"><img class="work-tile__img" src="assets/img/works/wash-3-800.webp" srcset="assets/img/works/wash-3-800.webp 800w, assets/img/works/wash-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Рука мастера с губкой на капоте чёрного автомобиля в активной пене" loading="lazy" decoding="async"><span class="work-tile__title">Ручная мойка</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
+  </div>
+
+  <div class="home-works__row">
+    <div class="home-works__row-head">
+      <h3 class="home-works__name">Детейлинг</h3>
+      <a class="link-arrow home-works__more" href="detailing">Услуги и&nbsp;цены<span class="sr">: детейлинг</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+    </div>
+    <ul class="work-tiles" role="list" data-works="detailing">
+  <li class="work-tiles__item"><a class="work-tile" href="detailing#price-interior"><img class="work-tile__img" src="assets/img/works/detailing-1-800.webp" srcset="assets/img/works/detailing-1-800.webp 800w, assets/img/works/detailing-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Салон Mercedes V-класса: кожаные кресла с прострочкой «ромб», шторки на окнах" loading="lazy" decoding="async"><span class="work-tile__title">Кожаный салон</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="detailing#price-components"><img class="work-tile__img" src="assets/img/works/detailing-2-800.webp" srcset="assets/img/works/detailing-2-800.webp 800w, assets/img/works/detailing-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер в перчатке наносит средство из распылителя в открытом моторном отсеке" loading="lazy" decoding="async"><span class="work-tile__title">Моторный отсек</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="detailing#price-components"><img class="work-tile__img" src="assets/img/works/detailing-3-800.webp" srcset="assets/img/works/detailing-3-800.webp 800w, assets/img/works/detailing-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер чистит кистью колёсный диск BMW с нанесённым очистителем" loading="lazy" decoding="async"><span class="work-tile__title">Уход за&nbsp;дисками</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
+  </div>
+
+  <div class="home-works__row">
+    <div class="home-works__row-head">
+      <h3 class="home-works__name">Оклейка плёнкой</h3>
+      <a class="link-arrow home-works__more" href="wrap">Услуги и&nbsp;цены<span class="sr">: оклейка плёнкой</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+    </div>
+    <ul class="work-tiles" role="list" data-works="wrap">
+  <li class="work-tiles__item"><a class="work-tile" href="wrap#price-film"><img class="work-tile__img" src="assets/img/works/wrap-1-800.webp" srcset="assets/img/works/wrap-1-800.webp 800w, assets/img/works/wrap-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Чёрный внедорожник со снятым бампером и открытым капотом в светлом зале, рядом мастер" loading="lazy" decoding="async"><span class="work-tile__title">Подготовка к&nbsp;оклейке</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="wrap#price-film"><img class="work-tile__img" src="assets/img/works/wrap-2-800.webp" srcset="assets/img/works/wrap-2-800.webp 800w, assets/img/works/wrap-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер прикатывает ракелем прозрачную плёнку на тёмном кузове, на плёнке капли воды" loading="lazy" decoding="async"><span class="work-tile__title">Работа ракелем</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="wrap#price-film"><img class="work-tile__img" src="assets/img/works/wrap-3-800.webp" srcset="assets/img/works/wrap-3-800.webp 800w, assets/img/works/wrap-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер натягивает лист прозрачной плёнки на дверь чёрного внедорожника" loading="lazy" decoding="async"><span class="work-tile__title">Плёнка на&nbsp;двери</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
+  </div>
+
+  <div class="home-works__row">
+    <div class="home-works__row-head">
+      <h3 class="home-works__name">Кузовные работы</h3>
+      <a class="link-arrow home-works__more" href="bodywork">Услуги и&nbsp;цены<span class="sr">: кузовные работы</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+    </div>
+    <ul class="work-tiles" role="list" data-works="bodywork">
+  <li class="work-tiles__item"><a class="work-tile work-tile--text" href="bodywork#pdr"><span class="work-tile__title">Удаление вмятин без&nbsp;покраски</span><span class="work-tile__price">от&nbsp;7&nbsp;000&nbsp;₽</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile work-tile--text" href="bodywork#paint"><span class="work-tile__title">Покраска элемента</span><span class="work-tile__price">от&nbsp;20&nbsp;000&nbsp;₽</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile work-tile--text" href="bodywork#chips"><span class="work-tile__title">Ремонт сколов</span><span class="work-tile__price">от&nbsp;5&nbsp;000&nbsp;₽</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
+  </div>
+
+  <div class="home-works__row">
+    <div class="home-works__row-head">
+      <h3 class="home-works__name">Продажа автомобилей</h3>
+      <a class="link-arrow home-works__more" href="auto">Все&nbsp;машины<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+    </div>
+    <ul class="work-tiles" role="list" data-works="sales">
+  <li class="work-tiles__item"><a class="work-tile" href="auto#bmw-740ld"><img class="work-tile__img" src="assets/img/sold-bmw-740d-sentyabr.webp" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="533" alt="BMW 740Ld xDrive в матовом цвете Frozen Bluestone" loading="lazy" decoding="async"><span class="work-tile__title">BMW 740Ld xDrive</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="auto#bmw-m4cs-mart"><img class="work-tile__img" src="assets/img/sold-bmw-m4cs-mart.webp" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="532" alt="BMW M4 CS спереди в три четверти, голубой кузов, бронзовые диски и красные суппорты" loading="lazy" decoding="async"><span class="work-tile__title">BMW M4&nbsp;CS</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="auto#mb-g-mart"><img class="work-tile__img" src="assets/img/sold-mb-g-mart.webp" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="532" alt="Mercedes-Benz G-класс спереди в три четверти, чёрный кузов, чёрные диски с красной окантовкой и красные суппорты" loading="lazy" decoding="async"><span class="work-tile__title">Mercedes-AMG G&nbsp;63</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
+  </div>
+
+  <div class="home-works__row">
+    <div class="home-works__row-head">
+      <h3 class="home-works__name">О&nbsp;нас</h3>
+      <a class="link-arrow home-works__more" href="about">О&nbsp;компании<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+    </div>
+    <ul class="work-tiles" role="list" data-works="about">
+  <li class="work-tiles__item"><a class="work-tile" href="about#studios"><img class="work-tile__img" src="assets/img/works/about-1-800.webp" srcset="assets/img/works/about-1-800.webp 800w, assets/img/works/about-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Въезд в моечный бокс с красной росписью на стенах, внутри автомобиль в пене" loading="lazy" decoding="async"><span class="work-tile__title">Въезд в&nbsp;студию</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="about#visit-locations"><img class="work-tile__img" src="assets/img/works/about-2-800.webp" srcset="assets/img/works/about-2-800.webp 800w, assets/img/works/about-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Светлый диван у окна в клиентской зоне студии" loading="lazy" decoding="async"><span class="work-tile__title">Зона ожидания</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="about#studios"><img class="work-tile__img" src="assets/img/works/about-3-800.webp" srcset="assets/img/works/about-3-800.webp 800w, assets/img/works/about-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Светлый зал студии: плиточный пол, световые панели на потолке, прозрачные шторы бокса" loading="lazy" decoding="async"><span class="work-tile__title">Светлый зал</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+</ul>
+  </div>
+</section>
+
+<!-- Клуб: карта ведёт на её оформление (wahelp, цель club_card по data-club-card), рядом — заявка
+     с темой «Клубная карта» и «Подробнее о клубе». Условий клуба нет в данных — не пишем.
+     Наклон карты от курсора и блик — home.js (только мышь и без «меньше движения»). -->
+<section class="home-club" aria-labelledby="home-club-title">
+  <div class="home-club__stage" data-club-tilt>
+    <a class="home-club__media" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card data-reveal tabindex="-1" aria-hidden="true">
+      <span class="home-club__card">
+        <img class="home-club__img" src="assets/img/home/club-card-cut-800.webp" srcset="assets/img/home/club-card-cut-800.webp 800w, assets/img/home/club-card-cut-1400.webp 1400w" sizes="(min-width: 760px) 40vw, 80vw" width="1400" height="880" alt="" loading="lazy" decoding="async">
+        <span class="home-club__glare"></span>
+      </span>
+    </a>
+  </div>
+  <div class="home-club__panel">
+    <p class="home-club__eyebrow" lang="en">Meat Wash Car Care Club</p>
+    <h2 class="home-club__title" id="home-club-title">Клубная карта</h2>
+    <p class="home-club__text">Карта постоянного клиента наших студий. Оформляется онлайн, условия клуба расскажет администратор.</p>
+    <div class="home-club__actions">
+      <a class="btn btn--primary home-club__link" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить клубную карту<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a>
+      <button class="btn btn--ghost home-club__request" type="button" data-request data-request-category="club" data-request-services="Клубная карта">Оставьте заявку<span class="sr"> на&nbsp;клубную карту</span></button>
+    </div>
+    <a class="link-arrow home-club__more" href="about#membership">Подробнее о&nbsp;клубе<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+  </div>
+</section>
+
+<section class="reviews" id="reviews" aria-labelledby="reviews-title">
+  <header class="reviews__head">
+    <h2 class="reviews__title" id="reviews-title">Отзывы клиентов</h2>
+    <ul class="reviews__studios" role="list">
+      <li class="reviews__studio">
+        <p class="reviews__studio-name">Мясницкая</p>
+        <p class="reviews__rating"><b class="reviews__score">5,0</b><span class="review__stars" role="img" aria-label="Рейтинг 5,0 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span></p>
+        <p class="reviews__count">211&nbsp;оценок</p>
+        <a class="reviews__link link-arrow" href="https://yandex.ru/maps/org/meat_wash/191686454110/reviews/" target="_blank" rel="noopener noreferrer">Все&nbsp;отзывы на&nbsp;Яндекс Картах<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr">: Мясницкая (откроется в&nbsp;новой вкладке)</span></a>
+      </li>
+      <li class="reviews__studio">
+        <p class="reviews__studio-name">Технопарк</p>
+        <p class="reviews__rating"><b class="reviews__score">5,0</b><span class="review__stars" role="img" aria-label="Рейтинг 5,0 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span></p>
+        <p class="reviews__count">108&nbsp;оценок</p>
+        <a class="reviews__link link-arrow" href="https://yandex.ru/maps/org/meat_wash_tekhnopark/122667992007/reviews/" target="_blank" rel="noopener noreferrer">Все&nbsp;отзывы на&nbsp;Яндекс Картах<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr">: Технопарк (откроется в&nbsp;новой вкладке)</span></a>
+      </li>
+    </ul>
+    <p class="reviews__asof">Рейтинг и&nbsp;отзывы&nbsp;— с&nbsp;Яндекс Карт на&nbsp;5&nbsp;ноября 2026&nbsp;г.</p>
+  </header>
+  <ul class="reviews__list" role="list">
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Обслуживание шикарное, приехал просто помыть машину, но&nbsp;в&nbsp;итоге решил оставить её&nbsp;на&nbsp;полный детейлинг, трёхэтапную полировку, керамику, полную химчистку, реставрацию четырёх дисков, мойку подвески и&nbsp;оклейку зон риска, удалось пообщаться с&nbsp;управляющими, ребята очень отзывчивые, всё объясняют по&nbsp;факту, без&nbsp;лишней воды и&nbsp;навязывания, в&nbsp;итоге забрал машину как&nbsp;новую, очень рад что&nbsp;попал именно к&nbsp;ним</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Amin S.</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-05-27">27&nbsp;мая 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>В&nbsp;первую очередь хочу поблагодарить мастеров которые оклеивали мой автомобиль, настоящие профессионалы своего дела, […] качество оклейки отличное, отдал им&nbsp;второй автомобиль и&nbsp;во&nbsp;второй раз доволен результатом, спасибо большое !)</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Константин К.</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-07-01">1&nbsp;июля 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Отличный детейлинг. Сделали широкий спектр услуг очень качественно (от&nbsp;покраски элементов, до&nbsp;химчистки и&nbsp;ремонта лобового) и&nbsp;по&nbsp;хорошей цене. Отличный сервис, как-будто приезжаешь к&nbsp;друзьям.</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Клиент</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-09-24">24&nbsp;сентября 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Обратился к&nbsp;ребятам отполировать автомобиль, ребята предложили комплект:полировка, керамика, химчистка по&nbsp;очень вкусной цене. […] ребята уделили четкое внимание к&nbsp;каждой зоне автомобиля, дали рекомендации по&nbsp;уходу в&nbsp;дальнейшем. Теперь автомобиль сияет, из-за&nbsp;этого сияю и&nbsp;я!</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Илмир</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-07-22">22&nbsp;июля 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Делал полную предпродажную подготовку авто, безумно доволен, подход в&nbsp;данным месте безупречный.</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Александр М.</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-07-29">29&nbsp;июля 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Очень классные ребята! Сервис всегда на&nbsp;высоте, быстро делают работу, очень качественно! Регулярно к&nbsp;ним приезжаю на&nbsp;мойку, а&nbsp;также делал комплексный детейлинг! Точно советую</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Сергей Л.</span><span class="review__studio">Мясницкая</span><time class="review__date" datetime="2026-01-10">10&nbsp;января 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Все&nbsp;удобно, утром записался, после обеда заехал, после работы забрал чистую машину! все&nbsp;помыли отлично, хорошо почистили тканевые сиденья и&nbsp;коврики. Удобное место + 2&nbsp;часа парковки включено! Ещё покрытие кузова в&nbsp;подарок сделали)</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Александр Б.</span><span class="review__studio">Мясницкая</span><time class="review__date" datetime="2026-05-17">17&nbsp;мая 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Очень доволен этой автомойкой! Записаться можно онлайн&nbsp;— это&nbsp;невероятно удобно: выбираешь подходящее время, и&nbsp;всё, без&nbsp;лишних звонков и&nbsp;ожидания. […] Персонал вежливый, работает профессионально и&nbsp;аккуратно. Машину всегда отдают чистой и&nbsp;ухоженной. Рекомендую!</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Андрей Ю.</span><span class="review__studio">Мясницкая</span><time class="review__date" datetime="2025-07-30">30&nbsp;июля 2025</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>Я&nbsp;привередливый потребитель, но&nbsp;после услуг, оказанных тут у&nbsp;меня не&nbsp;осталось каких-либо вопросов. Мой авто за&nbsp;такое время и&nbsp;прайс еще никто не&nbsp;мыл. Быстро, четко и&nbsp;профессионально. Парни браво!</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Кирилл М.</span><span class="review__studio">Мясницкая</span><time class="review__date" datetime="2026-01-06">6&nbsp;января 2026</time></figcaption>
+      </figure>
+    </li>
+    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
+        <blockquote class="review__text"><p>На&nbsp;протяжении двух лет переодически пользуюсь услугами мойки. Очень довольна и&nbsp;качеством мойки и&nbsp;обслуживанием в&nbsp;целом. Очень хорошие ребята работают!</p></blockquote>
+        <figcaption class="review__meta"><span class="review__author">Алена Р.</span><span class="review__studio">Мясницкая</span><time class="review__date" datetime="2026-10-06">6&nbsp;октября 2026</time></figcaption>
+      </figure>
+    </li>
+  </ul>
 </section>
 </main>
 
@@ -378,101 +587,78 @@
 <!-- SHARED:footer:END -->
 
 <!-- SHARED:dialogs:START -->
-<!-- Окна записи, разговора и заявки (план §4.2, §4.7). Владелец: WP6.
+<!-- Окно «Оставьте заявку» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
-     js/request.js и проверок; менять только вместе с ними. В комментариях фигурные скобки
-     подстановок не писать: сборка их подставит или упадёт.
+     js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
+     В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — своя у страницы (поле cta в src/content/pages.mjs):
-     запись на автомойку, звонок в Технопарк на оклейке, вопрос о машине на продаже авто и привозе. -->
+     Нижняя кнопка на телефоне — «Оставьте заявку» с темой страницы (поле topic в src/content/pages.mjs). -->
 <button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="">Оставьте заявку</button>
 
-<!-- Запись: у Мясницкой и Технопарка разные компании в YCLIENTS, поэтому ссылки ведут
-     в свою онлайн-запись, а не на общий адрес. В YCLIENTS обе компании пока называются
-     прежним именем — об этом строка под студиями (поправка критика 17).
-     То же окно без студий — разговор с администратором (js/ui.js, data-mode="talk"):
-     «Обсудить условия» клуба и «Узнать цену», пока заявки с сайта не принимаются
-     (site.requests.endpoint пуст): тогда главное в окне — телефоны. -->
-<dialog class="dialog dialog--booking" id="booking" aria-labelledby="booking-title" data-mode="book">
-  <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <!-- Начальный фокус — на заголовке: на ссылке студии он выглядел выбором по умолчанию. -->
-  <h2 class="dialog__title" id="booking-title" tabindex="-1" autofocus>Записаться</h2>
-  <p class="dialog__context" id="booking-context" hidden></p>
-  <p class="dialog__lead" id="booking-lead" hidden>Администратор ответит на&nbsp;вопросы и&nbsp;подберёт время.</p>
-  <p class="dialog__lead" id="booking-hint">Выберите студию. Услугу и&nbsp;время&nbsp;— в&nbsp;её&nbsp;<span class="nw">онлайн-записи</span>.</p>
-  <div class="dialog__branches">
-    <a class="dialog__branch studio-link" href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya"><strong class="studio-link__name">Мясницкая</strong><span class="studio-link__type dialog__branch-type">Премиальная автомойка</span><span class="studio-link__address">ул. Мясницкая, 11</span><span class="studio-link__hours dialog__branch-hours">Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
-    <a class="dialog__branch studio-link" href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark"><strong class="studio-link__name">Технопарк</strong><span class="studio-link__type dialog__branch-type">Детейлинг-центр</span><span class="studio-link__address">пр-т&nbsp;Андропова, 8, стр. 2</span><span class="studio-link__hours dialog__branch-hours">Ежедневно 08:00–22:00</span><span class="studio-link__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg></span><span class="sr">&nbsp;— онлайн-запись, откроется в&nbsp;новой вкладке</span></a>
-  </div>
-  <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
-  <!-- Автомойка и другие работы выбраны вместе (гараж): цену остального — «Узнать цену». -->
-  <p class="dialog__note dialog__note--request" id="booking-request" hidden><span data-booking-request-text></span> <button class="link-arrow" type="button" data-request data-booking-request>Узнать цену<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></p>
-  <p class="dialog__aside" id="booking-other">Химчистка, полировка, плёнка, ремонт&nbsp;— по&nbsp;телефону: администратор назовёт цену.</p>
-  <!-- Порядок телефонов меняет ui.js: про плёнку и защиту первым звонят в Технопарк. -->
-  <div class="dialog__phones">
-    <a href="tel:+79300352325" data-phone="myasnitskaya"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая&nbsp;— автомойка</span><strong>+7 (930) 035-23-25</strong></a>
-    <a href="tel:+79324916991" data-phone="technopark"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк&nbsp;— детейлинг и&nbsp;плёнка</span><strong>+7 (932) 491-69-91</strong></a>
-  </div>
-</dialog>
-
-<!-- Заявка с фото: всё, кроме автомойки (детейлинг, оклейка, стёкла и другие работы).
-     Открывается кнопками «Узнать цену», только когда приём включён (site.requests.endpoint
-     задан и сайт в hosts); до того те же кнопки открывают окно #booking с телефонами.
-     Логика — js/request.js, грузится по первому нажатию. Отправка — только на адрес
-     site.requests.endpoint (meatwash-content.json; на meatwash.ru — api/request.php); пока
-     его нет, форма не отправляет и не пишет «отправлено» — предлагает позвонить в студию.
-     Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
+<!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
+     data-request-services, о чём заявка — data-request-context) и data-book у автомойки (тема
+     «Автомойка», программа или работы мойки). Логика — js/request.js, грузится по первому нажатию.
+     Отправка — только на адрес site.requests.endpoint (meatwash-content.json; на meatwash.ru —
+     api/request.php) и только на сайтах из hosts. Пока адреса нет, «Отправить» проверяет поля и
+     честно говорит, что заявка не отправлена, с телефонами студий; введённое остаётся черновиком.
+     Онлайн-запись YCLIENTS — только мелкой строкой при теме «Автомойка»: у Мясницкой и Технопарка
+     разные компании в YCLIENTS, ссылки ведут каждая в свою запись (с выбранной программой в корзине,
+     js/yclients.js). Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
      это обещает Политика, п. 2.1. -->
-<dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title">
+<dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Заявка с&nbsp;фото</h2>
-  <p class="dialog__lead">Детейлинг, оклейка, стёкла и&nbsp;другие работы, кроме автомойки. Мастер посмотрит фото, оценит объём работ и&nbsp;свяжется с&nbsp;вами.</p>
-  <p class="dialog__note request__wash" data-request-wash hidden><span data-request-wash-text></span> <button class="link-arrow" type="button" data-book data-request-wash-book>Записаться на&nbsp;автомойку<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></p>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставьте заявку</h2>
+  <p class="dialog__context" id="request-context" hidden></p>
+  <p class="dialog__lead" id="request-lead">Администратор студии перезвонит и&nbsp;ответит на&nbsp;вопросы.</p>
   <form class="request ym-hide-content" data-request-form novalidate>
-    <fieldset class="request__card request__services">
-      <legend class="request__legend">Работы <b aria-hidden="true">*</b></legend>
-      <ul class="request__chips" data-request-chips aria-label="Выбранные работы"></ul>
-      <label class="request__add"><span class="visually-hidden">Добавить работу</span><select data-request-add aria-describedby="request-services-error"><option value="">+ Добавить работу</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></label>
-      <p class="request__error" id="request-services-error" data-error-for="services"></p>
-    </fieldset>
+    <div class="request__card request__about">
+      <label class="request__field"><span>Направление <b aria-hidden="true">*</b></span><span class="request__select"><select name="topic" required aria-describedby="request-topic-error" data-request-topic><option value="">Выберите направление</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></span><small class="request__error" id="request-topic-error" data-error-for="topic"></small></label>
+      <div class="request__online" data-request-online hidden>
+        <p class="request__online-line">или&nbsp;запишитесь онлайн: <a href="https://n975571.yclients.com/company/906067/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="myasnitskaya">Мясницкая<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a> · <a href="https://n1982508.yclients.com/company/1743348/personal/select-services" target="_blank" rel="noopener noreferrer" data-branch="technopark">Технопарк<span class="sr">&nbsp;— онлайн-запись на&nbsp;автомойку, откроется в&nbsp;новой вкладке</span></a></p>
+        <p class="request__online-note" data-request-online-note hidden></p>
+        <p class="dialog__yc">Онлайн-запись откроется в&nbsp;YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span></p>
+      </div>
+      <div class="request__services" data-request-services-box hidden>
+        <p class="request__legend" id="request-services-label">Работы</p>
+        <ul class="request__chips" data-request-chips aria-labelledby="request-services-label"></ul>
+        <label class="request__add request__select" data-request-add-box><span class="visually-hidden">Добавить работу</span><select data-request-add><option value="">+ Добавить работу</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></label>
+      </div>
+    </div>
     <div class="request__card">
       <div class="request__grid">
         <label class="request__field"><span>Имя <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="name" autocomplete="name" required maxlength="80" aria-describedby="request-name-error"><small class="request__error" id="request-name-error" data-error-for="name"></small></label>
-        <label class="request__field"><span>Телефон или&nbsp;Telegram <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="contact" autocomplete="tel" required maxlength="100" aria-describedby="request-contact-hint request-contact-error"><small id="request-contact-hint">Как&nbsp;с&nbsp;вами связаться</small><small class="request__error" id="request-contact-error" data-error-for="contact"></small></label>
-        <label class="request__field request__field--wide"><span>Автомобиль</span><input class="ym-disable-keys" name="car" maxlength="120" placeholder="Марка, модель, год" autocomplete="off"></label>
+        <label class="request__field"><span>Телефон <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="24" placeholder="+7 (___) ___-__-__" aria-describedby="request-phone-error"><small class="request__error" id="request-phone-error" data-error-for="phone"></small></label>
       </div>
-      <fieldset class="request__branch">
-        <legend class="request__legend">Студия</legend>
-        <label><input type="radio" name="branch" value="Любая" checked><span>Любая</span></label>
-        <label><input type="radio" name="branch" value="Мясницкая"><span>Мясницкая</span></label>
-        <label><input type="radio" name="branch" value="Технопарк"><span>Технопарк</span></label>
-      </fieldset>
-      <label class="request__field"><span>Комментарий</span><textarea class="ym-disable-keys" name="comment" rows="3" maxlength="1000"></textarea></label>
+      <label class="request__field"><span>Комментарий <span class="request__optional">— необязательно</span></span><textarea class="ym-disable-keys" name="comment" rows="3" maxlength="1000" placeholder="Автомобиль, что нужно сделать, удобное время"></textarea></label>
     </div>
-    <div class="request__card request__photos" role="group" aria-labelledby="request-photos-label">
-      <p class="request__legend" id="request-photos-label">Фото</p>
+    <!-- Фото — только когда приём заявок подключён (без адреса приёма их некуда отправить). -->
+    <div class="request__card request__photos" role="group" aria-labelledby="request-photos-label" data-request-photos hidden>
+      <p class="request__legend" id="request-photos-label">Фото <span class="request__optional">— необязательно</span></p>
       <p class="request__rules" id="request-photos-rules" data-request-rules>До&nbsp;5&nbsp;фото: JPG, PNG, WebP или&nbsp;HEIC, до&nbsp;10&nbsp;МБ&nbsp;каждое.</p>
       <ul class="request__previews" data-request-previews></ul>
       <label class="btn btn--secondary request__pick">Добавить фото<input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple data-request-files aria-describedby="request-photos-rules request-photos-error"></label>
       <p class="request__error" id="request-photos-error" role="status" aria-live="polite" data-error-for="photos"></p>
     </div>
     <div class="request__card request__send">
-      <label class="request__consent"><input type="checkbox" name="consent" required aria-describedby="request-consent-error"><span>Даю <a href="consent-request" target="_blank" rel="noopener">согласие на&nbsp;обработку персональных данных</a> для&nbsp;ответа на&nbsp;заявку. Подробнее&nbsp;— в&nbsp;<a href="privacy" target="_blank" rel="noopener">Политике</a>.</span></label>
+      <label class="request__consent"><input type="checkbox" name="consent" required aria-describedby="request-consent-error"><span>Даю <a href="consent-request" target="_blank" rel="noopener">согласие на&nbsp;обработку моих персональных данных</a> для&nbsp;ответа на&nbsp;заявку. Подробнее&nbsp;— в&nbsp;<a href="privacy" target="_blank" rel="noopener">Политике</a>.</span></label>
       <p class="request__error" id="request-consent-error" data-error-for="consent"></p>
       <!-- Ловушка для спам-ботов (api/request.php отклоняет заявку, если поле заполнено):
            человек его не видит, Tab на него не попадает, скринридер его не читает. -->
       <div class="visually-hidden" aria-hidden="true"><label>Не&nbsp;заполняйте это&nbsp;поле <input name="mw_extra" tabindex="-1" autocomplete="off"></label></div>
       <p class="request__error request__error--form" role="alert" data-request-error hidden></p>
-      <div class="request__actions" data-request-actions hidden>
+      <div class="request__actions" data-request-actions>
         <button class="btn btn--primary btn--block" type="submit" data-request-submit>Отправить заявку</button>
       </div>
-      <div class="request__offline" data-request-offline hidden>
-        <p><strong>Отправка заявок с&nbsp;сайта пока не&nbsp;подключена.</strong> Позвоните в&nbsp;студию&nbsp;— администратор примет заявку. Введённое здесь сохранится до&nbsp;закрытия вкладки.</p>
-        <div class="dialog__phones">
-          <a href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая</span><strong>+7 (930) 035-23-25</strong></a>
-          <a href="tel:+79324916991"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк</span><strong>+7 (932) 491-69-91</strong></a>
+      <!-- Адреса приёма нет: после проверки полей — это сообщение (фокус на нём), введённое
+           остаётся. Порядок телефонов меняет request.js: по оклейке и кузову первым — Технопарк. -->
+      <div class="request__offline" data-request-offline role="alert" tabindex="-1" hidden>
+        <p class="request__offline-title"><strong>Заявка не&nbsp;отправлена: приём заявок с&nbsp;сайта подключаем.</strong></p>
+        <p>Позвоните в&nbsp;студию&nbsp;— администратор примет заявку по&nbsp;телефону. Введённое здесь сохранится до&nbsp;закрытия вкладки.</p>
+        <div class="dialog__phones" data-request-phones>
+          <a href="tel:+79300352325" data-phone="myasnitskaya"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Мясницкая&nbsp;— Премиальная автомойка</span><strong>+7 (930) 035-23-25</strong></a>
+          <a href="tel:+79324916991" data-phone="technopark"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span>Технопарк&nbsp;— Детейлинг-центр</span><strong>+7 (932) 491-69-91</strong></a>
         </div>
       </div>
       <p class="request__required"><b aria-hidden="true">*</b>&nbsp;— обязательные поля</p>
@@ -480,7 +666,7 @@
   </form>
   <div class="request__done" data-request-done hidden tabindex="-1">
     <p class="request__donetitle">Заявка отправлена</p>
-    <p>Мастер посмотрит фото и&nbsp;свяжется с&nbsp;вами по&nbsp;указанному контакту.</p>
+    <p>Администратор студии свяжется с&nbsp;вами по&nbsp;указанному телефону.</p>
     <form method="dialog"><button class="btn btn--secondary">Закрыть</button></form>
   </div>
 </dialog>

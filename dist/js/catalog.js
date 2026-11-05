@@ -15,15 +15,15 @@ const byHash = (hash) => {
 };
 
 // Работы автомойки, которые не продаются в онлайн-записи, помечаются прямо в прайсе:
-// человек видит это там же, где смотрит цену, а не после нажатия «Записаться».
-// Остальные категории идут через «Узнать цену» — там YCLIENTS не участвует.
+// человек видит это там же, где смотрит цену, а не в окне заявки.
+// Остальные категории идут только через окно заявки — там YCLIENTS не участвует.
 function markOnSite() {
   const rows = [...document.querySelectorAll('#price-wash [data-price-item]')];
   if (!rows.length) return;
   import('./yclients.js').then((yc) => yc.loadMap().then(() => {
     for (const row of rows) {
       const name = row.dataset.priceItem;
-      // Строка без «Записаться» уже подписана при сборке («добавим при приёмке», onsite в JSON).
+      // Строка без онлайн-записи уже подписана при сборке («добавим при приёмке», onsite в JSON).
       if (!name || row.dataset.onsite || !row.querySelector('[data-book]')) continue;
       const online = ['myasnitskaya', 'technopark']
         .some((b) => yc.resolve(b, { programs: [], items: [name] }, 0).ids.length);
