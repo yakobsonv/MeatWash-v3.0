@@ -7,7 +7,8 @@
 //     затем следующий слайд; пауза — кнопкой, касанием, фокусом;
 //  4) клуб: карта поднимается над кадром при прокрутке (параллакс, не на телефоне), наклоняется к курсору (до 8°)
 //     и ловит блик (наклон — только мышь; всё — без «меньше движения»);
-//  5) ряды «Наших работ» на телефоне (лента): фокус с клавиатуры прокручивает ленту к плашке.
+//  5) ряды «Наших работ» на телефоне (лента): фокус с клавиатуры прокручивает ленту к плашке;
+//  6) отзывы — «тёмная сцена»: досчёт рейтинга, карусель карточек с автопрокруткой и паузой.
 // Своего наблюдения [data-reveal] нет: класс is-in ставит ui.js (план §3.1).
 // Подключает site.js, когда на странице есть .dirs. Владелец: исполнитель главной.
 export function setupHome() {
@@ -17,6 +18,7 @@ export function setupHome() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   setupClub(reduce);
   setupWorksFocus(reduce);
+  setupReviews(reduce);
 
   // 1. Цвет страницы.
   let queued = false;
@@ -216,4 +218,217 @@ function setupWorksFocus(reduce) {
       item.scrollIntoView({ inline: 'start', block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
     });
   });
+}
+
+// 6. Отзывы — «тёмная сцена» (Влад 06.11, разметка — {{reviews:home}}, вид — home.css .rv*).
+//  а) рейтинг студий: «5,0» досчитывается от 0,0 за 1,4 s, когда рейтинги вошли в экран (звёзды
+//     загораются по очереди — CSS по is-in от ui.js); при «меньше движения» — сразу итог;
+//  б) карусель: лента — обычная горизонтальная прокрутка (свайп на телефоне — сам браузер, вертикальную
+//     прокрутку страницы не держим), мышью — перетаскивание, стрелки, клавиши ← →. Активная карточка —
+//     ближайшая к центру; --d каждой карточки (0…1, расстояние до центра) — уменьшение и затухание
+//     соседей (только чтение прокрутки в rAF, размеры — из кэша по смене размера окна);
+//  в) автопрокрутка: 6,5 s на отзыв (полоса хода — CSS-анимация, её конец — следующий отзыв, после
+//     последнего — первый). Пауза — кнопкой (дольше 5 s само движется — значит, кнопка обязательна),
+//     наведением мыши на ленту и кнопки, фокусом, касанием, вне экрана, в скрытой вкладке.
+//     «Меньше движения» — автопрокрутки нет, кнопки паузы нет, листание без плавности;
+//  г) пятно красного света идёт за мышью над панелью (transform, rAF).
+function setupReviews(reduce) {
+  const rv = document.querySelector('[data-rv]');
+  if (!rv) return;
+  const track = rv.querySelector('.rv__track');
+  const originals = track ? [...track.querySelectorAll('.rv-item')] : [];
+  const ctrl = rv.querySelector('.rv__controls');
+  if (!originals.length || !ctrl) return;
+  const carousel = rv.querySelector('.rv__carousel');
+  const segs = [...ctrl.querySelectorAll('.rv__seg')];
+  const now = ctrl.querySelector('.rv__now');
+  const play = ctrl.querySelector('.rv__play');
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const n = originals.length;
+  const pad = (i) => String(i + 1).padStart(2, '0');
+  ctrl.hidden = false;
+
+  // а) Досчёт рейтинга.
+  const nums = [...rv.querySelectorAll('.rv-score__num[data-count]')];
+  const scores = rv.querySelector('.rv__scores');
+  const fmt = (v) => v.toFixed(1).replace('.', ',');
+  const count = () => {
+    if (reduce.matches) return;
+    const t0 = performance.now(), dur = 1400;
+    const tick = (t) => {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(2, -10 * p);
+      nums.forEach((el) => { el.textContent = fmt(p >= 1 ? +el.dataset.count : Math.floor(+el.dataset.count * e * 10) / 10); });
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  if (nums.length && scores && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      count();
+    }, { rootMargin: '0px 0px -6% 0px' });
+    io.observe(scores);
+  }
+
+  // б) Карусель. Кольцо: слева и справа — копии всех карточек (aria-hidden, inert — для чтения
+  // экрана и клавиатуры их нет, в собранной странице их нет): по краям сцены всегда соседи. Когда
+  // лента улеглась на копии, она без движения переставляется на ту же карточку в середине.
+  const loop = n > 2;
+  if (loop) {
+    const copy = (li) => {
+      const c = li.cloneNode(true);
+      c.classList.add('is-copy'); c.removeAttribute('aria-label');
+      c.setAttribute('aria-hidden', 'true'); c.inert = true;
+      return c;
+    };
+    track.prepend(...originals.map(copy));
+    track.append(...originals.map(copy));
+  }
+  const items = [...track.querySelectorAll('.rv-item')];
+  const base = loop ? n : 0;
+  // Выезд по очереди — от карточки слева от центра (видимые — первыми).
+  items.forEach((li, k) => li.style.setProperty('--i', Math.max(0, k - base + 1)));
+  let index = -1, centers = [], step = 1, queued = false, lockUntil = 0;
+  const measure = () => {
+    centers = items.map((li) => li.offsetLeft + li.offsetWidth / 2);
+    step = items.length > 1 ? centers[1] - centers[0] : items[0].offsetWidth;
+  };
+  const leftOf = (v) => centers[v] - track.clientWidth / 2;
+  const setActive = (v) => {
+    if (v === index) return;
+    items[index]?.classList.remove('is-active');
+    index = v;
+    items[v].classList.add('is-active');
+    const k = v % n;
+    segs.forEach((s, j) => { s.classList.toggle('is-past', j < k); s.classList.toggle('is-active', j === k); });
+    if (now) now.textContent = pad(k);
+  };
+  const paint = () => {
+    queued = false;
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, dist = Infinity;
+    centers.forEach((c, i) => {
+      const dd = Math.abs(c - mid);
+      if (dd < dist) { dist = dd; best = i; }
+      items[i].style.setProperty('--d', Math.min(1, dd / step).toFixed(3));
+    });
+    if (performance.now() >= lockUntil) setActive(best);
+  };
+  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+  const go = (v) => {
+    const target = loop ? Math.max(0, Math.min(items.length - 1, v)) : ((v % n) + n) % n;
+    lockUntil = performance.now() + 900;
+    setActive(target);
+    track.scrollTo({ left: leftOf(target), behavior: reduce.matches ? 'auto' : 'smooth' });
+  };
+  // Лента улеглась: с копии — на ту же карточку в середине (сдвиг на целый круг, без движения).
+  let settleTimer = 0;
+  const settle = () => {
+    clearTimeout(settleTimer);
+    if (drag?.moved) return;
+    lockUntil = 0;
+    paint();
+    if (loop && (index < n || index >= 2 * n)) {
+      const shift = index < n ? n : -n;
+      track.style.scrollSnapType = 'none';
+      track.scrollLeft = leftOf(index + shift);
+      track.style.removeProperty('scroll-snap-type');
+      setActive(index + shift);
+      paint();
+    }
+  };
+  measure();
+  track.scrollLeft = leftOf(base);
+  paint();
+  track.addEventListener('scroll', () => {
+    queue();
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(settle, 160);
+  }, { passive: true });
+  track.addEventListener('scrollend', settle);
+  window.addEventListener('resize', () => { measure(); track.scrollLeft = leftOf(index); queue(); });
+  ctrl.querySelector('.rv__prev')?.addEventListener('click', () => go(index - 1));
+  ctrl.querySelector('.rv__next')?.addEventListener('click', () => go(index + 1));
+  track.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); go(index + (e.key === 'ArrowRight' ? 1 : -1)); }
+  });
+  // Перетаскивание мышью (на касание — родной свайп браузера).
+  let drag = null;
+  track.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    drag = { x: e.clientX, left: track.scrollLeft, moved: false, id: e.pointerId, from: index };
+  });
+  track.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 5) return;
+    if (!drag.moved) { drag.moved = true; track.classList.add('is-dragging'); track.setPointerCapture(e.pointerId); }
+    track.scrollLeft = drag.left - dx;
+  });
+  const endDrag = (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const moved = drag.moved, dx = e.clientX - drag.x, from = drag.from;
+    drag = null;
+    if (!moved) return;
+    track.classList.remove('is-dragging');
+    // Докатить до ближайшей карточки; короткий рывок тоже листает на одну.
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0;
+    centers.forEach((c, i) => { if (Math.abs(c - mid) < Math.abs(centers[best] - mid)) best = i; });
+    if (best === from && Math.abs(dx) > 40) best = from + (dx < 0 ? 1 : -1);
+    go(best);
+  };
+  track.addEventListener('pointerup', endDrag);
+  track.addEventListener('pointercancel', endDrag);
+  track.addEventListener('dragstart', (e) => e.preventDefault());
+
+  // в) Автопрокрутка.
+  let wantPlay = !reduce.matches, inView = false, hover = false, focused = false, touching = false;
+  const sync = () => {
+    rv.classList.toggle('is-auto', wantPlay);
+    rv.classList.toggle('is-playing', wantPlay && inView && !hover && !focused && !touching && !document.hidden);
+  };
+  const setPlay = (on) => {
+    wantPlay = on;
+    if (play) {
+      play.dataset.state = on ? 'playing' : 'paused';
+      play.setAttribute('aria-label', on ? 'Остановить автопрокрутку' : 'Включить автопрокрутку');
+    }
+    sync();
+  };
+  ctrl.addEventListener('animationend', (e) => { if (e.animationName === 'rv-progress') go(index + 1); });
+  play?.addEventListener('click', () => setPlay(!wantPlay));
+  // Любое своё листание — полоса хода текущего отзыва начинается заново (новый is-active).
+  for (const el of [carousel, ctrl]) {
+    el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hover = true; sync(); } });
+    el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hover = false; sync(); } });
+  }
+  // Фокус с клавиатуры (не щелчок мышью по ленте) останавливает смену до ухода фокуса из блока.
+  rv.addEventListener('focusin', (e) => { if (e.target.matches(':focus-visible')) { focused = true; sync(); } });
+  rv.addEventListener('focusout', (e) => { if (!rv.contains(e.relatedTarget)) { focused = false; sync(); } });
+  track.addEventListener('touchstart', () => { touching = true; sync(); }, { passive: true });
+  const untouch = () => { touching = false; sync(); };
+  track.addEventListener('touchend', untouch, { passive: true });
+  track.addEventListener('touchcancel', untouch, { passive: true });
+  document.addEventListener('visibilitychange', sync);
+  reduce.addEventListener?.('change', () => { if (reduce.matches) setPlay(false); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => { inView = entries[0].isIntersecting; sync(); }, { threshold: 0.4 }).observe(carousel || track);
+  }
+  setPlay(wantPlay);
+
+  // г) Свет за мышью.
+  let gx = 0, gy = 0, glowQueued = false, box = null;
+  const glow = () => { glowQueued = false; rv.style.setProperty('--gx', `${gx.toFixed(0)}px`); rv.style.setProperty('--gy', `${gy.toFixed(0)}px`); };
+  rv.addEventListener('pointerenter', () => { box = null; });
+  window.addEventListener('scroll', () => { box = null; }, { passive: true });
+  rv.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse' || !fine.matches || reduce.matches) return;
+    box ??= rv.getBoundingClientRect();
+    gx = e.clientX - box.left; gy = e.clientY - box.top;
+    rv.classList.add('is-lit');
+    if (!glowQueued) { glowQueued = true; requestAnimationFrame(glow); }
+  });
+  rv.addEventListener('pointerleave', () => rv.classList.remove('is-lit'));
 }
