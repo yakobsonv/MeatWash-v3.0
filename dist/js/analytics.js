@@ -13,11 +13,16 @@
 // выключая его, поправь и тексты (npm run check сверяет).
 //
 // Цели (Метрика → Цели → «JavaScript-событие», идентификаторы — как здесь):
-//   booking_open, booking_branch, phone_click, map_open,
-//   garage_open, garage_ready, garage_book, garage_request, club_card,
-//   request_open, request_sent (заявка с фото — только при подтверждённой доставке),
-//   telegram_click {from, place, to} — переход в Telegram (ui.js, поправка критика 18;
-//   цель в счётчике создаёт Влад).
+//   форма «Оставьте заявку» (request.js, Влад 05.11):
+//     request_open {topic, from, works} — окно открыто любой кнопкой заявки;
+//     request_submit_attempt {topic, ok} — нажали «Отправить заявку» (ok — поля заполнены верно);
+//     request_offline {topic} — поля верны, но приём заявок не подключён: показаны телефоны
+//       студий (вместо прежней записи в YCLIENTS; цель в счётчике создаёт Влад);
+//     request_sent {topic, works, photos} — только при подтверждённой доставке;
+//   booking_branch {branch, preset} — переход в онлайн-запись студии (мелкая строка в форме);
+//   phone_click, map_open, garage_open, garage_ready, garage_book, garage_request, club_card,
+//   telegram_click {from, place, to} — переход в Telegram (ui.js, поправка критика 18).
+//   booking_open больше не шлётся: окна записи нет, запись — через форму заявки.
 //
 // Вид уведомления — css/dialogs.css (план §4.5, паттерн Porsche 3.4): карточка слоновой кости
 // внизу экрана, «Принять» и «Отказаться» одного размера; страницу не блокирует.
