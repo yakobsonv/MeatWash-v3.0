@@ -1,17 +1,20 @@
-<!-- Блок записи в конце страницы (план §4.2; есть на «Автомойке и детейлинге», «Работах», «Статьях»
-     и статье). Владелец: WP6, вид — css/dialogs.css. Две карточки студий — прямые ссылки в их
-     онлайн-запись YCLIENTS; телефонов здесь нет — они в подвале сразу ниже. Цвета — из --on*:
-     один и тот же блок работает на тёмной странице и на «бумаге». -->
+<!-- Блок заявки в конце страницы (план §4.2; есть на «Услугах и ценах», «Работах», «Статьях»
+     и статье). Владелец: WP6, тексты 05.11 — исполнитель E, вид — css/dialogs.css. Влад 05.11:
+     все призывы — «Оставьте заявку» (тема страницы — подстановка topic); онлайн-запись YCLIENTS —
+     только мелкой строкой внутри формы, здесь её нет. Карточки студий — звонок в студию.
+     Цвета — из --on*: один и тот же блок работает на тёмной странице и на «бумаге». -->
 <section class="book-block" id="book" aria-labelledby="book-title">
   <div class="book-block__inner">
     <div class="book-block__head">
-      <h2 class="book-block__title" id="book-title">Записаться</h2>
-      <p class="book-block__lead">Выберите студию. Услугу и время — в её <span class="nw">онлайн-записи</span>. Онлайн-запись доступна круглосуточно.</p>
-      <p class="book-block__note">Онлайн-запись откроется в YCLIENTS <span class="nw">(<span lang="en">{{brand:legacy}}</span>)</span></p>
+      <h2 class="book-block__title" id="book-title">Оставьте заявку</h2>
+      <p class="book-block__lead">Опишите задачу в заявке или позвоните в студию: администратор подскажет цену и время.</p>
+      <div class="book-block__note actions">
+        <button class="btn btn--primary" type="button" data-request data-request-category="{{topic}}">Оставьте заявку</button>
+      </div>
     </div>
     <div class="book-block__studios">
-      <a class="studio-link" href="{{loc:myasnitskaya:booking}}" target="_blank" rel="noopener noreferrer"><strong class="studio-link__name">{{loc:myasnitskaya:name}}</strong><span class="studio-link__type">{{loc:myasnitskaya:type}}</span><span class="studio-link__address">{{loc:myasnitskaya:address}}</span><span class="studio-link__hours">{{loc:myasnitskaya:hours}}</span><span class="studio-link__go" aria-hidden="true">{{icon:arrow-up-right}}</span><span class="sr"> — онлайн-запись, откроется в новой вкладке</span></a>
-      <a class="studio-link" href="{{loc:technopark:booking}}" target="_blank" rel="noopener noreferrer"><strong class="studio-link__name">{{loc:technopark:name}}</strong><span class="studio-link__type">{{loc:technopark:type}}</span><span class="studio-link__address">{{loc:technopark:address}}</span><span class="studio-link__hours">{{loc:technopark:hours}}</span><span class="studio-link__go" aria-hidden="true">{{icon:arrow-up-right}}</span><span class="sr"> — онлайн-запись, откроется в новой вкладке</span></a>
+      <a class="studio-link" href="tel:{{loc:myasnitskaya:tel}}"><strong class="studio-link__name">{{loc:myasnitskaya:name}}</strong><span class="studio-link__type">{{loc:myasnitskaya:type}}</span><span class="studio-link__address">{{loc:myasnitskaya:address}}</span><span class="studio-link__hours">{{loc:myasnitskaya:phone}}</span><span class="studio-link__go" aria-hidden="true">{{icon:phone}}</span><span class="sr"> — позвонить в студию</span></a>
+      <a class="studio-link" href="tel:{{loc:technopark:tel}}"><strong class="studio-link__name">{{loc:technopark:name}}</strong><span class="studio-link__type">{{loc:technopark:type}}</span><span class="studio-link__address">{{loc:technopark:address}}</span><span class="studio-link__hours">{{loc:technopark:phone}}</span><span class="studio-link__go" aria-hidden="true">{{icon:phone}}</span><span class="sr"> — позвонить в студию</span></a>
     </div>
   </div>
 </section>

@@ -176,10 +176,10 @@ export function setupGarage() {
             <button class="garage__clear" type="button" data-garage-clear>Сбросить выбор</button>
           </div>
           <div class="garage__act">
-            <button class="btn btn--primary garage__book" type="button" data-book data-garage-book>Записаться</button>
-            <button class="btn btn--ghost garage__request" type="button" data-request data-garage-request hidden>Узнать цену</button>
+            <button class="btn btn--primary garage__book" type="button" data-book data-garage-book>Оставьте заявку</button>
+            <button class="btn btn--ghost garage__request" type="button" data-request data-garage-request hidden>Оставьте заявку</button>
           </div>
-          <p class="garage__split" data-garage-split hidden>Автомойка&nbsp;— онлайн-запись в&nbsp;студию, цену остальных работ назовёт администратор.</p>
+          <p class="garage__split" data-garage-split hidden>Автомойка и&nbsp;другие работы&nbsp;— две отдельные заявки: цену других работ назовёт администратор.</p>
           <!-- Лицензия модели CC BY 4.0 требует указать автора и что модель изменена — рядом с ней. -->
           <p class="garage__credit">3D-модель: <a href="https://sketchfab.com/3d-models/free-1975-porsche-911-930-turbo-8568d9d14a994b9cae59499f0dbed21e" target="_blank" rel="noopener noreferrer">Karol Miklas</a>, <a href="https://creativecommons.org/licenses/by/4.0/deed.ru" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>, изменена</p>
         </div>
@@ -365,8 +365,8 @@ export function setupGarage() {
       totalEl.append(' ', more);
     }
   }
-  // Список выбранного (раскрывается по «Выбрано: N»): автомойка и работы «Узнать цену» —
-  // отдельными группами, если выбраны вместе: в YCLIENTS уходит только автомойка.
+  // Список выбранного (раскрывается по «Выбрано: N»): автомойка и другие работы —
+  // отдельными группами, если выбраны вместе: это две разные заявки.
   function renderPicked(body, wash, other) {
     const list = (ids) => {
       const ul = document.createElement('ul');
@@ -383,7 +383,7 @@ export function setupGarage() {
     };
     const head = (text) => { const p = document.createElement('p'); p.className = 'garage__pickhead'; p.textContent = text; return p; };
     picksEl.replaceChildren(...(wash.length && other.length
-      ? [head('Автомойка\u00a0— онлайн-запись'), list(wash), head('Цену назовёт администратор'), list(other)]
+      ? [head('Автомойка'), list(wash), head('Другие работы\u00a0— цену назовёт администратор'), list(other)]
       : [list(picked)]));
     noteEl.textContent = `Минимальные цены каталога${wash.length ? `, автомойка — для кузова «${bodyName(body)}»` : ''}. Точную стоимость назовёт мастер.`;
   }
@@ -418,16 +418,16 @@ export function setupGarage() {
     countEl.textContent = `Выбрано: ${picked.length}`;
     summaryBtn.hidden = !picked.length;
     if (!picked.length) setSummary(false);
-    // Два сценария: автомойка — запись в YCLIENTS с выбором филиала, остальные
-    // работы — «Узнать цену» (v2, план юзабилити 08.10: одна подпись у всех входов;
-    // пока заявки с сайта не принимаются, ui.js откроет телефоны студий).
-    // Смешанный выбор не уходит в YCLIENTS целиком:
-    // видны обе кнопки, и каждое окно напоминает о второй части.
+    // Два сценария: автомойка (data-book — заявка с темой автомойки) и другие работы
+    // (data-request). Подпись у обеих — «Оставьте заявку» (Влад 05.11); при смешанном
+    // выборе видны обе кнопки, и подпись уточняет, к какой части относится каждая.
     const wash = picked.filter((id) => isWash(byId(id))), other = picked.filter((id) => !isWash(byId(id)));
     renderPicked(body, wash, other);
     const titles = (ids) => ids.map((id) => byId(id).title);
     bookBtn.hidden = Boolean(other.length && !wash.length);
-    bookBtn.textContent = wash.length ? 'Записаться на автомойку' : 'Записаться';
+    const both = Boolean(wash.length && other.length);
+    bookBtn.textContent = both ? 'Оставьте заявку на автомойку' : 'Оставьте заявку';
+    requestBtn.textContent = both ? 'Оставьте заявку на другие работы' : 'Оставьте заявку';
     // Состав автомойки — в «Вы выбрали: …» окна записи, с кузовом (цена от него зависит).
     if (wash.length) bookBtn.dataset.bookContext = titles(wash).join(', ') + ' · ' + bodyName(body) + ' · предварительно от ' + money(garageSum(wash, body));
     else delete bookBtn.dataset.bookContext;
@@ -443,12 +443,12 @@ export function setupGarage() {
   }
   // Часть работ в онлайн-записи не продаётся: их добавляет мастер при приёмке.
   // Помечаем это сразу в списке («на месте» у названия, пояснение — в «Составе»),
-  // чтобы человек видел до нажатия «Записаться», а не удивлялся, что в запись
+  // чтобы человек видел до нажатия «Оставьте заявку», а не удивлялся, что в онлайн-запись
   // ушла половина выбранного.
   function markOffline() {
     import('./yclients.js').then((yc) => yc.loadMap().then(() => {
       let offline = 0;
-      // Только автомойка: остальные работы — «Узнать цену», YCLIENTS там не участвует.
+      // Только автомойка: другие работы идут заявкой, YCLIENTS там не участвует.
       for (const row of rows) {
         const zone = byId(row.dataset.row);
         if (!zone || !isWash(zone)) continue;
@@ -629,7 +629,7 @@ export function setupGarage() {
       (nextBtn || (summaryBtn.hidden ? bookBtn : summaryBtn)).focus({ preventScroll: true });
       return;
     }
-    // «Записаться на автомойку» и «Узнать цену»: гараж закрывается, затем общий
+    // «Оставьте заявку» (автомойка и другие работы): гараж закрывается, затем общий
     // обработчик ui.js (data-book / data-request) открывает своё окно — окна не
     // накладываются, выбор остаётся в sessionStorage.
     if (control.matches('[data-garage-book]')) { goal('garage_book', { works: picked.filter((id) => isWash(byId(id))).length, sum: garageSum(picked.filter((id) => isWash(byId(id))), getBody()) }); close(); }

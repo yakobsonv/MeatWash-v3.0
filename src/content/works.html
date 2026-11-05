@@ -1,9 +1,10 @@
 <!-- Тело /works (план §3.4). Владелец: WP3. Прежнее тело — git show fd8d88d:src/content/works.html:
      все его тексты и фото здесь. Пар «до/после» нет: на этой странице только настоящие работы.
      Фото студий — обрезки без водяного знака прежнего логотипа (assets/img/services/works-*).
-     Кадра BMW M4 пока нет — пометка «нужно от клиента» (план §6.4, п. 1). -->
+     Кадра BMW M4 пока нет — пометка «нужно от клиента» (план §6.4, п. 1).
+     05.11: родитель — «Услуги и цены»; все призывы — «Оставьте заявку». -->
 <section class="hero-d col-wide" aria-labelledby="page-title">
-  <a class="back-link" href="services">{{icon:chevron-left}}<span>Автомойка / Детейлинг</span></a>
+  <a class="back-link" href="services">{{icon:chevron-left}}<span>Услуги и цены</span></a>
   <h1 id="page-title">Наши работы</h1>
   <p class="hero-d__lead">Реальные машины из наших студий: подготовка к продаже, оклейка плёнкой, химчистка и полировка.</p>
   <div class="hero-d__aside">
@@ -42,7 +43,7 @@
     <p>Оклеили весь кузов цветной полиуретановой плёнкой. Машина стала серой (цвет Brooklyn Grey), а заводской лак остался под защитой.</p>
     <div class="works-m4__links actions">
       <a class="btn btn--primary" href="https://t.me/meat_wash/4" target="_blank" rel="noopener">Видео работы в Telegram{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
-      <a class="link-arrow" href="wrap">Подробнее об оклейке{{icon:arrow-right}}</a>
+      <a class="link-arrow" href="wrap">Оклейка плёнкой{{icon:arrow-right}}</a>
     </div>
   </div>
 </section>
@@ -57,7 +58,8 @@
       <div class="zigzag__text">
         <h3>Химчистка салона</h3>
         <p>Салон целиком за один визит: ткань, алькантара и кожа. Детейлинг-химчистка — {{price:Детейлинг-химчистка салона}}.</p>
-        <button class="btn btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг-химчистка салона">Узнать цену<span class="sr">: химчистка салона</span></button>
+        <button class="btn btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг-химчистка салона">Оставьте заявку<span class="sr">: химчистка салона</span></button>
+        <a class="link-arrow" href="detailing">Детейлинг{{icon:arrow-right}}</a>
       </div>
     </div>
     <div class="zigzag__row">
@@ -65,9 +67,10 @@
       <div class="zigzag__text">
         <h3>Полировка кузова</h3>
         <p>Полировка снимает паутинку, сверху — два слоя керамики. Полировка кузова с керамикой — {{price:Полировка кузова + 2 слоя керамики}}.</p>
-        <button class="btn btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Полировка кузова + 2 слоя керамики">Узнать цену<span class="sr">: полировка кузова</span></button>
+        <button class="btn btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Полировка кузова + 2 слоя керамики">Оставьте заявку<span class="sr">: полировка кузова</span></button>
+        <a class="link-arrow" href="detailing">Детейлинг{{icon:arrow-right}}</a>
       </div>
     </div>
   </div>
-  <p class="works-ask col-basic">Хотите так же? <button class="link-arrow" type="button" data-request>Узнать цену{{icon:arrow-right}}</button></p>
+  <p class="works-ask col-basic">Хотите так же? <button class="link-arrow" type="button" data-request>Оставьте заявку{{icon:arrow-right}}</button></p>
 </section>
