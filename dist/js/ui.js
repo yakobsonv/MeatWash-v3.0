@@ -1,15 +1,14 @@
-// Общее для всех страниц Meat Wash: окна записи, «Узнать цену» и заявки, карты студий, переходы
-// по якорям, появление блоков, блокировка прокрутки под любым открытым <dialog>.
-// Владелец: WP6 (план §4.1, §4.2, §4.7; поправки критика 18, 21).
+// Общее для всех страниц Meat Wash: окно «Оставьте заявку» (одно на все призывы, Влад 05.11),
+// карты студий, переходы по якорям, появление блоков, блокировка прокрутки под любым открытым
+// <dialog>. Владелец: исполнитель A (раньше WP6; план §4.1, §4.7; поправки критика 18, 21).
 // Меню-шторка — js/shell.js (WP1): он открывает и закрывает <dialog id="drawer"> и закрывает его
 // в фазе capture перед ссылкой, [data-book], [data-request], [data-membership]; потом этот модуль
 // по тому же клику открывает своё окно. Класс html.is-locked ставит только этот модуль: он
-// считает открытые <dialog> — шторку, окна записи и заявки, 3D-гараж (поправка 21).
+// считает открытые <dialog> — шторку, окно заявки, 3D-гараж (поправка 21).
 // Любого элемента может не быть на странице — всё проверяется перед использованием.
 // Здесь же — уведомление о cookie и цели Метрики (analytics.js: только с согласия).
 import { setupAnalytics, goal } from './analytics.js';
-import { LOCATIONS, REQUESTS, CATEGORIES, ITEMS } from './data.js';
-import { getBody } from './body.js';
+import { LOCATIONS } from './data.js';
 
 // Неразрывные пробелы в тексте, который пишет скрипт (правила scripts/typo.mjs, без сущностей).
 const NB = ' ';
@@ -25,7 +24,7 @@ export function setupUI() {
  const abort=new AbortController(), options={signal:abort.signal};
  const $=s=>document.querySelector(s);
  const root=document.documentElement;
- const booking=$('#booking'), requestDialog=$('#request'), drawer=$('#drawer'), drawerOpener=$('#drawer-open');
+ const requestDialog=$('#request'), drawer=$('#drawer'), drawerOpener=$('#drawer-open');
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
  // Прокрутка фона выключена, пока открыт любой <dialog>: шторка меню, окно записи или заявки,
  // 3D-гараж. Класс на <html>: iOS не считается с overflow у одного body. Место полосы
@@ -67,11 +66,11 @@ export function setupUI() {
  const closeDrawer=()=>{if(drawer?.open)drawer.close();};
  // Куда вернуть фокус после окна: на кнопку, которая его открыла, а если она была в шторке —
  // на «Меню» (#drawer-open): шторка к этому времени уже закрыта.
- // Кнопка внутри окна записи или заявки (переход между ними) прежнюю цель не меняет.
+ // Кнопка внутри окна прежнюю цель не меняет.
  let returnTo=null;
  const rememberOpener=control=>{if(control?.closest('dialog.dialog'))return;returnTo=control&&drawer?.contains(control)?drawerOpener:control||null;};
  // Окно открыто только что: второй клик двойного клика (или двойного тапа)
- // приходится в ту же точку — по фону он закрывал окно, по ссылке филиала
+ // приходится в ту же точку — по фону он закрывал окно, по ссылке онлайн-записи
  // сам открывал запись. Такие клики по окну игнорируем.
  let openedAt=0;
  const show=dialog=>{
@@ -81,120 +80,12 @@ export function setupUI() {
   dialog.showModal(); openedAt=performance.now(); syncLock();
  };
  const settling=e=>e.detail>1||performance.now()-openedAt<400;
- const closeDialogs=()=>{ booking?.close(); requestDialog?.close(); closeDrawer(); };
- const context=$('#booking-context'), lead=$('#booking-lead'), hint=$('#booking-hint'), branches=booking?.querySelector('.dialog__branches');
- const leadText=lead?.textContent||'';
- // Что именно выбрал или спрашивает человек — только текстом, без разметки. Строку пишет
- // скрипт, typo() сборки до неё не доходит: те же правила здесь (nb) — короткие слова
- // к следующему, неразрывный пробел перед тире, число к ₽. Сами data-book-context
- // остаются с обычными пробелами (поправка 16).
- const setContext=(note,prefix='Вы выбрали: ')=>{ if(!context)return; context.textContent=note?nb(prefix+note):''; context.hidden=!note; };
- // Телефоны студий (блок всегда развёрнут): порядок из разметки, по плёнке и защите
- // первым — Технопарк. Переставляем сами ссылки: порядок чтения и Tab тот же, что на экране.
- const phones=booking?.querySelector('.dialog__phones'), phoneLinks=[...(phones?.querySelectorAll('[data-phone]')||[])];
- const phonesFirst=id=>{ if(phones&&phoneLinks.length)phones.append(...[...phoneLinks].sort((a,b)=>(b.dataset.phone===id)-(a.dataset.phone===id))); };
- // Запись: филиал выбирается здесь, потому что у площадок разные компании в yclients.
- // Ссылки филиалов ведут в YCLIENTS с уже набранными услугами. Карта
- // соответствий подгружается один раз; пока её нет, ссылки остаются такими,
- // как в разметке — обычный выбор услуги, запись всё равно работает.
- let yc=null, bookingJob=0, bookingNote='';
- const loadYc=()=>yc?Promise.resolve(yc):import('./yclients.js').then(m=>m.loadMap().then(()=>(yc=m)));
- // Каждое открытие окна начинает с ссылок из разметки: иначе общая «Записаться»
- // унесла бы в yclients корзину прошлого выбора.
- branches?.querySelectorAll('[data-branch]').forEach(link=>{link.dataset.href=link.getAttribute('href');});
- const resetLinks=()=>branches?.querySelectorAll('[data-branch]').forEach(link=>{if(link.dataset.href)link.setAttribute('href',link.dataset.href);});
- const applyLinks=spec=>{
-   if(!yc||!branches)return;
-   const body=getBody();
-   // rest — сколько работ этого же филиала уже попало в корзину: если ни одной,
-   // выбранное целиком добавляют на месте.
-   let unmatched=[],rest=0;
-   branches.querySelectorAll('[data-branch]').forEach(link=>{
-     const branch=link.dataset.branch;
-     const {ids,missing}=yc.resolve(branch,spec,body);
-     const url=yc.bookingUrl(branch,ids);
-     if(url)link.href=url;
-     if(missing.length>unmatched.length){unmatched=missing;rest=ids.length;}
-   });
-   // v2 (план юзабилити 08.10): выбранное онлайн не продаётся — одна строка вместо
-   // «Вы выбрали», «На месте добавите… не продаются» и «Выберите студию» подряд.
-   // Выбранное бывает само автомойкой (Трёхфазная): не «запишитесь на автомойку», а «выберите
-   // в онлайн-записи любую» — фраза верна и для программы, и для работы к автомойке.
-   if(!unmatched.length)return;
-   const onSite=rest?`${unmatched.join(', ')} мастер добавит при\u00a0приёмке, остальное уже в\u00a0заказе.`:'Это\u00a0мастер добавит при\u00a0приёмке\u00a0— в\u00a0онлайн-записи выберите любую автомойку.';
-   setContext((bookingNote?bookingNote+'. ':'')+onSite,bookingNote?'Вы выбрали: ':'');
-   hint.hidden=true;
- };
- // Автомойка и другие работы выбраны вместе (гараж): запись — только автомойка, а окно
- // напоминает про цену остальных работ; общая строка про них тогда не нужна.
- const requestNote=$('#booking-request'), otherNote=$('#booking-other');
- const setRequestNote=list=>{
-   if(!requestNote)return;
-   requestNote.hidden=!list.length;
-   if(otherNote)otherNote.hidden=Boolean(list.length);
-   if(!list.length)return;
-   requestNote.querySelector('[data-booking-request-text]').textContent=`Цену остальных работ назовёт администратор: ${list.join(', ')}.`;
-   requestNote.querySelector('[data-booking-request]').dataset.requestServices=list.join('|');
- };
- const openBooking=(note='',spec=null,requestList=[])=>{
-   if(!booking)return;
-   closeDrawer(); requestDialog?.close();
-   setRequestNote(requestList);
-   booking.dataset.mode='book';
-   $('#booking-title').textContent='Записаться';
-   bookingNote=note;
-   setContext(note); lead.hidden=true; hint.hidden=false; branches.hidden=false;
-   phonesFirst('');
-   resetLinks();
-   // Ответ карты yclients может прийти после следующего открытия окна — тогда он уже не нужен.
-   const job=++bookingJob;
-   if(spec&&(spec.programs.length||spec.items.length))loadYc().then(()=>{if(job===bookingJob&&booking.open)applyLinks(spec);});
-   show(booking);
-   goal('booking_open',{context:note||'—'});
-   // Фокус на заголовке, а не на Мясницкой: иначе она выглядела выбранной по умолчанию.
-   $('#booking-title').focus({preventScroll:true});
- };
- // Разговор с администратором: то же окно без студий — заголовок, что человек
- // спрашивает, подсказка и телефоны. Окно бывает уже открыто (кнопка «Узнать цену»
- // в окне записи) — тогда оно перестраивается на месте и встаёт в начало.
- const openTalk=({title,ask='',text=leadText,first=''})=>{
-   if(!booking)return;
-   bookingJob++;
-   closeDrawer(); requestDialog?.close();
-   if(requestNote)requestNote.hidden=true;
-   if(otherNote)otherNote.hidden=true;
-   booking.dataset.mode='talk';
-   $('#booking-title').textContent=title;
-   setContext(ask,'Вы спрашиваете: ');
-   lead.textContent=text; lead.hidden=false; hint.hidden=true; branches.hidden=true;
-   phonesFirst(first);
-   if(booking.open)booking.scrollTop=0;
-   show(booking);
-   $('#booking-title').focus({preventScroll:true});
- };
- const openMembership=(title='')=>openTalk({title:title||'Meat Wash Car Care Club'});
- // v2 (план юзабилити 08.10): «Узнать цену», пока заявки с сайта не принимаются, — не
- // форма, которую нельзя отправить, а телефоны студий. Условие то же, что в request.js:
- // адрес приёма задан и этот сайт в списке hosts. Когда приём включат, кнопки снова
- // открывают форму заявки (#request).
- const requestHosts=Array.isArray(REQUESTS.hosts)?REQUESTS.hosts:[];
- const requestsOn=Boolean(REQUESTS.endpoint)&&(!requestHosts.length||requestHosts.includes(location.hostname));
- const openPrice=(services,category)=>{
-   // Категория — из кнопки или общая у всех выбранных работ (гараж): от неё порядок телефонов.
-   const found=new Set(services.map(name=>ITEMS[name]?.category).filter(Boolean));
-   const id=category||(found.size===1?[...found][0]:'');
-   const group=CATEGORIES.find(c=>c.id===id);
-   const about=group?group.desc.replace(/\.$/,''):'';
-   openTalk({
-     title:'Узнать цену',
-     ask:services.length?services.join(', '):about&&about[0].toLowerCase()+about.slice(1),
-     text:'Позвоните в\u00a0студию\u00a0— администратор назовёт цену и\u00a0подберёт время.',
-     first:id==='protection'?'technopark':'',
-   });
-   goal('request_open',{works:services.length,from:category||(services.length?'selection':'general'),mode:'phone'});
- };
+ const closeDialogs=()=>{ requestDialog?.close(); closeDrawer(); };
 
- // Окно заявки (js/request.js): модуль — по первому нажатию «Оставить заявку».
+ // Окно «Оставьте заявку» (js/request.js): модуль — по первому нажатию любой кнопки заявки.
+ // Все призывы сайта ведут в эту форму (Влад 05.11): data-request (тема, работы, о чём заявка),
+ // data-book у автомойки (тема «Автомойка», программа и работы — в корзину онлайн-записи),
+ // data-membership — прежние кнопки клуба, пока страницы не переписаны (тема «Клубная карта»).
  let requestLoading=null;
  const loadRequest=()=>{
   if(!requestDialog)return null;
@@ -202,7 +93,23 @@ export function setupUI() {
    .catch(error=>{requestLoading=null;console.warn('Окно заявки не подключилось.',error);return null;});
   return requestLoading;
  };
- document.querySelectorAll('[data-request]').forEach(button=>button.setAttribute('aria-haspopup','dialog'));
+ const list=value=>(value||'').split('|').filter(Boolean);
+ const indexes=(...values)=>values.flatMap(v=>String(v??'').split(',')).filter(v=>v.trim()!=='').map(Number).filter(Number.isInteger);
+ const specOf=control=>{
+  const d=control.dataset, from=placeOf(control);
+  if(control.hasAttribute('data-book'))return {book:true,programs:indexes(d.program,d.ycPrograms),items:list(d.ycItems),services:list(d.requestServices),context:d.bookContext||'',contextPrefix:'Вы выбрали: ',from};
+  if(control.hasAttribute('data-membership'))return {category:'club',services:['Клубная карта'],context:d.membership||'',from};
+  // Гараж услуг: мойка и другие работы вместе — программы мойки идут в ту же заявку.
+  if(d.requestContext)return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.requestContext,from};
+  return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.washContext||'',contextPrefix:d.washContext?'Вы выбрали: ':'',from};
+ };
+ const openRequest=control=>{
+  rememberOpener(control);
+  closeDrawer();
+  const spec=specOf(control);
+  loadRequest()?.then(open=>open?.(spec));
+ };
+ document.querySelectorAll('[data-request],[data-book],[data-membership]').forEach(button=>button.setAttribute('aria-haspopup','dialog'));
 
  // Карты студий в карточках локаций (js/maps.js): модуль и iframe виджета — только
  // когда область карты появляется на экране. Запаса нет (было 600 px, WP7 27.10): на «О нас»
@@ -236,7 +143,8 @@ export function setupUI() {
 
  document.addEventListener('click',e=>{
   const control=e.target.closest('a,button'); if(!control)return;
-  // Цели Метрики: звонок и переход в онлайн-запись филиала (yclients) — ссылки уходят сами.
+  // Цели Метрики: звонок и переход в онлайн-запись студии (YCLIENTS, мелкая строка в форме
+  // заявки — booking_branch) — ссылки уходят сами.
   // Ссылка филиала бывает с уже набранными услугами (yclients.js), поэтому сверяем
   // по компании в yclients, а не по ссылке целиком.
   const href=control.getAttribute('href')||'';
@@ -246,26 +154,8 @@ export function setupUI() {
   // с какой страницы, из какого места и в какой канал или чат ушёл посетитель.
   else if(/^https?:\/\/t\.me\//i.test(href))goal('telegram_click',{from:document.body.dataset.page||location.pathname,place:placeOf(control),to:href.replace(/^https?:\/\/t\.me\//i,'').split(/[?#]/)[0]});
   else{const branch=LOCATIONS.find(l=>href&&l.booking&&href.startsWith(l.booking.replace(/\/personal\/.*$/,'/')));if(branch)goal('booking_branch',{branch:branch.id,preset:/[?&]o=m-1s/.test(href)});}
-  if(control.hasAttribute('data-book')){
-   rememberOpener(control);
-   const d=control.dataset;
-   const programs=[d.program,...(d.ycPrograms||'').split(',')].filter(v=>v!=='' &&v!=null).map(Number).filter(Number.isInteger);
-   const items=(d.ycItems||'').split('|').filter(Boolean);
-   return openBooking(d.bookContext||'',{programs,items},(d.requestServices||'').split('|').filter(Boolean));
-  }
-  // «Узнать цену» — всё, кроме автомойки: пока приём заявок выключен — телефоны студий,
-  // иначе заявка с фото (модуль окна грузится по первому нажатию).
-  if(control.hasAttribute('data-request')){
-   // Кнопка внутри уже открытого окна записи («Узнать цену» остальных работ): окно
-   // перестраивается на месте, фокус потом вернётся туда же, куда и после записи.
-   rememberOpener(control);
-   const d=control.dataset;
-   if(!requestsOn)return openPrice((d.requestServices||'').split('|').filter(Boolean),d.requestCategory||'');
-   closeDrawer(); booking?.close();
-   loadRequest()?.then(open=>open?.({services:(d.requestServices||'').split('|').filter(Boolean),category:d.requestCategory||'',washContext:d.washContext||'',washPrograms:d.washPrograms||''}));
-   return;
-  }
-  if(control.hasAttribute('data-membership')){ rememberOpener(control); return openMembership(control.dataset.membership); }
+  // «Оставьте заявку» (и запись на автомойку, и прежние кнопки клуба) — одна форма #request.
+  if(control.matches('[data-book],[data-request],[data-membership]')){ e.preventDefault(); return openRequest(control); }
   // «На карте» в подвале — переход к карте студии: якорь на этой странице или на «О нас».
   // Уходя на главную, запрос Метрики со старой страницы может не успеть — тогда цель
   // отправит главная по прибытии (отметка в sessionStorage, см. ниже setupAnalytics).
@@ -283,6 +173,18 @@ export function setupUI() {
   // выделение текста, отпущенное за краем окна, его больше не закрывает.
   let downOutside=false;
   dialog.addEventListener('pointerdown',e=>{downOutside=e.target===dialog&&outside(dialog,e);},options);
+  // Фокус-ловушка: showModal() делает страницу под окном инертной, но Tab с последнего поля
+  // уводит фокус в интерфейс браузера. Замыкаем круг внутри окна: с последнего — на первое,
+  // Shift+Tab с первого — на последнее.
+  dialog.addEventListener('keydown',e=>{
+   if(e.key!=='Tab'||e.altKey||e.ctrlKey||e.metaKey)return;
+   const items=[...dialog.querySelectorAll('a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>!el.disabled&&el.tabIndex>=0&&!el.closest('[hidden],[inert],[aria-hidden="true"]')&&el.getClientRects().length);
+   if(!items.length)return;
+   const first=items[0], last=items[items.length-1], active=document.activeElement;
+   if(e.shiftKey&&(active===first||!dialog.contains(active)||active===dialog)){e.preventDefault();last.focus();}
+   else if(!e.shiftKey&&(active===last||!dialog.contains(active))){e.preventDefault();first.focus();}
+  },options);
   dialog.addEventListener('click',e=>{
    if(settling(e)){ if(e.target.closest('a[href]')) e.preventDefault(); return; }
    if(e.target===dialog&&downOutside&&outside(dialog,e)) dialog.close();
