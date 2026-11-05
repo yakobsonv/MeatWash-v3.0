@@ -933,7 +933,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
 .rv__carousel { position: relative; margin-inline: calc(-1 * var(--rv-px)); }
 .rv__track {
   position: relative;
-  display: flex; align-items: center; gap: var(--gap);   /* карточка — по своему тексту, без пустот */
+  display: flex; align-items: stretch; gap: var(--gap);   /* карточки одной высоты: верх ряда ровный, подпись — внизу */
   margin: 0; padding: 28px 0 32px; list-style: none;
   overflow-x: auto; overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
@@ -946,6 +946,11 @@ body.no-tr, body.no-tr * { transition: none !important; }
 .rv__track::-webkit-scrollbar { display: none; }
 .rv__track.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
 .rv__track:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; border-radius: var(--r-lg); }
+/* Края ленты гаснут (маска) — обводку фокуса рисует сама карусель, рамкой внутри панели. */
+@supports selector(:has(*)) {
+  .rv__track:focus-visible { outline: none; }
+  .rv__carousel:has(.rv__track:focus-visible) { outline: 2px solid var(--focus); outline-offset: -8px; border-radius: calc(var(--panel-r) - 6px); }
+}
 /* Поля, чтобы первая и последняя карточки вставали в центр (padding у flex-ленты Safari не держит). */
 .rv__track::before, .rv__track::after { content: ""; flex: 0 0 max(1px, calc((100% - var(--card)) / 2 - var(--gap))); }
 .rv-item {
@@ -961,8 +966,10 @@ body.no-tr, body.no-tr * { transition: none !important; }
   width: 100%; margin: 0;
   padding: clamp(24px, 2vw + 12px, 44px);
   border-radius: clamp(22px, 1vw + 16px, 32px);
-  background: linear-gradient(155deg, rgb(var(--fg-rgb) / .085), rgb(var(--fg-rgb) / .025) 60%);
+  /* Стекло плотное: точки сетки панели под строками отзыва не просвечивают. */
+  background: linear-gradient(155deg, rgb(var(--fg-rgb) / .085), rgb(var(--fg-rgb) / .025) 60%), rgb(13 11 10 / .78);
   box-shadow: inset 0 0 0 1px rgb(var(--fg-rgb) / .12), 0 30px 60px -30px rgb(0 0 0 / .6);
+  container: rvcard / inline-size;
   transition: box-shadow .6s var(--ease-out);
 }
 /* Активная: граница ярче, сверху вырастает красная черта (как над фактами клуба). */
@@ -972,28 +979,35 @@ body.no-tr, body.no-tr * { transition: none !important; }
   transform: scaleX(0); transform-origin: left;
   transition: transform .9s var(--expo);
 }
+/* Соседи — стеклянные формы: их текст гаснет сильнее панели (обрывков слов у краёв не читается). */
+.rv-card > :not(.rv-card__bull) { opacity: calc(1 - .88 * var(--d, 0)); }
 .rv-item.is-active .rv-card { box-shadow: inset 0 0 0 1px rgb(var(--fg-rgb) / .26), 0 40px 80px -30px rgb(0 0 0 / .8); }
 .rv-item.is-active .rv-card::before { transform: scaleX(1); }
 /* Кавычка — русская «ёлочка» из двух тонких уголков (как линии сайта); у активной уголки въезжают справа. */
+/* Верх карточки: «ёлочка» слева (открывает цитату — над первой строкой), звёзды справа. */
+.rv-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--sm); }
 .rv-card__q {
-  position: absolute; right: clamp(24px, 2vw + 12px, 44px); top: clamp(26px, 2vw + 14px, 46px);
-  width: clamp(40px, 1.6vw + 30px, 64px); height: auto; overflow: visible;
+  display: block; flex: none;
+  width: clamp(36px, 1.2vw + 28px, 52px); height: auto; overflow: visible;
   fill: none; stroke: var(--on-red); stroke-width: 2.4; stroke-linejoin: miter;
   opacity: .35;
   transition: opacity .8s var(--ease-out);
   pointer-events: none;
 }
-.rv-card__q path { transform-box: fill-box; transform-origin: 100% 50%; }
+.rv-card__q path { transform-box: fill-box; transform-origin: 0 50%; }
 .rv-item.is-active .rv-card__q { opacity: 1; }
-/* Знак быка — приглушённый водяной знак в углу, только у активной карточки. */
+/* Знак быка — целиком, небольшой печатью в правом нижнем углу на уровне подписи (не под текстом),
+   только у активной карточки и только на широких карточках (на телефоне подписи нужно всё место). */
 .rv-card__bull {
-  position: absolute; z-index: -1; right: -12%; bottom: -18%;
-  width: 62%; height: auto;
+  position: absolute; z-index: -1;
+  right: clamp(24px, 2vw + 12px, 44px); bottom: clamp(24px, 2vw + 12px, 44px);
+  width: auto; height: 46px;
   color: var(--fg); opacity: 0;
   transition: opacity 1.2s var(--ease-out);
   pointer-events: none;
 }
-.rv-item.is-active .rv-card__bull { opacity: .04; }
+.rv-item.is-active .rv-card__bull { opacity: .16; }
+@container rvcard (max-width: 399px) { .rv-card__bull { display: none; } }   /* ширина — без полей карточки */
 .rv-card__stars { gap: 3px; }
 .rv-card__stars .review__star { width: 18px; height: 18px; }
 .rv-card__text {
@@ -1002,6 +1016,8 @@ body.no-tr, body.no-tr * { transition: none !important; }
   color: var(--on); text-wrap: pretty;
 }
 .rv-card__text p { margin: 0; }
+/* Короткий отзыв — крупнее и легче (карточки одной высоты: место не пустует). */
+.rv-card--short .rv-card__text { font-size: clamp(1.3rem, .9vw + 1.05rem, 1.9rem); font-weight: 300; line-height: 1.4; letter-spacing: -.01em; }
 /* Слова (home.js оборачивает их в маску): у новой активной строки поднимаются по очереди (--l — номер строки). */
 .rv-w { display: inline-block; overflow: clip; vertical-align: top; padding: .12em .05em .2em; margin: -.12em -.05em -.2em; }
 .rv-w__in { display: inline-block; }
@@ -1017,6 +1033,12 @@ body.no-tr, body.no-tr * { transition: none !important; }
 .rv-card__who { display: grid; gap: 2px; min-width: 0; }
 .rv-card__who .review__author { font-weight: 600; color: var(--on); }
 .rv-card__where { font-size: var(--fs-sm); color: var(--on-muted); }
+.rv-card__where time { white-space: nowrap; }
+/* Узкая карточка: дата — своей строкой, без точки-разделителя (она не висит в конце строки). */
+@container rvcard (max-width: 329px) {
+  .rv-card__dot { display: none; }
+  .rv-card__where time { display: block; }
+}
 
 /* Управление: стрелки, полоса хода (отрезок на отзыв), счётчик, пауза. */
 .rv__controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sm) 10px; }
@@ -1032,9 +1054,12 @@ body.no-tr, body.no-tr * { transition: none !important; }
   transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .rv__btn svg { width: 22px; height: 22px; transition: transform .5s var(--expo); }
-.rv__btn:hover { background: var(--fg); color: var(--ink); box-shadow: none; }
-.rv__prev:hover svg { transform: translateX(-3px); }
-.rv__next:hover svg { transform: translateX(3px); }
+@media (hover: hover) {   /* на касаниях :hover залипает после нажатия */
+  .rv__btn:hover { background: var(--fg); color: var(--ink); box-shadow: none; }
+  .rv__prev:hover svg { transform: translateX(-3px); }
+  .rv__next:hover svg { transform: translateX(3px); }
+}
+.rv__btn:active { background: rgb(var(--fg-rgb) / .16); }
 .rv__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .rv__play .i-play, .rv__play[data-state="paused"] .i-pause { display: none; }
 .rv__play[data-state="paused"] .i-play { display: block; }
@@ -1068,13 +1093,18 @@ body.no-tr, body.no-tr * { transition: none !important; }
 }
 @media (min-width: 1000px) {
   .rv { --card: clamp(440px, 40%, 600px); --gap: 24px; --fade-edge: 24%; }
-  .rv__head { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: end; column-gap: clamp(48px, 5vw, 120px); }
+  .rv__head { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: end; column-gap: clamp(48px, 5vw, 120px); margin-bottom: var(--md); }   /* шапка и активная карточка — ближе: на 1440×900 видны вместе */
+}
+/* «Все отзывы ↗» до 1279 px: «на Яндекс Картах» — только для чтения экрана, ссылка в одну строку
+   (в колонке рейтинга на 1000–1279 длинная подпись рвалась на «Яндекс / Картах»). */
+@media (max-width: 1279px) {
+  .rv-score__link { white-space: nowrap; }
+  .rv-score__long { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 }
 @media (max-width: 759px) {
   .rv__glow { display: none; }
-  /* «Все отзывы ↗»: «на Яндекс Картах» — только для чтения экрана, ссылка в одну строку. */
-  .rv-score__link { white-space: nowrap; }
-  .rv-score__long { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+  /* Зона нажатия ссылки — 44 px, вёрстка не сдвигается. */
+  .rv-score__link { display: inline-block; padding-block: 12px; margin-block: -12px; }
   .rv-score__stars .review__star { width: 17px; height: 17px; }
 }
 /* Телефон от 360 px: рейтинги студий рядом (звёзды — под цифрой), блок короче. */

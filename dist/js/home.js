@@ -131,7 +131,7 @@ export function setupHome() {
   document.addEventListener('visibilitychange', sync);
   phone.addEventListener?.('change', sync);
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver((entries) => { inView = entries[0].isIntersecting; sync(); }, { threshold: 0.5 }).observe(track);
+    new IntersectionObserver((entries) => { inView = entries[entries.length - 1].isIntersecting; sync(); }, { threshold: 0.5 }).observe(track);
   }
   sync();
 }
@@ -165,7 +165,7 @@ function setupClub(reduce) {
   };
   const queuePar = () => { if (inView && !parQueued) { parQueued = true; requestAnimationFrame(parallax); } };
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver((entries) => { inView = entries[0].isIntersecting; queuePar(); }, { rootMargin: '120px 0px' }).observe(stage);
+    new IntersectionObserver((entries) => { inView = entries[entries.length - 1].isIntersecting; queuePar(); }, { rootMargin: '120px 0px' }).observe(stage);
   } else inView = true;
   window.addEventListener('scroll', queuePar, { passive: true });
   window.addEventListener('resize', queuePar);
@@ -265,7 +265,7 @@ function setupReviews(reduce) {
   };
   if (nums.length && scores && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
-      if (!entries[0].isIntersecting) return;
+      if (!entries[entries.length - 1].isIntersecting) return;   // в пачке записей важна последняя
       io.disconnect();
       count();
     }, { rootMargin: '0px 0px -6% 0px' });
@@ -393,7 +393,14 @@ function setupReviews(reduce) {
     settleTimer = setTimeout(settle, 160);
   }, { passive: true });
   track.addEventListener('scrollend', settle);
-  window.addEventListener('resize', () => { measure(); track.scrollLeft = leftOf(index); queue(); });
+  // Смена размера — только по ширине: на телефоне resize идёт и от прячущейся адресной строки,
+  // и перестановка ленты оборвала бы плавный переезд рывком.
+  let lastW = window.innerWidth;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === lastW) return;
+    lastW = window.innerWidth;
+    measure(); track.scrollLeft = leftOf(index); queue();
+  });
   ctrl.querySelector('.rv__prev')?.addEventListener('click', () => go(index - 1));
   ctrl.querySelector('.rv__next')?.addEventListener('click', () => go(index + 1));
   track.addEventListener('keydown', (e) => {
@@ -431,9 +438,12 @@ function setupReviews(reduce) {
 
   // в) Автопрокрутка.
   let wantPlay = !reduce.matches, inView = false, hover = false, focused = false, touching = false;
+  const countEl = ctrl.querySelector('.rv__count');
   const sync = () => {
     rv.classList.toggle('is-auto', wantPlay);
     rv.classList.toggle('is-playing', wantPlay && inView && !hover && !focused && !touching && !document.hidden);
+    // Диктор не объявляет номер при автопрокрутке (схема каруселей WAI), только при ручном листании.
+    countEl?.setAttribute('aria-live', wantPlay ? 'off' : 'polite');
   };
   const setPlay = (on) => {
     wantPlay = on;
@@ -444,14 +454,15 @@ function setupReviews(reduce) {
     sync();
   };
   ctrl.addEventListener('animationend', (e) => { if (e.animationName === 'rv-progress') go(index + 1); });
-  play?.addEventListener('click', () => setPlay(!wantPlay));
+  // Явное «Включить» сильнее паузы по фокусу (фокус как раз на кнопке): показ идёт сразу.
+  play?.addEventListener('click', () => { if (!wantPlay) focused = false; setPlay(!wantPlay); });
   // Любое своё листание — полоса хода текущего отзыва начинается заново (новый is-active).
   for (const el of [carousel, ctrl]) {
     el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hover = true; sync(); } });
     el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hover = false; sync(); } });
   }
   // Фокус с клавиатуры (не щелчок мышью по ленте) останавливает смену до ухода фокуса из блока.
-  rv.addEventListener('focusin', (e) => { if (e.target.matches(':focus-visible')) { focused = true; sync(); } });
+  rv.addEventListener('focusin', (e) => { if (e.target !== play && e.target.matches(':focus-visible')) { focused = true; sync(); } });
   rv.addEventListener('focusout', (e) => { if (!rv.contains(e.relatedTarget)) { focused = false; sync(); } });
   track.addEventListener('touchstart', () => { touching = true; sync(); }, { passive: true });
   const untouch = () => { touching = false; sync(); };
@@ -460,7 +471,8 @@ function setupReviews(reduce) {
   document.addEventListener('visibilitychange', sync);
   reduce.addEventListener?.('change', () => { if (reduce.matches) setPlay(false); });
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver((entries) => { inView = entries[0].isIntersecting; sync(); }, { threshold: 0.4 }).observe(carousel || track);
+    // В пачке записей (быстрый переход к блоку сразу после загрузки: [false, true]) важна последняя.
+    new IntersectionObserver((entries) => { inView = entries[entries.length - 1].isIntersecting; sync(); }, { threshold: 0.4 }).observe(carousel || track);
   }
   setPlay(wantPlay);
 

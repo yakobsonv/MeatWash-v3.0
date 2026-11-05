@@ -460,6 +460,10 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
       for (const st of r.studios.filter((x) => block.includes(`href="${x.url}"`))) ok(plain(block).includes(`${st.rating.toFixed(1).replace('.', ',')}`), `${page.file}: рейтинг ${st.id} не из JSON`);
       const authors = [...block.matchAll(/<span class="review__author">([^<]*)<\/span>/g)].map((m) => m[1]);
       ok(authors.length && authors.every((a) => r.items.some((x) => esc(x.author) === a)), `${page.file}: отзывы на странице не из JSON (reviews)`);
+      // Тексты отзывов — дословно из JSON (неразрывные пробелы после коротких слов — не правка слов).
+      const quotes = [...block.matchAll(/<blockquote class="[^"]*">([\s\S]*?)<\/blockquote>/g)].map((m) => [...m[1].matchAll(/<p>([\s\S]*?)<\/p>/g)].map((q) => plain(q[1]).trim()));
+      const texts = r.items.map((x) => x.text.split(/\n+/).map((t) => plain(esc(t.trim())).trim()));
+      ok(quotes.length === authors.length && quotes.every((q) => texts.some((t) => same(q, t))), `${page.file}: текст отзыва на странице не совпадает с JSON дословно (reviews)`);
       ok(!/itemprop|"@type":\s*"(Review|AggregateRating)"/.test(html[page.file]), `${page.file}: разметка Review/AggregateRating — не ставим (отзывы с чужой площадки)`);
     }
     if (!html['index.html'].includes('<section class="reviews" id="reviews"')) soft('[переходное: тело страницы] index.html: на главной нет блока отзывов (подстановка reviews)');

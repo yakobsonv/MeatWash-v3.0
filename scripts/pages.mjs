@@ -325,14 +325,21 @@ ${items.map((x) => `    <li class="reviews__item">
 //       + ul.rv__scores > li.rv-score > p.rv-score__name, p.rv-score__rating (b.rv-score__num[data-count]
 //         «5,0» + span.review__stars), p.rv-score__count, a.rv-score__link
 //     > div.rv__carousel > ul.rv__track[tabindex=0] > li.rv-item > figure.rv-card
-//         > svg.rv-card__q («ёлочка» — два тонких уголка), svg.rv-card__bull (знак быка — виден у активной),
-//           span.review__stars, blockquote.rv-card__text > p, figcaption > span.review__author …
+//         > div.rv-card__top (svg.rv-card__q — «ёлочка» из двух тонких уголков, слева; span.review__stars — справа),
+//           svg.rv-card__bull (знак быка — у активной), blockquote.rv-card__text > p, figcaption > span.review__author …
 //     > div.rv__controls: стрелки, полоса хода (span на отзыв), счётчик, пауза
 function renderReviewsStage(r) {
   const name = (id) => loc(id)?.name ?? (() => { throw new Error(`reviews: нет студии ${id}`); })();
   const items = r.items, n = items.length, pad = (i) => String(i).padStart(2, '0');
-  // Короткие слова (1–2 буквы) не висят в конце строки: пробел после них — неразрывный (слова те же).
-  const glue = (t) => t.replace(/(^|\s)([A-Za-zА-Яа-яЁё]{1,2}) /g, '$1$2\u00a0').replace(/(^|\s)([A-Za-zА-Яа-яЁё]{1,2}) /g, '$1$2\u00a0');
+  // Короткие слова (1–2 буквы и служебные из трёх: «мой», «всё», «для»…) не висят в конце строки:
+  // пробел после них — неразрывный; последнее слово абзаца не остаётся одно на строке (неразрывный
+  // пробел перед ним, если пара короткая — длинная не влезла бы в узкую карточку). Слова те же.
+  const SHORT3 = 'мой|моя|моё|мою|мне|все|всё|для|при|про|без|над|под|что|как|где|или|это|наш|ваш|его|уже|так|раз|еще|ещё';
+  const glueShort = (t) => t.replace(new RegExp(`(^|\\s)([A-Za-zА-Яа-яЁё]{1,2}|${SHORT3}) `, 'giu'), '$1$2\u00a0');
+  const glueLast = (t) => t.replace(/ (\S+) (\S+)$/u, (m, a, b) => (a.length + b.length <= 16 ? ` ${a}\u00a0${b}` : m));
+  const glue = (t) => glueLast(glueShort(glueShort(t)));
+  // Короткий отзыв — крупнее (карточки одной высоты: место не пустует).
+  const size = (t) => (t.length < 160 ? ' rv-card--short' : '');
   return `<section class="reviews" id="reviews" data-stage aria-labelledby="reviews-title">
 <div class="rv" data-rv data-reveal>
   <span class="rv__glow" aria-hidden="true"></span>
@@ -354,12 +361,11 @@ ${r.studios.map((s, k) => `      <li class="rv-score" style="--k:${k}">
   <div class="rv__carousel" data-reveal>
     <ul class="rv__track" role="list" tabindex="0" aria-label="Отзывы клиентов: листайте стрелками">
 ${items.map((x, i) => `      <li class="rv-item" style="--i:${i}" aria-label="Отзыв ${i + 1} из ${n}">
-        <figure class="rv-card">
-          <svg class="rv-card__q" viewBox="0 0 64 40" aria-hidden="true" focusable="false"><path d="M27 3 10 20l17 17"/><path d="M51 3 34 20l17 17"/></svg>
+        <figure class="rv-card${size(x.text)}">
+          <div class="rv-card__top"><svg class="rv-card__q" viewBox="0 0 64 40" aria-hidden="true" focusable="false"><path d="M27 3 10 20l17 17"/><path d="M51 3 34 20l17 17"/></svg><span class="review__stars rv-card__stars" role="img" aria-label="Оценка ${x.rating} из 5">${stars(x.rating)}</span></div>
           ${icon('bull', 'rv-card__bull')}
-          <span class="review__stars rv-card__stars" role="img" aria-label="Оценка ${x.rating} из 5">${stars(x.rating)}</span>
           <blockquote class="rv-card__text">${x.text.split(/\n+/).map((t) => `<p>${glue(escape(t.trim()))}</p>`).join('')}</blockquote>
-          <figcaption class="rv-card__meta"><span class="rv-card__ava" aria-hidden="true">${escape([...x.author][0])}</span><span class="rv-card__who"><span class="review__author">${escape(x.author)}</span><span class="rv-card__where">${escape(name(x.studio))} · <time datetime="${escape(x.date)}">${escape(shortDate(x.date))}</time></span></span></figcaption>
+          <figcaption class="rv-card__meta"><span class="rv-card__ava" aria-hidden="true">${escape([...x.author][0])}</span><span class="rv-card__who"><span class="review__author">${escape(x.author)}</span><span class="rv-card__where">${escape(name(x.studio))}<span class="rv-card__dot">\u00a0·</span> <time datetime="${escape(x.date)}">${escape(shortDate(x.date))}</time></span></span></figcaption>
         </figure>
       </li>`).join('\n')}
     </ul>
