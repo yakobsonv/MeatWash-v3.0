@@ -3,6 +3,8 @@
      Машины — src/data/cars.json, разметка карточек — scripts/cars.mjs (подстановки cars:sale,
      cars:sold, cars:date и счётчики count:*). Вид — dist/css/auto.css.
      Тексты — с прежней страницы (git show fd8d88d:src/content/auto.html), имя — Meat Wash.
+     05.11: связь — только форма «Оставьте заявку» с темой auto (личного мессенджера нет);
+     канал MEAT AUTO в Telegram остаётся как лента предложений.
      Колонку задаёт класс col-* на содержимом; заголовок секции держит свою колонку сам (WP1).
      Надзаголовков и нумерации нет (решение Влада). -->
 <section class="hero-d col-wide" aria-labelledby="page-title">
@@ -13,7 +15,7 @@
       <li><a href="#for-sale"><b>{{count:sale}}</b> <span>в продаже</span></a></li>
       <li><a href="#sold"><b>{{count:sold}}</b> <span>уже продали</span></a></li>
     </ul>
-    <a class="btn btn--secondary" href="https://t.me/otec_roman" target="_blank" rel="noopener">Написать в Telegram{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
+    <button class="btn btn--primary" type="button" data-request data-request-category="auto">Оставьте заявку<span class="sr">: купить или продать автомобиль</span></button>
   </div>
 </section>
 
@@ -63,7 +65,7 @@
       <li class="steps__item card--outline">
         <h3>Продажа вашей машины</h3>
         <p>Берём автомобиль на реализацию и ведём продажу до конца: показы, разговоры с покупателями, сделка.</p>
-        <a class="link-arrow" href="#auto-contact">Продать машину{{icon:arrow-right}}</a>
+        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Продажа автомобиля">Оставьте заявку<span class="sr">: продать машину</span>{{icon:arrow-right}}</button>
       </li>
       <li class="steps__item card--outline">
         <h3>Подготовка к продаже</h3>
@@ -73,8 +75,8 @@
       </li>
       <li class="steps__item card--outline">
         <h3>Подбор и покупка</h3>
-        <p>Найдём автомобиль под задачу и купим под ключ. Пишите Роману — дальше подключится команда.</p>
-        <a class="link-arrow" href="https://t.me/otec_roman" target="_blank" rel="noopener">Написать в Telegram{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
+        <p>Найдём автомобиль под задачу и купим под ключ. Опишите, какую машину ищете, — дальше задачу ведёт команда.</p>
+        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля">Оставьте заявку<span class="sr">: подбор и покупка автомобиля</span>{{icon:arrow-right}}</button>
       </li>
     </ul>
   </div>
@@ -106,10 +108,10 @@
       <img src="assets/img/auto-bmw740-1.webp" width="640" height="800" alt="" loading="lazy" decoding="async">
     </div>
     <div class="promo__panel">
-      <h2 id="auto-contact-title">Купить или продать — напишите</h2>
-      <p>Расскажите, какую машину ищете или какую хотите продать. Ответит Роман, дальше подключится команда.</p>
+      <h2 id="auto-contact-title">Купить или продать — оставьте заявку</h2>
+      <p>Расскажите, какую машину ищете или какую хотите продать. Дальше задачу ведёт команда.</p>
       <div class="actions promo__actions">
-        <a class="btn btn--primary" href="https://t.me/otec_roman" target="_blank" rel="noopener">Написать в Telegram{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
+        <button class="btn btn--primary" type="button" data-request data-request-category="auto">Оставьте заявку<span class="sr">: продажа или покупка автомобиля</span></button>
         <a class="promo__tel" href="tel:{{loc:myasnitskaya:tel}}"><span>Или позвоните в студию на Мясницкой</span> <b>{{loc:myasnitskaya:phone}}</b></a>
       </div>
     </div>

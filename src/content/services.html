@@ -6,7 +6,10 @@
      которое строит garage.js, — блоку их не давать. Пары «до/после» постановочные: под каждой
      видимая подпись «Иллюстрация, не работа студии» (решение Влада 27.10, поправка 9).
      Надзаголовков и нумерации блоков нет (решение Влада). Ролики студии в карточках оклейки
-     и работ — по наведению (js/video.js). -->
+     и работ — по наведению (js/video.js).
+     05.11: страница — «Услуги и цены» (каталог, сравнение, 3D-гараж); у направлений свои
+     страницы (wash, detailing, wrap, bodywork) — ссылки на них сразу под первым экраном.
+     Все призывы — «Оставьте заявку» (data-request; автомойка в каталоге — data-book). -->
 <!-- Шапка (Влад 30.10): ролик открытой вкладки каталога — data-category как у панели
      #price-<id>; переключает js/video.js по событию mw:category из js/catalog.js. У «Помощи»
      ролика нет — видно фото. Ролики: полоса 21:9 (-w, от 760 px) и квадрат (-m). -->
@@ -23,14 +26,24 @@
   </div>
   <button class="hero-a__toggle" type="button" data-video-toggle aria-pressed="false" aria-label="Остановить видео" hidden>{{icon:pause:hero-a__pause}}{{icon:play:hero-a__play}}</button>
   <div class="hero-a__body">
-    <h1 id="page-title">Автомойка / Детейлинг</h1>
-    <p class="hero-a__lead">Пять разделов: автомойка, детейлинг, оклейка, защита и помощь. Автомойка — онлайн-запись в выбранную студию, цену остальных работ назовёт администратор.</p>
+    <h1 id="page-title">Услуги и цены</h1>
+    <p class="hero-a__lead">Все работы студий с ценами «от» в одном каталоге: автомойка, детейлинг, оклейка, защита и помощь. Точную цену администратор назовёт после заявки.</p>
     <div class="hero-a__actions actions">
-      <button class="btn btn--primary" type="button" data-book>Записаться</button>
+      <button class="btn btn--primary" type="button" data-request>Оставьте заявку</button>
       <a class="btn btn--secondary" href="#catalog">Смотреть цены</a>
     </div>
   </div>
 </section>
+
+<nav class="section section--tight services-dirs" aria-labelledby="services-dirs-title">
+  <h2 class="sr" id="services-dirs-title">Направления</h2>
+  <ul class="link-rows col-ext" role="list">
+    <li><a href="wash">Автомойка</a></li>
+    <li><a href="detailing">Детейлинг</a></li>
+    <li><a href="wrap">Оклейка плёнкой<span class="sr"> — только в Технопарке</span></a></li>
+    <li><a href="bodywork">Кузовные работы<span class="sr"> — только в Технопарке</span></a></li>
+  </ul>
+</nav>
 
 {{catalog}}
 
@@ -55,7 +68,7 @@
         <i>Мутный рассеиватель снова прозрачный: свет идёт на дорогу, а не теряется в пластике.</i>
         <span class="ba__note">Иллюстрация, не работа студии</span>
       </figcaption>
-      <button class="link-arrow proof__ask" type="button" data-request data-request-category="protection" data-request-services="Полировка фар">Узнать цену<span class="sr">: полировка фар</span>{{icon:arrow-right}}</button>
+      <button class="link-arrow proof__ask" type="button" data-request data-request-category="protection" data-request-services="Полировка фар">Оставьте заявку<span class="sr">: полировка фар</span>{{icon:arrow-right}}</button>
     </figure>
     <figure class="ba proof__item" data-ba data-split="72">
       <div class="ba__frame">
@@ -72,7 +85,7 @@
         <i>Отражение лампы идёт по крылу без разрыва — скол не читается ни под каким углом.</i>
         <span class="ba__note">Иллюстрация, не работа студии</span>
       </figcaption>
-      <button class="link-arrow proof__ask" type="button" data-request data-request-category="help" data-request-services="Удаление сколов и подкраска">Узнать цену<span class="sr">: удаление сколов и подкраска</span>{{icon:arrow-right}}</button>
+      <button class="link-arrow proof__ask" type="button" data-request data-request-category="help" data-request-services="Удаление сколов и подкраска">Оставьте заявку<span class="sr">: удаление сколов и подкраска</span>{{icon:arrow-right}}</button>
     </figure>
   </div>
 </section>
@@ -97,17 +110,17 @@
   <div class="promo__panel">
     <h2 id="individual-title">Под вашу задачу</h2>
     <p>Комплекс перед продажей, защита нового автомобиля или регулярный уход за автопарком. Для корпоративных клиентов — индивидуальный расчёт, консьерж-сервис и единый счёт.</p>
-    <button class="btn btn--primary" type="button" data-membership="Индивидуальный уход">Обсудить уход</button>
+    <button class="btn btn--primary" type="button" data-request data-request-category="other">Оставьте заявку<span class="sr">: индивидуальный уход</span></button>
   </div>
 </section>
 
-<nav class="teasers teasers--skewed col-ext" aria-label="Ещё в разделе «Автомойка / Детейлинг»">
+<nav class="teasers teasers--skewed col-ext" aria-label="Ещё в разделе «Услуги и цены»">
   <a class="teaser" href="wrap" data-video-host>
     <img class="teaser__img" src="{{asset:assets/video/clip-wrap-15-poster.webp}}" width="720" height="1280" alt="" loading="lazy" decoding="async">
     <video class="teaser__img teaser__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/clip-wrap-15.mp4}}"></video>
     <span class="teaser__body">
-      <span class="teaser__title">Оклейка полиуретаном</span>
-      <span class="teaser__text">Прозрачная или цветная плёнка — в Технопарке.</span>
+      <span class="teaser__title">Оклейка плёнкой</span>
+      <span class="teaser__text">Прозрачный или цветной полиуретан — в Технопарке.</span>
       <span class="teaser__cta">Подробнее{{icon:cta-arrow}}</span>
     </span>
   </a>

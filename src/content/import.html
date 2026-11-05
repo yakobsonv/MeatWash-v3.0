@@ -1,8 +1,9 @@
 <!-- Тело /import (план §1.6, §3.5; поправки критика 5, 6; паттерны Porsche: шаблон «Сервис» —
      фото-герой A, вкладки-якоря P08, редакционное интро P26, зигзаг P10, тизеры P12, промо P11).
-     Владелец: WP4. Только известные факты: текст плитки 2 утверждённой главной, фраза Влада
-     о «связанных услугах, типа русификации» и контакт — Telegram Романа. Телефона студии здесь
-     нет, пока Роман не подтвердит канал (поправка 5). Блоки «Уход за машиной» и «Машины в
+     Владелец: WP4. Только известные факты: текст плитки 2 утверждённой главной и фраза Влада
+     о «связанных услугах, типа русификации». Связь — форма «Оставьте заявку» с темой import
+     (05.11, личного мессенджера нет). Телефона студии здесь нет, пока клиент не подтвердит
+     канал (поправка 5). Блоки «Уход за машиной» и «Машины в
      продаже» — без связи с услугой привоза (поправка 6). Чего нет — пометка «нужно от клиента»
      (подстановка todo), check:release на них падает. Фото героя — машина, которую продали
      (sold-mb-g-mart): alt не говорит, что её привезли. Надзаголовков и нумерации нет. -->
@@ -15,7 +16,7 @@
     <h1 id="page-title">Привоз авто <span class="nw">из-за</span> рубежа</h1>
     <p class="hero-a__lead">Привезём автомобиль <span class="nw">из-за</span> рубежа и подготовим его к жизни в России — например, сделаем русификацию.</p>
     <div class="hero-a__actions actions">
-      <a class="btn btn--primary" href="https://t.me/otec_roman" target="_blank" rel="noopener">Обсудить привоз{{icon:arrow-up-right}}<span class="sr"> в Telegram (откроется в новой вкладке)</span></a>
+      <button class="btn btn--primary" type="button" data-request data-request-category="import" data-request-services="Привоз автомобиля из-за рубежа">Оставьте заявку<span class="sr">: привоз автомобиля</span></button>
     </div>
   </div>
 </section>
@@ -52,7 +53,7 @@
           <li>{{todo:что именно русифицируем, для каких марок, где делаем}}</li>
           <li>{{todo:фото экранов и меню после русификации}}</li>
         </ul>
-        <a class="link-arrow" href="https://t.me/otec_roman" target="_blank" rel="noopener">Спросить о русификации{{icon:arrow-up-right}}<span class="sr"> в Telegram (откроется в новой вкладке)</span></a>
+        <button class="link-arrow" type="button" data-request data-request-category="import" data-request-services="Русификация">Оставьте заявку<span class="sr">: русификация</span>{{icon:arrow-right}}</button>
       </div>
     </div>
   </div>
@@ -67,7 +68,7 @@
       <img class="teaser__img" src="assets/img/import/care-foam-4x5-640.webp" srcset="assets/img/import/care-foam-4x5-640.webp 640w, assets/img/import/care-foam-4x5-1000.webp 1000w" sizes="(min-width: 760px) 45vw, 100vw" width="1000" height="1250" alt="" loading="lazy" decoding="async">
       <div class="teaser__body">
         <h3 class="teaser__title">Уход за машиной — в наших студиях</h3>
-        <span class="teaser__cta">Автомойка / Детейлинг{{icon:arrow-right}}</span>
+        <span class="teaser__cta">Услуги и цены{{icon:arrow-right}}</span>
       </div>
     </a>
     <a class="teaser" id="for-sale-link" href="auto#for-sale">
@@ -85,11 +86,10 @@
     <div class="promo__panel">
       <div class="promo__copy">
         <h2 id="contact-title">Обсудить привоз</h2>
-        <p>Расскажите, какую машину и откуда хотите привезти. Ответит Роман.</p>
+        <p>Расскажите в заявке, какую машину и откуда хотите привезти.</p>
       </div>
       <div class="actions promo__actions">
-        <a class="btn btn--primary" href="https://t.me/otec_roman" target="_blank" rel="noopener">Написать в Telegram{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
-        <p class="promo__handle">Telegram <a href="https://t.me/otec_roman" target="_blank" rel="noopener">@otec_roman<span class="sr"> (откроется в новой вкладке)</span></a></p>
+        <button class="btn btn--primary" type="button" data-request data-request-category="import">Оставьте заявку<span class="sr">: привоз автомобиля</span></button>
       </div>
     </div>
   </div>

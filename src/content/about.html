@@ -1,6 +1,6 @@
-<!-- Тело /about (план §3.7, поправки 3, 10, 13, 34). Владелец: WP5.
-     H1 не повторяет главную (поправка 34). Прежнее имя — один раз, в вводном тексте студий:
-     под ним студии в Яндекс Картах и YCLIENTS. Блок студий с картами — общая часть locations,
+<!-- Тело /about (план §3.7, поправки 3, 10, 13, 34; 05.11 — без личных имён, все призывы —
+     «Оставьте заявку»). Владелец: WP5, тексты 05.11 — исполнитель E.
+     H1 не повторяет главную (поправка 34). Блок студий с картами — общая часть locations,
      клубный блок — membership (id membership внутри неё). Фото Технопарка (автор — ГЕОмаркетинг)
      на новых страницах не ставим (поправка 10). Надзаголовков и нумерации нет (решение Влада).
      В комментариях фигурные скобки подстановок не писать. -->
@@ -13,7 +13,7 @@
     <h1 id="page-title">О нас</h1>
     <p class="hero-a__lead">Уход, который сохраняет ценность</p>
     <div class="hero-a__actions actions">
-      <button class="btn btn--primary" type="button" data-book>Записаться</button>
+      <button class="btn btn--primary" type="button" data-request>Оставьте заявку</button>
       <a class="btn btn--secondary" href="services">Услуги и цены</a>
     </div>
   </div>
@@ -23,7 +23,7 @@
   <div class="anchor-tabs__track">
     <a class="anchor-tabs__tab" href="#visit-locations">Студии</a>
     <a class="anchor-tabs__tab" href="#before-visit">Перед визитом</a>
-    <a class="anchor-tabs__tab" href="#founder">Кто мы</a>
+    <a class="anchor-tabs__tab" href="#who">Кто мы</a>
     <a class="anchor-tabs__tab" href="#club">Подход</a>
     <a class="anchor-tabs__tab" href="#path">Путь</a>
     <a class="anchor-tabs__tab" href="#team">Команда</a>
@@ -51,8 +51,8 @@
   <ul class="visit col-ext" role="list">
     <li class="card visit__item visit__item--offer">
       <h3>Первый визит</h3>
-      <p>Новым клиентам — защитное кварцевое покрытие кузова в подарок и скидка 500 ₽ на первую автомойку. Условия уточняйте при записи.</p>
-      <button class="link-arrow visit__link" type="button" data-book data-book-context="Первый визит">Записаться{{icon:arrow-right}}</button>
+      <p>Новым клиентам — защитное кварцевое покрытие кузова в подарок и скидка 500 ₽ на первую автомойку. Условия уточняйте у администратора.</p>
+      <button class="link-arrow visit__link" type="button" data-book data-book-context="Первый визит">Оставьте заявку<span class="sr">: первый визит на автомойку</span>{{icon:arrow-right}}</button>
     </li>
     <li class="card visit__item visit__item--media">
       <figure class="vframe visit__media" data-video-host><img src="{{asset:assets/video/clip-lounge-15-poster.webp}}" width="720" height="1280" alt="Зона ожидания: диван и игровая приставка" loading="lazy" decoding="async"><video class="vframe__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/clip-lounge-15.mp4}}"></video></figure>
@@ -61,29 +61,27 @@
     </li>
     <li class="card visit__item">
       <h3>Оплата</h3>
-      <p>Карта, СБП, QR, наличные, безналичный расчёт и рассрочка. На Мясницкой можно оплатить из автомобиля. <span class="nw">Онлайн-запись</span> доступна круглосуточно.</p>
+      <p>Карта, СБП, QR, наличные, безналичный расчёт и рассрочка. На Мясницкой можно оплатить из автомобиля.</p>
     </li>
   </ul>
 </section>
 
-<!-- Кто мы и зачем — редакционное интро в 2 колонки (паттерн P26): фото основателя,
-     утверждение крупно, два абзаца. Цитата Романа — дословно, только первая фраза: во второй
-     стоит прежнее имя («Под это и построен MEATWASH…»), а менять слова в чужой цитате нельзя.
-     Новую формулировку с Meat Wash — только после согласия Романа (вопрос Владу). -->
-<section class="section founder col-basic" id="founder" aria-labelledby="founder-title">
-  <h2 class="founder__title" id="founder-title">Кто мы и зачем</h2>
+<!-- Кто мы (05.11): блок основателя (портрет, цитата, подпись) снят — личных имён на сайте нет.
+     Каркас тот же (класс founder из about.css): заголовок, кадр студии вместо портрета, текст.
+     Факты только подтверждённые: студии и их работы — из locations, направления — реестр
+     страниц, с 2021 года — бренд. Ячейка quote сетки пустая: строка нулевой высоты. -->
+<section class="section founder col-basic" id="who" aria-labelledby="who-title">
+  <h2 class="founder__title" id="who-title">Кто мы и зачем</h2>
   <figure class="founder__photo" data-reveal>
-    <img src="assets/img/founder-roman.webp" width="601" height="800" alt="Роман Антонович, основатель Meat Wash" loading="lazy" decoding="async">
-  </figure>
-  <figure class="founder__quote">
-    <blockquote>
-      <p>Людям нужна не россыпь отдельных услуг, а одна точка, где решаются любые задачи по автомобилю.</p>
-    </blockquote>
-    <figcaption>Роман Антонович, основатель <span class="nw" lang="en">Meat Wash</span></figcaption>
+    <img src="assets/img/works/about-1-800.webp" srcset="assets/img/works/about-1-800.webp 800w, assets/img/works/about-1-1240.webp 1240w" sizes="(min-width: 760px) 40vw, 100vw" width="1240" height="930" alt="Въезд в моечный бокс с красной росписью на стенах, внутри автомобиль в пене" loading="lazy" decoding="async">
   </figure>
   <div class="founder__text">
-    <p>У нас два направления. Первое — защита, уход и восстановление: плёнка, детейлинг, химчистка, полировка, ремонт, подготовка машины к сезону или продаже. Второе — <a href="auto">покупка и продажа автомобилей</a> под ключ и <a href="import">привоз авто <span class="nw">из-за</span> рубежа</a>.</p>
-    <p>Клиент платит не за саму услугу, а за то, чтобы не думать, не разбираться и не тратить лишнее время. Поэтому мы забираем задачу целиком: один контакт — дальше её ведёт команда.</p>
+    <p><span class="nw" lang="en">Meat Wash</span> — студии ухода за автомобилем в Москве с {{brand:since}} года: премиальная автомойка на Мясницкой и <span class="nw">детейлинг-центр</span> полного цикла в Технопарке.</p>
+    <p>Направления: <a href="wash">автомойка</a>, <a href="detailing">детейлинг</a>, <a href="wrap">оклейка плёнкой</a> и <a href="bodywork">кузовные работы</a>, а ещё <a href="auto">продажа автомобилей</a> и <a href="import">привоз авто <span class="nw">из-за</span> рубежа</a>.</p>
+    <p>Клиенту не нужно разбираться в каждой услуге и искать исполнителей по отдельности: расскажите о задаче в заявке — дальше её ведёт наша команда.</p>
+    <div class="actions">
+      <button class="btn btn--secondary" type="button" data-request>Оставьте заявку</button>
+    </div>
   </div>
 </section>
 
@@ -95,7 +93,7 @@
     <p class="section-head__lead">Ручной уход за автомобилем в Москве. Подбираем химию под покрытие, согласуем работы на приёмке и проверяем результат перед выдачей.</p>
   </header>
   <ul class="counters col-ext" role="list">
-    <li class="counter"><b class="counter__value">5.0</b><span class="counter__label">рейтинг на Яндекс Картах</span></li>
+    <li class="counter"><b class="counter__value">5,0</b><span class="counter__label">рейтинг на Яндекс Картах</span></li>
     <li class="counter"><b class="counter__value">{{count:studios}}</b><span class="counter__label">студии в Москве — Мясницкая и Технопарк</span></li>
     <li class="counter"><b class="counter__value">{{program:0:time}}</b><span class="counter__label">самая короткая программа автомойки</span></li>
   </ul>
@@ -114,14 +112,6 @@
     </li>
   </ul>
 </section>
-
-<!-- Полоса цитаты — без фото (прежний кадр cf-flank-crop постановочный, §3.0). -->
-<figure class="quote-band">
-  <blockquote>
-    <p>Машина уезжает такой, какой её задумали на заводе — и остаётся такой дольше.</p>
-  </blockquote>
-  <figcaption>{{icon:mw:quote-band__mw}}{{icon:ccc:quote-band__ccc}}<span class="sr" lang="en">Meat Wash Car Care Club</span></figcaption>
-</figure>
 
 <!-- Наш путь: формулировки вех — исторические (поправка 13): веха 09.2026 — запуск
      направления и канал MEAT AUTO, материал 11.2025 — о проекте под прежним именем. -->
@@ -157,9 +147,8 @@
   <figure class="press col-ext">
     <div class="press__pages">
       <img src="assets/img/press-service-parts-cover.webp" width="561" height="800" alt="Обложка журнала Service &amp; Parts, № 7, ноябрь 2025" loading="lazy" decoding="async">
-      <img src="assets/img/press-service-parts-interview.webp" width="578" height="800" alt="Разворот «ИнРЁВью — Роман Антонович — проект Meat Wash» в журнале Service &amp; Parts" loading="lazy" decoding="async">
     </div>
-    <figcaption><span class="nw" lang="en">Service &amp; Parts</span>, № 7, ноябрь 2025 — интервью с Романом Антоновичем.</figcaption>
+    <figcaption><span class="nw" lang="en">Service &amp; Parts</span>, № 7, ноябрь 2025 — материал о проекте <span class="nw" lang="en">Meat Wash</span>.</figcaption>
   </figure>
 </section>
 
@@ -185,7 +174,7 @@
     </figure>
   </div>
   <div class="studios__foot col-wide">
-    <p class="studios__credit">Фото студии на Мясницкой: Роман Антонович, Яндекс Карты.</p>
+    <p class="studios__credit">Фото студии на Мясницкой — из карточки студии в Яндекс Картах.</p>
     <a class="link-arrow" href="works">Все наши работы{{icon:arrow-right}}</a>
   </div>
 </section>
