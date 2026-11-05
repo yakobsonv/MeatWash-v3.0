@@ -74,8 +74,14 @@
    «Оставьте заявку» в шапке видна и в портрете телефона. */
 body[data-page="home"] .site-header__book { display: inline-block; }
 @media (max-width: 479px) {
-  /* Узкий телефон: кнопка не должна заходить на быка по центру. */
-  body[data-page="home"] .site-header__book { padding-inline: 12px; font-size: 14px; }
+  /* Узкий телефон: бык строго по центру (боковые колонки не растут от кнопки), кнопка — в своей
+     колонке с зазором ≥ 8 px до быка; не помещается в строку — переносится в две. */
+  body[data-page="home"] .site-header__bar { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); padding-inline: 16px; }
+  body[data-page="home"] .site-header__logo { padding-inline: 4px; }
+  body[data-page="home"] .site-header__book {
+    max-width: calc(100% - 8px); padding: 4px 10px;
+    font-size: 13px; line-height: 1.15; white-space: normal; text-align: center; text-wrap: balance;
+  }
 }
 @media (max-width: 479px) {
   .site-header__menu { padding: 8px; }
@@ -88,7 +94,6 @@ body[data-page="home"] .site-header__book { display: inline-block; }
 @media (max-width: 374px) {
   /* 320–374 px: бык чуть меньше, чтобы остался ровно по центру рядом с кнопкой. */
   :root[data-theme="home"] .site-header { --bull-h: 44px; }
-  body[data-page="home"] .site-header__book { padding-inline: 8px; font-size: 13px; }
 }
 :root[data-theme="home"] .site-header--over { height: 104px; }
 @media (min-width: 480px) {

@@ -5,7 +5,8 @@
 //  2) слова заголовка секции светлеют по мере прокрутки (redomedia.co, 22.10);
 //  3) на телефоне направления — карусель с пагинатором: активная точка заполняется за 9,5 s,
 //     затем следующий слайд; пауза — кнопкой, касанием, фокусом;
-//  4) клубная карта наклоняется к курсору (до 6°) и ловит блик (только мышь, без «меньше движения»).
+//  4) клубная карта наклоняется к курсору (до 6°) и ловит блик (только мышь, без «меньше движения»);
+//  5) ряды «Наших работ» на телефоне (лента): фокус с клавиатуры прокручивает ленту к плашке.
 // Своего наблюдения [data-reveal] нет: класс is-in ставит ui.js (план §3.1).
 // Подключает site.js, когда на странице есть .dirs. Владелец: исполнитель главной.
 export function setupHome() {
@@ -14,6 +15,7 @@ export function setupHome() {
   if (!dirs) return;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   setupClubTilt(reduce);
+  setupWorksFocus(reduce);
 
   // 1. Цвет страницы.
   let queued = false;
@@ -160,5 +162,19 @@ function setupClubTilt(reduce) {
     px = 0; py = 0;
     card.classList.remove('is-tilting');
     queue();
+  });
+}
+
+// 5. Ряды «Наших работ» ниже 1000 px — горизонтальные ленты (tiles.css): браузер не всегда
+// докручивает ленту до плашки, получившей фокус с клавиатуры (вторая плашка оставалась за краем).
+// Только фокус с клавиатуры (:focus-visible) и только когда лента правда прокручивается.
+function setupWorksFocus(reduce) {
+  document.querySelectorAll('.home-works .work-tiles').forEach((row) => {
+    row.addEventListener('focusin', (e) => {
+      if (row.scrollWidth <= row.clientWidth + 1) return;
+      const item = e.target.closest('.work-tiles__item');
+      if (!item || !e.target.matches(':focus-visible')) return;
+      item.scrollIntoView({ inline: 'start', block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
+    });
   });
 }

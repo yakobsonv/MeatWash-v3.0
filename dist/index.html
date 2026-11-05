@@ -218,7 +218,7 @@
       <div class="dir__card" data-video-host>
         <picture>
           <source media="(min-width: 760px)" srcset="assets/img/home/dir-wash-wide-800.webp 800w, assets/img/home/dir-wash-wide-1240.webp 1240w" sizes="(min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="827">
-          <img class="dir__img" style="--focus-xy: 50% 55%" src="assets/img/home/dir-wash-800.webp" srcset="assets/img/home/dir-wash-800.webp 800w, assets/img/home/dir-wash-1240.webp 1240w" sizes="(min-height: 810px) 447px, 55vh" width="1240" height="1860" loading="lazy" decoding="async" alt="Чёрный BMW 8 серии в активной пене, вид спереди, в моечном боксе">
+          <img class="dir__img" style="--focus-xy: 50% 55%" src="assets/img/home/dir-wash-v2-800.webp" srcset="assets/img/home/dir-wash-v2-800.webp 800w, assets/img/home/dir-wash-v2-1240.webp 1240w" sizes="(min-height: 810px) 447px, 55vh" width="1240" height="1860" loading="lazy" decoding="async" alt="Чёрный BMW 8 серии в активной пене, вид спереди, в моечном боксе">
         </picture>
         <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/svc-wash-m.mp4?v=cbee0f61"></video>
         <a class="dir__hit" href="wash" tabindex="-1" aria-hidden="true"></a>
@@ -282,7 +282,7 @@
     <article class="dir" data-reveal aria-labelledby="dir-5">
       <h3 class="dir__title" id="dir-5"><span class="dir__name">Продажа автомобилей</span></h3>
       <div class="dir__card">
-        <img class="dir__img" style="--focus-xy: 75% 70%" src="assets/img/home/tile-3-800.webp" srcset="assets/img/home/tile-3-800.webp 800w, assets/img/home/tile-3-1080.webp 1080w" sizes="(max-width: 759px) and (min-height: 810px) 538px, (max-width: 759px) 66vh, 52vw" width="1080" height="1350" loading="lazy" decoding="async" alt="Серый BMW 7 серии на закате на фоне городских высоток">
+        <img class="dir__img" style="--focus-xy: 75% 70%" src="assets/img/home/tile-3-v2-800.webp" srcset="assets/img/home/tile-3-v2-800.webp 800w, assets/img/home/tile-3-v2-1080.webp 1080w" sizes="(max-width: 759px) and (min-height: 810px) 538px, (max-width: 759px) 66vh, 52vw" width="1080" height="1350" loading="lazy" decoding="async" alt="Серый BMW 7 серии на закате на фоне городских высоток">
         <a class="dir__hit" href="auto" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
           <div class="dir__body">
@@ -327,9 +327,11 @@
   </div>
 </section>
 
-<!-- Наши работы (Влад 05.11: «маленькие плашки как у Порше с фото»): по ряду плашек на направление,
-     в порядке направлений (подстановка works). Кузовные работы — плашки-услуги с кадром и ценой «от»
-     (works/bodywork-1…3; пока кадров нет — без фото). Под рядами — серая сноска, как у porsche.com. -->
+<!-- Наши работы (Влад 05.11: «маленькие плашки как у Порше с фото»): по ряду плашек на направление
+     услуг, в порядке направлений (подстановка works). Ряда «О нас» здесь нет: интерьер студии — не работа
+     (кадры works.about остаются в данных). Кузовные работы — плашки-услуги с кадром works/bodywork-1…3
+     и чипом цены «от»; кадры — кузов в студии, не результат ремонта (alt говорит, что на кадре).
+     Под рядами — серая сноска с оговоркой о ценах, как у porsche.com. -->
 <section class="home-works" aria-labelledby="works-title">
   <div class="home-works__head" data-reveal>
     <h2 class="home-works__title" id="works-title">Наши работы</h2>
@@ -395,25 +397,14 @@
 </ul>
   </div>
 
-  <div class="home-works__row" data-reveal>
-    <div class="home-works__row-head">
-      <h3 class="home-works__name">О&nbsp;нас</h3>
-      <a class="link-arrow home-works__more" href="about">О&nbsp;компании<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
-    </div>
-    <ul class="work-tiles" role="list" data-works="about">
-  <li class="work-tiles__item"><a class="work-tile" href="about#studios"><img class="work-tile__img" src="assets/img/works/about-1-800.webp" srcset="assets/img/works/about-1-800.webp 800w, assets/img/works/about-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Въезд в моечный бокс с красной росписью на стенах, внутри автомобиль в пене" loading="lazy" decoding="async"><span class="work-tile__title">Въезд в&nbsp;студию</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
-  <li class="work-tiles__item"><a class="work-tile" href="about#visit-locations"><img class="work-tile__img" src="assets/img/works/about-2-800.webp" srcset="assets/img/works/about-2-800.webp 800w, assets/img/works/about-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Светлый диван у окна в клиентской зоне студии" loading="lazy" decoding="async"><span class="work-tile__title">Зона ожидания</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
-  <li class="work-tiles__item"><a class="work-tile" href="about#studios"><img class="work-tile__img" src="assets/img/works/about-3-800.webp" srcset="assets/img/works/about-3-800.webp 800w, assets/img/works/about-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Светлый зал студии: плиточный пол, световые панели на потолке, прозрачные шторы бокса" loading="lazy" decoding="async"><span class="work-tile__title">Светлый зал</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
-</ul>
-  </div>
-
-  <p class="home-works__note">Плашки ведут на&nbsp;страницы направлений: там услуги, цены и&nbsp;заявка. Цены «от»&nbsp;— по&nbsp;прайсу Meat Wash.</p>
+  <p class="home-works__note">Цены «от»&nbsp;— по&nbsp;прайсу Meat Wash. Точную стоимость кузовных работ и&nbsp;оклейки называем на&nbsp;осмотре в&nbsp;Технопарке.</p>
 </section>
 
 <!-- Клуб (Влад 03.11: «внизу карту, которая будет вести на клуб»; «чёрный фон за карты убери»): вид
-     прежней главной — красная карта без фона | бордовая панель. Карта — ссылка на её оформление
-     (wahelp, цель Метрики club_card по data-club-card); рядом — заявка с темой «Клубная карта»
-     и «Подробнее о клубе». Условий клуба нет в данных — не пишем.
+     прежней главной — красная карта без фона | бордовая панель, в панели кнопка и ссылки в строку.
+     Главная кнопка — «Оставьте заявку» с темой «Клубная карта» (все призывы — заявка); оформление
+     онлайн (wahelp, цель Метрики club_card по data-club-card) и «Подробнее о клубе» — ссылками рядом.
+     Условий клуба нет в данных — не пишем.
      Движение (home.js, home.css): карта появляется с проходом блика; на компьютере с мышью
      наклоняется к курсору до 6° и возвращается, когда курсор ушёл; телефон и «меньше движения» — без движения. -->
 <section class="home-club" aria-labelledby="home-club-title">
@@ -427,10 +418,12 @@
     <h2 class="home-club__title" id="home-club-title">Клубная карта</h2>
     <p>Карта постоянного клиента <span lang="en"><span class="nw">Meat Wash</span> <span class="nw">Car Care Club</span></span>. Оформляется онлайн, условия клуба расскажет администратор.</p>
     <div class="home-club__actions">
-      <a class="home-club__link" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить клубную карту<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a>
       <button class="home-club__request" type="button" data-request data-request-category="club" data-request-services="Клубная карта">Оставьте заявку<span class="sr"> на&nbsp;клубную карту</span></button>
+      <div class="home-club__links">
+        <a class="link-arrow home-club__more" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить карту онлайн<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a>
+        <a class="link-arrow home-club__more" href="about#membership">Подробнее о&nbsp;клубе<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
+      </div>
     </div>
-    <a class="link-arrow home-club__more" href="about#membership">Подробнее о&nbsp;клубе<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
   </div>
 </section>
 
