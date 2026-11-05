@@ -2,7 +2,7 @@
   "name": "meat-auto-site",
   "version": "1.0.0",
   "private": true,
-  "description": "Meat Auto Car Care Club: 12 страниц из реестра src/content/pages.mjs (scripts/content.mjs + pages.mjs), данные — dist/assets/meatwash-content.json и src/data/cars.json; 3D-гараж — блок /services по нажатию",
+  "description": "Meat Wash Car Care Club: 15 страниц из реестра src/content/pages.mjs (scripts/content.mjs + pages.mjs), данные — dist/assets/meatwash-content.json и src/data/cars.json; 3D-гараж — блок /services по нажатию",
   "scripts": {
     "start": "node serve.cjs",
     "build": "node scripts/catalog.mjs && node scripts/content.mjs && node scripts/pages.mjs",

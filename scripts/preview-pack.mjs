@@ -213,9 +213,16 @@ for (const name of pages) {
   budgets.push(row);
 }
 // Заметки разработки не уходят в пакет (ревью 27.10): имена, номера поправок, автор чужого фото.
+// Имя Романа и его личный Telegram (Влад 05.11) — тоже: единственное исключение — реквизиты
+// оператора ПДн (152-ФЗ) в Политике и Согласиях; пробелы в них после typo() — неразрывные.
+const operatorName = JSON.parse(await readFile(resolve(root, 'dist/assets/meatwash-content.json'), 'utf8')).site?.operator?.name || '';
+const operatorRe = operatorName && new RegExp(operatorName.split(/\s+/).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('(?:\\s|&nbsp;|\u00a0)+'), 'g');
+const LEGAL = new Set(['privacy.html', 'consent.html', 'consent-request.html']);
 for (const f of all.filter((f) => /\.(html|js|css|txt)$/.test(f) && f !== 'js/porsche3d.bundle.js')) {
-  const hit = (await readFile(resolve(out, f), 'utf8')).match(/.{0,30}(?:Влад|Паш[аеи]|поправк|ГЕОмаркетинг|Бадаев).{0,30}/);
-  if (hit) problems.push(`${f}: внутренняя заметка в пакете: …${hit[0].trim()}…`);
+  let text = await readFile(resolve(out, f), 'utf8');
+  if (LEGAL.has(f) && operatorRe) text = text.replace(operatorRe, '');
+  const hit = text.match(/.{0,30}(?:Влад|Паш[аеи]|поправк|ГЕОмаркетинг|Бадаев|Роман|Антонович|otec_roman).{0,30}/);
+  if (hit) problems.push(`${f}: внутренняя заметка или имя в пакете: …${hit[0].trim()}…`);
 }
 const fontSize = (await stat(resolve(out, 'assets/fonts/manrope-vf.woff2'))).size;
 if (fontSize > BUDGET.font) problems.push(`шрифт ${fontSize} Б > 60 КБ`);

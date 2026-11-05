@@ -48,7 +48,7 @@ def overflow(browser, base, pages, res, webkit=None):
                 clipped_notes.append(f"/{p['path']} {w}×{h}{tag}: срезано родителем: {', '.join(r['clipped'][:3])}")
         c.close()
     res.add('2', 'Нет горизонтальной прокрутки', bad == 0,
-            f'{runs} прогонов (13 страниц × {len(sizes)} размеров Chromium' + (f' + × {len(WEBKIT_SIZES)} WebKit: 320, 340, 360, 390' if webkit else '') + f'), нарушений {bad}; прогонов со срезанным родителем содержимым {clipped_total} (для глаз)',
+            f'{runs} прогонов ({len(pages)} страниц × {len(sizes)} размеров Chromium' + (f' + × {len(WEBKIT_SIZES)} WebKit: 320, 340, 360, 390' if webkit else '') + f'), нарушений {bad}; прогонов со срезанным родителем содержимым {clipped_total} (для глаз)',
             details + clipped_notes[:20])
 
 

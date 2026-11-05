@@ -12,7 +12,8 @@ setupComponents();
 setupUI();
 
 const warn = (what) => (error) => console.warn(`${what}: модуль не подключился.`, error);
-if (document.getElementById('catalog')) import('./catalog.js').then((m) => m.setupCatalog()).catch(warn('Каталог'));
+// Каталог /services и цены подразделов на страницах направлений ([data-prices]: переключатель кузова у программ).
+if (document.querySelector('#catalog, [data-prices]')) import('./catalog.js').then((m) => m.setupCatalog()).catch(warn('Каталог'));
 if (document.querySelector('[data-ba]')) import('./proof.js').then((m) => m.setupProof()).catch(warn('Шторки «до/после»'));
 if (document.querySelector('.dirs')) import('./home.js').then((m) => m.setupHome()).catch(warn('Главная'));
 if (document.querySelector('[data-car-tiles], [data-sold-tiles]')) import('./cars.js').then((m) => m.setupCars()).catch(warn('Машины в продаже'));

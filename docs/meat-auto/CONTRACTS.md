@@ -4,11 +4,92 @@
 остального), решения Влада 27.10 — в задаче. У каждого пакета своя ветка от `meat-auto` и PR в `meat-auto`;
 `main`, `v2`, `v2-design` не трогаем, прод и хостинг не трогаем.
 
+## 05.11.2026: направления и «Оставьте заявку» — контракт интегратора (шаг 1, каркас)
+
+Задание Влада 05.11 и решения — `research/PLAN.md` (вне репозитория). Этот раздел важнее старых строк ниже, где они
+расходятся. Владельцы файлов на этом этапе: интегратор — реестр, `scripts/*.mjs`, JSON, `cars.json`, шапка/шторка/подвал,
+`shell.js`, `site.js`, проверки, этот файл; A — форма (`dialogs.html`, `ui.js`, `request.js`, `dialogs.css`, `analytics.js`,
+цели в документах); B — главная (`home.html`, `home.css`, `home.js`, **`tiles.css`**); C — `/wash`, `/detailing`
+(**`section.css`**); D — `/wrap`, `/bodywork` (дописывают в конец `section.css`); E — тексты без Романа (`about`, `auto`,
+`import`, `services`, `works`, `kit`, статьи, `book/membership/locations.html`, `garage.js`, `cars.js`); F — кадры работ.
+
+### Страницы
+- Новые: `/wash` «Автомойка», `/detailing` «Детейлинг», `/bodywork` «Кузовные работы»; `/wrap` — «Оклейка плёнкой»
+  (только Технопарк). Родитель всех четырёх — `services` («Услуги и цены»: каталог, сравнение, 3D-гараж). Sitemap — 15 адресов.
+- CSS страниц направлений: `services.css` (строки цен) → `tiles.css` (плашки и отзывы) → `section.css`. Главная: `tiles.css` → `home.css`.
+  Свой файл странице — только через интегратора (поле `css` реестра); иначе — правила под `body[data-page="…"]` в `section.css`.
+- Пометки `{{todo:…}}` («нужно от клиента») допустимы на `wash`, `detailing`, `wrap`, `bodywork` (и `import`, `works`); на главной — нет.
+
+### Заявка (все призывы — «Оставьте заявку»)
+- `[data-request]` (кнопка) открывает `dialog#request`. Подпись — ровно «Оставьте заявку» (продолжение для диктора — в `.sr`).
+  - `data-request-category` — тема из `site.requests.topics`: `wash | detailing | wrap | bodywork | auto | import | club | other`,
+    или категория каталога (`wash | detailing | wrap | protection | help`; тема категории — `CATEGORY_TOPIC` в `js/data.js`).
+    Пусто или нет — форма без выбранной темы.
+  - `data-request-services="A|B"` — позиции каталога, названия подразделов, названия тем или их варианты (`options`):
+    «Русификация», «Продажа автомобиля», «Подбор и покупка автомобиля», «Клубная карта»… (`check` сверяет).
+  - `data-request-context="…"` — строка «о чём заявка» (машина и т. п.): форма показывает её в `p#request-context`.
+- `[data-book]` остаётся только у автомойки (строки мойки в каталоге и `{{prices}}`, карточки программ, гараж, статья):
+  ведёт в ту же `#request` с темой `wash` и программой (`data-program="0…4"`) / работами (`data-yc-items`), контекст —
+  `data-book-context`. В форме при теме «Автомойка» видна мелкая строка `[data-request-online]` «или запишитесь онлайн» со
+  ссылками `a[data-branch="myasnitskaya|technopark"]` (корзина программ — `yclients.js`, как было в `#booking`) и строкой
+  «Онлайн-запись откроется в YCLIENTS (Meat Wash)».
+- `[data-membership]` больше не используется: клуб — `data-request data-request-category="club"` (в `#membership` на «О нас»
+  такая кнопка обязательна — QA п. 14). Ссылка «Оформить клубную карту» (`[data-club-card]`, wahelp) остаётся.
+- Форма (A), что читают проверки: `#request-title`, `p#request-context` (скрыт, когда пусто), `form[data-request-form]` с полем
+  `name="topic"` (радио или select, значение — id темы), выбранные работы `[data-request-chips] li`, согласие
+  `input[name=consent][required]` → `consent-request`, ловушка `mw_extra`, `ym-hide-content` / `ym-disable-keys`,
+  «До N фото:», `[data-request-online]`. Обе ссылки онлайн-записи студий есть в разметке окон (`dialog.dialog`) на каждой
+  странице и **нигде вне окон** (шторка, `book.html`, `locations.html` — без YCLIENTS). Окно `#booking` — на усмотрение A
+  (проверки его больше не требуют). Без `site.requests.endpoint` форма проверяет поля, честно пишет, что заявка не отправлена,
+  показывает телефоны обеих студий и сохраняет введённое (PLAN.md).
+- Данные формы в `js/data.js`: `REQUEST_TOPICS` (`{id, title, programs?, items[], options[]}` в порядке показа),
+  `CATEGORY_TOPIC`, `PROGRAMS`, `ITEMS`, `CATEGORIES`, `REQUESTS`.
+- Шапка `button.site-header__book[data-request][data-request-category="<topic страницы>"]`, низ шторки, подвал «Связаться»,
+  нижняя кнопка `.mobile-cta` на **всех** страницах (и на главной) — «Оставьте заявку» с темой страницы (поле `topic` реестра;
+  `{{topic}}` в частях). Личного Telegram нет нигде; канал `t.me/MEATWASH_Auto` остаётся.
+  На главной нижняя кнопка теперь есть: кнопка шапки в портрете телефона скрыта, как на остальных страницах
+  (`shell.css`); в `home.css` (B) убрать `--cta-zone: 0px` и проверить, что кнопка не закрывает карусель плиток.
+
+### Подстановки (scripts/pages.mjs; в комментариях фигурные скобки не писать)
+- `{{prices:price-interior,price-leather}}` — подразделы каталога в разметке каталога `/services` (`div.catalog.catalog--prices[data-prices]`
+  > `section.catalog__section#<id>` > `h3` + `li.catalog__item` с кнопкой «Оставьте заявку») и «Не является публичной офертой».
+  `{{prices:programs}}` — карточки программ, переключатель кузова (`js/catalog.js` подключается сам) и сравнение `#compare`
+  (`{{compare}}` рядом не ставить). Подраздел — один раз на странице (id те же, что на `/services`).
+- `{{min-section:price-bodywork}}` → «5 000 ₽» (минимум подраздела; для `programs` — минимум программ). `{{min:wash}}` — по категории.
+- `{{works:wash|detailing|wrap|bodywork|sales|about}}` → `ul.work-tiles[data-works]` > `li.work-tiles__item` > `a.work-tile` >
+  `img.work-tile__img` (srcset 800/1240, кадр обрезать CSS `object-fit: cover`) + `span.work-tile__title` + `span.work-tile__go`
+  (круглая стрелка, aria-hidden). Без фото — `a.work-tile.work-tile--text` с `span.work-tile__price` («от N ₽» из каталога):
+  ряд `bodywork`. Данные — `works` в `meatwash-content.json`.
+- `{{related:detailing,wrap}}` → `ul.work-tiles.work-tiles--related[data-related]` — плашки направлений (`directions`).
+- `{{reviews}}` / `{{reviews:wrap}}` → `section.reviews#reviews` с `h2#reviews-title` «Отзывы клиентов», `ul.reviews__studios`
+  (`.reviews__studio-name`, `.reviews__rating` > `b.reviews__score` «5,0» + `span.review__stars`, `.reviews__count` «211 оценок»,
+  `a.reviews__link` «Все отзывы на Яндекс Картах»), `p.reviews__asof` «Рейтинг и отзывы — с Яндекс Карт на 5 ноября 2026 г.»,
+  `ul.reviews__list` > `li.reviews__item` > `figure.review` > `span.review__stars` (svg `.review__star`, погашенная —
+  `--off`), `blockquote.review__text > p`, `figcaption.review__meta` > `.review__author`, `.review__studio`, `time.review__date`.
+  Один блок на странице. Разметки Review/AggregateRating нет. Стили `.work-tile*` и `.reviews*` — `tiles.css` (B).
+
+### Якоря, на которые ведут плашки и ссылки (страница обязана их иметь)
+`wash#programs` (через `{{prices:programs,…}}`), `detailing#price-interior`, `#price-polish`, `#price-components`,
+`wrap#price-film` (+ прежние `#wrap-kind`, `#wrap-prices`, `#wrap-steps`, `#wrap-call` — проверяет `check`), `bodywork#pdr`,
+`#paint`, `#chips`, `auto#<id проданной машины>`, `about#studios`, `#visit-locations`. `about#founder` снят (E убирает блок).
+
+### Имя Романа
+Нигде: текст, `alt`, `aria-label`, мета, JSON-LD, ссылки (`otec_roman`). Исключение — реквизиты оператора ПДн
+(`{{op:name}}`) в `privacy`, `consent`, `consent-request`. Проверяют `check.mjs`, QA п. 15, `preview-pack`.
+
+### Переходный период (до сведения)
+`check.mjs`: нарушения новых правил (подпись не «Оставьте заявку», Роман, YCLIENTS вне окон, нет отзывов на главной)
+в телах страниц из `PENDING_BODIES` и в частях из `PENDING_SHARED` — предупреждения «[переходное: …]», в
+`check:release` — ошибки. Исполнитель, сдав файл, проверяет, что предупреждений про его файл нет; интегратор на
+сведении удаляет файл из списков. В шапке, шторке, подвале, нижней кнопке и на новых страницах — ошибки сразу.
+Ряды `works` и файлы кадров без страницы-получателя — предупреждения; на странице с плашкой битая ссылка или
+нет файла — ошибка.
+
 ## Сборка и запуск
 
 ```
 npm ci
-npm run build          # catalog (js/data.js) → content (все 13 страниц + sitemap) → pages (общие части)
+npm run build          # catalog (js/data.js) → content (16 страниц + sitemap) → pages (общие части)
 npm run check          # scripts/check.mjs: сборка, ссылки, якоря, мета, §4.9, каталог по смыслу, машины, бренд, гараж
 npm run check:release  # то же, но пометки «нужно от клиента», реквизиты, нет og — ошибки (боевой пакет)
 npm run check:3d       # бандл и модели 3D-гаража
@@ -106,12 +187,12 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
 
 ## Классы и атрибуты — контракт
 
-- **Оболочка (WP1):** `header.site-header.site-header--{over|solid}#top > .site-header__bar > button.site-header__menu#drawer-open[aria-controls=drawer][aria-expanded] + a.site-header__logo + button.site-header__book[data-book]`;
-  `dialog.drawer#drawer > .drawer__panels > nav.drawer__panel--root` + `section.drawer__panel#drawer-p-{care|import|auto|about|contacts}[hidden]`,
+- **Оболочка (WP1):** `header.site-header.site-header--{over|solid}#top > .site-header__bar > button.site-header__menu#drawer-open[aria-controls=drawer][aria-expanded] + a.site-header__logo + button.site-header__book[data-request]` (05.11);
+  `dialog.drawer#drawer > .drawer__panels > nav.drawer__panel--root` + `section.drawer__panel#drawer-p-{care|auto|about|contacts}[hidden]` (05.11: `care` — «Услуги и цены», панели «Привоз» нет),
   `button.drawer__item[aria-controls=drawer-p-*]`, `[data-drawer-back]`, `[data-drawer-close]`, `.drawer__tiles > a.drawer__tile`,
   `.drawer__links`, `.drawer__foot`. Подвал `footer.site-footer#contacts`, «На карте» строго
   `<a class="footer__map" href="{{locations}}#map-<id>" data-map-link="<id>">`. Нижняя кнопка — `.btn.btn--primary.mobile-cta`
-  (пишет `pages.mjs` по полю `cta`: book, technopark, auto, import). Пункта шторки «Русификация» нет до ответа Романа.
+  (пишет `pages.mjs` по полю `cta`: request — «Оставьте заявку» с темой страницы, 05.11). Пункта шторки «Русификация» нет до ответа клиента.
 - **Компоненты (§2.8, WP1 стилизует, страницы пишут сразу):** `hero-a/b/c/d/e` с `__media __body __lead __actions __aside`,
   `back-link`, `section-head`, `btn` + `--primary --secondary --ghost --compact --block`, `pill-cta`, `link-arrow`,
   `chip` + `--solid --photo --check`, `anchor-tabs[data-anchor-tabs] > .anchor-tabs__track > a.anchor-tabs__tab`,
@@ -120,7 +201,7 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
   `photo-card--{l|m|s}`, `carousel[data-carousel]`, `mosaic`, `ul.strip[tabindex=0][aria-label]` (+ `--tall`), `counters`,
   `steps`, `link-rows`, `quote-band`, `figure.ba[data-ba]`, `span.todo`, контейнеры `col-wide|ext|basic|title|narrow`,
   `section`, `section--tight`, скрытый текст `.sr` (ловушка заявки — `.visually-hidden`).
-- **Запись (WP6, без изменений):** любой `[data-book]` + `data-book-context`, `data-program="0…4"`, `data-yc-programs`,
+- **Запись (WP6; с 05.11 — см. «Заявка» выше, она важнее):** любой `[data-book]` + `data-book-context`, `data-program="0…4"`, `data-yc-programs`,
   `data-yc-items="A|B"`, `data-request-services`; «Узнать цену» — `[data-request][data-request-category][data-request-services]`;
   разговор — `[data-membership="…"]`; окно `#booking` и его id §4.2; клубная карта `[data-club-card]`; `[data-consent-open]`.
   В окне записи — строка «Онлайн-запись откроется в YCLIENTS (Meat Wash)».
@@ -134,9 +215,9 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
   `#visit-locations` на «О нас» (маркеры части уже в теле). Один раз на странице — «ранее Meat Wash»; H1 не «Meat Auto».
 - **Машины (WP4, §4.6):** данные — `src/data/cars.json` (не в `meatwash-content.json`, поправка 29), разметка — `scripts/cars.mjs`:
   `article.car-card#<id>` (`lotus-eletre`, `bmw-740ld`), `.car-card__title/__facts/__price/__lead/__specs/__prep/__actions`,
-  `li.sold-card > img + h3.sold-card__name + span.chip`. `/import`: только Telegram @otec_roman, без телефона; пометки `{{todo}}`.
+  `li.sold-card > img + h3.sold-card__name + span.chip`. `/import`: связь — «Оставьте заявку» (тема `import`), личного Telegram нет (05.11); пометки `{{todo}}`.
 - **Якоря §1.7** уже есть в заготовках и проверяются: `services#price-*`, `#programs`, `#program-0…4`, `#price-list`, `#proof`,
-  `#individual`, `#garage-3d`; `about#visit-locations`, `#map-myasnitskaya`, `#map-technopark`, `#before-visit`, `#founder`, `#club`,
+  `#individual`, `#garage-3d`; `about#visit-locations`, `#map-myasnitskaya`, `#map-technopark`, `#before-visit`, `#club`,
   `#path`, `#studios`, `#team`, `#membership`; `auto#for-sale`, `#sold`, `#sell`, `#auto-contact`, `#lotus-eletre`, `#bmw-740ld`;
   `import#what`, `#rusifikaciya`, `#prep`, `#for-sale-link`, `#contact`; `wrap#wrap-kind`, `#wrap-prices`, `#wrap-steps`, `#wrap-call`;
   `works#works-lotus`, `#works-m4`, `#works-studio`. Убирать якорь можно только вместе со всеми ссылками на него.

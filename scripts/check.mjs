@@ -17,10 +17,20 @@
 //            и в тексте — из каталога;
 //   шрифт    preload и @font-face — один адрес manrope-vf.woff2?v=… (поправка 28);
 //   §4.9     href="privacy", блок analytics, mw-metrika и yandex-verification = JSON, кода
-//            Метрики в разметке нет, analytics.js в графе модулей; обе ссылки записи; «На карте»
+//            Метрики в разметке нет, analytics.js в графе модулей; обе ссылки онлайн-записи —
+//            только в окнах (форма заявки, мелкой строкой), вне окон YCLIENTS нет; «На карте»
 //            в подвале; карты студий без <iframe>; заявка (согласие, «До 5 фото», ловушка,
 //            ym-hide-content / ym-disable-keys); Вебвизор назван в уведомлении и документах;
 //            клубная карта ведёт на wahelp;
+//   заявки   (Влад 05.11) все призывы — «Оставьте заявку»: кнопки data-request / data-book с этой
+//            подписью, кнопка в шапке и нижняя кнопка на телефоне — data-request с темой страницы;
+//            data-request-category — тема (site.requests.topics) или категория каталога; каждая
+//            позиция каталога входит в тему;
+//   Роман    имени и личного Telegram нет нигде (текст, атрибуты, мета, JSON-LD), кроме реквизитов
+//            оператора ПДн (site.operator.name) в privacy / consent / consent-request;
+//   отзывы   reviews в JSON: дата среза, рейтинги студий, авторы «Имя И.» или «Клиент», без имён
+//            сотрудников и Романа; блок на странице — как в JSON; работы и направления — страницы,
+//            машины, позиции каталога и файлы есть;
 //   ключи    data-price-item / data-yc-items / data-request-services — названия из каталога,
 //            data-book-context — без неразрывных пробелов (поправка 16);
 //   каталог  по смыслу (§4.3, поправка 30): 4 вкладки и панели, подразделы и якоря из JSON,
@@ -34,7 +44,7 @@
 //   бренд    нет «MEATWASH» / «Meatwash» в тексте, alt, aria-label, title, og, JSON-LD и
 //            строках скриптов (кроме адреса канала и почты, поправка 12); знаков ↗ ✓ нет;
 //            пары «до/после» подписаны «Иллюстрация, не работа студии»; «ранее Meat Wash» на
-//            «О нас» — один раз; {{todo}} — только на /import и /works;
+//            «О нас» — один раз; {{todo}} — только на страницах направлений, /import и /works;
 //   заявка   request.js и api/request.php согласованы; секретов в коде нет.
 // Владелец: WP7.
 import {readFile, readdir, stat} from 'node:fs/promises';
@@ -43,7 +53,7 @@ import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {REGISTRY} from '../src/content/pages.mjs';
 import {buildPage, renderSitemap, renderYandexVerification, FONT, missingOperator} from './content.mjs';
-import {pageSlug, SITE} from './pages.mjs';
+import {pageSlug, SITE, humanDate} from './pages.mjs';
 import {content as d, renderData, money} from './catalog.mjs';
 import {cars} from './cars.mjs';
 import {importDist} from './dist-module.mjs';
@@ -61,6 +71,35 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const plain = (s) => s.replace(/<\/(?:p|li|h[1-6]|div|td|th|dt|dd|section|article|header|footer|figure|figcaption|button|a|summary|label)>|<br\s*\/?>/g, ' ').replace(/<[^>]+>/g, '').replace(/&nbsp;|\u00a0/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/[ \t\n]+/g, ' ');
 const strip = (text) => text.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/<style\b[\s\S]*?<\/style>/g, '').replace(/<!--[\s\S]*?-->/g, '');
 const mainOf = (text) => text.match(/<main id="main">([\s\S]*?)<\/main>/)?.[1] ?? '';
+
+// Переходный период (05.11, шаг 1 интегратора — каркас новой структуры). Тела страниц и общие
+// части, которые переписывают другие исполнители (форма — A, главная — B, тексты без Романа — E),
+// ещё со старыми призывами («Записаться», «Узнать цену»), Telegram Романа и ссылками YCLIENTS.
+// Нарушения ТОЛЬКО в этих местах — предупреждения (в check:release — ошибки); в шапке, шторке,
+// подвале, нижней кнопке и на новых страницах — ошибки сразу. На сведении интегратор удаляет
+// из списков всё, что исполнители сдали (пустые списки — цель).
+const PENDING_BODIES = new Set(['index.html', 'services.html', 'wrap.html', 'works.html', 'import.html', 'auto.html', 'about.html', 'articles.html', 'article-avto-k-zime.html', 'kit.html']);
+const PENDING_SHARED = new Set(['dialogs', 'book', 'locations', 'membership']);
+// Где в странице стоит позиция: общая часть (SHARED:<имя>), тело <main> или оболочка.
+const placeOf = (text, at) => {
+  for (const [, name, body] of text.matchAll(/<!-- SHARED:([\w-]+):START -->([\s\S]*?)<!-- SHARED:\1:END -->/g)) {
+    const a = text.indexOf(`<!-- SHARED:${name}:START -->`), b = a + body.length + `<!-- SHARED:${name}:START -->`.length;
+    if (at >= a && at < b) return `shared:${name}`;
+  }
+  const m = text.indexOf('<main id="main">'), e = text.indexOf('</main>');
+  return at >= m && at < e ? 'main' : 'shell';
+};
+const sharedOf = (text, name) => text.match(new RegExp(`<!-- SHARED:${name}:START -->([\\s\\S]*?)<!-- SHARED:${name}:END -->`))?.[1] || '';
+const pending = (file, place) => place === 'main' ? PENDING_BODIES.has(file) : place.startsWith('shared:') && PENDING_SHARED.has(place.slice(7));
+// Нарушение в переходной зоне — предупреждение с пометкой, иначе ошибка.
+const breach = (file, text, at, message) => {
+  const place = placeOf(text, at);
+  if (pending(file, place)) soft(`[переходное: ${place === 'main' ? 'тело страницы' : place}] ${message}`);
+  else fail(message);
+};
+const REQUEST_LABEL = 'Оставьте заявку';
+const topics = d.site?.requests?.topics || [];
+const topicIds = new Set(topics.map((t) => t.id));
 
 // ── Страницы и сборка ────────────────────────────────────────────────────────
 const html = {}, ids = {}, byId = {};
@@ -83,7 +122,8 @@ if (await readFile(resolve(dist, 'js/data.js'), 'utf8') !== renderData()) fail('
 // ── Каталог: имена и цены ────────────────────────────────────────────────────
 const groupItems = d.groups.flatMap((g) => g.items);
 const itemPrice = Object.fromEntries(groupItems.map(([name, price]) => [name, price]));
-const itemNames = new Set([...groupItems.map(([n]) => n), ...d.groups.flatMap((g) => g.sections.map((s) => s.title)), ...d.programs.map(([n]) => n)]);
+// Темы заявок и их варианты без каталога (site.requests.topics) — тоже допустимые названия работ.
+const itemNames = new Set([...groupItems.map(([n]) => n), ...d.groups.flatMap((g) => g.sections.map((s) => s.title)), ...d.programs.map(([n]) => n), ...(d.site?.requests?.topics || []).flatMap((t) => [t.title, ...(t.options || [])])]);
 // Любая цена «от N ₽» на сайте и в description — цена позиции, программы или «от» раздела.
 const catalogPrices = new Set([...d.programPrices.flat(), ...Object.entries(d.programStudioPrices || {}).filter(([k]) => k !== "_comment").flatMap(([, v]) => Object.values(v).flat()), ...groupItems.map(([, p]) => p).filter((p) => p != null)]);
 const priceIn = (text) => [...plain(text).matchAll(/от (\d{1,3}(?: \d{3})*) ₽/g)].map((m) => Number(m[1].replace(/\D/g, '')));
@@ -92,7 +132,7 @@ const priceIn = (text) => [...plain(text).matchAll(/от (\d{1,3}(?: \d{3})*) �
 const pageOf = (path) => { const name = path.replace(/^\.\//, ''); return name === '' || name === '.' ? 'index.html' : /\.\w+$/.test(name.split('/').pop()) ? null : name + '.html'; };
 // «Бумага»: строка браузера — цвета шапки (тёмная полоса с белым быком), а не слоновой кости под ней.
 const THEME_COLOR = {dark: '#080808', paper: '#080808', home: '#080808'};
-const TODO_PAGES = new Set(['import.html', 'works.html']);
+const TODO_PAGES = new Set(['wash.html', 'detailing.html', 'wrap.html', 'bodywork.html', 'import.html', 'works.html']);
 const site = d.site?.analytics || {};
 const titles = new Map(), descriptions = new Map(), todos = [];
 let links = 0;
@@ -105,7 +145,7 @@ for (const page of REGISTRY) {
   if (left) fail(`${file}: осталась подстановка: …${left[0]}…`);
   for (const [, what] of text.matchAll(/<span class="todo"[^>]*>\[нужно от клиента: ([^\]]*)\]<\/span>/g)) {
     todos.push(`${file}: ${what}`);
-    if (!TODO_PAGES.has(file) && file !== 'kit.html') fail(`${file}: пометка «нужно от клиента» — они допустимы только на /import и /works: ${what}`);
+    if (!TODO_PAGES.has(file) && file !== 'kit.html') fail(`${file}: пометка «нужно от клиента» — они допустимы только на страницах направлений, /import и /works: ${what}`);
   }
   for (const [, what] of text.matchAll(/<span class="doc-todo">\[([^\]]*)\]<\/span>/g)) soft(`${file}: не заполнены реквизиты оператора — ${what}`);
   // Мета
@@ -189,8 +229,12 @@ for (const page of REGISTRY) {
   if (!site.metrika !== !text.includes(`<meta name="mw-metrika" content="${site.metrika}">`)) fail(`${file}: номер счётчика Метрики не совпадает с JSON`);
   if (!site.webmaster !== !text.includes(`<meta name="yandex-verification" content="${site.webmaster}">`)) fail(`${file}: код Вебмастера не совпадает с JSON`);
   if (/mc\.yandex\.ru|metrika\/tag\.js/.test(text)) fail(`${file}: код Метрики в разметке — она грузится только после согласия (analytics.js)`);
+  // Онлайн-запись YCLIENTS (Влад 05.11) — только мелкой строкой в форме заявки: ссылки обеих
+  // студий есть в окнах (dialog.dialog) каждой страницы, вне окон их нет (шторка — тоже не окно).
+  const dialogsOnly = [...text.matchAll(/<dialog class="dialog\b[\s\S]*?<\/dialog>/g)].map((m) => m[0]).join('\n');
+  for (const [u] of text.replace(/<dialog class="dialog\b[\s\S]*?<\/dialog>/g, (m) => ' '.repeat(m.length)).matchAll(/https?:\/\/[\w.-]*yclients\.com[^"'\s<)\\]*/g)) breach(file, text, text.indexOf(u), `${file}: ссылка YCLIENTS вне формы заявки ${u} — онлайн-запись только мелкой строкой в окне`);
   for (const l of d.locations) {
-    if (!text.includes(`href="${l.booking}"`)) fail(`${file}: нет ссылки записи ${l.name} (${l.booking})`);
+    if (!dialogsOnly.includes(`href="${l.booking}"`)) fail(`${file}: в окнах нет ссылки онлайн-записи ${l.name} (${l.booking})`);
     const map = page.shared.includes('locations') ? '' : 'about';
     if (!text.includes(`<a class="footer__map" href="${map}#map-${l.id}" data-map-link="${l.id}">`)) fail(`${file}: в подвале нет «На карте» ${l.id} по контракту (href="${map}#map-${l.id}")`);
     if (!plain(text).includes(l.phone)) fail(`${file}: нет телефона студии ${l.name} (${l.phone})`);
@@ -226,7 +270,7 @@ for (const page of REGISTRY) {
   for (const [figure] of text.matchAll(/<figure\b[^>]*\bdata-ba\b[\s\S]*?<\/figure>/g)) if (!plain(figure).includes('Иллюстрация, не работа студии')) fail(`${file}: пара «до/после» без подписи «Иллюстрация, не работа студии»`);
   // Окна (заявка с фото — §4.7)
   if (page.shared.includes('dialogs')) {
-    for (const need of ['<input type="checkbox" name="consent" required', 'href="consent-request"', 'id="booking"', 'id="request"']) if (!text.includes(need)) fail(`${file}: в окнах нет ${need}`);
+    for (const need of ['<input type="checkbox" name="consent" required', 'href="consent-request"', 'id="request"']) if (!text.includes(need)) fail(`${file}: в окнах нет ${need}`);
     if (!/<div class="visually-hidden" aria-hidden="true"><label>[^<]*<input name="mw_extra" tabindex="-1" autocomplete="off"><\/label><\/div>/.test(text)) fail(`${file}: в заявке нет ловушки mw_extra (скрыта, вне Tab и скринридера)`);
     const form = text.match(/<form class="request[^"]*"[\s\S]*?<\/form>/)?.[0] || '';
     if (!/<form class="request[^"]*\bym-hide-content\b/.test(form)) fail(`${file}: у формы заявки нет ym-hide-content — Вебвизор покажет текст`);
@@ -237,6 +281,34 @@ for (const page of REGISTRY) {
     if (!text.includes('Онлайн-запись откроется в YCLIENTS (Meat Wash)') && !plain(text).includes('Онлайн-запись откроется в YCLIENTS (Meat Wash)')) fail(`${file}: в окне записи нет строки «Онлайн-запись откроется в YCLIENTS (Meat Wash)» (поправка 17)`);
   }
   if (!plain(text).includes('Instagram принадлежит компании Meta, которая признана экстремистской организацией и запрещена на территории РФ.')) fail(`${file}: нет пометки о Meta в подвале`);
+  // «Оставьте заявку» (Влад 05.11): каждая кнопка заявки или записи — с этой подписью
+  // (продолжение для диктора — в .sr), тема — из site.requests.topics или категория каталога.
+  const clean = text.replace(/<!--[\s\S]*?-->/g, (m) => ' '.repeat(m.length));
+  for (const m of clean.matchAll(/<(button|a)\b([^>]*\sdata-(?:request|book)(?=[\s>=])[^>]*)>([\s\S]*?)<\/\1>/g)) {
+    const [tag, , attrs, inner] = m;
+    const label = plain(inner.replace(/<span class="sr">[\s\S]*?<\/span>/g, '')).trim();
+    if (!label.startsWith(REQUEST_LABEL)) breach(file, text, m.index, `${file}: кнопка заявки «${label.slice(0, 40)}» — подпись должна быть «${REQUEST_LABEL}»: ${tag.slice(0, 90)}`);
+    const category = attrs.match(/\bdata-request-category="([^"]*)"/)?.[1];
+    if (category && !topicIds.has(category) && !d.groups.some((g) => g.id === category)) fail(`${file}: data-request-category="${category}" — не тема из site.requests.topics и не категория каталога`);
+  }
+  // Кнопка в шапке, «Оставьте заявку» в шторке и подвале, нижняя кнопка — заявка с темой страницы.
+  if (page.shared.includes('header')) {
+    const want = `type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`;
+    ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" ${want}`), `${file}: кнопка в шапке — не «${REQUEST_LABEL}» с темой «${page.topic || ''}»`);
+    ok(text.includes(`<button class="btn btn--primary btn--block" ${want}`), `${file}: в шторке нет «${REQUEST_LABEL}» с темой страницы`);
+    ok(!/t\.me\/(?!MEATWASH_Auto|meat_wash\/)/.test(sharedOf(text, 'header') + sharedOf(text, 'footer')), `${file}: в шапке или подвале ссылка на личный Telegram`);
+  }
+  if (page.cta === 'request') ok(text.includes(`<button class="btn btn--primary mobile-cta" ${`type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`}`), `${file}: нижняя кнопка на телефоне — не «${REQUEST_LABEL}» с темой страницы`);
+  else fail(`${file}: нижняя кнопка — cta: 'request' на всех страницах (Влад 05.11)`);
+  if (page.topic && !topicIds.has(page.topic)) fail(`${file}: topic «${page.topic}» — нет такой темы в site.requests.topics`);
+  // Роман (Влад 05.11): ни имени, ни личного Telegram — кроме реквизитов оператора ПДн в документах.
+  {
+    let scan = clean;
+    // Реквизиты оператора (152-ФЗ) — как их выводит {{op:name}}: после typo() пробелы могут быть неразрывными.
+    const operator = d.site?.operator?.name && new RegExp(esc(d.site.operator.name).split(/\s+/).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('(?:\\s|&nbsp;|\u00a0)+'), 'g');
+    if (['privacy.html', 'consent.html', 'consent-request.html'].includes(file) && operator) scan = scan.replace(operator, (m) => ' '.repeat(m.length));
+    for (const m of scan.matchAll(/Роман|Антонович|otec_roman/g)) breach(file, text, m.index, `${file}: «${m[0]}» на странице — имя убрано со всего сайта (кроме реквизитов оператора в документах): …${plain(scan.slice(Math.max(0, m.index - 40), m.index + 40)).trim()}…`);
+  }
 }
 for (const t of todos) soft(`нужно от клиента — ${t}`);
 
@@ -267,12 +339,13 @@ const services = html['services.html'];
         if (!ok(row, `Нет позиции «${name}» в подразделе ${section.id}`)) continue;
         ok(plain(row).includes(price == null ? 'После оценки' : `от ${money(price).replace(/\u00a0/g, ' ')}`), `«${name}»: цена не как в JSON (${price ?? 'после оценки'})`);
         if (section.onsite) ok(!/data-book|data-request/.test(row) && plain(row).includes('добавим при приёмке'), `«${name}»: работа на месте — без кнопки, с подписью «добавим при приёмке»`);
-        else if (group.booking === 'yclients') ok(row.includes(`data-book data-book-context="${esc(name)}" data-yc-items="${esc(name)}"`), `«${name}»: нет записи с работой в корзине`);
-        else ok(row.includes(`data-request data-request-category="${group.id}" data-request-services="${esc(name)}"`), `«${name}»: нет «Узнать цену» с работой`);
+        else if (group.booking === 'yclients') ok(row.includes(`data-book data-book-context="${esc(name)}" data-yc-items="${esc(name)}"`), `«${name}»: нет заявки на автомойку с работой (data-book, корзина онлайн-записи)`);
+        else ok(row.includes(`data-request data-request-category="${group.id}" data-request-services="${esc(name)}"`), `«${name}»: нет «${REQUEST_LABEL}» с работой`);
+        if (!section.onsite) ok(plain(row).includes(REQUEST_LABEL), `«${name}»: подпись кнопки — «${REQUEST_LABEL}»`);
       }
     });
-    if (group.booking === 'yclients') ok(/data-book/.test(panel) && !/data-request/.test(panel), `Категория ${group.id}: нужна запись в YCLIENTS, без заявки`);
-    else ok(/data-request/.test(panel) && !/data-book/.test(panel), `Категория ${group.id}: нужна «Узнать цену», без записи в YCLIENTS`);
+    if (group.booking === 'yclients') ok(/data-book/.test(panel) && !/data-request/.test(panel), `Категория ${group.id}: у автомойки — data-book (форма с программой и онлайн-записью), без data-request`);
+    else ok(/data-request/.test(panel) && !/data-book/.test(panel), `Категория ${group.id}: нужна «${REQUEST_LABEL}» (data-request), без data-book`);
   });
   const itemCount = groupItems.length;
   ok([...services.matchAll(/data-price-item=/g)].length === itemCount, `services.html: позиций в каталоге не ${itemCount}`);
@@ -302,7 +375,8 @@ const services = html['services.html'];
 
 // ── Якоря §1.7 на остальных страницах ────────────────────────────────────────
 const ANCHORS = {
-  'about.html': ['visit-locations', 'map-myasnitskaya', 'map-technopark', 'before-visit', 'founder', 'club', 'path', 'studios', 'team', 'membership'],
+  // #founder снят 05.11: блок основателя убирается (имя — со всего сайта).
+  'about.html': ['visit-locations', 'map-myasnitskaya', 'map-technopark', 'before-visit', 'club', 'path', 'studios', 'team', 'membership'],
   'auto.html': ['for-sale', 'sold', 'sell', 'auto-contact', ...cars.forSale.map((c) => c.id)],
   'import.html': ['what', 'rusifikaciya', 'prep', 'for-sale-link', 'contact'],
   'wrap.html': ['wrap-kind', 'wrap-prices', 'wrap-steps', 'wrap-call'],
@@ -333,6 +407,76 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
   }
   ok(d.programItems.length === d.programs.length && d.programItems.flat().every((n) => n in itemPrice), 'programItems: по списку на программу, только позиции каталога');
   ok(d.programIncludes.every((list, j) => j === 0 || /^Всё из /.test(list[0])), 'Состав программы 1–4 начинается с «Всё из …» (сравнение программ)');
+}
+
+// ── Темы заявок, отзывы, плашки работ и направлений (Влад 05.11) ─────────────
+{
+  // Темы: id и названия уникальны, подразделы и позиции — из каталога, каждая позиция каталога
+  // и каждая программа мойки входят хотя бы в одну тему (форма предлагает всё).
+  ok(topics.length && new Set(topics.map((t) => t.id)).size === topics.length && topics.every((t) => /^[a-z]+$/.test(t.id) && t.title), 'site.requests.topics: темы с уникальными id (латиница) и названиями');
+  ok(same(topics.map((t) => t.id), ['wash', 'detailing', 'wrap', 'bodywork', 'auto', 'import', 'club', 'other']), 'site.requests.topics: темы — автомойка, детейлинг, оклейка, кузовные работы, продажа/покупка, привоз, клуб, другое (Влад 05.11)');
+  const sectionIds = new Set(d.groups.flatMap((g) => g.sections.map((x) => x.id)));
+  const covered = new Set();
+  for (const t of topics) {
+    for (const id of t.sections || []) { if (!ok(sectionIds.has(id), `Тема ${t.id}: нет подраздела каталога ${id}`)) continue; d.groups.flatMap((g) => g.sections).find((x) => x.id === id).items?.forEach((n) => { if (!(t.except || []).includes(n)) covered.add(n); }); }
+    for (const n of [...(t.items || []), ...(t.except || [])]) ok(n in itemPrice, `Тема ${t.id}: «${n}» нет в каталоге`);
+    (t.items || []).forEach((n) => covered.add(n));
+  }
+  for (const [name] of groupItems) ok(covered.has(name), `Позиция каталога «${name}» не входит ни в одну тему заявки (site.requests.topics)`);
+  ok(topics.some((t) => (t.sections || []).includes('programs')), 'Программы мойки не входят ни в одну тему заявки');
+
+  // Отзывы (Влад 05.11): с Яндекс Карт, дата среза, рейтинги студий, без Романа и сотрудников.
+  const r = d.reviews;
+  if (ok(r && Array.isArray(r.items) && r.items.length && Array.isArray(r.studios), 'meatwash-content.json: нет reviews (asOf, studios, items)')) {
+    const asOf = Date.parse(`${r.asOf}T00:00:00+03:00`);
+    if (ok(/^\d{4}-\d{2}-\d{2}$/.test(r.asOf) && Number.isFinite(asOf), `reviews.asOf «${r.asOf}» — не дата YYYY-MM-DD`)) {
+      const age = Math.floor((Date.now() - asOf) / 864e5);
+      if (age > 60) soft(`отзывы и рейтинг — на ${r.asOf} (${age} дн. назад): обновить срез с Яндекс Карт (reviews в meatwash-content.json)`);
+    }
+    ok(same(r.studios.map((x) => x.id).sort(), d.locations.map((l) => l.id).sort()), 'reviews.studios: по записи на каждую студию из locations');
+    for (const st of r.studios) {
+      const l = d.locations.find((x) => x.id === st.id);
+      ok(l && st.url === l.map + 'reviews/', `reviews.studios ${st.id}: ссылка — страница отзывов карточки студии (${l?.map}reviews/)`);
+      ok(typeof st.rating === 'number' && st.rating >= 1 && st.rating <= 5 && Number.isInteger(st.ratingsCount) && st.ratingsCount > 0, `reviews.studios ${st.id}: рейтинг 1–5 и число оценок`);
+    }
+    const STAFF = /(?<![А-Яа-яЁё])(Роман\w*|Антонович\w*|Максим\w*|Павел|Павл\w+|Егор\w*|Лев|Льв\w+|Коба|Сыймык\w*|Разан\w*)(?![А-Яа-яЁё])|MEATWASH|Meatwash|\+?\d[\d\s()-]{8,}\d/;
+    for (const x of r.items) {
+      const who = `отзыв ${x.author} ${x.date}`;
+      ok(d.locations.some((l) => l.id === x.studio), `${who}: нет студии ${x.studio}`);
+      ok(/^\d{4}-\d{2}-\d{2}$/.test(x.date) && x.date <= r.asOf, `${who}: дата — YYYY-MM-DD не позже среза`);
+      ok(Number.isInteger(x.rating) && x.rating >= 1 && x.rating <= 5, `${who}: оценка 1–5`);
+      ok(/^(Клиент|[A-ZА-ЯЁ][a-zа-яё]+(?: [A-ZА-ЯЁ]\.)?)$/.test(x.author), `${who}: автор — имя и инициал фамилии («Сергей Л.») или «Клиент»`);
+      const hit = (x.text || '').match(STAFF);
+      ok(x.text && !hit, `${who}: в цитате ${hit ? `«${hit[0]}»` : 'пусто'} — имена сотрудников, Романа, старое имя и телефоны вырезать «[…]» или не брать отзыв`);
+      ok(Array.isArray(x.topics) && x.topics.length && x.topics.every((t) => topicIds.has(t)), `${who}: topics — темы из site.requests.topics`);
+    }
+    // Блок на странице — тот же, что в JSON (подстановка reviews): дата среза, рейтинги, ссылки.
+    for (const page of REGISTRY) {
+      const block = html[page.file].match(/<section class="reviews" id="reviews"[\s\S]*?<\/section>/)?.[0];
+      if (!block) continue;
+      ok(plain(block).includes(`с Яндекс Карт на ${humanDate(r.asOf).replace(/\u00a0/g, ' ')}`), `${page.file}: у отзывов нет даты среза «на ${humanDate(r.asOf)}»`);
+      for (const st of r.studios.filter((x) => block.includes(`href="${x.url}"`))) ok(plain(block).includes(`${st.rating.toFixed(1).replace('.', ',')}`), `${page.file}: рейтинг ${st.id} не из JSON`);
+      const authors = [...block.matchAll(/<span class="review__author">([^<]*)<\/span>/g)].map((m) => m[1]);
+      ok(authors.length && authors.every((a) => r.items.some((x) => esc(x.author) === a)), `${page.file}: отзывы на странице не из JSON (reviews)`);
+      ok(!/itemprop|"@type":\s*"(Review|AggregateRating)"/.test(html[page.file]), `${page.file}: разметка Review/AggregateRating — не ставим (отзывы с чужой площадки)`);
+    }
+    if (!html['index.html'].includes('<section class="reviews" id="reviews"')) soft('[переходное: тело страницы] index.html: на главной нет блока отзывов (подстановка reviews)');
+  }
+
+  // Плашки работ и направлений: страница из реестра, позиция каталога, машина, файлы кадров.
+  const tiles = [...Object.entries(d.works || {}).filter(([k, v]) => k !== '_comment' && Array.isArray(v)).flatMap(([k, v]) => v.map((x) => [`works.${k}`, x])), ...(d.directions?.items || []).map((x) => [`directions.${x.id}`, x])];
+  ok(same(Object.keys(d.works || {}).filter((k) => k !== '_comment'), ['wash', 'detailing', 'wrap', 'bodywork', 'sales', 'about']), 'works: ряды wash, detailing, wrap, bodywork, sales, about');
+  ok(same((d.directions?.items || []).map((x) => x.id), ['wash', 'detailing', 'wrap', 'bodywork', 'sales', 'about']), 'directions: шесть направлений в порядке Влада (05.11)');
+  for (const [where, x] of tiles) {
+    const target = byId[x.page];
+    if (!ok(target, `${where}: нет страницы «${x.page}»`)) continue;
+    if (x.hash && !ids[target.file].has(x.hash)) soft(`${where}: на ${target.file} пока нет якоря #${x.hash} — страницу пишет исполнитель (на странице с плашкой это ошибка)`);
+    if (x.car) { ok([...cars.forSale, ...cars.sold].some((c) => c.id === x.car), `${where}: нет машины ${x.car} в cars.json`); continue; }
+    if (x.img) {
+      ok(x.alt && x.title, `${where}: у кадра нужны title и alt`);
+      for (const w of x.widths || [800, 1240]) if (!await exists(resolve(dist, `${x.img}-${w}.webp`))) soft(`${where}: нет файла ${x.img}-${w}.webp (кадры кладёт исполнитель фото; на странице с плашкой это ошибка)`);
+    } else ok(x.title && x.price in itemPrice, `${where}: плашка без фото — title и price (позиция каталога)`);
+  }
 }
 
 // ── Гараж: только /services, 3D по нажатию, цены из каталога ─────────────────
@@ -383,22 +527,21 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
   ok(cars.forSale.length === 1 && cars.sold.length === 16, `cars.json: ${cars.forSale.length} машины в продаже, ${cars.sold.length} проданных — ожидается 1 и 16`);
   ok(cars.sold.every((c) => c.id && /^\d{4}-\d{2}$/.test(c.sold) && c.photos?.length), 'cars.json: у проданной машины нет id, месяца sold или фото');
   ok((auto.match(/<li class="sold-card"><a class="sold-card__link" href="#[\w-]+" data-car-open=/g) || []).length === cars.sold.length, `auto.html: проданных карточек-ссылок не ${cars.sold.length}`);
-  // Цены машин — на дату pricesDate (план §4.6): старше 30 дней — сверить с Романом
+  // Цены машин — на дату pricesDate (план §4.6): старше 30 дней — сверить с клиентом
   // (в check:release — ошибка: на боевой сайт со старыми ценами не выходим).
   {
     const age = Math.floor((Date.now() - Date.parse(`${cars.pricesDate}T00:00:00+03:00`)) / 864e5);
     ok(Number.isFinite(age), `cars.json: pricesDate «${cars.pricesDate}» — не дата YYYY-MM-DD`);
-    if (age > 30) soft(`цены машин — на ${cars.pricesDate} (${age} дн. назад): сверить цены и наличие с Романом и обновить pricesDate в src/data/cars.json`);
+    if (age > 30) soft(`цены машин — на ${cars.pricesDate} (${age} дн. назад): сверить цены и наличие с клиентом и обновить pricesDate в src/data/cars.json`);
   }
   const sale = cars.forSale.length, sold = cars.sold.length;
   for (const page of REGISTRY) if (page.shared.includes('header')) ok(html[page.file].includes(`<span class="drawer__count">${sale}</span>`) && html[page.file].includes(`<span class="drawer__count">${sold}</span>`), `${page.file}: счётчики машин в шторке не из данных`);
   ok(/href="#for-sale"><b>(\d+)<\/b>/.exec(auto)?.[1] === String(sale) && /href="#sold"><b>(\d+)<\/b>/.exec(auto)?.[1] === String(sold), 'auto.html: цифры героя не из данных');
   ok(new RegExp(`Уже продали ${sold} машин`).test(plain(html['index.html'])), 'index.html: «Уже продали N машин» не из данных');
-  const imp = mainOf(html['import.html']);
-  ok(!/href="tel:/.test(imp), 'import.html: телефон в теле страницы — для привоза только Telegram (поправка 5)');
-  ok([...imp.matchAll(/href="(https:\/\/t\.me\/[^"]+)"/g)].every((m) => m[1] === cars.contact), 'import.html: Telegram — только @otec_roman');
+  // Личного Telegram для связи больше нет (Влад 05.11): в данных машин — только канал.
+  ok(!('contact' in cars) && cars.channel === 'https://t.me/MEATWASH_Auto', 'cars.json: поля contact (личный Telegram) быть не должно, channel — канал MEAT AUTO');
   ok(!/ранее Meat Wash/.test(plain(html['about.html'])), 'about.html: «ранее Meat Wash» не нужно — имя сайта снова Meat Wash (Влад 29.10)');
-  ok(!/rusifikaciya/.test(html['index.html'].match(/<dialog class="drawer"[\s\S]*?<\/dialog>/)?.[0] || ''), 'Шторка: пункта «Русификация» нет до ответа Романа (поправка 6)');
+  ok(!/rusifikaciya/.test(html['index.html'].match(/<dialog class="drawer"[\s\S]*?<\/dialog>/)?.[0] || ''), 'Шторка: пункта «Русификация» нет до ответа клиента (поправка 6)');
 }
 
 // ── Скрипты: синтаксис, адреса, граф модулей ─────────────────────────────────

@@ -1,16 +1,23 @@
-"""§6.4 п. 5 (запись), п. 6 (согласие), п. 7 (карты), п. 8 (шторка и клавиатура; WebKit —
-поправка 23). Переходы в YCLIENTS не открываются. Владелец: WP7."""
+"""§6.4 п. 5 (заявка), п. 6 (согласие), п. 7 (карты), п. 8 (шторка и клавиатура; WebKit —
+поправка 23). Переходы в YCLIENTS не открываются. Владелец: WP7, с 05.11 — интегратор.
+
+П. 5 после решения Влада 05.11 («всё — по заявкам»): любая «Оставьте заявку» ([data-request]
+или [data-book] у программ мойки) открывает форму #request; онлайн-запись YCLIENTS — мелкая
+строка [data-request-online] внутри формы со ссылками студий a[data-branch] (корзина программ
+сохраняется). Контракт — docs/meat-auto/CONTRACTS.md, «Заявка»."""
 import json
 from common import Context, load, DIST
 
 STUDIOS = {'myasnitskaya': '906067', 'technopark': '1743348'}
 
-BOOKING_STATE = r"""() => {
-  const b = document.querySelector('#booking');
-  const links = [...b.querySelectorAll('a[data-branch]')].filter(a => a.offsetParent).map(a => ({branch: a.dataset.branch, href: a.href}));
-  const phones = [...b.querySelectorAll('a[data-phone]')].filter(a => a.offsetParent).map(a => a.dataset.phone);
-  return {open: b.open, mode: b.dataset.mode, links, phones, locked: document.documentElement.classList.contains('is-locked'),
-          title: document.querySelector('#booking-title').textContent.trim(), context: (document.querySelector('#booking-context')?.textContent || '').trim()};
+REQUEST_STATE = r"""() => {
+  const d = document.querySelector('#request');
+  const form = d?.querySelector('[data-request-form]');
+  const online = d?.querySelector('[data-request-online]');
+  const links = online && online.offsetParent ? [...online.querySelectorAll('a[data-branch]')].map(a => ({branch: a.dataset.branch, href: a.href})) : [];
+  const chips = [...(d?.querySelectorAll('[data-request-chips] li') || [])].map(li => li.textContent.replace(/\u00a0/g, ' ').trim());
+  return {open: Boolean(d?.open), topic: form?.elements?.topic?.value ?? null, chips, links, locked: document.documentElement.classList.contains('is-locked'),
+          title: (document.querySelector('#request-title')?.textContent || '').trim(), context: (document.querySelector('#request-context')?.textContent || '').trim()};
 }"""
 
 
@@ -19,10 +26,10 @@ CONTEXT_TYPO = r"""() => {
   const SHORT = '[а-яёa-z]{1,2}|для|без|под|над|при|про|обо|изо|или|как|что|чем|где|его|её|все|это';
   const bad = new RegExp(`(?:^|[ \u00a0(«„"—–-])(?:${SHORT}) (?=\\S)| —|\\d [\\d₽]`, 'iu');
   const out = {n: 0, bad: []};
-  for (const el of document.querySelectorAll('[data-book],[data-request],[data-membership]')) {
+  for (const el of document.querySelectorAll('[data-book],[data-request]')) {
     if (el.closest('dialog')) continue;
     el.click();
-    const c = document.querySelector('#booking-context');
+    const c = document.querySelector('#request-context');
     const t = c && !c.hidden ? c.textContent : '';
     document.querySelectorAll('dialog[open]').forEach(d => d.close());
     if (!t) continue;
@@ -40,44 +47,52 @@ def booking(browser, base, pages, res):
         pg = c.page()
         for p in pages:
             load(pg, f"{base}/{p['path']}")
-            btn = pg.locator('[data-book]:visible').first
+            # Первая видимая «Оставьте заявку» (в шапке на компьютере, нижняя кнопка на телефоне).
+            btn = pg.locator('[data-request]:visible').first
             btn.scroll_into_view_if_needed()
+            label = btn.inner_text().replace('\u00a0', ' ').strip()
             btn.click()
             pg.wait_for_timeout(450)
-            s = pg.evaluate(BOOKING_STATE)
-            got = {l['branch']: l['href'] for l in s['links']}
-            good = s['open'] and s['mode'] == 'book' and all(STUDIOS[k] in got.get(k, '') for k in STUDIOS) and s['locked']
+            s = pg.evaluate(REQUEST_STATE)
+            good = s['open'] and s['locked'] and label.startswith('Оставьте заявку') and (s['topic'] or '') == p['topic']
             pg.keyboard.press('Escape')
             pg.wait_for_timeout(450)
-            closed = pg.evaluate("() => !document.querySelector('#booking').open && !document.documentElement.classList.contains('is-locked')")
+            closed = pg.evaluate("() => !document.querySelector('#request').open && !document.documentElement.classList.contains('is-locked')")
             if good and closed:
                 ok_pages += 1
             else:
-                details.append(f"/{p['path']} {w}: open={s['open']} mode={s['mode']} studios={list(got)} locked={s['locked']} closedByEsc={closed}")
+                details.append(f"/{p['path']} {w}: «{label}» open={s['open']} тема={s['topic']} (нужна «{p['topic']}») locked={s['locked']} closedByEsc={closed}")
         c.close()
-    # /services: «Внедорожник» + программа 3 → корзина YCLIENTS с ID из yclients.json
+    # /wash: «Внедорожник» + программа 3 → форма с темой «Автомойка», мелкая строка онлайн-записи
+    # с корзиной YCLIENTS (ID из yclients.json)
     yc = json.loads((DIST / 'assets/yclients.json').read_text(encoding='utf-8'))
     c = Context(browser, 1440, 900, consent=False)
     pg = c.page()
-    load(pg, f'{base}/services')
+    load(pg, f'{base}/wash')
     pg.locator('input[name="body-type"][value="2"]').evaluate('el => el.closest("label").click()')
     pg.wait_for_timeout(200)
     label = pg.locator('#body-price-label').inner_text()
     pg.locator('[data-book][data-program="3"]').first.click()
-    pg.wait_for_function("() => [...document.querySelectorAll('#booking a[data-branch]')].some(a => a.href.includes('short?o='))", timeout=8000)
-    s = pg.evaluate(BOOKING_STATE)
+    try:
+        pg.wait_for_function("() => [...document.querySelectorAll('#request [data-request-online] a[data-branch]')].some(a => a.href.includes('short?o='))", timeout=8000)
+    except Exception:
+        pass
+    s = pg.evaluate(REQUEST_STATE)
     want = {b: yc['programs'][3][b][2] for b in STUDIOS}
     hrefs = {l['branch']: l['href'] for l in s['links']}
-    cart_ok = all(f'short?o=m-1s{want[b]}' in hrefs.get(b, '') for b in STUDIOS if want[b])
+    cart_ok = s['open'] and s['topic'] == 'wash' and all(f'short?o=m-1s{want[b]}' in hrefs.get(b, '') for b in STUDIOS if want[b])
     pg.keyboard.press('Escape')
     pg.wait_for_timeout(400)
-    # «Узнать цену» в «Защите» → разговор, первым Технопарк
+    # /services: «Оставьте заявку» в «Защите» → форма с темой «Детейлинг» и этой работой
+    load(pg, f'{base}/services')
     pg.click('#tab-price-protection')
     pg.wait_for_timeout(300)
-    pg.locator('#price-protection [data-request][data-request-category="protection"]').first.click()
+    row = pg.locator('#price-protection [data-request][data-request-category="protection"]').first
+    service = row.get_attribute('data-request-services')
+    row.click()
     pg.wait_for_timeout(450)
-    t = pg.evaluate(BOOKING_STATE)
-    talk_ok = t['open'] and t['mode'] == 'talk' and t['phones'][:1] == ['technopark']
+    t = pg.evaluate(REQUEST_STATE)
+    talk_ok = t['open'] and t['topic'] == 'detailing' and any(service in x for x in t['chips']) and not t['links']
     c.close()
     # Строка «Вы выбрали / Вы спрашиваете» в окне (её пишет скрипт): короткие слова не висят,
     # перед тире и ₽ — неразрывный пробел; все кнопки записи, «Узнать цену» и разговора на
@@ -86,7 +101,7 @@ def booking(browser, base, pages, res):
     for w in (320, 390):
         c = Context(browser, w, 800, consent=False)
         pg = c.page()
-        for path in ('services', 'works', 'about', 'auto', 'article-avto-k-zime', 'wrap'):
+        for path in ('services', 'wash', 'detailing', 'wrap', 'bodywork', 'works', 'about', 'auto', 'article-avto-k-zime'):
             load(pg, f'{base}/{path}')
             for body in ((0, 1, 2, 3) if path == 'services' else (None,)):
                 if body is not None:
@@ -96,12 +111,12 @@ def booking(browser, base, pages, res):
                 typo_bad += [f'/{path} {w}{"" if body is None else f" кузов {body}"}: {x}' for x in r['bad']]
         c.close()
     total = len(pages) * 2
-    res.add('5', 'Запись', ok_pages == total and cart_ok and talk_ok and not typo_bad,
-            f'первая [data-book] → #booking[open] с 906067 и 1743348, блокировка и Esc: {ok_pages}/{total} (13 страниц × 1440 и 390); '
-            f'«{label}» + программа 3 → {", ".join(f"{b}: …{hrefs.get(b, "")[-24:]}" for b in STUDIOS)} (ожидалось m-1s{want["myasnitskaya"]}/{want["technopark"]}) — {"да" if cart_ok else "нет"}; '
-            f'«Узнать цену» в «Защите» → режим {t["mode"]}, телефоны {t["phones"]}; '
-            f'строка «Вы выбрали…» в окне: {typo_total} открытий на 320 и 390, висящих слов и тире — {len(typo_bad)}',
-            details + ([] if cart_ok else [f'корзина: {hrefs}']) + ([] if talk_ok else [f'разговор: {t}']) + typo_bad[:10])
+    res.add('5', 'Заявка', ok_pages == total and cart_ok and talk_ok and not typo_bad,
+            f'первая «Оставьте заявку» → #request[open] с темой страницы, блокировка и Esc: {ok_pages}/{total} ({len(pages)} страниц × 1440 и 390); '
+            f'/wash «{label}» + программа 3 → тема {s["topic"]}, онлайн-запись {", ".join(f"{b}: …{hrefs.get(b, "")[-24:]}" for b in STUDIOS)} (ожидалось m-1s{want["myasnitskaya"]}/{want["technopark"]}) — {"да" if cart_ok else "нет"}; '
+            f'«Оставьте заявку» в «Защите» → тема {t["topic"]}, работы {t["chips"]}, онлайн-записи нет: {not t["links"]}; '
+            f'строка контекста в форме: {typo_total} открытий на 320 и 390, висящих слов и тире — {len(typo_bad)}',
+            details + ([] if cart_ok else [f'корзина: {s}']) + ([] if talk_ok else [f'«Защита»: {t}']) + typo_bad[:10])
 
 
 def consent(browser, base, res):
@@ -230,7 +245,7 @@ def drawer(browser, base, res, webkit=None):
               and back['id'] == 'drawer-open' and not back['open'] and not back['locked'] and (deep is None or deep) and skipped and sticky == 0 and has)
         facts.append(f"{name} {w}: Tab → «{skip['text']}» → «Меню» (обводка {menu['style']} {menu['width']}px {menu['color']}); шторка :modal {opened['modal']}, фокус внутри {opened['inDrawer']}, "
                      f"Tab не выходит {trapped}; Esc → фокус на #{back['id']}, прокрутка свободна {not back['locked']}"
-                     + (f'; вглубь «Мойка и детейлинг» и «←» назад {deep}' if deep is not None else '') + f"; «к содержанию» {skipped}; липкие вкладки top={sticky}px; :has {has}")
+                     + (f'; вглубь «Услуги и цены» и «←» назад {deep}' if deep is not None else '') + f"; «к содержанию» {skipped}; липкие вкладки top={sticky}px; :has {has}")
         if not ok:
             details.append(facts[-1])
         return ok

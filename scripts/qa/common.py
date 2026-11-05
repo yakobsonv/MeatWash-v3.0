@@ -24,7 +24,7 @@ METRIKA = 'mc.yandex.ru'
 def registry():
     """Страницы из src/content/pages.mjs: file, id, theme, kind, адрес без .html."""
     code = ("import {REGISTRY} from './src/content/pages.mjs';"
-            "console.log(JSON.stringify(REGISTRY.map(p=>({file:p.file,id:p.id,theme:p.theme||'dark',kind:p.kind,sitemap:Boolean(p.sitemap)}))))")
+            "console.log(JSON.stringify(REGISTRY.map(p=>({file:p.file,id:p.id,theme:p.theme||'dark',kind:p.kind,sitemap:Boolean(p.sitemap),cta:p.cta,topic:p.topic||''}))))")
     out = subprocess.run(['node', '--input-type=module', '-e', code], cwd=ROOT, capture_output=True, text=True, check=True).stdout
     pages = json.loads(out)
     for p in pages:

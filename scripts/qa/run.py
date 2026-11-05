@@ -49,7 +49,8 @@ def main():
         r = subprocess.run(['node', 'scripts/check.mjs'], cwd=ROOT, capture_output=True, text=True)
         text = r.stdout + r.stderr
         todo_pages = sorted({line.split('—', 1)[1].split(':')[0].strip() for line in text.splitlines() if 'нужно от клиента —' in line})
-        ok = r.returncode == 0 and set(todo_pages) <= {'import.html', 'works.html'}
+        # Пометки «нужно от клиента» — только на страницах направлений, /import и /works (check.mjs, TODO_PAGES).
+        ok = r.returncode == 0 and set(todo_pages) <= {'wash.html', 'detailing.html', 'wrap.html', 'bodywork.html', 'import.html', 'works.html'}
         res.add('1', 'Сборка и статические проверки', ok, (text.strip().splitlines() or [''])[0] + f'; check: {"PASS" if r.returncode == 0 else "FAIL"}; пометки «нужно от клиента» только на: {", ".join(todo_pages) or "—"}',
                 [l for l in text.splitlines() if l.startswith('- ') and 'нужно от клиента' not in l][:20])
 

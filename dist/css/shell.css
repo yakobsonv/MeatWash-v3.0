@@ -66,17 +66,11 @@
 }
 .site-header--over .site-header__logo .bull { filter: drop-shadow(0 2px 10px rgb(0 0 0 / .55)); }
 .site-header__logo:hover .bull { opacity: .82; transform: scale(.96); }
-/* «Записаться» в шапке — от 760 px и в альбомной ориентации телефона (поправка 23);
-   в портрете телефона её роль у нижней кнопки. */
-.site-header__book { justify-self: end; display: none; }
+/* «Оставьте заявку» в шапке — от 760 px и в альбомной ориентации телефона (поправка 23);
+   в портрете телефона её роль у нижней кнопки — с 05.11 она есть на всех страницах, и на главной
+   (Влад: всё — по заявкам), поэтому исключения для главной больше нет. В одну строку. */
+.site-header__book { justify-self: end; display: none; white-space: nowrap; }
 @media (min-width: 760px), (orientation: landscape) { .site-header__book { display: inline-block; } }
-/* На главной нижней кнопки нет (закрывала карусель плиток) — там «Записаться» в шапке
-   видна и в портрете телефона. */
-body[data-page="home"] .site-header__book { display: inline-block; }
-@media (max-width: 479px) {
-  /* Узкий телефон: кнопка не должна заходить на быка по центру (на 320 px колонка — 108 px). */
-  body[data-page="home"] .site-header__book { padding-inline: 12px; font-size: 14px; }
-}
 @media (max-width: 479px) {
   .site-header__menu { padding: 8px; }
   .site-header__menu-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -88,7 +82,6 @@ body[data-page="home"] .site-header__book { display: inline-block; }
 @media (max-width: 374px) {
   /* 320–374 px: бык чуть меньше, чтобы остался ровно по центру рядом с кнопкой. */
   :root[data-theme="home"] .site-header { --bull-h: 44px; }
-  body[data-page="home"] .site-header__book { padding-inline: 8px; font-size: 13px; }
 }
 :root[data-theme="home"] .site-header--over { height: 104px; }
 @media (min-width: 480px) {

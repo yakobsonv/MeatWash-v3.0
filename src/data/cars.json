@@ -2,7 +2,6 @@
  "_comment": "Машины для /auto, шторки и счётчиков. Перенесено один к одному из src/content/auto.html (ветка v2, fd8d88d) 27.10.2026. Цены — на pricesDate. Владелец файла после WP0 — WP4 (scripts/cars.mjs). После правки: npm run build. 03.11: BMW 740Ld продана (Влад) — перенесена в sold со всеми данными, id прежний (bmw-740ld). У проданных: id, sold (ГГГГ-ММ), photos для окна, figures/specs — данные модели от производителя (specsNote).",
  "pricesDate": "2026-09-22",
  "channel": "https://t.me/MEATWASH_Auto",
- "contact": "https://t.me/otec_roman",
  "forSale": [
   {
    "id": "lotus-eletre",

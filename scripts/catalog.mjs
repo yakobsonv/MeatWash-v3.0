@@ -1,6 +1,8 @@
 // Всё, что зависит от цен и услуг, собирается из dist/assets/meatwash-content.json:
 // - каталог на /services — подстановка {{catalog}} (renderCatalog) и сравнение программ
 //   {{compare}} (renderCompare); их вызывает scripts/pages.mjs при сборке страницы;
+// - цены подразделов на страницах направлений — {{prices:<id,…>}} (renderSections) и
+//   «от» подраздела — {{min-section:<id>}} (sectionMin);
 // - dist/js/data.js — те же цены и филиалы для скриптов (гараж, окно услуги, карты).
 // Запуск: npm run catalog — пишет только dist/js/data.js (Meat Wash, WP0 27.10).
 // Владелец: WP3 (разметка каталога по §4.3 плана, renderCompare, SECTION_LINKS; 27.10).
@@ -49,29 +51,40 @@ const icon=name=>{
  spriteVersion??=createHash('sha256').update(readFileSync(new URL('dist/assets/brand/sprite.svg',root))).digest('hex').slice(0,8);
  return `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=${spriteVersion}#i-${name}"/></svg>`;
 };
-// Подпись кнопки для экранного диктора: «Узнать цену: Химчистка руля».
+// Подпись кнопки для экранного диктора: «Оставьте заявку: Химчистка руля».
 const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
-// Одно действие на позицию. Автомойка (booking: yclients) — окно филиалов с этой работой
-// в корзине (ui.js → yclients.js); остальное — «Узнать цену» с этой работой (ui.js:
-// пока заявки с сайта не принимаются — окно с телефонами студий, потом — request.js).
+// Одно действие на позицию, подпись везде «Оставьте заявку» (Влад 05.11: всё — по заявкам).
+// Атрибуты — контракт формы (docs/meat-auto/CONTRACTS.md, «Заявка»): автомойка (booking:
+// yclients) — data-book с работой (форма #request с темой «Автомойка», мелкая ссылка онлайн-
+// записи YCLIENTS с этой работой в корзине); остальное — data-request с категорией и работой.
 // У подраздела с onsite: true (продаётся только на месте, «Дополнительно на автомойке»)
 // кнопки нет — подпись «добавим при приёмке».
 // Ключи data-* — побуквенно названия из JSON (typo() их не трогает, check сверяет).
 export const ONSITE_LABEL='добавим при приёмке';
 const ACTION_CLASS='catalog__action btn btn--compact btn--secondary';
 // На телефоне от кнопки остаётся круглая стрелка (services.css), подпись — для диктора.
+export const REQUEST_LABEL='Оставьте заявку';
 const actionLabel=(label,name)=>`<span class="catalog__action-label">${label}</span>${forName(name)}${icon('arrow-right')}`;
 const action=(group,name)=>group.booking==='yclients'
- ?`<button class="${ACTION_CLASS}" type="button" data-book data-book-context="${escape(name)}" data-yc-items="${escape(name)}">${actionLabel('Записаться',name)}</button>`
- :`<button class="${ACTION_CLASS}" type="button" data-request data-request-category="${escape(group.id)}" data-request-services="${escape(name)}">${actionLabel('Узнать цену',name)}</button>`;
+ ?`<button class="${ACTION_CLASS}" type="button" data-book data-book-context="${escape(name)}" data-yc-items="${escape(name)}">${actionLabel(REQUEST_LABEL,name)}</button>`
+ :`<button class="${ACTION_CLASS}" type="button" data-request data-request-category="${escape(group.id)}" data-request-services="${escape(name)}">${actionLabel(REQUEST_LABEL,name)}</button>`;
 const itemRow=(group,section,[name,price,note])=>`<li class="catalog__item" data-price-item="${escape(name)}"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p>${note?`<p class="catalog__item-note">${escape(note)}</p>`:''}</div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${section.onsite?`<p class="catalog__item-onsite">${ONSITE_LABEL}</p>`:action(group,name)}</li>`;
 const itemOf=(group,name)=>group.items.find(([n])=>n===name)??(()=>{throw new Error(`Подраздел ${group.id}: нет позиции «${name}» в items`);})();
 
-// Ссылки подразделов на страницы направления (§4.3 плана) — здесь, не в JSON.
+// Ссылки подразделов на страницы направлений — здесь, не в JSON. page — id страницы из
+// реестра; на самой этой странице ({{prices}}) ссылка не выводится.
 export const SECTION_LINKS={
- 'price-film':{href:'wrap',label:'Подробнее об оклейке'},
- 'price-presale':{href:'auto#sell',label:'Покупка и продажа авто'},
+ programs:{page:'wash',label:'Подробнее об автомойке'},
+ 'price-interior':{page:'detailing',label:'Подробнее о детейлинге'},
+ 'price-polish':{page:'detailing',label:'Подробнее о детейлинге'},
+ 'price-film':{page:'wrap',label:'Подробнее об оклейке'},
+ 'price-bodywork':{page:'bodywork',label:'Подробнее о кузовных работах'},
+ 'price-presale':{page:'auto',hash:'sell',label:'Продажа автомобилей'},
 };
+// Адрес страницы по id реестра — его подставляет scripts/pages.mjs (setPageHref): этот модуль
+// не импортирует реестр, чтобы npm run catalog работал отдельно.
+let pageHref=id=>id;
+export const setPageHref=fn=>{pageHref=fn;};
 // Пояснение под заголовком подраздела.
 const SECTION_NOTE={
  programs:'Каждая следующая включает предыдущую. Цена зависит от типа кузова.',
@@ -87,7 +100,7 @@ const programCard=([name,,time,description],i)=>`<li class="program-card">
       <ul class="chips program-card__chips"><li class="chip">${escape(time)}</li></ul>
       <p class="program-card__desc">${escape(description)}</p>
       <details class="accordion program-card__includes" id="program-${i}"><summary class="accordion__head">Что входит</summary><div class="accordion__body"><ul class="program-includes">${d.programIncludes[i].map(item=>`<li>${escape(item)}</li>`).join('')}</ul></div></details>
-      <button class="btn btn--primary program-card__book" type="button" data-book data-program="${i}" data-book-context="${escape(programContext(i,0))}">Записаться${forName(name)}</button>
+      <button class="btn btn--primary program-card__book" type="button" data-book data-program="${i}" data-book-context="${escape(programContext(i,0))}">${REQUEST_LABEL}${forName(name)}</button>
      </li>`;
 const programs=()=>`<fieldset class="body-types segmented"><legend class="sr">Тип кузова</legend>${d.bodyTypes.map((type,i)=>`<label><input type="radio" name="body-type" value="${i}"${i===0?' checked':''}><span>${escape(type)}</span></label>`).join('')}</fieldset>
     <p class="catalog__selection" id="body-price-label" aria-live="polite">Цены для типа кузова: ${escape(d.bodyTypes[0])}</p>
@@ -98,13 +111,13 @@ const programs=()=>`<fieldset class="body-types segmented"><legend class="sr">Т
 
 // Подраздел категории: заголовок h3 (+ пояснение, + ссылка на страницу направления) и
 // позиции. accent — спокойно выделенный (оклейка, ремонт стёкол).
-const sectionHead=section=>{
- const link=SECTION_LINKS[section.id];
+const sectionHead=(section,page)=>{
+ const link=SECTION_LINKS[section.id]?.page===page?null:SECTION_LINKS[section.id];
  const note=section.programs?SECTION_NOTE.programs:section.onsite?SECTION_NOTE.onsite:'';
  return `<div class="catalog__section-head">
     <h3 class="catalog__subhead" id="${escape(section.id)}-title">${escape(section.title)}</h3>${note?`
     <p class="catalog__section-note">${note}</p>`:''}${link?`
-    <a class="link-arrow catalog__section-link" href="${link.href}">${escape(link.label)}${icon('arrow-right')}</a>`:''}
+    <a class="link-arrow catalog__section-link" href="${pageHref(link.page)}${link.hash?`#${link.hash}`:''}">${escape(link.label)}${icon('arrow-right')}</a>`:''}
    </div>`;
 };
 // data-summary — строка свёрнутого подраздела на телефоне (js/catalog.js): «4 позиции, от 2 000 ₽».
@@ -114,12 +127,12 @@ const summary=(group,s)=>{
  const prices=priced(s.items.map(name=>itemOf(group,name)));
  return `${positions(s.items.length)}${prices.length?`, от ${money(Math.min(...prices))}`:''}`;
 };
-const section=(group,s)=>`<section class="catalog__section${s.accent?' catalog__section--accent':''}${s.programs?' catalog__section--programs':''}" id="${escape(s.id)}" aria-labelledby="${escape(s.id)}-title"${s.items?` data-summary="${escape(summary(group,s))}"`:''}>
-   ${sectionHead(s)}
+const section=(group,s,page)=>`<section class="catalog__section${s.accent?' catalog__section--accent':''}${s.programs?' catalog__section--programs':''}" id="${escape(s.id)}" aria-labelledby="${escape(s.id)}-title"${s.items?` data-summary="${escape(summary(group,s))}"`:''}>
+   ${sectionHead(s,page)}
    ${s.programs?programs():`<ul class="catalog__items" role="list">${s.items.map(name=>itemRow(group,s,itemOf(group,name))).join('')}</ul>`}
   </section>`;
-// Пока заявки с сайта не принимаются, цену называют по телефону (окно «Узнать цену»).
-const LEAD={yclients:'Запись онлайн — в выбранную студию.',request:'Стоимость для вашей машины назовёт администратор: нажмите «Узнать цену» у работы.'};
+// Всё — по заявке (Влад 05.11): цену и время называет администратор.
+const LEAD={yclients:'Оставьте заявку — администратор подберёт время.',request:'Стоимость для вашей машины назовёт администратор: оставьте заявку у работы.'};
 
 // Каталог /services (§4.3 плана) — подстановка {{catalog}}. Пять категорий; без JS
 // вкладки — ссылки на категории, панели идут подряд; js/catalog.js делает из них вкладки
@@ -138,12 +151,49 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
    <h2 class="catalog__panel-title" id="price-${escape(group.id)}-title">${escape(group.title)}</h2>
    <p class="catalog__panel-lead">${escape(group.desc)} ${LEAD[group.booking]}</p>
   </header>
-  ${group.sections.map(s=>section(group,s)).join('\n  ')}
+  ${group.sections.map(s=>section(group,s,'services')).join('\n  ')}
  </section>`).join('\n')}
  </div>
  <p class="catalog__note" id="price-note">Стоимость зависит от типа кузова и состояния автомобиля. Итоговый объём и цену согласуем перед работой. Не является публичной офертой.</p>
 </div>
 `}
+
+// Цены подразделов на страницах направлений — {{prices:<id,…>}} (решение 05.11). Разметка —
+// та же, что у подразделов каталога /services (section.catalog__section с h3, строки
+// li.catalog__item с кнопкой «Оставьте заявку»: data-book у автомойки, data-request у остального),
+// обёртка div.catalog.catalog--prices[data-prices]: по ней site.js подключает js/catalog.js
+// (переключатель кузова у программ). id подразделов — те же, что на /services (#price-film…):
+// на одной странице подраздел — один раз. programs выводит карточки программ, переключатель
+// кузова и сравнение (#compare) — {{compare}} рядом не ставить. Под подразделами — строка
+// «Не является публичной офертой». page — id страницы (ссылка подраздела на неё не выводится).
+const sectionOf=id=>{
+ for(const group of d.groups){const s=group.sections.find(x=>x.id===id);if(s)return {group,s};}
+ throw new Error(`{{prices}}: нет подраздела каталога «${id}»`);
+};
+export function renderSections(ids,page){
+ if(!ids.length||ids.some(id=>!id))throw new Error('{{prices}}: нужен список подразделов через запятую');
+ if(new Set(ids).size!==ids.length)throw new Error(`{{prices:${ids.join(',')}}}: подраздел повторяется`);
+ return `<div class="catalog catalog--prices" data-prices>
+  ${ids.map(id=>{const {group,s}=sectionOf(id);return section(group,s,page);}).join('\n  ')}
+  <p class="catalog__note">Стоимость зависит от типа кузова и состояния автомобиля. Итоговый объём и цену согласуем перед работой. Не является публичной офертой.</p>
+ </div>`;
+}
+// «от» подраздела ({{min-section:<id>}}): у программ — минимум цен программ, у остальных —
+// минимум позиций с ценой; позиций с ценой нет — ошибка (пишите «после осмотра» текстом).
+export const sectionMin=id=>{
+ const {group,s}=sectionOf(id);
+ const prices=s.programs?d.programPrices.flat():priced(s.items.map(name=>itemOf(group,name)));
+ if(!prices.length)throw new Error(`{{min-section:${id}}}: в подразделе нет позиций с ценой`);
+ return Math.min(...prices);
+};
+
+// Темы формы «Оставьте заявку» (site.requests.topics): позиции каталога каждой темы.
+export const requestTopics=()=>(d.site?.requests?.topics||[]).map(t=>{
+ const fromSections=(t.sections||[]).flatMap(id=>{const {s}=sectionOf(id);return s.programs?[]:s.items;});
+ const items=[...fromSections,...(t.items||[])].filter(n=>!(t.except||[]).includes(n));
+ for(const n of items)if(!d.groups.some(g=>g.items.some(([x])=>x===n)))throw new Error(`site.requests.topics ${t.id}: нет позиции «${n}» в каталоге`);
+ return {id:t.id,title:t.title,...((t.sections||[]).includes('programs')?{programs:true}:{}),items,options:t.options||[]};
+});
 
 // Сравнение программ автомойки (P04, §4.3 плана) — {{compare}}, стоит в #programs каталога.
 // Строки — пункты состава в порядке появления, кроме первого пункта «Всё из …» у программ
@@ -218,6 +268,8 @@ ${d.groups.map((group,i)=>{
 // items — позиции каталога), цены работ по названию (null — после оценки),
 // позиции с пояснением, категорией и подразделом, четыре категории с подразделами,
 // настройка заявок и филиалы (карты в карточках, цель записи).
+// Категория каталога → тема заявки по умолчанию (без указанной работы).
+export const CATEGORY_TOPIC={wash:'wash',detailing:'detailing',wrap:'wrap',protection:'detailing',help:'bodywork'};
 export function renderData(){
  const prices=Object.fromEntries(d.groups.flatMap(g=>g.items.map(([name,price])=>[name,price])));
  const items=Object.fromEntries(d.groups.flatMap(g=>g.sections.filter(s=>s.items).flatMap(s=>s.items.map(name=>{
@@ -244,6 +296,12 @@ export const CATEGORIES = ${JSON.stringify(categories,null,1)};
 // и сайты, где он работает (пусто — везде; копия на GitHub Pages PHP не выполняет).
 export const REQUESTS = ${JSON.stringify({endpoint:d.site?.requests?.endpoint??null,hosts:d.site?.requests?.hosts??[]})};
 export const LOCATIONS = ${JSON.stringify(locations,null,1)};
+// Темы формы «Оставьте заявку» (site.requests.topics) в порядке показа: programs — программы
+// мойки (PROGRAMS), items — позиции каталога темы, options — варианты без каталога.
+// data-request-category кнопки — id темы или категории каталога (CATEGORY_TOPIC — тема
+// категории, если работа не указана; с работой тема — та, в чьих items она есть).
+export const REQUEST_TOPICS = ${JSON.stringify(requestTopics(),null,1)};
+export const CATEGORY_TOPIC = ${JSON.stringify(CATEGORY_TOPIC)};
 `;
 }
 

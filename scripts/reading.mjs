@@ -64,7 +64,7 @@ ${others.slice(0, 3).map((a) => articleCard(a, 0, 's', 'h3')).join('\n')}
 
 // Статья (P28): «← Статьи» вместо крошек (BreadcrumbList остаётся в JSON-LD), H1, лид,
 // дата и минуты чтения, большое фото; тело в колонке --narrow; от 1100 px справа липкий
-// столбец «Содержание» (h2[id] без data-toc="no") и «Записаться», уже — содержание блоком
+// столбец «Содержание» (h2[id] без data-toc="no") и «Оставьте заявку», уже — содержание блоком
 // над текстом. Блоки после метки article:after — во всю ширину под статьёй.
 export function renderArticle(page, body, minutes) {
   const [text, after] = splitArticle(body);
@@ -87,7 +87,7 @@ export function renderArticle(page, body, minutes) {
         <h2 class="article__toc-title" id="toc-title" data-toc="no">Содержание</h2>
         <ol>${items.map((h) => `<li><a href="#${escape(h.id)}">${escape(h.text)}</a></li>`).join('')}</ol>
       </nav>
-      <button class="btn btn--primary btn--block article__book" type="button" data-book>Записаться</button>
+      <button class="btn btn--primary btn--block article__book" type="button" data-request data-request-category="${escape(page.topic || '')}">Оставьте заявку</button>
     </aside>
     <div class="article__body">
 ${text.trim()}

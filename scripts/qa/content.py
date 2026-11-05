@@ -53,15 +53,16 @@ def inventory(browser, base, pages, res):
         (a['date'], 'дата цен «22 сентября 2026»'),
     ]
     load(pg, f'{base}/about')
-    b = pg.evaluate("""() => { const t = document.body.innerText.replace(/\u00a0/g, ' '); return {founder: Boolean(document.querySelector('#founder img')), path: document.querySelectorAll('#path li').length,
+    # 05.11: блока основателя и разворота интервью нет (имя убрано со всего сайта).
+    b = pg.evaluate("""() => { const t = document.body.innerText.replace(/\u00a0/g, ' '); return {founder: !document.querySelector('img[src*="founder-roman"], img[src*="press-service-parts-interview"]'), path: document.querySelectorAll('#path li').length,
       press: document.querySelectorAll('img[src*="press-service-parts"]').length, team: Boolean(document.querySelector('#team')),
       visit: ['500', 'аркинг', 'плат'].every(w => (document.querySelector('#before-visit')?.innerText || '').replace(/\u00a0/g, ' ').includes(w)),
-      authors: /Фото|фото:/.test(t), talk: Boolean(document.querySelector('[data-membership]')), wahelp: Boolean(document.querySelector('a.membership__link[href*="wahelp"]')),
+      authors: /Фото|фото:/.test(t), talk: Boolean(document.querySelector('#membership [data-request][data-request-category="club"]')), wahelp: Boolean(document.querySelector('a.membership__link[href*="wahelp"]')),
       external: document.querySelectorAll('a.location__external').length, earlier: (t.match(/ранее Meat Wash/g) || []).length}; }""")
     checks += [
-        (b['founder'] and b['path'] >= 4 and b['press'] >= 2 and b['team'], f"основатель, путь ({b['path']}), пресса ({b['press']}), команда"),
+        (b['founder'] and b['path'] >= 4 and b['team'], f"без портрета основателя и разворота интервью {b['founder']}, путь ({b['path']}), пресса ({b['press']}), команда"),
         (b['visit'], '«Перед визитом»: скидка 500 ₽, паркинг, оплата'),
-        (b['talk'] and b['wahelp'], '«Обсудить условия» и клубная карта wahelp'),
+        (b['talk'] and b['wahelp'], '«Оставьте заявку» с темой «Клуб» и клубная карта wahelp'),
         (b['external'] == 2, f"«Открыть в Яндекс Картах» у обеих карт: {b['external']}"),
         (b['earlier'] == 0, f"«ранее Meat Wash» на «О нас» (имя снова Meat Wash, 29.10): {b['earlier']}"),
     ]
@@ -82,17 +83,16 @@ def inventory(browser, base, pages, res):
         r = pg2.evaluate("""(phones) => { const f = document.querySelector('footer'); const t = f ? f.innerText.replace(/\\u00a0/g, ' ') : '';
           const cta = document.querySelector('.mobile-cta'); const cs = cta && getComputedStyle(cta);
           return {phones: phones.every(p => t.includes(p)), meta: t.includes('Instagram принадлежит компании Meta'), articles: Boolean(f && f.querySelector('a[href="articles"], a[href="#"][aria-current], a[href=""]')) || t.includes('Статьи'),
-                  cta: cta ? (cta.getAttribute('href') || (cta.hasAttribute('data-book') ? 'book' : '?')) : null, visible: Boolean(cta && cs.display !== 'none' && cs.visibility !== 'hidden')}; }""", phones)
-        # На главной нижней кнопки нет: в утверждённой v2 её не было (запись — шторка и подвал).
-        want = None if p['id'] == 'home' else 'tel:' if p['id'] == 'wrap' else 't.me' if p['id'] in ('auto', 'import') else 'book'
-        cta_ok = (r['cta'] is None) if want is None else (r['cta'] is not None and r['visible'] and (want in r['cta'] if want != 'book' else r['cta'] == 'book'))
+                  cta: cta ? (cta.hasAttribute('data-request') ? 'request:' + (cta.dataset.requestCategory || '') + ':' + cta.textContent.replace(/\u00a0/g, ' ').trim() : cta.getAttribute('href') || '?') : null, visible: Boolean(cta && cs.display !== 'none' && cs.visibility !== 'hidden')}; }""", phones)
+        # Влад 05.11: нижняя кнопка «Оставьте заявку» на всех страницах, и на главной; тема — страницы.
+        cta_ok = r['cta'] == f"request:{p['topic']}:Оставьте заявку" and r['visible']
         if not (r['phones'] and r['meta'] and r['articles'] and cta_ok):
             per.append(f"/{p['path']}: телефоны {r['phones']}, Meta {r['meta']}, «Статьи» {r['articles']}, нижняя кнопка {r['cta']} видна {r['visible']}")
     c2.close()
-    checks.append((not per, f'на всех {len(pages)} страницах: телефоны обеих студий, пометка о Meta, «Статьи» в подвале, нижняя кнопка со своим действием на 390'))
+    checks.append((not per, f'на всех {len(pages)} страницах: телефоны обеих студий, пометка о Meta, «Статьи» в подвале, нижняя кнопка «Оставьте заявку» с темой страницы на 390'))
     sitemap = (DIST / 'sitemap.xml').read_text(encoding='utf-8')
     locs = re.findall(r'<loc>([^<]+)</loc>', sitemap)
-    checks.append((len(locs) == 12 and not any(l.endswith('.html') for l in locs), f'адресов в sitemap {len(locs)} (11 + /import), без .html'))
+    checks.append((len(locs) == 15 and not any(l.endswith('.html') for l in locs), f'адресов в sitemap {len(locs)} (15: + /wash, /detailing, /bodywork 05.11), без .html'))
     c.close()
     ok = all(x for x, _ in checks)
     issues = [t for x, t in checks if not x] + per
@@ -100,20 +100,24 @@ def inventory(browser, base, pages, res):
 
 
 def brand(browser, base, pages, res):
+    operator = (site_content().get('site', {}).get('operator', {}) or {}).get('name', '')
     c = Context(browser, 1440, 900, consent=False)
     pg = c.page()
     found, scanned = [], 0
     for p in pages:
         load(pg, f"{base}/{p['path']}")
-        r = pg.evaluate(r"""() => {
+        r = pg.evaluate(r"""(operator) => {
           const texts = [document.body.innerText, document.querySelector('#drawer')?.textContent || '', document.querySelector('#booking')?.textContent || '', document.title];
           for (const el of document.querySelectorAll('[alt], [aria-label], [title]')) texts.push(el.getAttribute('alt') || '', el.getAttribute('aria-label') || '', el.getAttribute('title') || '');
           for (const m of document.querySelectorAll('meta[property^="og:"], meta[name="description"]')) texts.push(m.content);
           for (const s of document.querySelectorAll('script[type="application/ld+json"]')) texts.push(s.textContent);
-          const all = texts.join('\n').replace(/MeatWash\.detailing@gmail\.com/gi, '').replace(/t\.me\/MEATWASH_Auto/g, '');
-          return [...all.matchAll(/.{0,25}\b(MEATWASH|Meatwash)\b.{0,25}/g)].map(m => m[0]);
-        }""")
+          for (const a of document.querySelectorAll('a[href]')) texts.push(a.getAttribute('href'));
+          let all = texts.join('\n').replace(/MeatWash\.detailing@gmail\.com/gi, '').replace(/t\.me\/MEATWASH_Auto/g, '').replace(/\u00a0/g, ' ');
+          // Реквизиты оператора ПДн (152-ФЗ) — единственное место с именем: Политика и Согласия.
+          if (operator && ['privacy', 'consent', 'consent-request'].includes(document.body.dataset.page)) all = all.split(operator).join('');
+          return [...all.matchAll(/.{0,25}\b(MEATWASH|Meatwash)\b.{0,25}|.{0,25}(Роман|Антонович|otec_roman).{0,25}/g)].map(m => m[0]);
+        }""", operator)
         scanned += 1
         found += [f"/{p['path']}: …{x}…" for x in r]
     c.close()
-    res.add('15', 'Бренд', not found, f'{scanned} страниц: видимый текст, шторка, окна, alt, aria-label, title, og, JSON-LD — «MEATWASH»/«Meatwash» найдено {len(found)}', found)
+    res.add('15', 'Бренд и имя', not found, f'{scanned} страниц: видимый текст, шторка, окна, alt, aria-label, title, ссылки, og, JSON-LD — «MEATWASH»/«Meatwash», «Роман»/otec_roman (кроме реквизитов оператора в документах) найдено {len(found)}', found)

@@ -11,7 +11,9 @@
 //     шторка закрывается сразу, в фазе capture: делегированный обработчик ui.js на document
 //     потом откроет своё окно; выход шторки анимирует CSS (overlay / display allow-discrete);
 //   - после окна, открытого из шторки, фокус возвращается на «Меню» (#drawer-open).
-const PANEL_OF_PAGE = { services: 'care', wrap: 'care', works: 'care', import: 'import', auto: 'auto', about: 'about' };
+// Раздел, открытый рядом с корнем на компьютере (05.11: панели «Привоз» нет — привоз, работы,
+// статьи и каталог в «Услугах и ценах»; направления — ссылки корня, рядом с ними тоже «Услуги и цены»).
+const PANEL_OF_PAGE = { services: 'care', works: 'care', import: 'care', articles: 'care', auto: 'auto', about: 'about' };
 
 export function setupShell() {
   const drawer = document.getElementById('drawer');

@@ -1,0 +1,27 @@
+<!-- Тело /bodywork — ЗАГЛУШКА интегратора (05.11): один h1, герой по образцу /wrap (hero-c без фото)
+     и пустой блок заявки, чтобы шла сборка. Страницу пишет исполнитель направления по скелету
+     research/PLAN.md («Скелет страниц разделов»): цены — подстановкой prices, плашки работ — works,
+     смежные направления — related, отзывы — reviews (список и примеры — шапка scripts/pages.mjs).
+     Призывы — «Оставьте заявку»: button data-request data-request-category="bodywork" (контракт —
+     docs/meat-auto/CONTRACTS.md, «Заявка»). Пометки «нужно от клиента» на этой странице допустимы.
+     В комментариях фигурные скобки подстановок не писать. -->
+<section class="hero-c section-hero" aria-labelledby="page-title">
+  <a class="back-link" href="services">{{icon:chevron-left}}<span>Услуги и цены</span></a>
+  <h1 id="page-title">Кузовные работы</h1>
+  <p class="chip section-hero__where">Только в Технопарке</p>
+  <p class="hero-c__lead">Ремонт сколов, покраска элемента и выправление вмятин без покраски.</p>
+  <div class="hero-c__actions actions">
+    <button class="btn btn--primary" type="button" data-request data-request-category="bodywork">Оставьте заявку</button>
+  </div>
+</section>
+
+<section class="book-block section-request" id="leave-request" aria-labelledby="leave-request-title">
+  <div class="book-block__inner">
+    <div class="book-block__head">
+      <h2 class="book-block__title" id="leave-request-title">Оставьте заявку</h2>
+    </div>
+    <div class="actions">
+      <button class="btn btn--primary" type="button" data-request data-request-category="bodywork">Оставьте заявку</button>
+    </div>
+  </div>
+</section>

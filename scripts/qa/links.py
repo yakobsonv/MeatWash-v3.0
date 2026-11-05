@@ -145,7 +145,7 @@ def run(preview, host, headers, pages, res):
 
 
 def sweep(browser, preview, headers, pages, res):
-    """Дополнение к п. 4: страницы превью в браузере (прокрутка, гараж, окно записи с
+    """Дополнение к п. 4: страницы превью в браузере (прокрутка, гараж, форма заявки с
     программой) — ни одного ответа 4xx/5xx и оборванного запроса со своего адреса. Ловит
     файлы, которые грузятся скриптами и могли уйти при отсеве (prune-deploy)."""
     from common import Context, load
@@ -176,7 +176,7 @@ def sweep(browser, preview, headers, pages, res):
         c.close()
     item = res.items.get('4')
     if item:
-        item['numbers'] += f'; в браузере (390 и 1440, прокрутка, гараж, окно записи) запросов к превью {seen}, ошибок {len(bad)}'
+        item['numbers'] += f'; в браузере (390 и 1440, прокрутка, гараж, форма заявки) запросов к превью {seen}, ошибок {len(bad)}'
         item['pass'] = item['pass'] and not bad
         item['details'] += bad
         res.save()

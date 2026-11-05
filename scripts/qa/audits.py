@@ -11,7 +11,7 @@ import pathlib
 import subprocess
 from common import Context, load, ROOT
 
-LH_PAGES = ['', 'services', 'auto', 'about', 'article-avto-k-zime']
+LH_PAGES = ['', 'wash', 'services', 'auto', 'about', 'article-avto-k-zime']
 LH_VERSION = os.environ.get('LIGHTHOUSE_VERSION', '12.8.2')
 RUNS = int(os.environ.get('LIGHTHOUSE_RUNS', '5'))
 
@@ -71,7 +71,7 @@ CONTRAST_JS = r"""() => {
 
 
 def contrast(browser, base, res, axe=None):
-    pages = ['', 'services', 'auto', 'about', 'article-avto-k-zime', 'wrap', 'privacy', 'kit']
+    pages = ['', 'wash', 'detailing', 'wrap', 'bodywork', 'services', 'auto', 'about', 'article-avto-k-zime', 'privacy', 'kit']
     axe = axe or os.environ.get('AXE_PATH') or next((str(p) for p in [ROOT / 'node_modules/axe-core/axe.min.js', ROOT.parent / 'node_modules/axe-core/axe.min.js'] if p.exists()), None)
     violations, nodes, details, pairs = 0, 0, [], []
     for w in (1440, 390):

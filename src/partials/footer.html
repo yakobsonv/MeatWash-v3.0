@@ -1,4 +1,7 @@
-<!-- Подвал (план §1.4, паттерн Porsche 3.3). Владелец: WP1.
+<!-- Подвал (план §1.4, паттерн Porsche 3.3). Владелец: WP1, с 05.11 — интегратор.
+     Колонка «Meat Wash» — шесть направлений (Влад 05.11), за ними «Услуги и цены», работы, привоз,
+     статьи. «Связаться» — «Оставьте заявку» (форма #request с темой страницы), канал MEAT AUTO,
+     клубная карта; личного Telegram нет.
      Сверху «Наверх», строка города, три колонки (Студии · Meat Wash · Связаться), юридическая
      строка, пометка о Meta, внизу по центру — белый бык и «Car Care Club».
      «На карте» — class="footer__map", href к карте студии, data-map-link — порядок атрибутов
@@ -30,20 +33,22 @@
     <nav class="site-footer__col" aria-labelledby="footer-sections-title">
       <h3 class="site-footer__title" id="footer-sections-title" lang="en">Meat Wash</h3>
       <ul class="site-footer__links">
-        <li><a href="services"{{current:services}}>Автомойка / Детейлинг</a></li>
-        <li><a href="wrap"{{current:wrap}}>Оклейка полиуретаном</a></li>
+        <li><a href="wash"{{current:wash}}>Автомойка</a></li>
+        <li><a href="detailing"{{current:detailing}}>Детейлинг</a></li>
+        <li><a href="wrap"{{current:wrap}}>Оклейка плёнкой</a></li>
+        <li><a href="bodywork"{{current:bodywork}}>Кузовные работы</a></li>
+        <li><a href="auto"{{current:auto}}>Продажа автомобилей</a></li>
+        <li><a href="about"{{current:about}}>О нас</a></li>
+        <li><a href="services"{{current:services}}>Услуги и цены</a></li>
         <li><a href="works"{{current:works}}>Наши работы</a></li>
         <li><a href="import"{{current:import}}>Привоз авто <span class="nw">из-за</span> рубежа</a></li>
-        <li><a href="auto"{{current:auto}}>Покупка и продажа</a></li>
-        <li><a href="about"{{current:about}}>О нас</a></li>
         <li><a href="articles"{{current:articles}}>Статьи</a></li>
       </ul>
     </nav>
     <section class="site-footer__col" aria-labelledby="footer-contact-title">
       <h3 class="site-footer__title" id="footer-contact-title">Связаться</h3>
       <ul class="site-footer__links">
-        <li><button type="button" data-book>Записаться</button></li>
-        <li><a href="https://t.me/otec_roman" target="_blank" rel="noopener">Написать в Telegram{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a></li>
+        <li><button type="button" data-request data-request-category="{{topic}}">Оставьте заявку</button></li>
         <li><a href="https://t.me/MEATWASH_Auto" target="_blank" rel="noopener">Канал <span lang="en">MEAT AUTO</span>{{icon:arrow-up-right}}<span class="sr"> в Telegram (откроется в новой вкладке)</span></a></li>
         <li><a href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Клубная карта{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a></li>
       </ul>

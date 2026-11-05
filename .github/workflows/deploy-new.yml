@@ -114,7 +114,7 @@ jobs:
           grep -q "?v=$sha" <<<"$home"
           headers=$(curl -fsSI https://new.meatwash.ru/)
           grep -qi '^x-robots-tag: noindex' <<<"$headers"
-          for page in services about auto import wrap works articles; do
+          for page in wash detailing wrap bodywork services about auto import works articles; do
             code=$(curl -sS -o /dev/null -w '%{http_code}' "https://new.meatwash.ru/$page")
             [ "$code" = 200 ] || { echo "/$page → $code"; exit 1; }
           done

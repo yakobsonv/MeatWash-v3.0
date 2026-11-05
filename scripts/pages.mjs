@@ -13,13 +13,15 @@
 //
 // Страница:
 //   {{to:<id>}}            ссылка на страницу для перехода к якорю: '' на ней самой, иначе её адрес:
-//                          href="{{to:about}}#founder" → "#founder" на «О нас», "about#founder" на других
+//                          href="{{to:about}}#team" → "#team" на «О нас», "about#team" на других
 //   {{current:<id>}}       aria-current="page" на своей странице
 //   {{top}}                логотип: '#top' на главной, './' на остальных
 //   {{home}}               '' на главной, './' на остальных
 //   {{locations}}          '' на странице с блоком студий («О нас»), 'about' на остальных
 //   {{header-variant}}     over | solid (поле header реестра) → site-header--{{header-variant}}
 //   {{mobile-cta}}         нижняя кнопка на телефоне (поле cta, MOBILE_CTA ниже)
+//   {{topic}}              тема заявки страницы (поле topic реестра: wash, detailing, wrap,
+//                          bodywork, auto, import…) или пусто — значение data-request-category
 //   {{analytics:webmaster|metrika}}  мета-теги Вебмастера и номер счётчика из site.analytics
 // Данные (meatwash-content.json, src/data/cars.json):
 //   {{loc:<id>:<поле>}}    name type address hours floor phone tel booking map route card
@@ -30,6 +32,15 @@
 //   {{count:sale|sold|studios}}  число; {{count:sold:машина}} → «16 машин» (склонение)
 //   {{cars:sale|sold|date}}      разметка машин и дата цен (scripts/cars.mjs, WP4)
 //   {{catalog}}, {{compare}}     каталог и сравнение программ (scripts/catalog.mjs, WP3)
+//   {{prices:<id,id,…>}}   цены подразделов каталога в разметке каталога /services, кнопки
+//                          «Оставьте заявку»: {{prices:price-interior,price-leather}};
+//                          programs — карточки программ мойки со сравнением (catalog.mjs)
+//   {{min-section:<id>}}   «5 000 ₽» — минимальная цена подраздела: от {{min-section:price-bodywork}}
+//   {{reviews}}            блок отзывов с Яндекс Карт из JSON (reviews), {{reviews:<тема>}} —
+//                          только отзывы этой темы (wash, detailing, wrap, bodywork); классы — ниже
+//   {{works:<направление>}}  ряд плашек «наших работ» из JSON (works): wash, detailing, wrap,
+//                          bodywork, sales, about; классы — ниже
+//   {{related:<id,id,…>}}  плашки направлений из JSON (directions): {{related:detailing,wrap}}
 //   {{brand:name|descriptor|legacy|since}}  Meat Wash · Car Care Club · Meat Wash · 2021
 //   {{op:<поле>}}, {{site:url|date}}        реквизиты оператора и документы
 //   {{todo:<что нужно>}}   заметная пометка «[нужно от клиента: …]» (span.todo);
@@ -44,7 +55,8 @@ import {readFile, writeFile} from 'node:fs/promises';
 import {readFileSync, existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
-import {content, escape, money, minFor, renderCatalog, renderCompare} from './catalog.mjs';
+import sharp from 'sharp';
+import {content, escape, money, minFor, renderCatalog, renderCompare, renderSections, sectionMin, setPageHref, REQUEST_LABEL, requestTopics} from './catalog.mjs';
 import {cars, renderSale, renderSold, renderSoldCards, renderCarsDate} from './cars.mjs';
 import {typo} from './typo.mjs';
 import {REGISTRY} from '../src/content/pages.mjs';
@@ -61,6 +73,8 @@ export const pageUrl = (file) => pageSlug(file) || './';
 export const PAGES = Object.fromEntries(REGISTRY.map((page) => [page.file, page]));
 export const BY_ID = Object.fromEntries(REGISTRY.map((page) => [page.id, page]));
 if (Object.keys(BY_ID).length !== REGISTRY.length) throw new Error('src/content/pages.mjs: id страниц повторяются');
+// Ссылки подразделов каталога на страницы направлений (catalog.mjs, SECTION_LINKS).
+setPageHref((pid) => { if (!BY_ID[pid]) throw new Error(`SECTION_LINKS: нет страницы ${pid}`); return pageUrl(BY_ID[pid].file); });
 
 // ── Версия ресурса по содержимому: одна и та же строка в preload и в @font-face,
 // в <use href> спрайта и т. п. (поправки 27, 28). Файл не найден — ошибка сборки.
@@ -86,6 +100,7 @@ export function icon(name, cls) {
 // ── Склонение: 1 машина, 2 машины, 5 машин.
 const NOUNS = {
   машина: ['машина', 'машины', 'машин'], студия: ['студия', 'студии', 'студий'],
+  оценка: ['оценка', 'оценки', 'оценок'], отзыв: ['отзыв', 'отзыва', 'отзывов'],
   работа: ['работа', 'работы', 'работ'], позиция: ['позиция', 'позиции', 'позиций'],
   программа: ['программа', 'программы', 'программ'], фото: ['фото', 'фото', 'фото'],
 };
@@ -128,6 +143,7 @@ function textValue(kind, args, token) {
       return 'от ' + money(Math.min(...d.programPrices[i]));
     }
     case 'min': return money(minFor(args[0]));
+    case 'min-section': return money(sectionMin(args[0]));
     case 'count': {
       if (!COUNTS[args[0]]) throw new Error(`Нет счётчика: ${token}`);
       const n = COUNTS[args[0]]();
@@ -163,16 +179,122 @@ const ANALYTICS = {
 };
 function fail(field) { throw new Error(`Неверное значение ${field} в meatwash-content.json`); }
 
-// Нижняя кнопка на телефоне (.mobile-cta, src/partials/dialogs.html) — главное действие страницы.
-// Класс один у кнопки и у ссылки: ui.js делает её inert под окнами, CSS прячет при открытом окне.
+// Нижняя кнопка на телефоне (.mobile-cta, src/partials/dialogs.html) — «Оставьте заявку» на всех
+// страницах (Влад 05.11) с темой страницы (поле topic реестра). ui.js делает её inert под окнами,
+// CSS прячет при открытом окне.
 const loc = (id) => d.locations.find((l) => l.id === id);
+const TOPIC_IDS = new Set(requestTopics().map((t) => t.id));
 const MOBILE_CTA = {
   none: () => '',
-  book: () => '<button class="btn btn--primary mobile-cta" type="button" data-book>Записаться</button>',
-  technopark: () => `<a class="btn btn--primary mobile-cta" href="tel:${escape(loc('technopark').tel)}">Позвонить в Технопарк</a>`,
-  auto: () => `<a class="btn btn--primary mobile-cta" href="${escape(cars.contact)}" target="_blank" rel="noopener">Спросить о машине<span class="sr"> в Telegram</span></a>`,
-  import: () => `<a class="btn btn--primary mobile-cta" href="${escape(cars.contact)}" target="_blank" rel="noopener">Обсудить привоз<span class="sr"> в Telegram</span></a>`,
+  request: (entry) => `<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="${escape(entry.topic || '')}">${REQUEST_LABEL}</button>`,
 };
+
+// ── Плашки работ и направлений, отзывы (решение Влада 05.11, референс — плашки porsche.com).
+// Классы — контракт с CSS главной и страниц направлений (docs/meat-auto/CONTRACTS.md):
+//   ul.work-tiles[data-works="<направление>"] | ul.work-tiles.work-tiles--related[data-related]
+//     > li.work-tiles__item > a.work-tile[href]
+//         > img.work-tile__img (srcset 800/1240, object-fit: cover — кадр обрезает CSS)
+//         > span.work-tile__title (заголовок, 1–2 строки, белый поверх затемнения снизу)
+//         > span.work-tile__go (круглая кнопка-стрелка, aria-hidden)
+//     плашка без фото — a.work-tile.work-tile--text: без img, span.work-tile__price («от N ₽»)
+//   section.reviews#reviews[aria-labelledby=reviews-title]
+//     > header.reviews__head > h2.reviews__title#reviews-title
+//         + ul.reviews__studios > li.reviews__studio > p.reviews__studio-name, p.reviews__rating
+//           (b.reviews__score «5,0» + span.review__stars), p.reviews__count («211 оценок»),
+//           a.reviews__link («Все отзывы на Яндекс Картах», новая вкладка)
+//         + p.reviews__asof («Рейтинг и отзывы — с Яндекс Карт на 5 ноября 2026 г.»)
+//     > ul.reviews__list > li.reviews__item > figure.review
+//         > span.review__stars[role=img] (svg.review__star, погашенная — review__star--off)
+//         + blockquote.review__text > p + figcaption.review__meta > span.review__author,
+//           span.review__studio, time.review__date[datetime]
+//   Разметки Review/AggregateRating нет намеренно (отзывы с чужой площадки).
+const IMG_WIDTHS = [800, 1240];
+const TILE_SIZES = '(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw';
+const distPath = (path) => new URL(`dist/${path}`, root);
+// Размер кадра для width/height — по файлу первой ширины (читается при загрузке модуля);
+// файла ещё нет — 4:3 (ссылка на несуществующий файл всё равно уронит npm run check).
+const tileImages = [...Object.values(d.works || {}).filter(Array.isArray).flat(), ...(d.directions?.items || [])]
+  .filter((x) => x.img).map((x) => `${x.img}-${(x.widths || IMG_WIDTHS)[0]}.webp`);
+const DIMS = Object.fromEntries(await Promise.all(tileImages.map(async (path) => {
+  if (!existsSync(distPath(path))) return [path, null];
+  const {width, height} = await sharp(readFileSync(distPath(path))).metadata();
+  return [path, {width, height}];
+})));
+const catalogPrice = Object.fromEntries(d.groups.flatMap((g) => g.items));
+// Ссылка плашки: страница реестра и якорь; на самой странице — только якорь.
+function tileHref(item, entry, token) {
+  const target = BY_ID[item.page];
+  if (!target) throw new Error(`${token}: нет страницы «${item.page}» в реестре`);
+  const hash = item.hash ? `#${item.hash}` : '';
+  return target.id === entry.id ? (hash || '#top') : pageUrl(target.file) + hash;
+}
+function tileImg(item) {
+  const widths = item.widths || IMG_WIDTHS, first = `${item.img}-${widths[0]}.webp`;
+  const size = DIMS[first] || {width: 800, height: 600};
+  return `<img class="work-tile__img" src="${escape(first)}" srcset="${widths.map((w) => `${escape(`${item.img}-${w}.webp`)} ${w}w`).join(', ')}" sizes="${TILE_SIZES}" width="${size.width}" height="${size.height}" alt="${escape(item.alt || '')}" loading="lazy" decoding="async">`;
+}
+const tileGo = () => `<span class="work-tile__go" aria-hidden="true">${icon('arrow-right')}</span>`;
+function workTile(item, entry, token) {
+  const href = escape(tileHref(item, entry, token));
+  if (item.car) {
+    const car = [...cars.sold, ...cars.forSale].find((c) => c.id === item.car);
+    if (!car) throw new Error(`${token}: нет машины «${item.car}» в src/data/cars.json`);
+    const photo = car.photos[0], src = car.src || photo.src, w = car.w || photo.w, h = car.h || photo.h;
+    return `<a class="work-tile" href="${href}"><img class="work-tile__img" src="${escape(src)}" sizes="${TILE_SIZES}" width="${w}" height="${h}" alt="${escape(car.alt || photo.alt)}" loading="lazy" decoding="async"><span class="work-tile__title">${escape(car.title)}</span>${tileGo()}</a>`;
+  }
+  if (!item.title) throw new Error(`${token}: у плашки нет title`);
+  if (item.img) return `<a class="work-tile" href="${href}">${tileImg(item)}<span class="work-tile__title">${escape(item.title)}</span>${tileGo()}</a>`;
+  if (!item.price) throw new Error(`${token}: плашка «${item.title}» без фото — нужна price (позиция каталога)`);
+  if (!(item.price in catalogPrice)) throw new Error(`${token}: нет позиции «${item.price}» в каталоге`);
+  const price = catalogPrice[item.price] == null ? 'стоимость после осмотра' : 'от ' + money(catalogPrice[item.price]);
+  return `<a class="work-tile work-tile--text" href="${href}"><span class="work-tile__title">${escape(item.title)}</span><span class="work-tile__price">${escape(price)}</span>${tileGo()}</a>`;
+}
+const tileList = (cls, attr, tiles) => `<ul class="${cls}" role="list" ${attr}>\n${tiles.map((t) => `  <li class="work-tiles__item">${t}</li>`).join('\n')}\n</ul>`;
+function renderWorks(dir, entry, token) {
+  const list = d.works?.[dir];
+  if (!Array.isArray(list) || !list.length) throw new Error(`${token}: нет ряда работ «${dir}» в meatwash-content.json (works)`);
+  return tileList('work-tiles', `data-works="${escape(dir)}"`, list.map((item) => workTile(item, entry, token)));
+}
+function renderRelated(ids, entry, token) {
+  if (!ids.length || ids.some((id) => !id)) throw new Error(`${token}: нужен список направлений через запятую`);
+  const items = ids.map((id) => d.directions?.items?.find((x) => x.id === id) || (() => { throw new Error(`${token}: нет направления «${id}» (directions)`); })());
+  return tileList('work-tiles work-tiles--related', 'data-related', items.map((item) => `<a class="work-tile" href="${escape(tileHref(item, entry, token))}">${tileImg(item)}<span class="work-tile__title">${escape(item.title)}</span>${tileGo()}</a>`));
+}
+const stars = (n) => Array.from({length: 5}, (_, i) => icon('star', i < Math.round(n) ? 'review__star' : 'review__star review__star--off')).join('');
+const score = (n) => n.toFixed(1).replace('.', ',');
+const shortDate = (iso) => humanDate(iso).replace(/ г\.$/, '');
+function renderReviews(topic, token) {
+  const r = d.reviews;
+  if (!r?.items?.length) throw new Error(`${token}: нет отзывов в meatwash-content.json (reviews)`);
+  if (topic && !TOPIC_IDS.has(topic)) throw new Error(`${token}: нет темы «${topic}»`);
+  const items = topic ? r.items.filter((x) => x.topics?.includes(topic)) : r.items;
+  if (!items.length) throw new Error(`${token}: нет отзывов с темой «${topic}»`);
+  const studios = topic ? r.studios.filter((s) => items.some((x) => x.studio === s.id)) : r.studios;
+  const name = (id) => loc(id)?.name ?? (() => { throw new Error(`reviews: нет студии ${id}`); })();
+  return `<section class="reviews" id="reviews" aria-labelledby="reviews-title">
+  <header class="reviews__head">
+    <h2 class="reviews__title" id="reviews-title">Отзывы клиентов</h2>
+    <ul class="reviews__studios" role="list">
+${studios.map((s) => `      <li class="reviews__studio">
+        <p class="reviews__studio-name">${escape(name(s.id))}</p>
+        <p class="reviews__rating"><b class="reviews__score">${score(s.rating)}</b><span class="review__stars" role="img" aria-label="Рейтинг ${score(s.rating)} из 5">${stars(s.rating)}</span></p>
+        <p class="reviews__count">${plural(s.ratingsCount, 'оценка')}</p>
+        <a class="reviews__link link-arrow" href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">Все отзывы на Яндекс Картах${icon('arrow-up-right')}<span class="sr">: ${escape(name(s.id))} (откроется в новой вкладке)</span></a>
+      </li>`).join('\n')}
+    </ul>
+    <p class="reviews__asof">Рейтинг и отзывы — с Яндекс Карт на ${escape(humanDate(r.asOf))}</p>
+  </header>
+  <ul class="reviews__list" role="list">
+${items.map((x) => `    <li class="reviews__item">
+      <figure class="review">
+        <span class="review__stars" role="img" aria-label="Оценка ${x.rating} из 5">${stars(x.rating)}</span>
+        <blockquote class="review__text">${x.text.split(/\n+/).map((t) => `<p>${escape(t.trim())}</p>`).join('')}</blockquote>
+        <figcaption class="review__meta"><span class="review__author">${escape(x.author)}</span><span class="review__studio">${escape(name(x.studio))}</span><time class="review__date" datetime="${escape(x.date)}">${escape(shortDate(x.date))}</time></figcaption>
+      </figure>
+    </li>`).join('\n')}
+  </ul>
+</section>`;
+}
 
 const LOC_FIELDS = {
   name: (l) => escape(l.name), type: (l) => escape(l.type), address: (l) => escape(l.address),
@@ -185,7 +307,7 @@ const LOC_FIELDS = {
 export async function readPartial(name) { return readFile(new URL(`src/partials/${name}.html`, root), 'utf8'); }
 
 // Подстановки, которые выдают разметку: внутри тега (в атрибуте) — ошибка.
-const MARKUP = new Set(['catalog', 'compare', 'cars', 'todo', 'icon', 'program-includes', 'mobile-cta']);
+const MARKUP = new Set(['catalog', 'compare', 'cars', 'todo', 'icon', 'program-includes', 'mobile-cta', 'prices', 'reviews', 'works', 'related']);
 const insideTag = (text, offset) => text.lastIndexOf('<', offset) > text.lastIndexOf('>', offset);
 
 // template — разметка части или тела; page — файл страницы ('services.html').
@@ -215,8 +337,16 @@ export function renderPartial(template, page) {
       }
       case 'mobile-cta': {
         if (!MOBILE_CTA[entry.cta]) throw new Error(`${page}: нет нижней кнопки cta «${entry.cta}» (${token})`);
-        return MOBILE_CTA[entry.cta]();
+        return MOBILE_CTA[entry.cta](entry);
       }
+      case 'topic': {
+        if (entry.topic && !TOPIC_IDS.has(entry.topic)) throw new Error(`${page}: поле topic «${entry.topic}» — не тема из site.requests.topics`);
+        return escape(entry.topic || '');
+      }
+      case 'prices': return renderSections(args.join(':').split(',').map((x) => x.trim()), id);
+      case 'reviews': return renderReviews(args[0] || '', token);
+      case 'works': return renderWorks(args[0], entry, token);
+      case 'related': return renderRelated(args.join(':').split(',').map((x) => x.trim()), entry, token);
       case 'analytics': {
         if (!ANALYTICS[args[0]]) throw new Error(`Нет поля аналитики ${args[0]} (${token})`);
         return ANALYTICS[args[0]]();
