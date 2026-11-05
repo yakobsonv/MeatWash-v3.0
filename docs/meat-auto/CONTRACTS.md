@@ -75,9 +75,11 @@
 - `{{reviews:home}}` (только главная, Влад 06.11) → тот же `section.reviews#reviews` с `data-stage`: «тёмная сцена» —
   `div.rv[data-rv]` > `header.rv__head` (`p.rv__kicker`, `h2.rv__title#reviews-title`, `p.reviews__asof`, `ul.rv__scores` >
   `li.rv-score` с `b.rv-score__num[data-count]` «5,0», звёздами, числом оценок и отзывов, ссылкой на Яндекс Карты),
-  `ul.rv__track` > `li.rv-item` > `figure.rv-card` (`span.review__stars`, `blockquote.rv-card__text`, `span.review__author`,
+  `ul.rv__track` > `li.rv-item` > `figure.rv-card` (`svg.rv-card__q` «ёлочка», `svg.rv-card__bull`, `span.review__stars`, `blockquote.rv-card__text`, `span.review__author`,
   студия и дата), `div.rv__controls[hidden]` (стрелки, полоса хода, счётчик, пауза; показывает home.js). Все отзывы JSON,
-  без фильтра темы. Стили — `home.css` (`.rv*`), поведение — `home.js` (setupReviews).
+  без фильтра темы; после коротких слов в цитате — неразрывный пробел. Слова цитаты home.js оборачивает в `span.rv-w`
+  (подъём строк у новой активной). Ссылка на телефоне — «Все отзывы ↗», «на Яндекс Картах» в `span.rv-score__long`
+  (для чтения экрана). Стили — `home.css` (`.rv*`), поведение — `home.js` (setupReviews).
 
 ### Якоря, на которые ведут плашки и ссылки (страница обязана их иметь)
 `wash#programs` (через `{{prices:programs,…}}`), `detailing#price-interior`, `#price-polish`, `#price-components`,

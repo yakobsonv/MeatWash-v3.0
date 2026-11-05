@@ -8,7 +8,8 @@
 //  4) клуб: карта поднимается над кадром при прокрутке (параллакс, не на телефоне), наклоняется к курсору (до 8°)
 //     и ловит блик (наклон — только мышь; всё — без «меньше движения»);
 //  5) ряды «Наших работ» на телефоне (лента): фокус с клавиатуры прокручивает ленту к плашке;
-//  6) отзывы — «тёмная сцена»: досчёт рейтинга, карусель карточек с автопрокруткой и паузой.
+//  6) отзывы — «тёмная сцена»: досчёт рейтинга, карусель карточек с автопрокруткой и паузой; у новой
+//     активной карточки строки поднимаются из маски, номер в счётчике прокручивается.
 // Своего наблюдения [data-reveal] нет: класс is-in ставит ui.js (план §3.1).
 // Подключает site.js, когда на странице есть .dirs. Владелец: исполнитель главной.
 export function setupHome() {
@@ -271,6 +272,36 @@ function setupReviews(reduce) {
     io.observe(scores);
   }
 
+  // Слова отзывов — в маску (span.rv-w > span.rv-w__in), до копий кольца: у новой активной карточки
+  // строки поднимаются одна за другой. Текст остаётся текстом; делим только по обычным пробелам —
+  // неразрывный (после «и», «в»…) держит слова вместе.
+  const wrapWord = (content) => {
+    const w = document.createElement('span'), i = document.createElement('span');
+    w.className = 'rv-w'; i.className = 'rv-w__in';
+    i.append(content); w.append(i);
+    return w;
+  };
+  track.querySelectorAll('.rv-card__text p').forEach((p) => {
+    const out = document.createDocumentFragment();
+    [...p.childNodes].forEach((node) => {
+      if (node.nodeType !== 3) { out.append(wrapWord(node)); return; }
+      node.textContent.split(/([ \t\n\r]+)/).forEach((part) => {
+        if (part) out.append(/^[ \t\n\r]+$/.test(part) ? ' ' : wrapWord(document.createTextNode(part)));
+      });
+    });
+    p.replaceChildren(out);
+  });
+  // Номер строки каждого слова (--l) — у карточки, которая становится активной (одна раскладка за смену).
+  const lines = (li) => {
+    let top = null, line = -1;
+    li.querySelectorAll('.rv-w').forEach((w) => {
+      const t = w.offsetTop;
+      if (top === null || t > top + 4) { top = t; line += 1; }
+      w.style.setProperty('--l', line);
+    });
+  };
+  const roll = (el) => { if (!el || reduce.matches) return; el.classList.remove('is-roll'); void el.offsetWidth; el.classList.add('is-roll'); };
+
   // б) Карусель. Кольцо: слева и справа — копии всех карточек (aria-hidden, inert — для чтения
   // экрана и клавиатуры их нет, в собранной странице их нет): по краям сцены всегда соседи. Когда
   // лента улеглась на копии, она без движения переставляется на ту же карточку в середине.
@@ -295,14 +326,20 @@ function setupReviews(reduce) {
     step = items.length > 1 ? centers[1] - centers[0] : items[0].offsetWidth;
   };
   const leftOf = (v) => centers[v] - track.clientWidth / 2;
-  const setActive = (v) => {
+  // rise = false — без подъёма строк: первая карточка (её выводит появление ленты) и перестановка
+  // с копии на ту же карточку в середине кольца (текст уже на месте).
+  let riseAt = 0;
+  const setActive = (v, rise = true) => {
     if (v === index) return;
-    items[index]?.classList.remove('is-active');
+    const was = index;
+    items[index]?.classList.remove('is-active', 'is-rise');
     index = v;
+    if (rise && !reduce.matches) { lines(items[v]); riseAt = performance.now(); items[v].style.setProperty('--rise-off', '0ms'); }
     items[v].classList.add('is-active');
+    items[v].classList.toggle('is-rise', rise);
     const k = v % n;
     segs.forEach((s, j) => { s.classList.toggle('is-past', j < k); s.classList.toggle('is-active', j === k); });
-    if (now) now.textContent = pad(k);
+    if (now && now.textContent !== pad(k)) { now.textContent = pad(k); if (rise && was >= 0) roll(now); }
   };
   const paint = () => {
     queued = false;
@@ -313,8 +350,9 @@ function setupReviews(reduce) {
       if (dd < dist) { dist = dd; best = i; }
       items[i].style.setProperty('--d', Math.min(1, dd / step).toFixed(3));
     });
-    if (performance.now() >= lockUntil) setActive(best);
+    if (performance.now() >= lockUntil) setActive(best, !first);
   };
+  let first = true;
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
   const go = (v) => {
     const target = loop ? Math.max(0, Math.min(items.length - 1, v)) : ((v % n) + n) % n;
@@ -334,13 +372,21 @@ function setupReviews(reduce) {
       track.style.scrollSnapType = 'none';
       track.scrollLeft = leftOf(index + shift);
       track.style.removeProperty('scroll-snap-type');
-      setActive(index + shift);
+      const rising = items[index].classList.contains('is-rise');
+      setActive(index + shift, false);
+      // Подъём строк, если идёт, продолжается с того же места (отрицательная задержка), а не сначала.
+      if (rising && !reduce.matches) {
+        lines(items[index]);
+        items[index].style.setProperty('--rise-off', `${-Math.round(performance.now() - riseAt)}ms`);
+        items[index].classList.add('is-rise');
+      }
       paint();
     }
   };
   measure();
   track.scrollLeft = leftOf(base);
   paint();
+  first = false;
   track.addEventListener('scroll', () => {
     queue();
     clearTimeout(settleTimer);

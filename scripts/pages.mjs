@@ -325,13 +325,16 @@ ${items.map((x) => `    <li class="reviews__item">
 //       + ul.rv__scores > li.rv-score > p.rv-score__name, p.rv-score__rating (b.rv-score__num[data-count]
 //         «5,0» + span.review__stars), p.rv-score__count, a.rv-score__link
 //     > div.rv__carousel > ul.rv__track[tabindex=0] > li.rv-item > figure.rv-card
-//         > span.review__stars, blockquote.rv-card__text > p, figcaption > span.review__author …
+//         > svg.rv-card__q («ёлочка» — два тонких уголка), svg.rv-card__bull (знак быка — виден у активной),
+//           span.review__stars, blockquote.rv-card__text > p, figcaption > span.review__author …
 //     > div.rv__controls: стрелки, полоса хода (span на отзыв), счётчик, пауза
 function renderReviewsStage(r) {
   const name = (id) => loc(id)?.name ?? (() => { throw new Error(`reviews: нет студии ${id}`); })();
   const items = r.items, n = items.length, pad = (i) => String(i).padStart(2, '0');
+  // Короткие слова (1–2 буквы) не висят в конце строки: пробел после них — неразрывный (слова те же).
+  const glue = (t) => t.replace(/(^|\s)([A-Za-zА-Яа-яЁё]{1,2}) /g, '$1$2\u00a0').replace(/(^|\s)([A-Za-zА-Яа-яЁё]{1,2}) /g, '$1$2\u00a0');
   return `<section class="reviews" id="reviews" data-stage aria-labelledby="reviews-title">
-<div class="rv" data-rv>
+<div class="rv" data-rv data-reveal>
   <span class="rv__glow" aria-hidden="true"></span>
   <header class="rv__head">
     <div class="rv__copy" data-reveal>
@@ -344,7 +347,7 @@ ${r.studios.map((s, k) => `      <li class="rv-score" style="--k:${k}">
         <p class="rv-score__name">${escape(name(s.id))}</p>
         <p class="rv-score__rating"><b class="rv-score__num" data-count="${s.rating}">${score(s.rating)}</b><span class="review__stars rv-score__stars" role="img" aria-label="Рейтинг ${score(s.rating)} из 5">${stars(s.rating)}</span></p>
         <p class="rv-score__count">${plural(s.ratingsCount, 'оценка')}${s.reviewsCount ? ` · ${plural(s.reviewsCount, 'отзыв')}` : ''}</p>
-        <a class="rv-score__link link-arrow" href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">Все отзывы на Яндекс Картах${icon('arrow-up-right')}<span class="sr">: ${escape(name(s.id))} (откроется в новой вкладке)</span></a>
+        <a class="rv-score__link link-arrow" href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">Все отзывы<span class="rv-score__long"> на Яндекс Картах</span>${icon('arrow-up-right')}<span class="sr">: ${escape(name(s.id))} (откроется в новой вкладке)</span></a>
       </li>`).join('\n')}
     </ul>
   </header>
@@ -352,9 +355,10 @@ ${r.studios.map((s, k) => `      <li class="rv-score" style="--k:${k}">
     <ul class="rv__track" role="list" tabindex="0" aria-label="Отзывы клиентов: листайте стрелками">
 ${items.map((x, i) => `      <li class="rv-item" style="--i:${i}" aria-label="Отзыв ${i + 1} из ${n}">
         <figure class="rv-card">
-          <span class="rv-card__q" aria-hidden="true">“</span>
+          <svg class="rv-card__q" viewBox="0 0 64 40" aria-hidden="true" focusable="false"><path d="M27 3 10 20l17 17"/><path d="M51 3 34 20l17 17"/></svg>
+          ${icon('bull', 'rv-card__bull')}
           <span class="review__stars rv-card__stars" role="img" aria-label="Оценка ${x.rating} из 5">${stars(x.rating)}</span>
-          <blockquote class="rv-card__text">${x.text.split(/\n+/).map((t) => `<p>${escape(t.trim())}</p>`).join('')}</blockquote>
+          <blockquote class="rv-card__text">${x.text.split(/\n+/).map((t) => `<p>${glue(escape(t.trim()))}</p>`).join('')}</blockquote>
           <figcaption class="rv-card__meta"><span class="rv-card__ava" aria-hidden="true">${escape([...x.author][0])}</span><span class="rv-card__who"><span class="review__author">${escape(x.author)}</span><span class="rv-card__where">${escape(name(x.studio))} · <time datetime="${escape(x.date)}">${escape(shortDate(x.date))}</time></span></span></figcaption>
         </figure>
       </li>`).join('\n')}
@@ -364,7 +368,7 @@ ${items.map((x, i) => `      <li class="rv-item" style="--i:${i}" aria-label="О
     <button class="rv__btn rv__prev" type="button" aria-label="Предыдущий отзыв">${icon('arrow-left')}</button>
     <button class="rv__btn rv__next" type="button" aria-label="Следующий отзыв">${icon('arrow-right')}</button>
     <span class="rv__bar" aria-hidden="true">${items.map(() => '<span class="rv__seg"></span>').join('')}</span>
-    <span class="rv__count" aria-live="polite"><b class="rv__now">01</b> / ${pad(n)}</span>
+    <span class="rv__count" aria-live="polite"><span class="rv__clip"><b class="rv__now">01</b></span> / ${pad(n)}</span>
     <button class="rv__btn rv__play" type="button" aria-label="Остановить автопрокрутку" data-state="playing">${icon('pause', 'i-pause')}${icon('play', 'i-play')}</button>
   </div>
 </div>
