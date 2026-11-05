@@ -1,26 +1,302 @@
-<!-- Тело /wash — ЗАГЛУШКА интегратора (05.11): один h1, герой по образцу /wrap (hero-c без фото)
-     и пустой блок заявки, чтобы шла сборка. Страницу пишет исполнитель направления по скелету
-     research/PLAN.md («Скелет страниц разделов»): цены — подстановкой prices, плашки работ — works,
-     смежные направления — related, отзывы — reviews (список и примеры — шапка scripts/pages.mjs).
-     Призывы — «Оставьте заявку»: button data-request data-request-category="wash" (контракт —
-     docs/meat-auto/CONTRACTS.md, «Заявка»). Пометки «нужно от клиента» на этой странице допустимы.
-     В комментариях фигурные скобки подстановок не писать. -->
-<section class="hero-c section-hero" aria-labelledby="page-title">
-  <a class="back-link" href="services">{{icon:chevron-left}}<span>Услуги и цены</span></a>
-  <h1 id="page-title">Автомойка</h1>
-  <p class="hero-c__lead">Программы от {{min:wash}}, цена зависит от типа кузова. Две студии — на Мясницкой и в Технопарке.</p>
-  <div class="hero-c__actions actions">
-    <button class="btn btn--primary" type="button" data-request data-request-category="wash">Оставьте заявку</button>
+<!-- Тело /wash — раздел «Автомойка» (задание Влада 05.11). Владелец: исполнитель C.
+     Скелет — research/PLAN.md, «Скелет страниц разделов» (своими словами, без текста образца):
+     герой → коротко в цифрах → как моем → программы и цены → какую выбрать → как проходит визит →
+     наши работы → почему мы → отзывы → вопросы → другие направления → коротко для поиска → заявка
+     и студии. Цены и время — только подстановками из каталога (meatwash-content.json): prices,
+     program, min-section, price. Мойка — в обеих студиях, «Трёхфазная» — только в Технопарке
+     (в записи Мясницкой её нет). Кнопки программ — data-book с номером программы (контракт формы:
+     тема «Автомойка», мелкая ссылка онлайн-записи в окне). Ссылок YCLIENTS вне окон нет.
+     Вид — css/section.css (общий для страниц направлений), каталожные строки — css/services.css,
+     плашки и отзывы — css/tiles.css. Надзаголовков и нумерации нет (решение Влада).
+     Герой: кадр фотосессии 14.07 (3-й день, NikOn-10) — рука в перчатке моет капот, номеров
+     и надписей в кадре нет. В комментариях фигурные скобки подстановок не писать. -->
+<section class="hero-a sec-hero" aria-labelledby="page-title">
+  <picture class="hero-a__media">
+    <source media="(min-width: 760px)" srcset="assets/img/wash/hero-1600.webp 1600w" sizes="100vw" width="1600" height="686">
+    <img src="assets/img/wash/hero-900.webp" width="900" height="900" alt="Рука мастера в перчатке моет капот чёрного автомобиля в активной пене" fetchpriority="high" decoding="async">
+  </picture>
+  <div class="hero-a__body">
+    <h1 id="page-title">Автомойка в&nbsp;Москве</h1>
+    <p class="hero-a__lead">Бесконтактная и ручная мойка кузова, уборка салона, удаление реагентов и защита лака. Пять программ от {{min-section:programs}} — цена зависит от типа кузова.</p>
+    <div class="hero-a__actions actions">
+      <button class="btn btn--primary" type="button" data-request data-request-category="wash">Оставьте заявку</button>
+      <a class="btn btn--secondary" href="#programs">Программы и цены</a>
+    </div>
+    <p class="sec-hero__where">{{icon:pin}}<span>Мясницкая и Технопарк — каждый день до 22:00</span></p>
   </div>
 </section>
 
-<section class="book-block section-request" id="leave-request" aria-labelledby="leave-request-title">
-  <div class="book-block__inner">
-    <div class="book-block__head">
-      <h2 class="book-block__title" id="leave-request-title">Оставьте заявку</h2>
+<ul class="sec-facts col-wide" role="list" aria-label="Автомойка коротко">
+  <li class="sec-facts__item"><b class="sec-facts__value">{{program:0:price}}</b><span class="sec-facts__label">«Трёхфазная»: кузов, воск и шины за {{program:0:time}}, в Технопарке</span></li>
+  <li class="sec-facts__item"><b class="sec-facts__value">{{program:1:price}}</b><span class="sec-facts__label">«Комплексная с воском»: кузов и салон за один визит</span></li>
+  <li class="sec-facts__item"><b class="sec-facts__value">{{program:2:price}}</b><span class="sec-facts__label">«Детейлинг-мойка от реагентов»: обезжиривание и удаление реагентов</span></li>
+  <li class="sec-facts__item"><b class="sec-facts__value">{{count:studios}} студии</b><span class="sec-facts__label">Мясницкая, 11 и Технопарк на проспекте Андропова</span></li>
+</ul>
+
+<nav class="anchor-tabs" data-anchor-tabs aria-label="Разделы страницы">
+  <div class="anchor-tabs__track">
+    <a class="anchor-tabs__tab" href="#wash-how">Как моем</a>
+    <a class="anchor-tabs__tab" href="#wash-prices">Программы и цены</a>
+    <a class="anchor-tabs__tab" href="#wash-choose">Какую выбрать</a>
+    <a class="anchor-tabs__tab" href="#wash-steps">Визит</a>
+    <a class="anchor-tabs__tab" href="#wash-works">Работы</a>
+    <a class="anchor-tabs__tab" href="#wash-faq">Вопросы</a>
+  </div>
+</nav>
+
+<section class="section sec-block" id="wash-how" aria-labelledby="wash-how-title">
+  <header class="section-head col-title">
+    <h2 id="wash-how-title">Как моем</h2>
+    <p class="section-head__lead">Порядок один для всех программ: сначала убираем то, что может поцарапать лак, и только потом касаемся кузова.</p>
+  </header>
+  <ol class="sec-points col-ext" role="list">
+    <li class="sec-points__item">
+      <h3>Сначала без касания</h3>
+      <p>Активная пена и вода под давлением уносят песок, соль и реагент. Пока они на кузове, любая губка работает как наждак.</p>
+    </li>
+    <li class="sec-points__item">
+      <h3>Потом руками</h3>
+      <p>Мастер проходит кузов вручную: решётки, пороги, проёмы и всё, с чем струя не справилась.</p>
+    </li>
+    <li class="sec-points__item">
+      <h3>Химия под покрытие</h3>
+      <p>Средства подбираем под то, что на кузове: заводской лак, защитную плёнку или керамику.</p>
+    </li>
+    <li class="sec-points__item">
+      <h3>Финиш</h3>
+      <p>Воск на кузов и чернение шин — уже в самой простой программе. В старших — кварцевое покрытие и антидождь.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="section sec-block sec-block--prices" id="wash-prices" aria-labelledby="wash-prices-title">
+  <header class="section-head col-title">
+    <h2 id="wash-prices-title">Программы и цены</h2>
+    <p class="section-head__lead">Каждая следующая программа включает предыдущую. Выберите тип кузова — цены на карточках обновятся. Состав по пунктам — в таблице под карточками.</p>
+  </header>
+{{prices:programs,price-wash-extras}}
+</section>
+
+<section class="section sec-block" id="wash-choose" aria-labelledby="wash-choose-title">
+  <header class="section-head col-title">
+    <h2 id="wash-choose-title">Какую программу выбрать</h2>
+    <p class="section-head__lead">Если сомневаетесь — оставьте заявку, а на приёмке программу можно поменять.</p>
+  </header>
+  <ul class="sec-choice col-basic" role="list">
+    <li class="sec-choice__item">
+      <div class="sec-choice__text">
+        <h3>Обычная городская пыль и грязь</h3>
+        <p>Кузов, воск и шины без захода в салон — самое быстрое.</p>
+      </div>
+      <p class="sec-choice__offer"><span class="sec-choice__name">{{program:0}}</span><span class="sec-choice__price">{{program:0:price}} · {{program:0:time}}</span></p>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="0">Оставьте заявку<span class="sr">: «Трёхфазная»</span></button>
+    </li>
+    <li class="sec-choice__item">
+      <div class="sec-choice__text">
+        <h3>Кузов и салон за один раз</h3>
+        <p>Пылесос, влажная уборка пластика и кожи, стёкла изнутри и продувка воздуховодов.</p>
+      </div>
+      <p class="sec-choice__offer"><span class="sec-choice__name">{{program:1}}</span><span class="sec-choice__price">{{program:1:price}} · {{program:1:time}}</span></p>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="1">Оставьте заявку<span class="sr">: «Комплексная с воском»</span></button>
+    </li>
+    <li class="sec-choice__item">
+      <div class="sec-choice__text">
+        <h3>Зима и реагенты</h3>
+        <p>К комплексной мойке добавляется обезжиривание кузова и удаление реагентов, плюс уборка багажника.</p>
+      </div>
+      <p class="sec-choice__offer"><span class="sec-choice__name">{{program:2}}</span><span class="sec-choice__price">{{program:2:price}} · {{program:2:time}}</span></p>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="2">Оставьте заявку<span class="sr">: «Детейлинг-мойка от реагентов»</span></button>
+    </li>
+    <li class="sec-choice__item">
+      <div class="sec-choice__text">
+        <h3>После трассы, весной или перед продажей</h3>
+        <p>Химчистка дисков, удаление битума и кварцевое покрытие кузова.</p>
+      </div>
+      <p class="sec-choice__offer"><span class="sec-choice__name">{{program:3}}</span><span class="sec-choice__price">{{program:3:price}} · {{program:3:time}}</span></p>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="3">Оставьте заявку<span class="sr">: пакет «Экстерьер»</span></button>
+    </li>
+    <li class="sec-choice__item">
+      <div class="sec-choice__text">
+        <h3>Полный уход снаружи и внутри</h3>
+        <p>Ещё очистка от металлических вкраплений, лёгкая химчистка салона, кондиционер кожи, озонация или сухой туман и антидождь.</p>
+      </div>
+      <p class="sec-choice__offer"><span class="sec-choice__name">{{program:4}}</span><span class="sec-choice__price">{{program:4:price}} · {{program:4:time}}</span></p>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="4">Оставьте заявку<span class="sr">: пакет «Премиум»</span></button>
+    </li>
+  </ul>
+</section>
+
+<section class="section sec-block" id="wash-steps" aria-labelledby="wash-steps-title">
+  <header class="section-head col-title">
+    <h2 id="wash-steps-title">Как проходит визит</h2>
+  </header>
+  <div class="col-ext">
+    <ol class="steps sec-steps">
+      <li class="steps__item">
+        <h3>Заявка</h3>
+        <p>Оставьте заявку на сайте или позвоните в студию. Когда в форме выбрана автомойка, там же есть ссылка на <span class="nw">онлайн-запись</span>.</p>
+      </li>
+      <li class="steps__item">
+        <h3>Приёмка</h3>
+        <p>Смотрим машину вместе с вами и до начала согласуем программу и цену. Битум, омывающую или силикон на уплотнители добавим здесь же.</p>
+      </li>
+      <li class="steps__item">
+        <h3>Мойка</h3>
+        <p>От {{program:0:time}} до {{program:4:time}} — смотря по программе. На Мясницкой два часа закрытого паркинга включены в визит, ждать можно в зоне ожидания с <span class="nw">Wi-Fi</span>.</p>
+      </li>
+      <li class="steps__item">
+        <h3>Выдача</h3>
+        <p>Проверяем машину вместе с вами. Оплата картой, по СБП, QR-коду, наличными или по безналичному расчёту.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section sec-block" id="wash-works" aria-labelledby="wash-works-title">
+  <header class="section-head col-title">
+    <h2 id="wash-works-title">Наши работы</h2>
+    <p class="section-head__lead">Кадры из наших студий.</p>
+  </header>
+  <div class="sec-tiles col-ext">
+{{works:wash}}
+  </div>
+</section>
+
+<section class="section sec-block" id="wash-why" aria-labelledby="wash-why-title">
+  <header class="section-head col-title">
+    <h2 id="wash-why-title">Почему <span class="nw" lang="en">Meat Wash</span></h2>
+  </header>
+  <ul class="sec-why col-ext" role="list">
+    <li class="sec-why__item">
+      <h3>Две студии</h3>
+      <p>Мясницкая — премиальная автомойка в центре, Технопарк — <span class="nw">детейлинг-центр</span> полного цикла. Обе открыты каждый день.</p>
+    </li>
+    <li class="sec-why__item">
+      <h3>Паркинг и зона ожидания</h3>
+      <p>На Мясницкой два часа закрытого паркинга включены в визит, есть <span class="nw">Wi-Fi</span>, а Кофемания — этажом выше. Оплатить можно, не выходя из машины.</p>
+    </li>
+    <li class="sec-why__item">
+      <h3>Цена — до начала</h3>
+      <p>Программу, дополнительные работы и цену согласуем на приёмке — до начала мойки.</p>
+    </li>
+    <li class="sec-why__item">
+      <h3>Проверка перед выдачей</h3>
+      <p>Машину смотрим вместе с вами — до того, как вы уедете.</p>
+    </li>
+  </ul>
+</section>
+
+<div class="sec-reviews">
+{{reviews:wash}}
+</div>
+
+<section class="section sec-block" id="wash-faq" aria-labelledby="wash-faq-title">
+  <header class="section-head col-title">
+    <h2 id="wash-faq-title">Вопросы и ответы</h2>
+  </header>
+  <div class="accordions sec-faq col-basic">
+    <details class="accordion">
+      <summary class="accordion__head">Сколько стоит мойка?</summary>
+      <div class="accordion__body">
+        <p>Программы — от {{min-section:programs}}: столько стоит «Трёхфазная» для седана. Цена зависит от типа кузова — седан, кроссовер, внедорожник или микроавтобус, переключатель стоит <a href="#programs">над карточками программ</a>. «Комплексная с воском» на Мясницкой стоит дороже, её цена указана под основной.</p>
+        <p>Дополнительные работы считаются отдельно, итог согласуем на приёмке.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Сколько времени занимает мойка?</summary>
+      <div class="accordion__body">
+        <p>«Трёхфазная» — {{program:0:time}}, «Комплексная с воском» и «Детейлинг-мойка от реагентов» — {{program:1:time}}, пакет «Экстерьер» — {{program:3:time}}, пакет «Премиум» — {{program:4:time}}. Если машина очень грязная или на приёмке добавили работы, выйдет дольше.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">В какой студии можно помыть машину?</summary>
+      <div class="accordion__body">
+        <p>В обеих: на Мясницкой и в Технопарке. «Трёхфазную» делаем только в Технопарке, остальные программы — в обеих студиях. Адреса и часы — <a href="#leave-request">внизу страницы</a>.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Можно ли мыть машину в плёнке или с керамикой?</summary>
+      <div class="accordion__body">
+        <p>Да. Средства подбираем под покрытие: заводской лак, защитную плёнку или керамику. Для плёнки и керамики регулярная бережная мойка — часть ухода: песок и реагент, которые долго лежат на кузове, изнашивают и то и другое.</p>
+        <p>{{todo:через сколько дней после оклейки и нанесения керамики можно мыть машину и какие программы для этого советуете}}</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Нужно ли записываться заранее?</summary>
+      <div class="accordion__body">
+        <p>Лучше да: оставьте заявку или позвоните в студию. Когда в форме заявки выбрана автомойка, там же есть ссылка на <span class="nw">онлайн-запись</span> — время выбираете сами.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Моете ли двигатель и подвеску?</summary>
+      <div class="accordion__body">
+        <p>Это отдельные работы в разделе «Детейлинг»: моторный отсек — {{price:Детейлинг моторного отсека}}, подвеска — {{price:Детейлинг подвески}}. <a href="detailing#price-components">Цены на узлы и диски</a>.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Что можно добавить к программе?</summary>
+      <div class="accordion__body">
+        <p>Заправку омывающей жидкости, очистку от битума и металлических вкраплений, обезжиривание кузова, силикон на резинки и уплотнители. Записываться на это отдельно не нужно — скажите на приёмке. Цены — в блоке <a href="#price-wash-extras">«Дополнительно на автомойке»</a>.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Как часто мыть машину зимой?</summary>
+      <div class="accordion__body">
+        <p>Чем дольше реагент остаётся на кузове, тем сильнее он разъедает лак, резинки и металл. Зимой машину стоит мыть чаще, чем летом, и выбирать программу с удалением реагентов. Силикон на уплотнители помогает дверям меньше примерзать.</p>
+        <p>Что ещё сделать до сезона — в статье <a href="article-avto-k-zime">«Автомобиль к зиме»</a>.</p>
+      </div>
+    </details>
+    <details class="accordion">
+      <summary class="accordion__head">Как оплатить?</summary>
+      <div class="accordion__body">
+        <p>Картой, по СБП, QR-коду, наличными или по безналичному расчёту. На Мясницкой можно оплатить, не выходя из машины, в Технопарке принимаем топливные карты.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section sec-block" id="wash-related" aria-labelledby="wash-related-title">
+  <header class="section-head col-title">
+    <h2 id="wash-related-title">Другие направления</h2>
+    <p class="section-head__lead">После мойки видно, что ещё нужно машине: салону — химчистка, лаку — полировка и защита.</p>
+  </header>
+  <div class="sec-tiles col-ext">
+{{related:detailing,wrap,bodywork}}
+  </div>
+</section>
+
+<section class="section sec-seo col-narrow" aria-labelledby="wash-seo-title">
+  <h2 id="wash-seo-title">Автомойка <span class="nw" lang="en">Meat Wash</span> в Москве</h2>
+  <p>Две студии <span lang="en">Meat Wash</span> моют машины с {{brand:since}} года: на Мясницкой, 11 — в подземном паркинге в центре, и в Технопарке — в ТЦ «Мегаполис» на проспекте Андропова. Каждая мойка начинается с бесконтактной фазы и продолжается ручной: так песок и реагент уходят с кузова до того, как к нему прикоснутся.</p>
+  <p>Пять программ — от быстрой мойки кузова за {{program:0:time}} до полного ухода за кузовом и салоном. Цена зависит от типа кузова. Зимой выбирайте программу с удалением реагентов, весной и после трассы — с удалением битума и кварцевым покрытием. Моторный отсек, подвеску, химчистку салона и полировку делаем в <a href="detailing">детейлинге</a>.</p>
+</section>
+
+<section class="sec-cta" id="leave-request" aria-labelledby="leave-request-title">
+  <div class="sec-cta__inner">
+    <div class="sec-cta__head">
+      <h2 class="sec-cta__title" id="leave-request-title">Оставьте заявку</h2>
+      <p class="sec-cta__lead">Напишите, какую программу и в какой студии хотите, или позвоните — подберём время.</p>
+      <div class="actions">
+        <button class="btn btn--primary" type="button" data-request data-request-category="wash">Оставьте заявку</button>
+      </div>
     </div>
-    <div class="actions">
-      <button class="btn btn--primary" type="button" data-request data-request-category="wash">Оставьте заявку</button>
-    </div>
+    <ul class="sec-studios" role="list">
+      <li class="sec-studio">
+        <h3 class="sec-studio__name">{{loc:myasnitskaya:name}}</h3>
+        <p class="sec-studio__type">{{loc:myasnitskaya:type}}</p>
+        <p class="sec-studio__address">{{loc:myasnitskaya:address}}<br>{{loc:myasnitskaya:floor}}</p>
+        <p class="sec-studio__hours">{{loc:myasnitskaya:hours}}</p>
+        <a class="sec-studio__phone" href="tel:{{loc:myasnitskaya:tel}}">{{loc:myasnitskaya:phone}}</a>
+        <p class="sec-studio__links"><a class="link-arrow" href="{{locations}}#map-myasnitskaya">На карте{{icon:arrow-right}}</a><a class="link-arrow" href="{{loc:myasnitskaya:route}}" target="_blank" rel="noopener noreferrer">Маршрут{{icon:arrow-up-right}}<span class="sr"> до студии на Мясницкой (Яндекс Карты, откроется в новой вкладке)</span></a></p>
+      </li>
+      <li class="sec-studio">
+        <h3 class="sec-studio__name">{{loc:technopark:name}}</h3>
+        <p class="sec-studio__type">{{loc:technopark:type}}</p>
+        <p class="sec-studio__address">{{loc:technopark:address}}<br>{{loc:technopark:floor}}</p>
+        <p class="sec-studio__hours">{{loc:technopark:hours}}</p>
+        <a class="sec-studio__phone" href="tel:{{loc:technopark:tel}}">{{loc:technopark:phone}}</a>
+        <p class="sec-studio__links"><a class="link-arrow" href="{{locations}}#map-technopark">На карте{{icon:arrow-right}}</a><a class="link-arrow" href="{{loc:technopark:route}}" target="_blank" rel="noopener noreferrer">Маршрут{{icon:arrow-up-right}}<span class="sr"> до студии в Технопарке (Яндекс Карты, откроется в новой вкладке)</span></a></p>
+      </li>
+    </ul>
   </div>
 </section>
