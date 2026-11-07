@@ -112,7 +112,7 @@ export const REGISTRY = [
     title: 'Оклейка автомобиля плёнкой в Москве — Meat Wash',
     description: 'Оклейка автомобиля полиуретановой плёнкой: прозрачной или цветной, зоны риска, весь кузов, фары и лобовое стекло. Только в Технопарке, Москва.',
     headline: 'Оклейка плёнкой', theme: 'dark', header: 'solid', cta: 'request', topic: 'wrap',
-    shared: ALL, css: SECTION_CSS, preload: heroA('wrap'),
+    shared: ALL, css: [...SECTION_CSS, 'projects.css'], preload: heroA('wrap'),
     date: '2026-11-05', sitemap: { changefreq: 'monthly', priority: '0.9' },
   },
   {
@@ -126,10 +126,10 @@ export const REGISTRY = [
   {
     file: 'works.html', id: 'works', kind: 'landing', body: 'works.html', parent: 'services',
     title: 'Наши работы — Meat Wash',
-    description: 'Работы Meat Wash: подготовка Lotus Eletre R к продаже, оклейка BMW M4 цветным полиуретаном, химчистка салона и полировка кузова в студиях в Москве.',
+    description: 'Работы Meat Wash: подготовка Lotus Eletre R к продаже, оклейка плёнкой Mercedes-Benz S-класса, Range Rover и BMW, химчистка салона и полировка кузова в Москве.',
     headline: 'Наши работы', theme: 'dark', header: 'solid', cta: 'request',
-    shared: WITH_BOOK, css: ['services.css'], ogImage: 'assets/img/auto-lotus-4.webp',
-    date: '2026-10-27', sitemap: { changefreq: 'monthly', priority: '0.6' },
+    shared: WITH_BOOK, css: ['services.css', 'tiles.css', 'projects.css'], ogImage: 'assets/img/auto-lotus-4.webp',
+    date: '2026-11-07', sitemap: { changefreq: 'monthly', priority: '0.6' },
   },
   {
     file: 'import.html', id: 'import', kind: 'landing', body: 'import.html',

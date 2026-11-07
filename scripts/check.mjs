@@ -41,6 +41,8 @@
 //            porsche3d.bundle.js), цены и названия работ — из каталога;
 //   машины   2 карточки, фото и проданные — как в src/data/cars.json; счётчики на главной,
 //            в шторке и на /auto — из данных; /import без телефона;
+//   проекты  projects.wrap (Влад 07.11): w223, rr, g20 на /wrap и /works; у каждого фото alt, подпись,
+//            файлы 800/1600 размером 4:5, обложки 3:2; фото окна — только в <template> (грузятся по открытию);
 //   бренд    нет «MEATWASH» / «Meatwash» в тексте, alt, aria-label, title, og, JSON-LD и
 //            строках скриптов (кроме адреса канала и почты, поправка 12); знаков ↗ ✓ нет;
 //            пары «до/после» подписаны «Иллюстрация, не работа студии»; «ранее Meat Wash» на
@@ -381,8 +383,8 @@ const ANCHORS = {
   'about.html': ['visit-locations', 'map-myasnitskaya', 'map-technopark', 'before-visit', 'club', 'path', 'studios', 'team', 'membership'],
   'auto.html': ['for-sale', 'sold', 'sell', 'auto-contact', ...cars.forSale.map((c) => c.id)],
   'import.html': ['what', 'rusifikaciya', 'prep', 'for-sale-link', 'contact'],
-  'wrap.html': ['wrap-kind', 'wrap-prices', 'wrap-steps', 'wrap-call'],
-  'works.html': ['works-lotus', 'works-m4', 'works-studio'],
+  'wrap.html': ['wrap-kind', 'wrap-prices', 'wrap-steps', 'wrap-works', 'wrap-call'],
+  'works.html': ['works-lotus', 'works-wrap', 'works-m4', 'works-studio'],
   'index.html': ['top', 'contacts'],
 };
 for (const [file, list] of Object.entries(ANCHORS)) for (const id of list) ok(ids[file].has(id), `${file}: нет якоря #${id} (§1.7)`);
@@ -483,6 +485,51 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
       for (const w of x.widths || [800, 1240]) if (!await exists(resolve(dist, `${x.img}-${w}.webp`))) soft(`${where}: нет файла ${x.img}-${w}.webp (кадры кладёт исполнитель фото; на странице с плашкой это ошибка)`);
       if (x.price) ok(x.price in itemPrice, `${where}: price «${x.price}» — нет такой позиции в каталоге`);
     } else ok(x.title && x.price in itemPrice, `${where}: плашка без фото — title и price (позиция каталога)`);
+  }
+}
+
+// ── Проекты с галереей (projects, Влад 07.11): данные, файлы, размеры, разметка страниц ──
+{
+  const sharp = (await import('sharp')).default;
+  const size = async (path) => { const m = await sharp(resolve(dist, path)).metadata(); return [m.width, m.height]; };
+  const PROJECT_PAGES = {wrap: ['wrap.html', 'works.html']};
+  ok(same(Object.keys(d.projects || {}).filter((k) => k !== '_comment'), Object.keys(PROJECT_PAGES)), `projects: ряды ${Object.keys(PROJECT_PAGES).join(', ')}`);
+  for (const [dir, pages] of Object.entries(PROJECT_PAGES)) {
+    const list = d.projects?.[dir] || [];
+    ok(same(list.map((p) => p.id), ['w223', 'rr', 'g20']), `projects.${dir}: три проекта — w223, rr, g20 (Влад 07.11)`);
+    for (const p of list) {
+      const where = `projects.${dir}.${p.id}`;
+      ok(p.title && p.lead && p.cover && p.photos?.length, `${where}: нужны title, lead, cover и photos`);
+      for (const [w, dims] of [[800, [800, 533]], [1600, [1600, 1067]]]) {
+        const f = `${p.cover}-${w}.webp`;
+        if (ok(await exists(resolve(dist, f)), `${where}: нет обложки ${f}`)) ok(same(await size(f), dims), `${where}: обложка ${f} — не ${dims.join('×')}`);
+      }
+      const seen = new Set();
+      for (const [i, x] of (p.photos || []).entries()) {
+        const at = `${where}.photos[${i}]`;
+        ok(x.img && x.alt?.trim() && x.caption?.trim(), `${at}: нужны img, alt и caption`);
+        ok(!seen.has(x.img), `${at}: кадр ${x.img} повторяется`); seen.add(x.img);
+        ok(!/MEATWASH|Meatwash|гаранти|\d+\s*(дн|час|лет|год)|₽/i.test(`${x.alt} ${x.caption}`), `${at}: в alt/подписи бренд капсом, гарантия, сроки или цена — подписи только по фактам кадра`);
+        for (const [w, dims] of [[800, [640, 800]], [1600, [1280, 1600]]]) {
+          const f = `${x.img}-${w}.webp`;
+          if (ok(await exists(resolve(dist, f)), `${at}: нет файла ${f}`)) ok(same(await size(f), dims), `${at}: ${f} — не ${dims.join('×')} (кадры галереи 4:5)`);
+        }
+      }
+    }
+    for (const file of pages) {
+      const text = html[file] || '';
+      ok(text.includes(`data-projects="${dir}"`) && text.includes(`id="gallery-${dir}"`), `${file}: нет плашек проектов ${dir} и окна #gallery-${dir}`);
+      for (const p of list) {
+        ok(text.includes(`data-gallery-open="${p.id}"`), `${file}: нет плашки проекта ${p.id}`);
+        // Фото окна — только внутри <template>: до открытия браузер их не запрашивает.
+        const tpl = text.match(new RegExp(`<template data-gallery-project="${p.id}">([\\s\\S]*?)</template>`))?.[1] || '';
+        ok((tpl.match(/<img\b/g) || []).length === p.photos.length, `${file}: в шаблоне ${p.id} не ${p.photos.length} фото`);
+        for (const x of p.photos) ok(tpl.includes(`alt="${esc(x.alt)}"`) && tpl.includes(`${x.img}-800.webp 800w`) && tpl.includes(`${x.img}-1600.webp 1600w`), `${file}: фото ${x.img} — нет alt или srcset 800/1600`);
+      }
+      const outside = strip(text).replace(/<template\b[\s\S]*?<\/template>/g, '');
+      ok(!/gallery__img/.test(outside), `${file}: фото окна-галереи вне <template> — загрузятся до открытия`);
+      ok(/css\/projects\.css/.test(text) && /css\/tiles\.css/.test(text), `${file}: нужны css/tiles.css и css/projects.css`);
+    }
   }
 }
 

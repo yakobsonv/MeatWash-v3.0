@@ -9,6 +9,8 @@
      Якоря #wrap-kind, #wrap-prices, #wrap-steps, #wrap-call проверяет check (старые ссылки).
      Стили — блок «D: wrap + bodywork» в конце dist/css/section.css (классы ds-*); герой и переключатель
      плёнки — services.css (wrap-hero). Призывы — только «Оставьте заявку» (data-request, тема wrap).
+     «Наши работы» (07.11) — три проекта с окном-галереей: подстановка projects (данные projects.wrap,
+     окно js/gallery.js, вид css/projects.css); ряд works.wrap больше не выводится.
      В комментариях фигурные скобки подстановок не писать. -->
 <section class="hero-c wrap-hero" aria-labelledby="page-title" data-page-bar-after>
   <p class="hero-c__mark" aria-hidden="true" lang="en" data-mark="PPF"></p>
@@ -142,10 +144,10 @@
 <section class="section ds-works" id="wrap-works" aria-labelledby="wrap-works-title">
   <header class="section-head">
     <h2 id="wrap-works-title">Наши работы</h2>
-    <p class="section-head__lead">Кадры из наших студий: подготовка кузова и оклейка полиуретаном.</p>
+    <p class="section-head__lead">Три машины: как идёт оклейка и что получается. Откройте карточку, чтобы посмотреть все кадры.</p>
   </header>
-  <div class="col-basic">
-    {{works:wrap}}
+  <div class="col-ext project-row">
+    {{projects:wrap}}
   </div>
 </section>
 

@@ -62,6 +62,10 @@
   (круглая стрелка, aria-hidden). Без фото — `a.work-tile.work-tile--text` с `span.work-tile__price` («от N ₽» из каталога):
   ряд `bodywork`. Плашка машины (`car`, ряд `sales`) — ещё `span.work-tile__badge` «В продаже» или `.work-tile__badge--sold` «Продано».
   Данные — `works` в `meatwash-content.json`.
+- `{{projects:wrap}}` (07.11) → `ul.work-tiles.project-tiles[data-projects]` > `li.work-tiles__item` > `button.work-tile.project-tile[data-gallery-open]`
+  (обложка 3:2 с `alt=""`, `span.work-tile__badge--sold` «N фото», заголовок, стрелка) и одно окно `dialog.dialog.dialog--gallery#gallery-wrap`
+  (`js/gallery.js`, `css/projects.css`; фото проекта — в `<template data-gallery-project>`, грузятся по открытию). Данные — `projects`
+  в `meatwash-content.json` (`id`, `title`, `lead`, `cover`, `photos[{img, alt, caption}]`, кадры 4:5, файлы -800/-1600). Стоит на /wrap и /works.
 - `{{related:detailing,wrap}}` → `ul.work-tiles.work-tiles--related[data-related]` — плашки направлений (`directions`).
 - `{{reviews}}` / `{{reviews:wrap}}` → `section.reviews#reviews` с `h2#reviews-title` «Отзывы клиентов», `ul.reviews__studios`
   (`.reviews__studio-name`, `.reviews__rating` > `b.reviews__score` «5,0» + `span.review__stars`, `.reviews__count` «211 оценок»,

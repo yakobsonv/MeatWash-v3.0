@@ -41,6 +41,7 @@
 //                          {{reviews:home}} — все отзывы «тёмной сценой» главной (renderReviewsStage)
 //   {{works:<направление>}}  ряд плашек «наших работ» из JSON (works): wash, detailing, wrap,
 //                          bodywork, sales, about; классы — ниже
+//   {{projects:<направление>}}  плашки проектов с окном-галереей из JSON (projects): wrap; классы — ниже
 //   {{related:<id,id,…>}}  плашки направлений из JSON (directions): {{related:detailing,wrap}}
 //   {{brand:name|descriptor|legacy|since}}  Meat Wash · Car Care Club · Meat Wash · 2021
 //   {{op:<поле>}}, {{site:url|date}}        реквизиты оператора и документы
@@ -268,6 +269,72 @@ function renderWorks(dir, entry, token) {
   if (!Array.isArray(list) || !list.length) throw new Error(`${token}: нет ряда работ «${dir}» в meatwash-content.json (works)`);
   return tileList('work-tiles', `data-works="${escape(dir)}"`, list.map((item) => workTile(item, entry, token)));
 }
+// ── Проекты с галереей (Влад 07.11: оклейка Mercedes-Benz W223, Range Rover, BMW G20 на /wrap и /works).
+// {{projects:<направление>}} — данные projects.<направление> в meatwash-content.json. Разметка:
+//   ul.work-tiles.project-tiles[data-projects] > li.work-tiles__item > button.work-tile.project-tile
+//     [data-gallery-open=<id>] — плашка как у работ (tiles.css): обложка 3:2 (alt="" — имя кнопки
+//     даёт заголовок), метка «N фото», заголовок, круглая стрелка;
+//   dialog.dialog.dialog--gallery#gallery-<направление> — одно окно на ряд (js/gallery.js, css/projects.css):
+//     шапка (заголовок и вводная проекта), лента ul.gallery__track, счётчик и стрелки; фото каждого
+//     проекта — в <template data-gallery-project>: браузер не грузит их, пока окно не открыто.
+// Фото проекта — 4:5 (-800.webp 640×800, -1600.webp 1280×1600; check.mjs сверяет файлы и размеры).
+const PROJECT_WIDTHS = [800, 1600];
+const GALLERY_SIZES = '(max-width: 759px) calc(100vw - 48px), (max-height: 760px) 46vh, 560px';
+async function imgSize(path) {
+  if (!existsSync(distPath(path))) throw new Error(`projects: нет файла dist/${path}`);
+  const {width, height} = await sharp(readFileSync(distPath(path))).metadata();
+  return {width, height};
+}
+const PROJECT_DIMS = Object.fromEntries(await Promise.all(Object.entries(d.projects || {}).filter(([, v]) => Array.isArray(v))
+  .flatMap(([, list]) => list.flatMap((p) => [p.cover, ...p.photos.map((x) => x.img)]))
+  .map(async (img) => [img, await imgSize(`${img}-${PROJECT_WIDTHS[0]}.webp`)])));
+const srcset = (img) => PROJECT_WIDTHS.map((w) => `${escape(`${img}-${w}.webp`)} ${w}w`).join(', ');
+function renderProjects(dir, token) {
+  const list = d.projects?.[dir];
+  if (!Array.isArray(list) || !list.length) throw new Error(`${token}: нет проектов «${dir}» в meatwash-content.json (projects)`);
+  const dialogId = `gallery-${dir}`;
+  for (const p of list) {
+    if (!/^[a-z0-9-]+$/.test(p.id || '') || !p.title || !p.cover || !p.photos?.length) throw new Error(`${token}: у проекта нужны id, title, cover и photos`);
+    for (const x of p.photos) if (!x.img || !x.alt || !x.caption) throw new Error(`${token}: ${p.id} — у фото нужны img, alt и caption`);
+  }
+  const tile = (p) => {
+    const c = PROJECT_DIMS[p.cover];
+    return `<button class="work-tile project-tile" type="button" data-gallery-open="${escape(p.id)}" aria-haspopup="dialog" aria-controls="${dialogId}"><img class="work-tile__img" src="${escape(`${p.cover}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(p.cover)}" sizes="${TILE_SIZES}" width="${c.width}" height="${c.height}" alt="" loading="lazy" decoding="async"><span class="work-tile__badge work-tile__badge--sold">${plural(p.photos.length, 'фото')}</span><span class="work-tile__title">${escape(p.title)}</span>${tileGo()}</button>`;
+  };
+  const slide = (x, i, all) => {
+    const s = PROJECT_DIMS[x.img];
+    return `      <li class="gallery__slide" aria-label="${i + 1} из ${all.length}"><figure class="gallery__figure"><img class="gallery__img" src="${escape(`${x.img}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(x.img)}" sizes="${GALLERY_SIZES}" width="${s.width}" height="${s.height}" alt="${escape(x.alt)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async"><figcaption class="gallery__caption">${escape(x.caption)}</figcaption></figure></li>`;
+  };
+  // Заголовок и вводная — элементами шаблона, а не атрибутами: так их проходит typo (неразрывные пробелы).
+  const templates = list.map((p) => `    <template data-gallery-project="${escape(p.id)}">
+      <span data-gallery-title>${escape(p.title)}</span>
+      <span data-gallery-lead>${escape(p.lead || '')}</span>
+${p.photos.map(slide).join('\n')}
+    </template>`).join('\n');
+  return `${tileList('work-tiles project-tiles', `data-projects="${escape(dir)}"`, list.map(tile))}
+<dialog class="dialog dialog--gallery" id="${dialogId}" aria-labelledby="${dialogId}-title" data-gallery>
+  <div class="gallery__top">
+    <div class="gallery__head">
+      <p class="eyebrow gallery__kicker">Наши работы</p>
+      <h2 class="gallery__title" id="${dialogId}-title" tabindex="-1" data-gallery-title></h2>
+      <p class="gallery__lead" data-gallery-lead></p>
+    </div>
+    <form class="gallery__closer" method="dialog"><button class="gallery__btn gallery__close" aria-label="Закрыть">${icon('close')}</button></form>
+  </div>
+  <div class="gallery__stage">
+    <ul class="gallery__track" role="list" tabindex="0" aria-roledescription="галерея" data-gallery-track></ul>
+  </div>
+  <div class="gallery__bar">
+    <p class="gallery__count" data-gallery-count><span data-gallery-index>1</span><span class="gallery__of"> / </span><span data-gallery-total>1</span></p>
+    <p class="sr" aria-live="polite" data-gallery-status></p>
+    <div class="gallery__nav">
+      <button class="gallery__btn" type="button" aria-label="Предыдущее фото" data-gallery-prev>${icon('arrow-left')}</button>
+      <button class="gallery__btn" type="button" aria-label="Следующее фото" data-gallery-next>${icon('arrow-right')}</button>
+    </div>
+  </div>
+${templates}
+</dialog>`;
+}
 function renderRelated(ids, entry, token) {
   if (!ids.length || ids.some((id) => !id)) throw new Error(`${token}: нужен список направлений через запятую`);
   const items = ids.map((id) => d.directions?.items?.find((x) => x.id === id) || (() => { throw new Error(`${token}: нет направления «${id}» (directions)`); })());
@@ -392,7 +459,7 @@ const LOC_FIELDS = {
 export async function readPartial(name) { return readFile(new URL(`src/partials/${name}.html`, root), 'utf8'); }
 
 // Подстановки, которые выдают разметку: внутри тега (в атрибуте) — ошибка.
-const MARKUP = new Set(['catalog', 'compare', 'cars', 'todo', 'icon', 'program-includes', 'mobile-cta', 'prices', 'reviews', 'works', 'related']);
+const MARKUP = new Set(['catalog', 'compare', 'cars', 'todo', 'icon', 'program-includes', 'mobile-cta', 'prices', 'reviews', 'works', 'projects', 'related']);
 const insideTag = (text, offset) => text.lastIndexOf('<', offset) > text.lastIndexOf('>', offset);
 
 // template — разметка части или тела; page — файл страницы ('services.html').
@@ -431,6 +498,7 @@ export function renderPartial(template, page) {
       case 'prices': return renderSections(args.join(':').split(',').map((x) => x.trim()), id);
       case 'reviews': return renderReviews(args[0] || '', token);
       case 'works': return renderWorks(args[0], entry, token);
+      case 'projects': return renderProjects(args[0], token);
       case 'related': return renderRelated(args.join(':').split(',').map((x) => x.trim()), entry, token);
       case 'analytics': {
         if (!ANALYTICS[args[0]]) throw new Error(`Нет поля аналитики ${args[0]} (${token})`);

@@ -17,6 +17,7 @@ if (document.querySelector('#catalog, [data-prices]')) import('./catalog.js').th
 if (document.querySelector('[data-ba]')) import('./proof.js').then((m) => m.setupProof()).catch(warn('Шторки «до/после»'));
 if (document.querySelector('.dirs')) import('./home.js').then((m) => m.setupHome()).catch(warn('Главная'));
 if (document.querySelector('[data-car-tiles], [data-sold-tiles]')) import('./cars.js').then((m) => m.setupCars()).catch(warn('Машины в продаже'));
+if (document.querySelector('[data-gallery]')) import('./gallery.js').then((m) => m.setupGallery()).catch(warn('Галерея проектов'));
 if (document.querySelector('[data-figures]')) import('./figures.js').then((m) => m.setupFigures()).catch(warn('Цифры машин'));
 if (document.querySelector('[data-video]')) import('./video.js').then((m) => m.setupVideo()).catch(warn('Видео'));
 
