@@ -275,11 +275,17 @@ function renderWorks(dir, entry, token) {
 //     [data-gallery-open=<id>] — плашка как у работ (tiles.css): обложка 3:2 (alt="" — имя кнопки
 //     даёт заголовок), метка «N фото», заголовок, круглая стрелка;
 //   dialog.dialog.dialog--gallery#gallery-<направление> — одно окно на ряд (js/gallery.js, css/projects.css):
-//     шапка (заголовок и вводная проекта), лента ul.gallery__track, счётчик и стрелки; фото каждого
+//     шапка (заголовок и вводная проекта), лента ul.gallery__track, счётчик, «Оставьте заявку»
+//     (data-request-category=<направление>, окно заявки встаёт поверх галереи) и стрелки; фото каждого
 //     проекта — в <template data-gallery-project>: браузер не грузит их, пока окно не открыто.
 // Фото проекта — 4:5 (-800.webp 640×800, -1600.webp 1280×1600; check.mjs сверяет файлы и размеры).
+// В srcset — настоящая ширина файла: обложка 3:2 — 800/1600 px, кадр 4:5 — 640/1280 px (файлы -800/-1600
+// названы по длинной стороне). Иначе браузер считает кадр на 25 % шире и берёт файл мельче нужного.
 const PROJECT_WIDTHS = [800, 1600];
-const GALLERY_SIZES = '(max-width: 759px) calc(100vw - 48px), (max-height: 760px) 46vh, 560px';
+const PHOTO_WIDTHS = {800: 640, 1600: 1280};
+// Ширина кадра в окне (css/projects.css): на телефоне — во всю ширину без полей, на остальных — от
+// высоты ленты (4:5): примерно 0,8 высоты окна минус шапка и нижняя полоса, не больше 825 px.
+const GALLERY_SIZES = '(max-width: 759px) calc(100vw - 32px), (max-height: 560px) 40vh, min(825px, calc(80vh - 160px))';
 async function imgSize(path) {
   if (!existsSync(distPath(path))) throw new Error(`projects: нет файла dist/${path}`);
   const {width, height} = await sharp(readFileSync(distPath(path))).metadata();
@@ -288,7 +294,7 @@ async function imgSize(path) {
 const PROJECT_DIMS = Object.fromEntries(await Promise.all(Object.entries(d.projects || {}).filter(([, v]) => Array.isArray(v))
   .flatMap(([, list]) => list.flatMap((p) => [p.cover, ...p.photos.map((x) => x.img)]))
   .map(async (img) => [img, await imgSize(`${img}-${PROJECT_WIDTHS[0]}.webp`)])));
-const srcset = (img) => PROJECT_WIDTHS.map((w) => `${escape(`${img}-${w}.webp`)} ${w}w`).join(', ');
+const srcset = (img, widths = {800: 800, 1600: 1600}) => PROJECT_WIDTHS.map((w) => `${escape(`${img}-${w}.webp`)} ${widths[w]}w`).join(', ');
 function renderProjects(dir, token) {
   const list = d.projects?.[dir];
   if (!Array.isArray(list) || !list.length) throw new Error(`${token}: нет проектов «${dir}» в meatwash-content.json (projects)`);
@@ -299,11 +305,11 @@ function renderProjects(dir, token) {
   }
   const tile = (p) => {
     const c = PROJECT_DIMS[p.cover];
-    return `<button class="work-tile project-tile" type="button" data-gallery-open="${escape(p.id)}" aria-haspopup="dialog" aria-controls="${dialogId}"><img class="work-tile__img" src="${escape(`${p.cover}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(p.cover)}" sizes="${TILE_SIZES}" width="${c.width}" height="${c.height}" alt="" loading="lazy" decoding="async"><span class="work-tile__badge work-tile__badge--sold">${plural(p.photos.length, 'фото')}</span><span class="work-tile__title">${escape(p.title)}</span>${tileGo()}</button>`;
+    return `<button class="work-tile project-tile" type="button" data-gallery-open="${escape(p.id)}" aria-haspopup="dialog" aria-controls="${dialogId}"><img class="work-tile__img" src="${escape(`${p.cover}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(p.cover)}" sizes="${TILE_SIZES}" width="${c.width}" height="${c.height}" alt="" loading="lazy" decoding="async"><span class="work-tile__badge project-tile__count">${plural(p.photos.length, 'фото')}</span><span class="work-tile__title">${escape(p.title)}</span>${tileGo()}</button>`;
   };
   const slide = (x, i, all) => {
     const s = PROJECT_DIMS[x.img];
-    return `      <li class="gallery__slide" aria-label="${i + 1} из ${all.length}"><figure class="gallery__figure"><img class="gallery__img" src="${escape(`${x.img}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(x.img)}" sizes="${GALLERY_SIZES}" width="${s.width}" height="${s.height}" alt="${escape(x.alt)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async"><figcaption class="gallery__caption">${escape(x.caption)}</figcaption></figure></li>`;
+    return `      <li class="gallery__slide" aria-label="${i + 1} из ${all.length}"><figure class="gallery__figure"><img class="gallery__img" src="${escape(`${x.img}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(x.img, PHOTO_WIDTHS)}" sizes="${GALLERY_SIZES}" width="${s.width}" height="${s.height}" alt="${escape(x.alt)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async"><figcaption class="gallery__caption">${escape(x.caption)}</figcaption></figure></li>`;
   };
   // Заголовок и вводная — элементами шаблона, а не атрибутами: так их проходит typo (неразрывные пробелы).
   const templates = list.map((p) => `    <template data-gallery-project="${escape(p.id)}">
@@ -327,6 +333,8 @@ ${p.photos.map(slide).join('\n')}
   <div class="gallery__bar">
     <p class="gallery__count" data-gallery-count><span data-gallery-index>1</span><span class="gallery__of"> / </span><span data-gallery-total>1</span></p>
     <p class="sr" aria-live="polite" data-gallery-status></p>
+    <p class="gallery__note" aria-hidden="true" data-gallery-note></p>
+    <button class="btn btn--primary btn--compact gallery__cta" type="button" data-request data-request-category="${escape(dir)}">Оставьте заявку</button>
     <div class="gallery__nav">
       <button class="gallery__btn" type="button" aria-label="Предыдущее фото" data-gallery-prev>${icon('arrow-left')}</button>
       <button class="gallery__btn" type="button" aria-label="Следующее фото" data-gallery-next>${icon('arrow-right')}</button>

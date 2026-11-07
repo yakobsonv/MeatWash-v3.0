@@ -4,6 +4,8 @@
 // и попадают в ленту только при открытии — до нажатия браузер их не запрашивает.
 // Лента — горизонтальная прокрутка со snap: свайп и тачпад листают её сами, стрелки на экране,
 // ←/→ (Home/End) с клавиатуры — по одному кадру; при «меньше движения» — без плавной прокрутки.
+// «Оставьте заявку» в нижней полосе — data-request (ui.js): окно заявки встаёт поверх галереи, после него
+// человек возвращается к тому же кадру.
 // Закрытие по Esc — штатное у <dialog>; блокировка прокрутки, ловушка фокуса — ui.js (dialog.dialog).
 // Фокус после закрытия — на плашку, которая открыла окно (Safari не ставит фокус на кнопку по клику).
 // «Назад» в браузере закрывает окно: при открытии — запись в истории { gallery }.
@@ -17,20 +19,31 @@ function setup(dialog) {
   const index = dialog.querySelector('[data-gallery-index]');
   const total = dialog.querySelector('[data-gallery-total]');
   const status = dialog.querySelector('[data-gallery-status]');
+  const note = dialog.querySelector('[data-gallery-note]');
   const prev = dialog.querySelector('[data-gallery-prev]');
   const next = dialog.querySelector('[data-gallery-next]');
   const tiles = [...document.querySelectorAll(`[data-gallery-open][aria-controls="${CSS.escape(dialog.id)}"]`)];
   if (!track || !tiles.length) return;
 
-  let shown = '', current = 0, opener = null, frame = 0, settle = 0;
+  let shown = '', current = 0, opener = null, frame = 0, settle = 0, aim = -1;
   const slides = () => [...track.children];
 
   // Кадры прилипают левым краем к полю ленты (scroll-padding в projects.css). Текущий — ближайший к нему.
+  // На ширине от 760 лента кончается у правого края: последние кадры до левого поля не доезжают —
+  // у них цель прокрутки одна, край ленты. Там текущим остаётся выбранный стрелкой, иначе — первый из них.
   const pad = () => parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0;
+  const end = () => Math.max(0, track.scrollWidth - track.clientWidth);
+  const target = (s) => Math.min(s.offsetLeft - pad(), end());
   const nearest = () => {
+    const list = slides();
+    if (track.scrollLeft >= end() - 1) {
+      if (list[current] && list[current].offsetLeft - pad() >= end() - 1) return current;
+      const k = list.findIndex((s) => s.offsetLeft - pad() >= end() - 1);
+      if (k >= 0) return k;
+    }
     const edge = track.scrollLeft + pad();
     let best = 0, gap = Infinity;
-    slides().forEach((s, i) => { const d = Math.abs(s.offsetLeft - edge); if (d < gap) { gap = d; best = i; } });
+    list.forEach((s, i) => { const d = Math.abs(s.offsetLeft - edge); if (d < gap) { gap = d; best = i; } });
     return best;
   };
   const caption = (i) => slides()[i]?.querySelector('figcaption')?.textContent || '';
@@ -41,6 +54,7 @@ function setup(dialog) {
     prev.setAttribute('aria-disabled', String(i === 0));
     next.setAttribute('aria-disabled', String(i === list.length - 1));
     list.forEach((s, k) => s.classList.toggle('is-current', k === i));
+    if (note) note.textContent = caption(i);
     // Соседние кадры — заранее, чтобы следующий не догружался на глазах.
     for (const k of [i - 1, i + 1, i + 2]) { const img = list[k]?.querySelector('img'); if (img) img.loading = 'eager'; }
     clearTimeout(settle);
@@ -51,14 +65,26 @@ function setup(dialog) {
     const k = Math.max(0, Math.min(list.length - 1, i));
     const s = list[k];
     if (!s) return;
-    const left = s.offsetLeft - pad();
+    const left = target(s);
+    // Пока лента едет к выбранному кадру, промежуточные кадры текущими не становятся (у края ленты
+    // иначе вместо последнего кадра отметился бы первый из не доезжающих до поля).
+    aim = Math.abs(track.scrollLeft - left) > 1 ? k : -1;
     track.scrollTo({ left, behavior: smooth && !reduced() ? 'smooth' : 'instant' });
     mark(k);
   };
   track.addEventListener('scroll', () => {
     cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(() => { const i = nearest(); if (i !== current) mark(i); });
+    frame = requestAnimationFrame(() => {
+      if (aim >= 0) {
+        const s = slides()[aim];
+        if (s && Math.abs(track.scrollLeft - target(s)) > 1) return;
+        aim = -1; return;
+      }
+      const i = nearest(); if (i !== current) mark(i);
+    });
   }, { passive: true });
+  // Палец или колесо во время езды — дальше ведёт человек.
+  for (const type of ['pointerdown', 'wheel', 'touchstart']) track.addEventListener(type, () => { aim = -1; }, { passive: true });
 
   const load = (id) => {
     if (shown === id) return true;
@@ -97,6 +123,15 @@ function setup(dialog) {
     const slide = event.target.closest('.gallery__slide');
     const i = slide ? slides().indexOf(slide) : -1;
     if (i >= 0 && i !== current) go(i);
+  });
+  // Окно заявки поверх галереи закрыто — фокус обратно на «Оставьте заявку» (ui.js кнопки внутри окон не
+  // запоминает, а Safari по клику фокус на кнопку не ставит и вернул бы его на само окно галереи).
+  const cta = dialog.querySelector('.gallery__cta');
+  cta?.addEventListener('click', () => {
+    document.getElementById('request')?.addEventListener('close', () => requestAnimationFrame(() => {
+      const active = document.activeElement;
+      if (dialog.open && (!active || active === document.body || active === dialog || !dialog.contains(active))) cta.focus({ preventScroll: true });
+    }), { once: true });
   });
   prev.addEventListener('click', () => { if (current > 0) go(current - 1); });
   next.addEventListener('click', () => { if (current < slides().length - 1) go(current + 1); });

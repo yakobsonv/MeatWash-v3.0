@@ -9,6 +9,9 @@
 /* ---------- Плашки ---------- */
 .project-row { --tiles-bleed: var(--ext); --tiles-gutter: var(--ext); }
 @media (min-width: 1000px) { .project-row { --tiles-bleed: 0px; --tiles-gutter: 0px; } }
+.project-tile__count { background: rgb(20 20 20 / .62); color: #fff; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+/* Ссылка под плашками на /works — к странице услуги. */
+.project-more { margin: clamp(20px, 2vw, 32px) 0 0; text-align: center; }
 .project-tile {
   width: 100%; margin: 0; border: 0;
   font: inherit; text-align: left;
@@ -29,7 +32,7 @@ dialog.dialog.dialog--gallery {
   background: #0b0b0b; color: var(--fg);
   box-shadow: none;
 }
-dialog.dialog.dialog--gallery[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+dialog.dialog.dialog--gallery[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); }
 dialog.dialog--gallery::backdrop { background: #0b0b0b; }
 
 .gallery__top {
@@ -78,10 +81,12 @@ dialog.dialog--gallery::backdrop { background: #0b0b0b; }
 }
 .gallery__track::-webkit-scrollbar { display: none; }
 .gallery__track:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-/* Поле слева — по краю шапки; справа — чтобы и последний кадр вставал к левому краю
-   (padding прокрутки в flex Safari не держит). */
+/* Поле слева — по краю шапки (padding прокрутки в flex Safari не держит). Справа на телефоне — чтобы и
+   последний кадр вставал к левому краю (кадр там во всю ширину); на ширине от 760 лента кончается полем
+   у правого края — последние кадры не уезжают влево, оставляя пустой экран (ревью 07.11). */
 .gallery__track::before { content: ""; flex: 0 0 max(1px, var(--g-pad) - var(--gap)); }
 .gallery__track::after { content: ""; flex: 0 0 max(1px, 100cqw - var(--slide-w) - var(--g-pad) - var(--gap)); }
+@media (min-width: 760px) { .gallery__track::after { flex-basis: max(1px, var(--g-pad) - var(--gap)); } }
 .gallery__slide {
   flex: 0 0 var(--slide-w);
   scroll-snap-align: start; scroll-snap-stop: always;
@@ -110,19 +115,63 @@ dialog.dialog--gallery::backdrop { background: #0b0b0b; }
 .gallery__count { margin: 0; font: 300 clamp(20px, .6vw + 16px, 26px)/1 var(--sans); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
 .gallery__of, .gallery__count [data-gallery-total] { color: var(--on-muted); }
 .gallery__nav { display: flex; gap: 12px; }
+.gallery__count { flex: none; }
+/* «Оставьте заявку»: на тёмном окне — светлая (тёмная основная из dialogs.css тут слилась бы с фоном),
+   наведение — красная, как стрелки. Высота — как у круглых кнопок полосы. */
+dialog.dialog--gallery .btn.gallery__cta {
+  display: block; flex: 0 1 auto; min-width: 0; min-height: 0; height: 52px; margin-left: auto; padding: 0 22px;
+  border: 0; border-radius: 26px;
+  background: var(--fg); color: #0b0b0b;
+  font: 500 15px/52px var(--sans);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+dialog.dialog--gallery .btn.gallery__cta:hover { background: var(--red-ink); color: #fff; }
+dialog.dialog--gallery .btn.gallery__cta:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+.gallery__nav { flex: none; }
+/* Подпись текущего кадра в нижней полосе — только в невысоком окне, где подписи под кадрами скрыты. */
+.gallery__note { display: none; }
 
+/* Невысокий ноутбук (1280×620 … 1536×760): шапка в одну-две строки, иначе кадр 4:5 — с миниатюру. */
+@media (min-width: 760px) and (max-height: 800px) {
+  dialog.dialog.dialog--gallery { --g-pad: clamp(16px, 1.6vw + 4px, 28px); }
+  .gallery__kicker { display: none; }
+  .gallery__head { gap: 4px; }
+  .gallery__title { font-size: clamp(24px, .8vw + 16px, 30px); }
+  .gallery__lead { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; max-width: 90ch; font-size: 15px; }
+  .gallery__top { padding-bottom: 12px; }
+}
+/* Телефон: счётчик, «Оставьте заявку» и стрелки — в одну полосу (стрелки 44 px); уже 380 —
+   кнопка заявки отдельной строкой во всю ширину под счётчиком и стрелками. */
+@media (max-width: 759px) {
+  .gallery__bar { gap: 10px; }
+  .gallery__nav { gap: 8px; }
+  .gallery__btn { width: 44px; height: 44px; }
+  dialog.dialog--gallery .btn.gallery__cta { height: 44px; padding: 0 18px; line-height: 44px; }
+}
+@media (max-width: 379px) {
+  .gallery__bar { flex-wrap: wrap; row-gap: 10px; }
+  .gallery__count { font-size: 20px; }
+  dialog.dialog--gallery .btn.gallery__cta { order: 3; flex: 1 0 100%; margin-left: 0; }
+}
 /* Телефон с невысоким экраном (iPhone SE и т. п.): вводная — в две строки, без подписи над названием. */
 @media (max-width: 759px) and (max-height: 720px) {
   .gallery__kicker { display: none; }
   .gallery__title { font-size: 24px; }
   .gallery__lead { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 15px; }
 }
-/* Невысокое окно (телефон в альбоме): без вводной и подписи над названием — место ленте. */
+/* Невысокое окно (телефон в альбоме): без вводной и подписи над названием — место ленте; подпись
+   текущего кадра — в нижней полосе рядом со счётчиком (под узким кадром она обрезалась). */
 @media (max-height: 560px) {
-  dialog.dialog.dialog--gallery { --g-pad: 12px; --g-cap: 1.9em; }
+  dialog.dialog.dialog--gallery { --g-pad: 12px; --g-cap: 0px; }
   .gallery__kicker, .gallery__lead { display: none; }
   .gallery__title { font-size: 22px; }
-  .gallery__caption { -webkit-line-clamp: 1; padding-top: 6px; }
+  .gallery__caption { display: none; }
+  .gallery__note {
+    display: block; flex: 1 1 auto; min-width: 0; margin: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    color: rgb(var(--fg-rgb) / .78); font-size: 15px;
+  }
+  dialog.dialog--gallery .btn.gallery__cta { height: 44px; margin-left: 0; padding: 0 18px; line-height: 44px; }
   .gallery__btn { width: 44px; height: 44px; }
 }
 

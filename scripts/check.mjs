@@ -524,8 +524,9 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
         // Фото окна — только внутри <template>: до открытия браузер их не запрашивает.
         const tpl = text.match(new RegExp(`<template data-gallery-project="${p.id}">([\\s\\S]*?)</template>`))?.[1] || '';
         ok((tpl.match(/<img\b/g) || []).length === p.photos.length, `${file}: в шаблоне ${p.id} не ${p.photos.length} фото`);
-        for (const x of p.photos) ok(tpl.includes(`alt="${esc(x.alt)}"`) && tpl.includes(`${x.img}-800.webp 800w`) && tpl.includes(`${x.img}-1600.webp 1600w`), `${file}: фото ${x.img} — нет alt или srcset 800/1600`);
+        for (const x of p.photos) ok(tpl.includes(`alt="${esc(x.alt)}"`) && tpl.includes(`${x.img}-800.webp 640w`) && tpl.includes(`${x.img}-1600.webp 1280w`), `${file}: фото ${x.img} — нет alt или srcset 640w/1280w (настоящая ширина файлов 4:5)`);
       }
+      ok(new RegExp(`id="gallery-${dir}"[\\s\\S]*?data-request-category="${dir}"[\\s\\S]*?</dialog>`).test(text), `${file}: в окне-галерее нет «Оставьте заявку» (data-request-category="${dir}")`);
       const outside = strip(text).replace(/<template\b[\s\S]*?<\/template>/g, '');
       ok(!/gallery__img/.test(outside), `${file}: фото окна-галереи вне <template> — загрузятся до открытия`);
       ok(/css\/projects\.css/.test(text) && /css\/tiles\.css/.test(text), `${file}: нужны css/tiles.css и css/projects.css`);

@@ -63,7 +63,8 @@
   ряд `bodywork`. Плашка машины (`car`, ряд `sales`) — ещё `span.work-tile__badge` «В продаже» или `.work-tile__badge--sold` «Продано».
   Данные — `works` в `meatwash-content.json`.
 - `{{projects:wrap}}` (07.11) → `ul.work-tiles.project-tiles[data-projects]` > `li.work-tiles__item` > `button.work-tile.project-tile[data-gallery-open]`
-  (обложка 3:2 с `alt=""`, `span.work-tile__badge--sold` «N фото», заголовок, стрелка) и одно окно `dialog.dialog.dialog--gallery#gallery-wrap`
+  (обложка 3:2 с `alt=""`, `span.work-tile__badge.project-tile__count` «N фото», заголовок, стрелка) и одно окно `dialog.dialog.dialog--gallery#gallery-wrap`
+  (в нижней полосе — `button.gallery__cta[data-request][data-request-category=wrap]` «Оставьте заявку», окно заявки встаёт поверх; srcset кадров 4:5 — `640w`/`1280w`, обложек — `800w`/`1600w`)
   (`js/gallery.js`, `css/projects.css`; фото проекта — в `<template data-gallery-project>`, грузятся по открытию). Данные — `projects`
   в `meatwash-content.json` (`id`, `title`, `lead`, `cover`, `photos[{img, alt, caption}]`, кадры 4:5, файлы -800/-1600). Стоит на /wrap и /works.
 - `{{related:detailing,wrap}}` → `ul.work-tiles.work-tiles--related[data-related]` — плашки направлений (`directions`).
