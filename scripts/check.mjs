@@ -22,7 +22,7 @@
 //            в подвале; карты студий без <iframe>; заявка (согласие, «До 5 фото», ловушка,
 //            ym-hide-content / ym-disable-keys); Вебвизор назван в уведомлении и документах;
 //            клубная карта ведёт на wahelp;
-//   заявки   (Влад 05.11) все призывы — «Записаться онлайн»: кнопки data-request / data-book с этой
+//   заявки   (Влад 05.11, подпись — 09.11 вечер) все призывы — «Оставить заявку», на /wash «Записаться онлайн»: кнопки data-request / data-book с этой
 //            подписью, кнопка в шапке и нижняя кнопка на телефоне — data-request с темой страницы;
 //            data-request-category — тема (site.requests.topics) или категория каталога; каждая
 //            позиция каталога входит в тему;
@@ -102,7 +102,8 @@ const breach = (file, text, at, message) => {
   if (pending(file, place)) soft(`[переходное: ${place === 'main' ? 'тело страницы' : place}] ${message}`);
   else fail(message);
 };
-const REQUEST_LABEL = 'Записаться онлайн';
+// Подпись кнопок заявки (Влад 09.11 вечер): на /wash «Записаться онлайн», на остальных «Оставить заявку».
+const labelFor = (id) => id === 'wash' ? 'Записаться онлайн' : 'Оставить заявку';
 const topics = d.site?.requests?.topics || [];
 const topicIds = new Set(topics.map((t) => t.id));
 
@@ -152,6 +153,7 @@ const cssChecked = new Set();
 
 for (const page of REGISTRY) {
   const file = page.file, text = html[file], body = strip(text);
+  const REQUEST_LABEL = labelFor(page.id);
   // Подстановки и пометки (поправка 7)
   const left = body.match(/.{0,40}(\{\{|\}\}).{0,40}/);
   if (left) fail(`${file}: осталась подстановка: …${left[0]}…`);
@@ -294,17 +296,19 @@ for (const page of REGISTRY) {
     if (!plain(text).includes(ycLine)) fail(`${file}: в окне записи нет строки «${ycLine}» (поправка 17; имя — как студии названы в YCLIENTS)`);
   }
   if (!plain(text).includes('Instagram принадлежит компании Meta, которая признана экстремистской организацией и запрещена на территории РФ.')) fail(`${file}: нет пометки о Meta в подвале`);
-  // «Записаться онлайн» (Влад 05.11): каждая кнопка заявки или записи — с этой подписью
+  // Подпись кнопки заявки (labelFor): каждая кнопка заявки или записи — с этой подписью
   // (продолжение для диктора — в .sr), тема — из site.requests.topics или категория каталога.
   const clean = text.replace(/<!--[\s\S]*?-->/g, (m) => ' '.repeat(m.length));
   for (const m of clean.matchAll(/<(button|a)\b([^>]*\sdata-(?:request|book)(?=[\s>=])[^>]*)>([\s\S]*?)<\/\1>/g)) {
     const [tag, , attrs, inner] = m;
     const label = plain(inner.replace(/<span class="sr">[\s\S]*?<\/span>/g, '')).trim();
-    if (!label.startsWith(REQUEST_LABEL)) breach(file, text, m.index, `${file}: кнопка заявки «${label.slice(0, 40)}» — подпись должна быть «${REQUEST_LABEL}»: ${tag.slice(0, 90)}`);
+    // «Получить расчёт» — кнопка калькулятора оклейки на /wrap (Влад 09.11 вечер).
+    const calc = /\sdata-calc-submit(?=[\s>=])/.test(attrs) && page.id === 'wrap' && label === 'Получить расчёт';
+    if (!calc && !label.startsWith(REQUEST_LABEL)) breach(file, text, m.index, `${file}: кнопка заявки «${label.slice(0, 40)}» — подпись должна быть «${REQUEST_LABEL}»: ${tag.slice(0, 90)}`);
     const category = attrs.match(/\bdata-request-category="([^"]*)"/)?.[1];
     if (category && !topicIds.has(category) && !d.groups.some((g) => g.id === category)) fail(`${file}: data-request-category="${category}" — не тема из site.requests.topics и не категория каталога`);
   }
-  // Кнопка в шапке, «Записаться онлайн» в шторке и подвале, нижняя кнопка — заявка с темой страницы.
+  // Кнопка в шапке, кнопка заявки в шторке и подвале, нижняя кнопка — заявка с темой страницы.
   if (page.shared.includes('header')) {
     const want = `type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`;
     ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" ${want}`), `${file}: кнопка в шапке — не «${REQUEST_LABEL}» с темой «${page.topic || ''}»`);
@@ -329,6 +333,7 @@ for (const t of todos) soft(`нужно от клиента — ${t}`);
 // ── Каталог /services по смыслу (§4.3, поправка 30) ──────────────────────────
 const services = html['services.html'];
 {
+  const REQUEST_LABEL = labelFor('services');
   const tabs = [...services.matchAll(/<a class="anchor-tabs__tab catalog__tab" id="tab-price-([a-z]+)" href="#price-\1">([^<]+)<\/a>/g)].map((m) => [m[1], m[2]]);
   ok(same(tabs, d.groups.map((g) => [g.id, esc(g.title)])), 'services.html: вкладки каталога не совпадают с четырьмя категориями JSON (порядок, названия, href)');
   ok(services.includes('data-catalog-tabs'), 'services.html: нет [data-catalog-tabs]');
@@ -405,6 +410,7 @@ const services = html['services.html'];
 // где позиция есть, до последней (считаем здесь заново, не через catalog.mjs).
 {
   const wash = html['wash.html'] || '';
+  const REQUEST_LABEL = labelFor('wash');
   const top = d.picks?.items?.find((p) => p.id === 'price-wash-top');
   const block = wash.match(/<section class="catalog__section catalog__section--picks" id="price-wash-top"[\s\S]*?<\/section>/)?.[0] || '';
   if (ok(top && block, 'wash.html: нет «Топ-5 услуг» (#price-wash-top из picks)')) {
@@ -577,7 +583,7 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
         ok((tpl.match(/<img\b/g) || []).length === p.photos.length, `${file}: в шаблоне ${p.id} не ${p.photos.length} фото`);
         for (const x of p.photos) ok(tpl.includes(`alt="${esc(x.alt)}"`) && tpl.includes(`${x.img}-800.webp 640w`) && tpl.includes(`${x.img}-1600.webp 1280w`), `${file}: фото ${x.img} — нет alt или srcset 640w/1280w (настоящая ширина файлов 4:5)`);
       }
-      ok(new RegExp(`id="gallery-${dir}"[\\s\\S]*?data-request-category="${dir}"[\\s\\S]*?</dialog>`).test(text), `${file}: в окне-галерее нет «Записаться онлайн» (data-request-category="${dir}")`);
+      ok(new RegExp(`id="gallery-${dir}"[\\s\\S]*?data-request-category="${dir}"[\\s\\S]*?</dialog>`).test(text), `${file}: в окне-галерее нет «Оставить заявку» (data-request-category="${dir}")`);
       const outside = strip(text).replace(/<template\b[\s\S]*?<\/template>/g, '');
       ok(!/gallery__img/.test(outside), `${file}: фото окна-галереи вне <template> — загрузятся до открытия`);
       ok(/css\/projects\.css/.test(text) && /css\/tiles\.css/.test(text), `${file}: нужны css/tiles.css и css/projects.css`);
@@ -613,7 +619,8 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
   const includes = (i) => d.programItems.slice(0, i + 1).flat();
   for (const program of programZones) for (const zone of config.ZONES.filter((z) => includes(program.price.program).includes(z.price.item)))
     for (let b = 0; b < d.bodyTypes.length; b++) ok(config.garageSum([program.id, zone.id], b) === expected(program, b), `Гараж: «${zone.title}» входит в «${program.title}», но считается второй раз`);
-  ok(same(config.ZONES.filter((z) => config.isWash(z)).map((z) => z.id), programZones.map((z) => z.id)), 'Гараж: в запись YCLIENTS уходит только мойка');
+  // В запись YCLIENTS уходят работы категории автомойки: программы и химчистка салона (Влад 09.11).
+  ok(same(config.ZONES.filter((z) => config.isWash(z)).map((z) => z.id), config.ZONES.filter((z) => z.group === 'wash').map((z) => z.id)), 'Гараж: в запись YCLIENTS уходит только мойка');
 }
 
 // ── Машины и счётчики (§4.6) ─────────────────────────────────────────────────

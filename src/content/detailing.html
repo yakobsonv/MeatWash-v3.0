@@ -3,7 +3,9 @@
      герой → коротко в цифрах → что входит → салон → кузов и стёкла → узлы и диски → перед продажей →
      чего детейлинг не сделает → как проходит работа → наши работы → когда делать → почему мы →
      отзывы → вопросы → другие направления → коротко для поиска → заявка и студии.
-     Цены — только подстановками из каталога. Подразделы: price-interior, price-leather,
+     Влад 09.11 вечер: блока «Что входит в детейлинг» нет; химчистка салона (price-interior) — услуга
+     автомойки, стоит на /wash (#wash-interior).
+     Цены — только подстановками из каталога. Подразделы: price-leather,
      price-polish, price-coatings, price-components; предпродажная подготовка — строкой в «Когда нужен». «Стёкла» каталога (price-glass)
      целиком не ставим: «Бронирование лобового стекла» — тема «Оклейка плёнкой» (PLAN.md), поэтому
      антидождь и ремонт стёкол — своими строками в разметке каталога, цены — подстановкой price.
@@ -20,17 +22,17 @@
   </picture>
   <div class="hero-a__body">
     <h1 id="page-title">Детейлинг в&nbsp;Москве</h1>
-    <p class="hero-a__lead">Химчистка салона и уход за кожей, полировка и защитные покрытия кузова, стёкла, диски, подвеска и моторный отсек.</p>
+    <p class="hero-a__lead">Уход за кожей и пластиком салона, полировка и защитные покрытия кузова, стёкла, диски, подвеска и моторный отсек.</p>
     <div class="hero-a__actions actions">
-      <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Записаться онлайн</button>
-      <a class="btn btn--secondary" href="#detailing-scope">Работы и цены</a>
+      <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Оставить заявку</button>
+      <a class="btn btn--secondary" href="#detailing-interior">Работы и цены</a>
     </div>
     <p class="sec-hero__where">{{icon:pin}}<span>Лубянка и Технопарк — каждый день до 22:00</span></p>
   </div>
 </section>
 
 <ul class="sec-facts col-wide" role="list" aria-label="Детейлинг коротко">
-  <li class="sec-facts__item"><b class="sec-facts__value">{{price:Детейлинг-химчистка салона}}</b><span class="sec-facts__label">Химчистка всего салона: ткань, алькантара и кожа</span></li>
+  <li class="sec-facts__item"><b class="sec-facts__value">{{price:Детейлинг дисков}}</b><span class="sec-facts__label">Детейлинг колёсных дисков</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">{{price:Полировка кузова + 2 слоя керамики}}</b><span class="sec-facts__label">Полировка кузова и два слоя керамики сверху</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">{{price:Керамическое покрытие кузова}}</b><span class="sec-facts__label">Керамическое покрытие кузова отдельно</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">{{count:studios}} студии</b><span class="sec-facts__label">Лубянка и Технопарк</span></li>
@@ -38,7 +40,6 @@
 
 <nav class="anchor-tabs" data-anchor-tabs aria-label="Разделы страницы">
   <div class="anchor-tabs__track">
-    <a class="anchor-tabs__tab" href="#detailing-scope">Что входит</a>
     <a class="anchor-tabs__tab" href="#detailing-interior">Салон</a>
     <a class="anchor-tabs__tab" href="#detailing-body">Кузов и стёкла</a>
     <a class="anchor-tabs__tab" href="#detailing-components">Узлы и диски</a>
@@ -48,45 +49,12 @@
   </div>
 </nav>
 
-<section class="section sec-block" id="detailing-scope" aria-labelledby="detailing-scope-title">
-  <header class="section-head col-title">
-    <h2 id="detailing-scope-title">Что входит в детейлинг</h2>
-    <p class="section-head__lead">Детейлинг — это глубже, чем мойка: возвращаем материалам вид и защищаем их. Берём машину целиком или одну зону — как нужно вам.</p>
-  </header>
-  <ul class="sec-zones col-ext" role="list">
-    <li><a class="sec-zone" href="#detailing-interior">
-      <h3 class="sec-zone__title">Салон</h3>
-      <p class="sec-zone__text">Химчистка ткани, алькантары и кожи, уход за кожей и пластиком, запахи, кондиционер.</p>
-      <span class="sec-zone__price">от {{min-section:price-interior}}</span>
-      <span class="sec-zone__go" aria-hidden="true">{{icon:arrow-right}}</span>
-    </a></li>
-    <li><a class="sec-zone" href="#detailing-body">
-      <h3 class="sec-zone__title">Кузов</h3>
-      <p class="sec-zone__text">Полировка, керамика и кварц, восстановление хрома, полировка фар.</p>
-      <span class="sec-zone__price">от {{min-section:price-polish}}</span>
-      <span class="sec-zone__go" aria-hidden="true">{{icon:arrow-right}}</span>
-    </a></li>
-    <li><a class="sec-zone" href="#detailing-glass">
-      <h3 class="sec-zone__title">Стёкла</h3>
-      <p class="sec-zone__text">Антидождь на передние или на все стёкла, ремонт повреждений стекла.</p>
-      <span class="sec-zone__price">{{price:Антидождь передней полусферы}}</span>
-      <span class="sec-zone__go" aria-hidden="true">{{icon:arrow-right}}</span>
-    </a></li>
-    <li><a class="sec-zone" href="#detailing-components">
-      <h3 class="sec-zone__title">Узлы и диски</h3>
-      <p class="sec-zone__text">Диски, моторный отсек, подвеска и радиаторы.</p>
-      <span class="sec-zone__price">от {{min-section:price-components}}</span>
-      <span class="sec-zone__go" aria-hidden="true">{{icon:arrow-right}}</span>
-    </a></li>
-  </ul>
-</section>
-
 <section class="section sec-block sec-block--prices" id="detailing-interior" aria-labelledby="detailing-interior-title">
   <header class="section-head col-title">
     <h2 id="detailing-interior-title">Салон</h2>
-    <p class="section-head__lead">Средство и способ чистки подбираем под материал: ткань, алькантару и кожу чистят по-разному. Запахи убирают озонация и сухой туман, а если пахнет из дефлекторов — очистка кондиционера.</p>
+    <p class="section-head__lead">Уход за кожей и пластиком: питание и защита кожи сидений, керамика кожи, восстановление выгоревшего пластика. Химчистка салона — на <a href="wash#wash-interior">автомойке</a>.</p>
   </header>
-{{prices:price-interior,price-leather}}
+{{prices:price-leather}}
 </section>
 
 <section class="section sec-block sec-block--prices" id="detailing-body" aria-labelledby="detailing-body-title">
@@ -102,9 +70,9 @@
         <p class="catalog__section-note">Защитную плёнку на лобовое стекло клеим в разделе <a href="wrap">«Оклейка плёнкой»</a>.</p>
       </div>
       <ul class="catalog__items" role="list">
-        <li class="catalog__item" data-price-item="Антидождь передней полусферы"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь передней полусферы</p><p class="catalog__item-note">Лобовое и передние боковые стёкла: на скорости вода срывается сама.</p></div><p class="catalog__item-price">{{price:Антидождь передней полусферы}}</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь передней полусферы"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Антидождь передней полусферы</span>{{icon:arrow-right}}</button></li>
-        <li class="catalog__item" data-price-item="Антидождь всех стёкол автомобиля"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь всех стёкол автомобиля</p><p class="catalog__item-note">Гидрофобная защита всех стёкол автомобиля.</p></div><p class="catalog__item-price">{{price:Антидождь всех стёкол автомобиля}}</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь всех стёкол автомобиля"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Антидождь всех стёкол автомобиля</span>{{icon:arrow-right}}</button></li>
-        <li class="catalog__item" data-price-item="Ремонт автомобильных стёкол"><div class="catalog__item-text"><p class="catalog__item-name">Ремонт автомобильных стёкол</p><p class="catalog__item-note">Стоимость — после осмотра повреждения.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Ремонт автомобильных стёкол"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Ремонт автомобильных стёкол</span>{{icon:arrow-right}}</button></li>
+        <li class="catalog__item" data-price-item="Антидождь передней полусферы"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь передней полусферы</p><p class="catalog__item-note">Лобовое и передние боковые стёкла: на скорости вода срывается сама.</p></div><p class="catalog__item-price">{{price:Антидождь передней полусферы}}</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь передней полусферы"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Антидождь передней полусферы</span>{{icon:arrow-right}}</button></li>
+        <li class="catalog__item" data-price-item="Антидождь всех стёкол автомобиля"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь всех стёкол автомобиля</p><p class="catalog__item-note">Гидрофобная защита всех стёкол автомобиля.</p></div><p class="catalog__item-price">{{price:Антидождь всех стёкол автомобиля}}</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь всех стёкол автомобиля"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Антидождь всех стёкол автомобиля</span>{{icon:arrow-right}}</button></li>
+        <li class="catalog__item" data-price-item="Ремонт автомобильных стёкол"><div class="catalog__item-text"><p class="catalog__item-name">Ремонт автомобильных стёкол</p><p class="catalog__item-note">Стоимость — после осмотра повреждения.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Ремонт автомобильных стёкол"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Ремонт автомобильных стёкол</span>{{icon:arrow-right}}</button></li>
       </ul>
     </section>
     <p class="catalog__note">Стоимость зависит от типа кузова и состояния автомобиля. Итоговый объём и цену согласуем перед работой. Не является публичной офертой.</p>
@@ -139,10 +107,6 @@
       <h3>Глубокая царапина станет незаметнее, но останется</h3>
       <p>Лак не бесконечен: снимать его до тех пор, пока царапина не исчезнет, нельзя — это дорога к покраске.</p>
     </li>
-    <li class="sec-limits__item">
-      <h3>Старое пятно может не уйти целиком</h3>
-      <p>Краска, чернила и пятна, которые давно въелись в ткань, иногда только светлеют. Это видно после пробной чистки.</p>
-    </li>
   </ul>
 </section>
 
@@ -154,7 +118,7 @@
     <ol class="steps sec-steps">
       <li class="steps__item">
         <h3>Заявка</h3>
-        <p>Запишитесь онлайн или позвоните в студию: расскажите, что беспокоит, — салон, лак, запах или всё сразу.</p>
+        <p>Оставьте заявку или позвоните в студию: расскажите, что беспокоит, — салон, лак, запах или всё сразу.</p>
       </li>
       <li class="steps__item">
         <h3>Осмотр и цена</h3>
@@ -166,7 +130,7 @@
       </li>
       <li class="steps__item">
         <h3>Проверка и выдача</h3>
-        <p>Проверяем результат вместе с вами. После химчистки салону нужно время, чтобы высохнуть, после керамики — чтобы покрытие набрало прочность.</p>
+        <p>Проверяем результат вместе с вами. После керамики покрытию нужно время, чтобы набрать прочность.</p>
       </li>
     </ol>
   </div>
@@ -193,7 +157,7 @@
     </li>
     <li class="sec-points__item">
       <h3>Машина с пробегом</h3>
-      <p>Лак потускнел и покрылся паутинкой, салон затёрт — полировка и химчистка возвращают вид.</p>
+      <p>Лак потускнел и покрылся паутинкой, кожа в салоне затёрта — полировка и уход за кожей возвращают вид.</p>
     </li>
     <li class="sec-points__item">
       <h3>После зимы</h3>
@@ -210,7 +174,7 @@
     <li class="sec-points__item">
       <h3>Перед продажей</h3>
       <p>Чистый салон, блестящий кузов и вымытый моторный отсек — машину приятнее показывать. Предпродажная подготовка — {{price:Предпродажная подготовка}}.</p>
-      <button class="link-arrow sec-points__action" type="button" data-request data-request-category="detailing" data-request-services="Предпродажная подготовка">Записаться онлайн<span class="sr">: предпродажная подготовка</span>{{icon:arrow-right}}</button>
+      <button class="link-arrow sec-points__action" type="button" data-request data-request-category="detailing" data-request-services="Предпродажная подготовка">Оставить заявку<span class="sr">: предпродажная подготовка</span>{{icon:arrow-right}}</button>
     </li>
   </ul>
 </section>
@@ -251,7 +215,7 @@
     <details class="accordion">
       <summary class="accordion__head">Сколько стоит детейлинг?</summary>
       <div class="accordion__body">
-        <p>Единой цены нет: она складывается из работ. Химчистка всего салона — {{price:Детейлинг-химчистка салона}}, полировка кузова с двумя слоями керамики — {{price:Полировка кузова + 2 слоя керамики}}, отдельные работы по салону — от {{min-section:price-interior}}. Цена зависит от типа кузова и состояния машины, итог согласуем на осмотре.</p>
+        <p>Единой цены нет: она складывается из работ. Полировка кузова с двумя слоями керамики — {{price:Полировка кузова + 2 слоя керамики}}, уход за кожей и пластиком салона — от {{min-section:price-leather}}. Цена зависит от типа кузова и состояния машины, итог согласуем на осмотре.</p>
       </div>
     </details>
     <details class="accordion">
@@ -277,14 +241,8 @@
     <details class="accordion">
       <summary class="accordion__head">Сколько времени занимает детейлинг?</summary>
       <div class="accordion__body">
-        <p>Зависит от объёма. Отдельную деталь салона или кузова можно сделать за визит, полировку с керамикой и полную химчистку — дольше: салону нужно высохнуть, покрытию — набрать прочность.</p>
-        <p>{{todo:сроки химчистки салона, полировки с керамикой и керамики кожи — сколько машина проводит в студии}}</p>
-      </div>
-    </details>
-    <details class="accordion">
-      <summary class="accordion__head">Уйдут ли все пятна после химчистки?</summary>
-      <div class="accordion__body">
-        <p>Большинство загрязнений уходит. Старые пятна от краски, чернил или кофе, въевшиеся глубоко в ткань, иногда только светлеют — это видно после пробной чистки на месте.</p>
+        <p>Зависит от объёма. Отдельную деталь салона или кузова можно сделать за визит, полировку с керамикой — дольше: покрытию нужно набрать прочность.</p>
+        <p>{{todo:сроки полировки с керамикой и керамики кожи — сколько машина проводит в студии}}</p>
       </div>
     </details>
     <details class="accordion">
@@ -322,17 +280,17 @@
 
 <section class="section sec-seo col-narrow" aria-labelledby="detailing-seo-title">
   <h2 id="detailing-seo-title">Детейлинг автомобиля в Москве</h2>
-  <p>В студиях <span lang="en">MEATWASH</span> на Лубянке и в Технопарке делают химчистку салона, уход за кожей и пластиком, полировку кузова и фар, керамическое и кварцевое покрытие, антидождь, детейлинг дисков, моторного отсека и подвески. Цены — от {{min-section:price-interior}} за отдельную работу; химчистка всего салона — {{price:Детейлинг-химчистка салона}}.</p>
+  <p>В студиях <span lang="en">MEATWASH</span> на Лубянке и в Технопарке делают уход за кожей и пластиком салона, полировку кузова и фар, керамическое и кварцевое покрытие, антидождь, детейлинг дисков, моторного отсека и подвески. Цены — от {{min:detailing}} за отдельную работу. Химчистку салона делаем на <a href="wash#wash-interior">автомойке</a>.</p>
   <p>Полировку кузова делаем вместе с керамикой: покрытие закрепляет то состояние лака, которое под ним. От сколов керамика не спасает — для этого есть <a href="wrap">оклейка плёнкой</a>, а скол до металла убирают <a href="bodywork">кузовные работы</a>. Для регулярного ухода между визитами — <a href="wash">автомойка</a>.</p>
 </section>
 
 <section class="sec-cta" id="leave-request" aria-labelledby="leave-request-title">
   <div class="sec-cta__inner">
     <div class="sec-cta__head">
-      <h2 class="sec-cta__title" id="leave-request-title">Записаться онлайн</h2>
+      <h2 class="sec-cta__title" id="leave-request-title">Оставить заявку</h2>
       <p class="sec-cta__lead">Опишите, что хотите сделать с салоном или кузовом, или позвоните в студию — подскажем объём работ и цену.</p>
       <div class="actions">
-        <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Записаться онлайн</button>
+        <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Оставить заявку</button>
       </div>
     </div>
     <ul class="sec-studios" role="list">

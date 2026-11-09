@@ -1,4 +1,4 @@
-// Общее для всех страниц MEATWASH: окно «Записаться онлайн» (одно на все призывы, Влад 05.11),
+// Общее для всех страниц MEATWASH: окно «Оставить заявку» (одно на все призывы, Влад 05.11),
 // карты студий, переходы по якорям, появление блоков, блокировка прокрутки под любым открытым
 // <dialog>. Владелец: исполнитель A (раньше WP6; план §4.1, §4.7; поправки критика 18, 21).
 // Меню-шторка — js/shell.js (WP1): он открывает и закрывает <dialog id="drawer"> и закрывает его
@@ -82,7 +82,7 @@ export function setupUI() {
  const settling=e=>e.detail>1||performance.now()-openedAt<400;
  const closeDialogs=()=>{ requestDialog?.close(); closeDrawer(); };
 
- // Окно «Записаться онлайн» (js/request.js): модуль — по первому нажатию любой кнопки заявки.
+ // Окно «Оставить заявку» (js/request.js): модуль — по первому нажатию любой кнопки заявки.
  // Все призывы сайта ведут в эту форму (Влад 05.11): data-request (тема, работы, о чём заявка),
  // data-book у автомойки (тема «Автомойка», программа и работы — в корзину онлайн-записи),
  // data-membership — прежние кнопки клуба, пока страницы не переписаны (тема «Клубная карта»).
@@ -155,7 +155,7 @@ export function setupUI() {
   // с какой страницы, из какого места и в какой канал или чат ушёл посетитель.
   else if(/^https?:\/\/t\.me\//i.test(href))goal('telegram_click',{from:document.body.dataset.page||location.pathname,place:placeOf(control),to:href.replace(/^https?:\/\/t\.me\//i,'').split(/[?#]/)[0]});
   else{const branch=LOCATIONS.find(l=>href&&l.booking&&href.startsWith(l.booking.replace(/\/personal\/.*$/,'/')));if(branch)goal('booking_branch',{branch:branch.id,preset:/[?&]o=m-1s/.test(href)});}
-  // «Записаться онлайн» (и запись на автомойку, и прежние кнопки клуба) — одна форма #request.
+  // «Оставить заявку» (и запись на автомойку, и прежние кнопки клуба) — одна форма #request.
   if(control.matches('[data-book],[data-request],[data-membership]')){ e.preventDefault(); return openRequest(control); }
   // «На карте» в подвале — переход к карте студии: якорь на этой странице или на «О нас».
   // Уходя на главную, запрос Метрики со старой страницы может не успеть — тогда цель

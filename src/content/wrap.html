@@ -8,9 +8,13 @@
      price-glass стоит на /detailing.
      Якоря #wrap-kind, #wrap-prices, #wrap-steps, #wrap-call проверяет check (старые ссылки).
      Стили — блок «D: wrap + bodywork» в конце dist/css/section.css (классы ds-*); герой и переключатель
-     плёнки — services.css (wrap-hero). Призывы — только «Записаться онлайн» (data-request, тема wrap).
+     плёнки — services.css (wrap-hero). Призывы — только «Оставить заявку» (data-request, тема wrap).
      «Наши работы» (07.11) — три проекта с окном-галереей: подстановка projects (данные projects.wrap,
      окно js/gallery.js, вид css/projects.css); ряд works.wrap больше не выводится.
+     «Что оклеиваем» (Влад 09.11 вечер) — калькулятор: наборы (зоны риска, весь кузов, свой), схема
+     с деталями (нажатие на деталь — флажок в списке), плёнка, кузов, монтаж с разбором или без,
+     «Получить расчёт» — форма заявки с темой wrap, работами и строкой расчёта (js/wrapcalc.js,
+     css/wrapcalc.css). Цены деталей кузова не известны — в расчёте «после осмотра».
      В комментариях фигурные скобки подстановок не писать. -->
 <section class="hero-c wrap-hero" aria-labelledby="page-title" data-page-bar-after>
   <p class="hero-c__mark" aria-hidden="true" lang="en" data-mark="PPF"></p>
@@ -27,15 +31,15 @@
   </div>
   <p class="hero-c__price">Фары — {{price:Оклейка фар плёнкой}} · зоны риска и весь кузов — после осмотра</p>
   <div class="hero-c__actions actions">
-    <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Записаться онлайн<span class="sr"> на оклейку плёнкой</span></button>
-    <a class="btn btn--secondary" href="#wrap-prices">Что оклеиваем</a>
+    <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставить заявку<span class="sr"> на оклейку плёнкой</span></button>
+    <a class="btn btn--secondary" href="#wrap-prices">Получить расчёт</a>
   </div>
 </section>
 
 <div class="page-bar" data-page-bar>
   <p class="page-bar__title">Оклейка плёнкой</p>
   <div class="page-bar__actions">
-    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap">Записаться онлайн<span class="sr"> на оклейку плёнкой</span></button>
+    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap">Оставить заявку<span class="sr"> на оклейку плёнкой</span></button>
   </div>
   <span class="page-bar__progress" aria-hidden="true"></span>
 </div>
@@ -91,24 +95,101 @@
 <section class="section" id="wrap-prices" aria-labelledby="wrap-prices-title">
   <header class="section-head">
     <h2 id="wrap-prices-title">Что оклеиваем</h2>
-    <p class="section-head__lead">Можно защитить только то, что чаще страдает, а можно весь кузов. Объём подберём на осмотре вместе с вами.</p>
+    <p class="section-head__lead">Отметьте детали на схеме или выберите готовый набор, затем нажмите «Получить расчёт» — заявка уйдёт в Технопарк со всем, что вы выбрали.</p>
   </header>
-  <div class="cards cards--3 col-basic">
-    <article class="card">
-      <h3>Зоны риска</h3>
-      <p>Капот, передний бампер, фары, передние крылья, зеркала и пороги — детали, которые первыми принимают камни и реагенты. Точный набор зависит от модели и того, как вы ездите.</p>
-    </article>
-    <article class="card">
-      <h3>Весь кузов</h3>
-      <p>Плёнка на все окрашенные детали: прозрачная — для защиты, цветная — для нового цвета и защиты сразу.</p>
-    </article>
-    <article class="card">
-      <h3>Фары и лобовое стекло</h3>
-      <p>Отдельные работы: плёнка бережёт фары от сколов и помутнения, лобовое — от мелких сколов и трещин из-за них.</p>
-      <p class="ds-card-price">Фары — {{price:Оклейка фар плёнкой}}<br>Лобовое стекло — {{price:Бронирование лобового стекла}}</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Бронирование лобового стекла">Записаться онлайн<span class="sr">: плёнка на лобовое стекло</span></button>
-    </article>
-  </div>
+  <form class="wcalc col-basic" id="wrap-calc" data-wrap-calc aria-label="Калькулятор оклейки" novalidate>
+    <fieldset class="wcalc__block wcalc__scope">
+      <legend class="wcalc__legend">Объём</legend>
+      <div class="wcalc__options wcalc__options--3">
+        <label class="wcalc__option"><input type="radio" name="scope" value="risk" checked><span class="wcalc__option-name">Зоны риска</span><span class="wcalc__option-text">Капот, передний бампер, передние крылья, зеркала, пороги и фары — их первыми бьют камни и реагенты.</span></label>
+        <label class="wcalc__option"><input type="radio" name="scope" value="full"><span class="wcalc__option-name">Весь кузов</span><span class="wcalc__option-text">Плёнка на все окрашенные детали.</span></label>
+        <label class="wcalc__option"><input type="radio" name="scope" value="custom"><span class="wcalc__option-name">Свой набор</span><span class="wcalc__option-text">Только те детали, которые отметите на схеме.</span></label>
+      </div>
+    </fieldset>
+    <div class="wcalc__car">
+      <div class="wcalc__stage">
+        <svg class="wcalc__svg" viewBox="0 0 240 520" aria-hidden="true" focusable="false">
+          <defs><clipPath id="wcalc-body"><path d="M120 18 C168 18 198 26 203 58 C207 84 208 110 208 140 C208 200 205 230 205 260 C205 300 208 340 208 390 C208 430 206 470 200 484 C194 498 166 502 120 502 C74 502 46 498 40 484 C34 470 32 430 32 390 C32 340 35 300 35 260 C35 230 32 200 32 140 C32 110 33 84 37 58 C42 26 72 18 120 18 Z"/></clipPath></defs>
+          <g class="wcalc__wheels"><rect x="23" y="92" width="13" height="58" rx="6"/><rect x="204" y="92" width="13" height="58" rx="6"/><rect x="23" y="380" width="13" height="58" rx="6"/><rect x="204" y="380" width="13" height="58" rx="6"/></g>
+          <path class="wcalc__base" d="M120 18 C168 18 198 26 203 58 C207 84 208 110 208 140 C208 200 205 230 205 260 C205 300 208 340 208 390 C208 430 206 470 200 484 C194 498 166 502 120 502 C74 502 46 498 40 484 C34 470 32 430 32 390 C32 340 35 300 35 260 C35 230 32 200 32 140 C32 110 33 84 37 58 C42 26 72 18 120 18 Z"/>
+          <path class="wcalc__glass" d="M71 339 C100 343 140 343 169 339 L177 391 C150 397 90 397 63 391 Z"/>
+          <g class="wcalc__part" data-part="hood" clip-path="url(#wcalc-body)"><title>Капот</title><path d="M57 60 C90 54 150 54 183 60 L178 166 C150 159 90 159 62 166 Z"/></g>
+          <g class="wcalc__part" data-part="bumper-f" clip-path="url(#wcalc-body)"><title>Передний бампер</title><path d="M0 0 H240 V61 C170 49 70 49 0 61 Z"/></g>
+          <g class="wcalc__part" data-part="fenders-f" clip-path="url(#wcalc-body)"><title>Передние крылья</title><path d="M0 64 C20 60 40 58 54 58 L59 176 L0 181 Z"/><path d="M 240 64 C 220 60 200 58 186 58 L 181 176 L 240 181 Z"/></g>
+          <g class="wcalc__part" data-part="mirrors"><title>Зеркала</title><path d="M33 187 C25 182 15 184 13 192 C12 199 21 204 33 200 Z"/><path d="M 207 187 C 215 182 225 184 227 192 C 228 199 219 204 207 200 Z"/></g>
+          <g class="wcalc__part" data-part="sills" clip-path="url(#wcalc-body)"><title>Пороги</title><path d="M0 186 L39 186 L39 384 L0 384 Z"/><path d="M 240 186 L 201 186 L 201 384 L 240 384 Z"/></g>
+          <g class="wcalc__part" data-part="doors-f" clip-path="url(#wcalc-body)"><title>Передние двери</title><path d="M42 184 L59 181 L69 232 L69 287 L42 287 Z"/><path d="M 198 184 L 181 181 L 171 232 L 171 287 L 198 287 Z"/></g>
+          <g class="wcalc__part" data-part="doors-r" clip-path="url(#wcalc-body)"><title>Задние двери</title><path d="M42 291 L69 291 L69 336 L61 384 L42 384 Z"/><path d="M 198 291 L 171 291 L 171 336 L 179 384 L 198 384 Z"/></g>
+          <g class="wcalc__part" data-part="roof" clip-path="url(#wcalc-body)"><title>Крыша</title><path d="M73 235 C100 231 140 231 167 235 L169 334 C140 338 100 338 71 334 Z"/></g>
+          <g class="wcalc__part" data-part="fenders-r" clip-path="url(#wcalc-body)"><title>Задние крылья</title><path d="M0 388 L58 388 L60 447 C40 446 20 447 0 449 Z"/><path d="M 240 388 L 182 388 L 180 447 C 200 446 220 447 240 449 Z"/></g>
+          <g class="wcalc__part" data-part="trunk" clip-path="url(#wcalc-body)"><title>Крышка багажника</title><path d="M64 397 C90 403 150 403 176 397 L177 447 C150 455 90 455 63 447 Z"/></g>
+          <g class="wcalc__part" data-part="bumper-r" clip-path="url(#wcalc-body)"><title>Задний бампер</title><path d="M0 453 C70 463 170 463 240 453 V520 H0 Z"/></g>
+          <g class="wcalc__part wcalc__part--extra" data-part="windshield" clip-path="url(#wcalc-body)"><title>Лобовое стекло</title><path d="M63 171 C90 163 150 163 177 171 L167 230 C140 226 100 226 73 230 Z"/></g>
+          <g class="wcalc__part wcalc__part--extra" data-part="headlights"><title>Фары</title><path d="M43 49 C52 43 66 41 81 43 L79 55 C66 57 54 59 42 62 Z"/><path d="M 197 49 C 188 43 174 41 159 43 L 161 55 C 174 57 186 59 198 62 Z"/></g>
+          <path class="wcalc__outline" d="M120 18 C168 18 198 26 203 58 C207 84 208 110 208 140 C208 200 205 230 205 260 C205 300 208 340 208 390 C208 430 206 470 200 484 C194 498 166 502 120 502 C74 502 46 498 40 484 C34 470 32 430 32 390 C32 340 35 300 35 260 C35 230 32 200 32 140 C32 110 33 84 37 58 C42 26 72 18 120 18 Z"/>
+        </svg>
+        <p class="wcalc__hint">Нажмите на деталь, чтобы добавить или убрать её</p>
+      </div>
+    </div>
+    <fieldset class="wcalc__block wcalc__parts">
+      <legend class="wcalc__legend">Детали кузова</legend>
+      <div class="wcalc__chips">
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="hood" checked><span>Капот</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="bumper-f" checked><span>Передний бампер</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="fenders-f" checked><span>Передние крылья</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="mirrors" checked><span>Зеркала</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="sills" checked><span>Пороги</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="doors-f"><span>Передние двери</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="doors-r"><span>Задние двери</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="roof"><span>Крыша</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="fenders-r"><span>Задние крылья</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="trunk"><span>Крышка багажника</span></label>
+          <label class="wcalc__chip"><input type="checkbox" name="part" value="bumper-r"><span>Задний бампер</span></label>
+      </div>
+      <p class="wcalc__legend wcalc__legend--sub" id="wcalc-extras">Отдельно</p>
+      <div class="wcalc__chips" role="group" aria-labelledby="wcalc-extras">
+        <label class="wcalc__chip"><input type="checkbox" name="extra" value="headlights" data-item="Оклейка фар плёнкой" checked><span>Фары · {{price:Оклейка фар плёнкой}}</span></label>
+        <label class="wcalc__chip"><input type="checkbox" name="extra" value="windshield" data-item="Бронирование лобового стекла"><span>Лобовое стекло · {{price:Бронирование лобового стекла}}</span></label>
+      </div>
+    </fieldset>
+    <div class="wcalc__block wcalc__opts">
+      <fieldset class="wcalc__field">
+        <legend class="wcalc__legend">Плёнка</legend>
+        <div class="segmented wcalc__seg">
+        <label><input type="radio" name="film" value="clear" checked><span>Прозрачная</span></label>
+        <label><input type="radio" name="film" value="color"><span>Цветная</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="wcalc__field">
+        <legend class="wcalc__legend">Кузов</legend>
+        <div class="segmented wcalc__seg">
+        <label><input type="radio" name="body" value="0" checked><span>Седан</span></label>
+        <label><input type="radio" name="body" value="1"><span>Кроссовер</span></label>
+        <label><input type="radio" name="body" value="2"><span>Внедорожник</span></label>
+        <label><input type="radio" name="body" value="3"><span>Микроавтобус</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="wcalc__mount">
+        <legend class="wcalc__legend">Монтаж</legend>
+        <div class="wcalc__options wcalc__options--2">
+          <label class="wcalc__option"><input type="radio" name="mount" value="no" checked><span class="wcalc__option-name">Без разбора</span><span class="wcalc__option-text">Детали остаются на машине, плёнку подрезаем по кромкам.</span></label>
+          <label class="wcalc__option"><input type="radio" name="mount" value="yes"><span class="wcalc__option-name">С разбором</span><span class="wcalc__option-text">Снимаем ручки, эмблемы, фонари и молдинги, плёнку заводим за кромки — края почти не видно.</span></label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="wcalc__sum" aria-live="polite">
+      <h3 class="wcalc__sum-title">Ваш расчёт</h3>
+      <p class="wcalc__sum-car" data-calc-car>Седан · прозрачная плёнка · без разбора</p>
+      <ul class="wcalc__lines" role="list" data-calc-lines>
+        <li><span>Детали кузова: 5</span><b>после осмотра</b></li>
+        <li><span>Фары</span><b>{{price:Оклейка фар плёнкой}}</b></li>
+      </ul>
+      <p class="wcalc__sum-parts" data-calc-parts>Капот, передний бампер, передние крылья, зеркала, пороги</p>
+      <p class="wcalc__total" data-calc-total>Итог назовём после осмотра</p>
+      <button class="btn btn--primary btn--block wcalc__submit" type="button" data-request data-request-category="wrap" data-calc-submit data-request-services="Оклейка зон риска|Оклейка фар плёнкой" data-request-context="Расчёт оклейки: седан, прозрачная плёнка, без разбора. Детали кузова (5): капот, передний бампер, передние крылья, зеркала, пороги; отдельно: фары.">Получить расчёт</button>
+      <p class="wcalc__note">Цена деталей кузова зависит от модели, плёнки и монтажа — точную назовём после осмотра в Технопарке.</p>
+    </div>
+  </form>
   <div class="ds-prices">
     {{prices:price-film}}
   </div>
@@ -122,7 +203,7 @@
   <ol class="steps sec-steps">
     <li class="steps__item">
       <h3>Заявка</h3>
-      <p>Записаться онлайн: марка и модель, что хотите защитить, прозрачная или цветная плёнка. Чтобы договориться об осмотре быстрее, позвоните в Технопарк: <span class="nw">{{loc:technopark:phone}}</span>.</p>
+      <p>Оставьте заявку: марка и модель, что хотите защитить, прозрачная или цветная плёнка. Чтобы договориться об осмотре быстрее, позвоните в Технопарк: <span class="nw">{{loc:technopark:phone}}</span>.</p>
     </li>
     <li class="steps__item">
       <h3>Осмотр и расчёт</h3>
@@ -283,9 +364,9 @@
 <section class="promo col-ext ds-call" id="wrap-call" aria-labelledby="wrap-call-title">
   <div class="promo__panel ds-call__panel">
     <div class="ds-call__head">
-      <h2 id="wrap-call-title">Записаться онлайн на оклейку</h2>
+      <h2 id="wrap-call-title">Оставить заявку на оклейку</h2>
       <p>Напишите марку и модель и что хотите защитить — или позвоните в Технопарк, чтобы договориться об осмотре.</p>
-      <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Записаться онлайн<span class="sr"> на оклейку плёнкой</span></button>
+      <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставить заявку<span class="sr"> на оклейку плёнкой</span></button>
     </div>
     <div class="ds-call__contact">
       <p class="ds-call__studio"><strong>{{loc:technopark:name}}</strong> <span>{{loc:technopark:type}}</span></p>

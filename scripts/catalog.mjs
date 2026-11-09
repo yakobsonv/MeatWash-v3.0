@@ -53,9 +53,10 @@ const icon=name=>{
  spriteVersion??=createHash('sha256').update(readFileSync(new URL('dist/assets/brand/sprite.svg',root))).digest('hex').slice(0,8);
  return `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=${spriteVersion}#i-${name}"/></svg>`;
 };
-// Подпись кнопки для экранного диктора: «Записаться онлайн: Химчистка руля».
+// Подпись кнопки для экранного диктора: «Оставить заявку: Химчистка руля».
 const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
-// Одно действие на позицию, подпись везде «Записаться онлайн» (Влад 05.11: всё — по заявкам).
+// Одно действие на позицию (Влад 05.11: всё — по заявкам). Подпись — requestLabel(страница):
+// на /wash «Записаться онлайн», на остальных «Оставить заявку» (Влад 09.11 вечер).
 // Атрибуты — контракт формы (docs/meat-auto/CONTRACTS.md, «Заявка»): автомойка (booking:
 // yclients) — data-book с работой (форма #request с темой «Автомойка», мелкая ссылка онлайн-
 // записи YCLIENTS с этой работой в корзине); остальное — data-request с категорией и работой.
@@ -65,7 +66,11 @@ const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
 export const ONSITE_LABEL='добавим при приёмке';
 const ACTION_CLASS='catalog__action btn btn--compact btn--secondary';
 // На телефоне от кнопки остаётся круглая стрелка (services.css), подпись — для диктора.
-export const REQUEST_LABEL='Записаться онлайн';
+export const requestLabel=page=>page==='wash'?'Записаться онлайн':'Оставить заявку';
+// Говорящая форма для текста («Оставьте заявку — …»).
+export const requestSay=page=>page==='wash'?'Запишитесь онлайн':'Оставьте заявку';
+// Подпись текущей отрисовки: ставят renderCatalog и renderSections (страница известна там).
+let REQUEST_LABEL=requestLabel('');
 const actionLabel=(label,name)=>`<span class="catalog__action-label">${label}</span>${forName(name)}${icon('arrow-right')}`;
 const action=(group,name)=>group.booking==='yclients'
  ?`<button class="${ACTION_CLASS}" type="button" data-book data-book-context="${escape(name)}" data-yc-items="${escape(name)}">${actionLabel(REQUEST_LABEL,name)}</button>`
@@ -77,7 +82,7 @@ const itemOf=(group,name)=>group.items.find(([n])=>n===name)??(()=>{throw new Er
 // реестра; на самой этой странице ({{prices}}) ссылка не выводится.
 export const SECTION_LINKS={
  programs:{page:'wash',label:'Подробнее об автомойке'},
- 'price-interior':{page:'detailing',label:'Подробнее о детейлинге'},
+ 'price-interior':{page:'wash',label:'Подробнее об автомойке'},
  'price-polish':{page:'detailing',label:'Подробнее о детейлинге'},
  'price-film':{page:'wrap',label:'Подробнее об оклейке'},
  'price-bodywork':{page:'bodywork',label:'Подробнее о кузовных работах'},
@@ -148,7 +153,7 @@ const section=(group,s,page)=>`<section class="catalog__section${s.accent?' cata
    ${s.programs?programs():`<ul class="catalog__items" role="list">${s.items.map(name=>itemRow(group,s,itemOf(group,name))).join('')}</ul>`}
   </section>`;
 // Всё — по заявке (Влад 05.11): цену и время называет администратор.
-const LEAD={yclients:'Записаться онлайн — администратор подберёт время.',request:'Стоимость для вашей машины назовёт администратор: оставьте заявку у работы.'};
+const LEAD={yclients:'Оставьте заявку — администратор подберёт время.',request:'Стоимость для вашей машины назовёт администратор: оставьте заявку у работы.'};
 
 // Каталог /services (§4.3 плана) — подстановка {{catalog}}. Пять категорий; без JS
 // вкладки — ссылки на категории, панели идут подряд; js/catalog.js делает из них вкладки
@@ -156,6 +161,7 @@ const LEAD={yclients:'Записаться онлайн — администра
 // вкладки его прямые потомки) и показывает одну. H1 стоит в герое, поэтому категории — h2,
 // подразделы — h3, программы и сравнение — h4.
 export function renderCatalog(){
+ REQUEST_LABEL=requestLabel('services');
  return `
 <div class="catalog" id="catalog">
  <nav class="catalog__tabs anchor-tabs" aria-label="Разделы каталога">
@@ -176,7 +182,7 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
 
 // Цены подразделов на страницах направлений — {{prices:<id,…>}} (решение 05.11). Разметка —
 // та же, что у подразделов каталога /services (section.catalog__section с h3, строки
-// li.catalog__item с кнопкой «Записаться онлайн»: data-book у автомойки, data-request у остального),
+// li.catalog__item с кнопкой заявки: data-book у автомойки, data-request у остального),
 // обёртка div.catalog.catalog--prices[data-prices]: по ней site.js подключает js/catalog.js
 // (переключатель кузова у программ). id подразделов — те же, что на /services (#price-film…):
 // на одной странице подраздел — один раз. programs выводит карточки программ, переключатель
@@ -224,6 +230,7 @@ const sectionOf=id=>{
  throw new Error(`{{prices}}: нет подраздела каталога «${id}»`);
 };
 export function renderSections(ids,page){
+ REQUEST_LABEL=requestLabel(page);
  if(!ids.length||ids.some(id=>!id))throw new Error('{{prices}}: нужен список подразделов через запятую');
  if(new Set(ids).size!==ids.length)throw new Error(`{{prices:${ids.join(',')}}}: подраздел повторяется`);
  return `<div class="catalog catalog--prices" data-prices>
@@ -240,7 +247,7 @@ export const sectionMin=id=>{
  return Math.min(...prices);
 };
 
-// Темы формы «Записаться онлайн» (site.requests.topics): позиции каталога каждой темы.
+// Темы формы заявки (site.requests.topics): позиции каталога каждой темы.
 export const requestTopics=()=>(d.site?.requests?.topics||[]).map(t=>{
  const fromSections=(t.sections||[]).flatMap(id=>{const {s}=sectionOf(id);return s.programs?[]:s.items;});
  const items=[...fromSections,...(t.items||[])].filter(n=>!(t.except||[]).includes(n));
@@ -381,7 +388,7 @@ export const CATEGORIES = ${JSON.stringify(categories,null,1)};
 // и сайты, где он работает (пусто — везде; копия на GitHub Pages PHP не выполняет).
 export const REQUESTS = ${JSON.stringify({endpoint:d.site?.requests?.endpoint??null,hosts:d.site?.requests?.hosts??[]})};
 export const LOCATIONS = ${JSON.stringify(locations,null,1)};
-// Темы формы «Записаться онлайн» (site.requests.topics) в порядке показа: programs — программы
+// Темы формы заявки (site.requests.topics) в порядке показа: programs — программы
 // мойки (PROGRAMS), items — позиции каталога темы, options — варианты без каталога.
 // data-request-category кнопки — id темы или категории каталога (CATEGORY_TOPIC — тема
 // категории, если работа не указана; с работой тема — та, в чьих items она есть).

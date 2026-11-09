@@ -33,7 +33,7 @@
 //   {{cars:sale|sold|date}}      разметка машин и дата цен (scripts/cars.mjs, WP4)
 //   {{catalog}}, {{compare}}     каталог и сравнение программ (scripts/catalog.mjs, WP3)
 //   {{prices:<id,id,…>}}   цены подразделов каталога в разметке каталога /services, кнопки
-//                          «Записаться онлайн»: {{prices:price-interior,price-leather}};
+//                          «Оставить заявку»: {{prices:price-interior,price-leather}};
 //                          programs — карточки программ мойки со сравнением (catalog.mjs)
 //   {{min-section:<id>}}   «5 000 ₽» — минимальная цена подраздела: от {{min-section:price-bodywork}}
 //   {{reviews}}            блок отзывов с Яндекс Карт из JSON (reviews), {{reviews:<тема>}} —
@@ -58,7 +58,7 @@ import {readFileSync, existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import sharp from 'sharp';
-import {content, escape, money, minFor, renderCatalog, renderCompare, renderSections, sectionMin, setPageHref, REQUEST_LABEL, requestTopics} from './catalog.mjs';
+import {content, escape, money, minFor, renderCatalog, renderCompare, renderSections, sectionMin, setPageHref, requestLabel, requestSay, requestTopics} from './catalog.mjs';
 import {cars, renderSale, renderSold, renderSoldCards, renderCarsDate} from './cars.mjs';
 import {typo} from './typo.mjs';
 import {REGISTRY} from '../src/content/pages.mjs';
@@ -182,14 +182,14 @@ const ANALYTICS = {
 };
 function fail(field) { throw new Error(`Неверное значение ${field} в meatwash-content.json`); }
 
-// Нижняя кнопка на телефоне (.mobile-cta, src/partials/dialogs.html) — «Записаться онлайн» на всех
+// Нижняя кнопка на телефоне (.mobile-cta, src/partials/dialogs.html) — «Оставить заявку» на всех
 // страницах (Влад 05.11) с темой страницы (поле topic реестра). ui.js делает её inert под окнами,
 // CSS прячет при открытом окне.
 const loc = (id) => d.locations.find((l) => l.id === id);
 const TOPIC_IDS = new Set(requestTopics().map((t) => t.id));
 const MOBILE_CTA = {
   none: () => '',
-  request: (entry) => `<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="${escape(entry.topic || '')}">${REQUEST_LABEL}</button>`,
+  request: (entry) => `<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="${escape(entry.topic || '')}">${requestLabel(entry.id)}</button>`,
 };
 
 // ── Плашки работ и направлений, отзывы (решение Влада 05.11, референс — плашки porsche.com).
@@ -275,7 +275,7 @@ function renderWorks(dir, entry, token) {
 //     [data-gallery-open=<id>] — плашка как у работ (tiles.css): обложка 3:2 (alt="" — имя кнопки
 //     даёт заголовок), метка «N фото», заголовок, круглая стрелка;
 //   dialog.dialog.dialog--gallery#gallery-<направление> — одно окно на ряд (js/gallery.js, css/projects.css):
-//     шапка (заголовок и вводная проекта), лента ul.gallery__track, счётчик, «Записаться онлайн»
+//     шапка (заголовок и вводная проекта), лента ul.gallery__track, счётчик, «Оставить заявку»
 //     (data-request-category=<направление>, окно заявки встаёт поверх галереи) и стрелки; фото каждого
 //     проекта — в <template data-gallery-project>: браузер не грузит их, пока окно не открыто.
 // Фото проекта — 4:5 (-800.webp 640×800, -1600.webp 1280×1600; check.mjs сверяет файлы и размеры).
@@ -345,7 +345,7 @@ ${p.photos.map(slide).join('\n')}
     <p class="gallery__count" data-gallery-count><span data-gallery-index>1</span><span class="gallery__of"> / </span><span data-gallery-total>1</span></p>
     <p class="sr" aria-live="polite" data-gallery-status></p>
     <p class="gallery__note" aria-hidden="true" data-gallery-note></p>
-    <button class="btn btn--primary btn--compact gallery__cta" type="button" data-request data-request-category="${escape(dir)}">Записаться онлайн</button>
+    <button class="btn btn--primary btn--compact gallery__cta" type="button" data-request data-request-category="${escape(dir)}">Оставить заявку</button>
     <div class="gallery__nav">
       <button class="gallery__btn" type="button" aria-label="Предыдущее фото" data-gallery-prev>${icon('arrow-left')}</button>
       <button class="gallery__btn" type="button" aria-label="Следующее фото" data-gallery-next>${icon('arrow-right')}</button>
@@ -502,6 +502,11 @@ export function renderPartial(template, page) {
         if (!target) throw new Error(`${page}: нет страницы с id «${args[0]}» (${token})`);
         return target.id === id ? '' : pageUrl(target.file);
       }
+      // Бык в шапке — на всех страницах, кроме главной (Влад 09.11).
+      case 'header-logo': return home ? '' : `<a class="site-header__logo" href="./" aria-label="MEATWASH — на главную">${icon('bull')}</a>`;
+      // Подпись кнопок заявки: на /wash «Записаться онлайн», на остальных «Оставить заявку» (Влад 09.11 вечер).
+      case 'request-label': return requestLabel(id);
+      case 'request-say': return requestSay(id);
       case 'header-variant': {
         if (!['over', 'solid'].includes(entry.header)) throw new Error(`${page}: поле header — over или solid`);
         return entry.header;

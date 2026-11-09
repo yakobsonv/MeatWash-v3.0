@@ -19,7 +19,7 @@
 //                works → services («Услуги и цены»)
 //   theme        dark | paper | home → data-theme у <html>
 //   header       over (поверх фото) | solid (на фоне) → {{header-variant}}
-//   cta          нижняя кнопка на телефоне: request («Записаться онлайн» с темой topic, Влад 05.11:
+//   cta          нижняя кнопка на телефоне: request («Оставить заявку» с темой topic, Влад 05.11:
 //                на всех страницах, и на главной) | none
 //   topic        тема заявки страницы (site.requests.topics): у кнопки в шапке и нижней кнопки —
 //                data-request-category; нет — форма открывается без выбранной темы
@@ -90,7 +90,7 @@ export const REGISTRY = [
   {
     file: 'detailing.html', id: 'detailing', kind: 'landing', body: 'detailing.html', parent: 'services',
     title: 'Детейлинг автомобиля в Москве — MEATWASH',
-    description: 'Детейлинг MEATWASH в Москве: химчистка салона, уход за кожей и пластиком, полировка и керамика, диски и моторный отсек. Лубянка и Технопарк.',
+    description: 'Детейлинг MEATWASH в Москве: уход за кожей и пластиком салона, полировка и керамика, стёкла, диски и моторный отсек. Лубянка и Технопарк.',
     headline: 'Детейлинг', theme: 'dark', header: 'solid', cta: 'request', topic: 'detailing',
     shared: ALL, css: SECTION_CSS, preload: heroA('detailing'),
     date: '2026-11-05', sitemap: { changefreq: 'monthly', priority: '0.9' },
@@ -112,7 +112,7 @@ export const REGISTRY = [
     title: 'Оклейка автомобиля плёнкой в Москве — MEATWASH',
     description: 'Оклейка автомобиля полиуретановой плёнкой: прозрачной или цветной, зоны риска, весь кузов, фары и лобовое стекло. Только в Технопарке, Москва.',
     headline: 'Оклейка плёнкой', theme: 'dark', header: 'solid', cta: 'request', topic: 'wrap',
-    shared: ALL, css: [...SECTION_CSS, 'projects.css'], preload: heroA('wrap'),
+    shared: ALL, css: [...SECTION_CSS, 'projects.css', 'wrapcalc.css'], preload: heroA('wrap'),
     date: '2026-11-05', sitemap: { changefreq: 'monthly', priority: '0.9' },
   },
   {
@@ -134,7 +134,7 @@ export const REGISTRY = [
   {
     file: 'import.html', id: 'import', kind: 'landing', body: 'import.html',
     title: 'Привоз авто из-за рубежа — MEATWASH',
-    description: 'Привезём автомобиль из-за рубежа и подготовим его к жизни в России — например, сделаем русификацию. Запишитесь онлайн на сайте MEATWASH.',
+    description: 'Привезём автомобиль из-за рубежа и подготовим его к жизни в России — например, сделаем русификацию. Оставьте заявку на сайте MEATWASH.',
     headline: 'Привоз авто из-за рубежа', theme: 'dark', header: 'over', cta: 'request', topic: 'import',
     shared: ALL, css: ['auto.css'],
     preload: heroA('import'), ogImage: 'assets/img/import/og.webp',

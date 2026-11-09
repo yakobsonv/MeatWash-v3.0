@@ -1,0 +1,148 @@
+/* Калькулятор оклейки на /wrap (Влад 09.11 вечер): «Что оклеиваем» — наборы, схема машины сверху,
+   детали флажками, плёнка, кузов, монтаж с разбором или без, «Ваш расчёт» и «Получить расчёт».
+   form.wcalc#wrap-calc[data-wrap-calc] — сетка из пяти блоков:
+     .wcalc__scope (объём) · .wcalc__car (схема) · .wcalc__parts (детали и «Отдельно»)
+     · .wcalc__opts (плёнка, кузов, монтаж) · .wcalc__sum (расчёт и кнопка).
+   Телефон и планшет — столбиком в этом порядке; от 1000 px — слева выбор, справа схема и расчёт.
+   Схема: g.wcalc__part[data-part] (title — название), .is-on — деталь выбрана (js/wrapcalc.js),
+   .is-hot — наведение на флажок этой детали. Компоненты — segmented и btn из components.css. */
+
+.wcalc {
+  display: grid; gap: var(--md);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "scope" "car" "parts" "opts" "sum";
+  margin-top: var(--lg);
+}
+.wcalc__scope { grid-area: scope; }
+.wcalc__car { grid-area: car; }
+.wcalc__parts { grid-area: parts; }
+.wcalc__opts { grid-area: opts; }
+.wcalc__sum { grid-area: sum; }
+@media (min-width: 1000px) {
+  .wcalc {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas: "scope car" "parts car" "opts sum";
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--lg);
+    align-items: start;
+  }
+}
+
+.wcalc fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.wcalc__block { display: grid; gap: 12px; align-content: start; }
+.wcalc__legend { float: left; width: 100%; margin-bottom: 12px; padding: 0; color: var(--on-muted); font-size: var(--fs-sm); }
+.wcalc__legend--sub { float: none; margin: 8px 0 0; }
+
+/* Варианты-карточки: объём и монтаж. Вся карточка — подпись радиокнопки. */
+.wcalc__options { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); clear: both; }
+@media (min-width: 600px) {
+  .wcalc__options--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wcalc__options--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.wcalc__option {
+  position: relative; display: grid; gap: 6px; align-content: start;
+  padding: 16px 18px; border-radius: var(--r-sm);
+  background: var(--surface); box-shadow: inset 0 0 0 1px var(--on-line);
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.wcalc__option > input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.wcalc__option-name { padding-right: 28px; font-weight: 600; line-height: 1.35; }
+.wcalc__option-text { color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.5; }
+/* Кружок выбора справа сверху. */
+.wcalc__option::after {
+  content: ""; position: absolute; top: 17px; right: 16px;
+  width: 18px; height: 18px; border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--line-field);
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+.wcalc__option:hover { background-color: var(--frost); }
+.wcalc__option:has(> input:checked) { box-shadow: inset 0 0 0 2px var(--on-red); }
+.wcalc__option:has(> input:checked)::after { box-shadow: inset 0 0 0 5px var(--on-red); }
+.wcalc__option:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Схема машины. */
+.wcalc__car { display: grid; }
+.wcalc__stage {
+  display: grid; justify-items: center; gap: 12px;
+  padding: var(--md) var(--md) 18px; border-radius: var(--r-lg);
+  background: radial-gradient(70% 55% at 50% 45%, rgb(var(--on-rgb) / .07), transparent 70%), var(--surface);
+}
+.wcalc__svg { width: auto; height: clamp(300px, 62vw, 440px); max-width: 100%; overflow: visible; }
+@media (min-width: 1000px) { .wcalc__svg { height: clamp(380px, 34vw, 500px); } }
+.wcalc__hint { color: var(--on-muted); font-size: var(--fs-xs); text-align: center; }
+.wcalc__wheels rect { fill: rgb(var(--on-rgb) / .2); }
+.wcalc__base { fill: color-mix(in srgb, var(--on) 5%, var(--page)); }
+.wcalc__outline { fill: none; stroke: rgb(var(--on-rgb) / .42); stroke-width: 1.2; pointer-events: none; }
+.wcalc__glass { fill: rgb(var(--on-rgb) / .035); }
+.wcalc__part { cursor: pointer; }
+.wcalc__part path {
+  fill: rgb(var(--on-rgb) / .1);
+  transition: fill var(--t-fast) var(--ease);
+}
+.wcalc__part--extra path { fill: rgb(var(--on-rgb) / .05); stroke: rgb(var(--on-rgb) / .45); stroke-width: 1; }
+.wcalc__part--extra.is-on path { stroke: rgb(var(--on-rgb) / .85); }
+.wcalc__part.is-on path { fill: rgb(var(--red-rgb) / .78); }
+.wcalc__part--extra.is-on path { fill: rgb(var(--red-rgb) / .55); }
+@media (hover: hover) {
+  .wcalc__part:hover path { fill: rgb(var(--on-rgb) / .22); }
+  .wcalc__part.is-on:hover path { fill: rgb(var(--red-rgb) / .92); }
+}
+.wcalc__part.is-hot path { fill: rgb(var(--on-rgb) / .3); }
+.wcalc__part.is-on.is-hot path { fill: var(--red); }
+
+/* Флажки деталей — плашки. */
+.wcalc__chips { display: flex; flex-wrap: wrap; gap: 8px; clear: both; }
+.wcalc__chip { position: relative; display: block; cursor: pointer; }
+.wcalc__chip > input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.wcalc__chip > span {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 40px; padding: 8px 14px;
+  border-radius: var(--r-pill); background: var(--surface); box-shadow: inset 0 0 0 1px var(--on-line);
+  color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.3; font-variant-numeric: tabular-nums;
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.wcalc__chip > span::before {
+  content: ""; flex: none; width: 14px; height: 14px; border-radius: 4px;
+  box-shadow: inset 0 0 0 2px var(--line-field);
+  background: center / 10px no-repeat;
+}
+.wcalc__chip:hover > span { color: var(--on); background-color: var(--frost); }
+.wcalc__chip > input:checked + span { color: var(--on); box-shadow: inset 0 0 0 1px rgb(var(--red-rgb) / .7); background-color: rgb(var(--red-rgb) / .14); }
+.wcalc__chip > input:checked + span::before {
+  box-shadow: none; background-color: var(--red);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2 4 7.5 8.5 2.5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.wcalc__chip > input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (pointer: coarse) { .wcalc__chip > span { min-height: 44px; } }
+
+/* Плёнка, кузов, монтаж. */
+.wcalc__opts { gap: var(--md); }
+.wcalc__field > .segmented { clear: both; }
+.wcalc__seg { display: flex; justify-self: start; max-width: 100%; }
+.wcalc__seg > label > span { padding-inline: 14px; }
+@media (max-width: 479px) {
+  .wcalc__seg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); justify-self: stretch; }
+  .wcalc__seg > label > span { white-space: normal; }
+}
+
+/* Расчёт. */
+.wcalc__sum {
+  display: grid; gap: 14px; align-content: start;
+  padding: var(--md); border-radius: var(--r-lg);
+  background: var(--surface); box-shadow: inset 0 2px 0 var(--on-red);
+}
+.wcalc__sum-title { font-size: var(--fs-lg); line-height: 1.3; }
+.wcalc__sum-car { color: var(--on-muted); }
+.wcalc__lines { display: grid; margin: 0; padding: 0; list-style: none; font-variant-numeric: tabular-nums; }
+.wcalc__lines > li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding: 10px 0; box-shadow: inset 0 -1px 0 var(--on-line);
+}
+.wcalc__lines > li > b { font-weight: 400; white-space: nowrap; }
+.wcalc__lines > li > b.is-estimate { color: var(--on-muted); }
+.wcalc__sum-parts { color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.5; }
+.wcalc__sum-parts:empty { display: none; }
+.wcalc__total { font-size: var(--fs-md); font-weight: 600; line-height: 1.35; font-variant-numeric: tabular-nums; }
+.wcalc__submit { margin-top: 4px; }
+.wcalc__note { color: var(--on-muted); font-size: var(--fs-xs); line-height: 1.5; }

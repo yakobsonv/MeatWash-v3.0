@@ -15,11 +15,11 @@
 <meta name="mw-metrika" content="113253931">
 <!-- SHARED:analytics:END -->
 <title>Детейлинг автомобиля в Москве — MEATWASH</title>
-<meta name="description" content="Детейлинг MEATWASH в Москве: химчистка салона, уход за кожей и пластиком, полировка и керамика, диски и моторный отсек. Лубянка и Технопарк.">
+<meta name="description" content="Детейлинг MEATWASH в Москве: уход за кожей и пластиком салона, полировка и керамика, стёкла, диски и моторный отсек. Лубянка и Технопарк.">
 <link rel="canonical" href="https://meatwash.ru/detailing">
 <meta property="og:site_name" content="MEATWASH">
 <meta property="og:title" content="Детейлинг автомобиля в Москве — MEATWASH">
-<meta property="og:description" content="Детейлинг MEATWASH в Москве: химчистка салона, уход за кожей и пластиком, полировка и керамика, диски и моторный отсек. Лубянка и Технопарк.">
+<meta property="og:description" content="Детейлинг MEATWASH в Москве: уход за кожей и пластиком салона, полировка и керамика, стёкла, диски и моторный отсек. Лубянка и Технопарк.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:url" content="https://meatwash.ru/detailing">
@@ -49,8 +49,9 @@
 
 <!-- SHARED:header:START -->
 <!-- Шапка и меню-шторка (план §1.3, §1.5, §2.8; паттерн Porsche 3.1–3.2). Владелец: WP1,
-     с 05.11 — интегратор. Шапка: «Меню» слева, «Записаться онлайн» справа; быка в шапке нет (Влад 09.11 — знак
-     с быком стоит в первом экране главной)
+     с 05.11 — интегратор. Шапка: «Меню» слева, белый бык по центру — на всех страницах, кроме главной
+     (Влад 09.11: на главной знак стоит в первом экране), справа кнопка заявки (подстановка request-label:
+     на /wash кнопка заявки, на остальных «Оставить заявку» — Влад 09.11 вечер)
      (Влад 05.11: всё — по заявкам; кнопка открывает форму #request с темой страницы).
      Не липкая ни на одной странице; over — поверх фото со скримом сверху, solid — тёмная полоса
      (и на «бумаге»: белый бык на слоновой кости не виден).
@@ -67,7 +68,8 @@
 <header class="site-header site-header--solid" id="top">
   <div class="site-header__bar">
     <button class="site-header__menu" id="drawer-open" type="button" aria-controls="drawer" aria-expanded="false" aria-haspopup="dialog"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-menu"/></svg><span class="site-header__menu-label">Меню</span></button>
-    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing">Записаться онлайн</button>
+    <a class="site-header__logo" href="./" aria-label="MEATWASH — на главную"><svg class="bull" viewBox="0 0 1097 800" fill="currentColor" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-bull"/></svg></a>
+    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing">Оставить заявку</button>
   </div>
 </header>
 
@@ -90,7 +92,7 @@
         </ul>
       </div>
       <div class="drawer__foot">
-        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="detailing">Записаться онлайн</button>
+        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="detailing">Оставить заявку</button>
       </div>
     </nav>
 
@@ -103,7 +105,7 @@
       <div class="drawer__body">
         <div class="drawer__tiles">
           <a class="drawer__tile" href="services#price-wash"><span class="drawer__tile-media"><img src="assets/img/menu/wash-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Автомойка</span><span class="chip">от&nbsp;2&nbsp;150&nbsp;₽</span></a>
-          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;500&nbsp;₽</span></a>
+          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;1&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-wrap"><span class="drawer__tile-media"><img src="assets/img/menu/wrap-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Оклейка плёнкой</span><span class="chip">от&nbsp;10&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-bodywork"><span class="drawer__tile-media"><img src="assets/img/menu/bodywork-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Кузовные работы</span><span class="chip">от&nbsp;5&nbsp;000&nbsp;₽</span></a>
         </div>
@@ -189,7 +191,9 @@
      герой → коротко в цифрах → что входит → салон → кузов и стёкла → узлы и диски → перед продажей →
      чего детейлинг не сделает → как проходит работа → наши работы → когда делать → почему мы →
      отзывы → вопросы → другие направления → коротко для поиска → заявка и студии.
-     Цены — только подстановками из каталога. Подразделы: price-interior, price-leather,
+     Влад 09.11 вечер: блока «Что входит в детейлинг» нет; химчистка салона (price-interior) — услуга
+     автомойки, стоит на /wash (#wash-interior).
+     Цены — только подстановками из каталога. Подразделы: price-leather,
      price-polish, price-coatings, price-components; предпродажная подготовка — строкой в «Когда нужен». «Стёкла» каталога (price-glass)
      целиком не ставим: «Бронирование лобового стекла» — тема «Оклейка плёнкой» (PLAN.md), поэтому
      антидождь и ремонт стёкол — своими строками в разметке каталога, цены — подстановкой price.
@@ -206,17 +210,17 @@
   </picture>
   <div class="hero-a__body">
     <h1 id="page-title">Детейлинг в&nbsp;Москве</h1>
-    <p class="hero-a__lead">Химчистка салона и&nbsp;уход за&nbsp;кожей, полировка и&nbsp;защитные покрытия кузова, стёкла, диски, подвеска и&nbsp;моторный отсек.</p>
+    <p class="hero-a__lead">Уход за&nbsp;кожей и&nbsp;пластиком салона, полировка и&nbsp;защитные покрытия кузова, стёкла, диски, подвеска и&nbsp;моторный отсек.</p>
     <div class="hero-a__actions actions">
-      <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Записаться онлайн</button>
-      <a class="btn btn--secondary" href="#detailing-scope">Работы и&nbsp;цены</a>
+      <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Оставить заявку</button>
+      <a class="btn btn--secondary" href="#detailing-interior">Работы и&nbsp;цены</a>
     </div>
     <p class="sec-hero__where"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-pin"/></svg><span>Лубянка и&nbsp;Технопарк&nbsp;— каждый день до&nbsp;22:00</span></p>
   </div>
 </section>
 
 <ul class="sec-facts col-wide" role="list" aria-label="Детейлинг коротко">
-  <li class="sec-facts__item"><b class="sec-facts__value">от&nbsp;15&nbsp;000&nbsp;₽</b><span class="sec-facts__label">Химчистка всего салона: ткань, алькантара и&nbsp;кожа</span></li>
+  <li class="sec-facts__item"><b class="sec-facts__value">от&nbsp;10&nbsp;000&nbsp;₽</b><span class="sec-facts__label">Детейлинг колёсных дисков</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">от&nbsp;40&nbsp;000&nbsp;₽</b><span class="sec-facts__label">Полировка кузова и&nbsp;два слоя керамики сверху</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">от&nbsp;15&nbsp;000&nbsp;₽</b><span class="sec-facts__label">Керамическое покрытие кузова отдельно</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">2&nbsp;студии</b><span class="sec-facts__label">Лубянка и&nbsp;Технопарк</span></li>
@@ -224,7 +228,6 @@
 
 <nav class="anchor-tabs" data-anchor-tabs aria-label="Разделы страницы">
   <div class="anchor-tabs__track">
-    <a class="anchor-tabs__tab" href="#detailing-scope">Что&nbsp;входит</a>
     <a class="anchor-tabs__tab" href="#detailing-interior">Салон</a>
     <a class="anchor-tabs__tab" href="#detailing-body">Кузов и&nbsp;стёкла</a>
     <a class="anchor-tabs__tab" href="#detailing-components">Узлы и&nbsp;диски</a>
@@ -234,56 +237,17 @@
   </div>
 </nav>
 
-<section class="section sec-block" id="detailing-scope" aria-labelledby="detailing-scope-title">
-  <header class="section-head col-title">
-    <h2 id="detailing-scope-title">Что&nbsp;входит в&nbsp;детейлинг</h2>
-    <p class="section-head__lead">Детейлинг&nbsp;— это&nbsp;глубже, чем&nbsp;мойка: возвращаем материалам вид и&nbsp;защищаем их. Берём машину целиком или&nbsp;одну зону&nbsp;— как&nbsp;нужно вам.</p>
-  </header>
-  <ul class="sec-zones col-ext" role="list">
-    <li><a class="sec-zone" href="#detailing-interior">
-      <h3 class="sec-zone__title">Салон</h3>
-      <p class="sec-zone__text">Химчистка ткани, алькантары и&nbsp;кожи, уход за&nbsp;кожей и&nbsp;пластиком, запахи, кондиционер.</p>
-      <span class="sec-zone__price">от&nbsp;500&nbsp;₽</span>
-      <span class="sec-zone__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span>
-    </a></li>
-    <li><a class="sec-zone" href="#detailing-body">
-      <h3 class="sec-zone__title">Кузов</h3>
-      <p class="sec-zone__text">Полировка, керамика и&nbsp;кварц, восстановление хрома, полировка фар.</p>
-      <span class="sec-zone__price">от&nbsp;1&nbsp;000&nbsp;₽</span>
-      <span class="sec-zone__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span>
-    </a></li>
-    <li><a class="sec-zone" href="#detailing-glass">
-      <h3 class="sec-zone__title">Стёкла</h3>
-      <p class="sec-zone__text">Антидождь на&nbsp;передние или&nbsp;на&nbsp;все&nbsp;стёкла, ремонт повреждений стекла.</p>
-      <span class="sec-zone__price">от&nbsp;3&nbsp;000&nbsp;₽</span>
-      <span class="sec-zone__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span>
-    </a></li>
-    <li><a class="sec-zone" href="#detailing-components">
-      <h3 class="sec-zone__title">Узлы и&nbsp;диски</h3>
-      <p class="sec-zone__text">Диски, моторный отсек, подвеска и&nbsp;радиаторы.</p>
-      <span class="sec-zone__price">от&nbsp;1&nbsp;000&nbsp;₽</span>
-      <span class="sec-zone__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span>
-    </a></li>
-  </ul>
-</section>
-
 <section class="section sec-block sec-block--prices" id="detailing-interior" aria-labelledby="detailing-interior-title">
   <header class="section-head col-title">
     <h2 id="detailing-interior-title">Салон</h2>
-    <p class="section-head__lead">Средство и&nbsp;способ чистки подбираем под&nbsp;материал: ткань, алькантару и&nbsp;кожу чистят по-разному. Запахи убирают озонация и&nbsp;сухой туман, а&nbsp;если пахнет из&nbsp;дефлекторов&nbsp;— очистка кондиционера.</p>
+    <p class="section-head__lead">Уход за&nbsp;кожей и&nbsp;пластиком: питание и&nbsp;защита кожи сидений, керамика кожи, восстановление выгоревшего пластика. Химчистка салона&nbsp;— на&nbsp;<a href="wash#wash-interior">автомойке</a>.</p>
   </header>
 <div class="catalog catalog--prices" data-prices>
-  <section class="catalog__section" id="price-interior" aria-labelledby="price-interior-title" data-summary="9 позиций, от 500 ₽">
-   <div class="catalog__section-head">
-    <h3 class="catalog__subhead" id="price-interior-title">Химчистка салона</h3>
-   </div>
-   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Детейлинг-химчистка салона"><div class="catalog__item-text"><p class="catalog__item-name">Детейлинг-химчистка салона</p><p class="catalog__item-note">Салон целиком за&nbsp;один визит: ткань, алькантара и&nbsp;кожа.</p></div><p class="catalog__item-price">от&nbsp;15&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг-химчистка салона"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Детейлинг-химчистка салона</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Химчистка отдельного элемента"><div class="catalog__item-text"><p class="catalog__item-name">Химчистка отдельного элемента</p><p class="catalog__item-note">Ткань, алькантара или&nbsp;кожа&nbsp;— цена за&nbsp;одну деталь салона.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Химчистка отдельного элемента"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Химчистка отдельного элемента</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Химчистка сиденья"><div class="catalog__item-text"><p class="catalog__item-name">Химчистка сиденья</p><p class="catalog__item-note">Химчистка одного сиденья.</p></div><p class="catalog__item-price">от&nbsp;2&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Химчистка сиденья"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Химчистка сиденья</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Химчистка руля"><div class="catalog__item-text"><p class="catalog__item-name">Химчистка руля</p><p class="catalog__item-note">Руль отдельно от&nbsp;остального салона.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Химчистка руля"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Химчистка руля</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Пылесос салона"><div class="catalog__item-text"><p class="catalog__item-name">Пылесос салона</p><p class="catalog__item-note">Сухая уборка салона пылесосом.</p></div><p class="catalog__item-price">от&nbsp;600&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Пылесос салона"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Пылесос салона</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Чистка багажника"><div class="catalog__item-text"><p class="catalog__item-name">Чистка багажника</p><p class="catalog__item-note">Уборка багажного отделения.</p></div><p class="catalog__item-price">от&nbsp;500&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Чистка багажника"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Чистка багажника</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Озонация салона"><div class="catalog__item-text"><p class="catalog__item-name">Озонация салона</p><p class="catalog__item-note">Обработка салона озоном от&nbsp;запахов.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Озонация салона"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Озонация салона</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Сухой туман"><div class="catalog__item-text"><p class="catalog__item-name">Сухой туман</p><p class="catalog__item-note">Обработка салона сухим туманом от&nbsp;запахов.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Сухой туман"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Сухой туман</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Очистка кондиционера"><div class="catalog__item-text"><p class="catalog__item-name">Очистка кондиционера</p><p class="catalog__item-note">Очистка системы кондиционирования салона.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Очистка кондиционера"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Очистка кондиционера</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
-  </section>
   <section class="catalog__section" id="price-leather" aria-labelledby="price-leather-title" data-summary="4 позиции, от 2 000 ₽">
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-leather-title">Кожа и&nbsp;пластик</h3>
    </div>
-   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Кондиционер кожи сидений"><div class="catalog__item-text"><p class="catalog__item-name">Кондиционер кожи сидений</p><p class="catalog__item-note">Питание и&nbsp;защита кожи сидений после чистки.</p></div><p class="catalog__item-price">от&nbsp;2&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Кондиционер кожи сидений"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Кондиционер кожи сидений</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Химчистка и защита кожи кремом LeTech"><div class="catalog__item-text"><p class="catalog__item-name">Химчистка и&nbsp;защита кожи кремом LeTech</p><p class="catalog__item-note">Чистка кожи и&nbsp;защитный крем LeTech.</p></div><p class="catalog__item-price">от&nbsp;3&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Химчистка и защита кожи кремом LeTech"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Химчистка и&nbsp;защита кожи кремом LeTech</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Керамика кожи салона"><div class="catalog__item-text"><p class="catalog__item-name">Керамика кожи салона</p><p class="catalog__item-note">Керамическое защитное покрытие для&nbsp;кожи салона.</p></div><p class="catalog__item-price">от&nbsp;15&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Керамика кожи салона"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Керамика кожи салона</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Восстановление пластика салона"><div class="catalog__item-text"><p class="catalog__item-name">Восстановление пластика салона</p><p class="catalog__item-note">Восстановление выгоревшего пластика салона.</p></div><p class="catalog__item-price">от&nbsp;2&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Восстановление пластика салона"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Восстановление пластика салона</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
+   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Кондиционер кожи сидений"><div class="catalog__item-text"><p class="catalog__item-name">Кондиционер кожи сидений</p><p class="catalog__item-note">Питание и&nbsp;защита кожи сидений после чистки.</p></div><p class="catalog__item-price">от&nbsp;2&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Кондиционер кожи сидений"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Кондиционер кожи сидений</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Химчистка и защита кожи кремом LeTech"><div class="catalog__item-text"><p class="catalog__item-name">Химчистка и&nbsp;защита кожи кремом LeTech</p><p class="catalog__item-note">Чистка кожи и&nbsp;защитный крем LeTech.</p></div><p class="catalog__item-price">от&nbsp;3&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Химчистка и защита кожи кремом LeTech"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Химчистка и&nbsp;защита кожи кремом LeTech</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Керамика кожи салона"><div class="catalog__item-text"><p class="catalog__item-name">Керамика кожи салона</p><p class="catalog__item-note">Керамическое защитное покрытие для&nbsp;кожи салона.</p></div><p class="catalog__item-price">от&nbsp;15&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Керамика кожи салона"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Керамика кожи салона</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Восстановление пластика салона"><div class="catalog__item-text"><p class="catalog__item-name">Восстановление пластика салона</p><p class="catalog__item-note">Восстановление выгоревшего пластика салона.</p></div><p class="catalog__item-price">от&nbsp;2&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Восстановление пластика салона"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Восстановление пластика салона</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
   </section>
   <p class="catalog__note">Стоимость зависит от&nbsp;типа кузова и&nbsp;состояния автомобиля. Итоговый объём и&nbsp;цену согласуем перед работой. Не&nbsp;является публичной офертой.</p>
  </div>
@@ -299,13 +263,13 @@
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-polish-title">Полировка</h3>
    </div>
-   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Полировка кузова + 2 слоя керамики"><div class="catalog__item-text"><p class="catalog__item-name">Полировка кузова + 2&nbsp;слоя керамики</p><p class="catalog__item-note">Полировка снимает паутинку, сверху&nbsp;— два слоя керамики.</p></div><p class="catalog__item-price">от&nbsp;40&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Полировка кузова + 2 слоя керамики"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Полировка кузова + 2&nbsp;слоя керамики</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Локальная полировка элемента"><div class="catalog__item-text"><p class="catalog__item-name">Локальная полировка элемента</p><p class="catalog__item-note">Полировка одной детали кузова.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Локальная полировка элемента"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Локальная полировка элемента</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Полировка фар"><div class="catalog__item-text"><p class="catalog__item-name">Полировка фар</p><p class="catalog__item-note">Мутный поликарбонат снова даёт чёткий пучок света.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Полировка фар"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Полировка фар</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Восстановление хрома"><div class="catalog__item-text"><p class="catalog__item-name">Восстановление хрома</p><p class="catalog__item-note">Восстановление блеска хромированных деталей.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Восстановление хрома"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Восстановление хрома</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
+   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Полировка кузова + 2 слоя керамики"><div class="catalog__item-text"><p class="catalog__item-name">Полировка кузова + 2&nbsp;слоя керамики</p><p class="catalog__item-note">Полировка снимает паутинку, сверху&nbsp;— два слоя керамики.</p></div><p class="catalog__item-price">от&nbsp;40&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Полировка кузова + 2 слоя керамики"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Полировка кузова + 2&nbsp;слоя керамики</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Локальная полировка элемента"><div class="catalog__item-text"><p class="catalog__item-name">Локальная полировка элемента</p><p class="catalog__item-note">Полировка одной детали кузова.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Локальная полировка элемента"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Локальная полировка элемента</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Полировка фар"><div class="catalog__item-text"><p class="catalog__item-name">Полировка фар</p><p class="catalog__item-note">Мутный поликарбонат снова даёт чёткий пучок света.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Полировка фар"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Полировка фар</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Восстановление хрома"><div class="catalog__item-text"><p class="catalog__item-name">Восстановление хрома</p><p class="catalog__item-note">Восстановление блеска хромированных деталей.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Восстановление хрома"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Восстановление хрома</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
   </section>
   <section class="catalog__section" id="price-coatings" aria-labelledby="price-coatings-title" data-summary="3 позиции, от 2 500 ₽">
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-coatings-title">Защитные покрытия</h3>
    </div>
-   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Керамическое покрытие кузова"><div class="catalog__item-text"><p class="catalog__item-name">Керамическое покрытие кузова</p><p class="catalog__item-note">Вода собирается в&nbsp;каплю и&nbsp;уходит, не&nbsp;оставляя следов.</p></div><p class="catalog__item-price">от&nbsp;15&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Керамическое покрытие кузова"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Керамическое покрытие кузова</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Защитное кварцевое покрытие кузова"><div class="catalog__item-text"><p class="catalog__item-name">Защитное кварцевое покрытие кузова</p><p class="catalog__item-note">Кварцевое защитное покрытие на&nbsp;лак.</p></div><p class="catalog__item-price">от&nbsp;2&nbsp;500&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Защитное кварцевое покрытие кузова"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Защитное кварцевое покрытие кузова</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Керамика дисков"><div class="catalog__item-text"><p class="catalog__item-name">Керамика дисков</p><p class="catalog__item-note">Керамическое покрытие колёсных дисков.</p></div><p class="catalog__item-price">от&nbsp;35&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Керамика дисков"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Керамика дисков</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
+   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Керамическое покрытие кузова"><div class="catalog__item-text"><p class="catalog__item-name">Керамическое покрытие кузова</p><p class="catalog__item-note">Вода собирается в&nbsp;каплю и&nbsp;уходит, не&nbsp;оставляя следов.</p></div><p class="catalog__item-price">от&nbsp;15&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Керамическое покрытие кузова"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Керамическое покрытие кузова</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Защитное кварцевое покрытие кузова"><div class="catalog__item-text"><p class="catalog__item-name">Защитное кварцевое покрытие кузова</p><p class="catalog__item-note">Кварцевое защитное покрытие на&nbsp;лак.</p></div><p class="catalog__item-price">от&nbsp;2&nbsp;500&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Защитное кварцевое покрытие кузова"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Защитное кварцевое покрытие кузова</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Керамика дисков"><div class="catalog__item-text"><p class="catalog__item-name">Керамика дисков</p><p class="catalog__item-note">Керамическое покрытие колёсных дисков.</p></div><p class="catalog__item-price">от&nbsp;35&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="protection" data-request-services="Керамика дисков"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Керамика дисков</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
   </section>
   <p class="catalog__note">Стоимость зависит от&nbsp;типа кузова и&nbsp;состояния автомобиля. Итоговый объём и&nbsp;цену согласуем перед работой. Не&nbsp;является публичной офертой.</p>
  </div>
@@ -316,9 +280,9 @@
         <p class="catalog__section-note">Защитную плёнку на&nbsp;лобовое стекло клеим в&nbsp;разделе <a href="wrap">«Оклейка плёнкой»</a>.</p>
       </div>
       <ul class="catalog__items" role="list">
-        <li class="catalog__item" data-price-item="Антидождь передней полусферы"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь передней полусферы</p><p class="catalog__item-note">Лобовое и&nbsp;передние боковые стёкла: на&nbsp;скорости вода срывается сама.</p></div><p class="catalog__item-price">от&nbsp;3&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь передней полусферы"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Антидождь передней полусферы</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li>
-        <li class="catalog__item" data-price-item="Антидождь всех стёкол автомобиля"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь всех стёкол автомобиля</p><p class="catalog__item-note">Гидрофобная защита всех стёкол автомобиля.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь всех стёкол автомобиля"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Антидождь всех стёкол автомобиля</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li>
-        <li class="catalog__item" data-price-item="Ремонт автомобильных стёкол"><div class="catalog__item-text"><p class="catalog__item-name">Ремонт автомобильных стёкол</p><p class="catalog__item-note">Стоимость&nbsp;— после осмотра повреждения.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Ремонт автомобильных стёкол"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Ремонт автомобильных стёкол</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li>
+        <li class="catalog__item" data-price-item="Антидождь передней полусферы"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь передней полусферы</p><p class="catalog__item-note">Лобовое и&nbsp;передние боковые стёкла: на&nbsp;скорости вода срывается сама.</p></div><p class="catalog__item-price">от&nbsp;3&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь передней полусферы"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Антидождь передней полусферы</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li>
+        <li class="catalog__item" data-price-item="Антидождь всех стёкол автомобиля"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь всех стёкол автомобиля</p><p class="catalog__item-note">Гидрофобная защита всех стёкол автомобиля.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь всех стёкол автомобиля"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Антидождь всех стёкол автомобиля</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li>
+        <li class="catalog__item" data-price-item="Ремонт автомобильных стёкол"><div class="catalog__item-text"><p class="catalog__item-name">Ремонт автомобильных стёкол</p><p class="catalog__item-note">Стоимость&nbsp;— после осмотра повреждения.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Ремонт автомобильных стёкол"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Ремонт автомобильных стёкол</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li>
       </ul>
     </section>
     <p class="catalog__note">Стоимость зависит от&nbsp;типа кузова и&nbsp;состояния автомобиля. Итоговый объём и&nbsp;цену согласуем перед работой. Не&nbsp;является публичной офертой.</p>
@@ -335,7 +299,7 @@
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-components-title">Узлы и&nbsp;диски</h3>
    </div>
-   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Детейлинг дисков"><div class="catalog__item-text"><p class="catalog__item-name">Детейлинг дисков</p><p class="catalog__item-note">Уход за&nbsp;колёсными дисками.</p></div><p class="catalog__item-price">от&nbsp;10&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг дисков"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Детейлинг дисков</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Детейлинг моторного отсека"><div class="catalog__item-text"><p class="catalog__item-name">Детейлинг моторного отсека</p><p class="catalog__item-note">Очистка моторного отсека.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг моторного отсека"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Детейлинг моторного отсека</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Детейлинг подвески"><div class="catalog__item-text"><p class="catalog__item-name">Детейлинг подвески</p><p class="catalog__item-note">Очистка элементов подвески.</p></div><p class="catalog__item-price">от&nbsp;25&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг подвески"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Детейлинг подвески</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Химчистка радиаторов"><div class="catalog__item-text"><p class="catalog__item-name">Химчистка радиаторов</p><p class="catalog__item-note">Очистка радиаторов от&nbsp;грязи.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Химчистка радиаторов"><span class="catalog__action-label">Записаться онлайн</span><span class="sr">: Химчистка радиаторов</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
+   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Детейлинг дисков"><div class="catalog__item-text"><p class="catalog__item-name">Детейлинг дисков</p><p class="catalog__item-note">Уход за&nbsp;колёсными дисками.</p></div><p class="catalog__item-price">от&nbsp;10&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг дисков"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Детейлинг дисков</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Детейлинг моторного отсека"><div class="catalog__item-text"><p class="catalog__item-name">Детейлинг моторного отсека</p><p class="catalog__item-note">Очистка моторного отсека.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг моторного отсека"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Детейлинг моторного отсека</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Детейлинг подвески"><div class="catalog__item-text"><p class="catalog__item-name">Детейлинг подвески</p><p class="catalog__item-note">Очистка элементов подвески.</p></div><p class="catalog__item-price">от&nbsp;25&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Детейлинг подвески"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Детейлинг подвески</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Химчистка радиаторов"><div class="catalog__item-text"><p class="catalog__item-name">Химчистка радиаторов</p><p class="catalog__item-note">Очистка радиаторов от&nbsp;грязи.</p></div><p class="catalog__item-price">от&nbsp;1&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Химчистка радиаторов"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Химчистка радиаторов</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
   </section>
   <p class="catalog__note">Стоимость зависит от&nbsp;типа кузова и&nbsp;состояния автомобиля. Итоговый объём и&nbsp;цену согласуем перед работой. Не&nbsp;является публичной офертой.</p>
  </div>
@@ -361,10 +325,6 @@
       <h3>Глубокая царапина станет незаметнее, но&nbsp;останется</h3>
       <p>Лак не&nbsp;бесконечен: снимать его&nbsp;до&nbsp;тех пор, пока царапина не&nbsp;исчезнет, нельзя&nbsp;— это&nbsp;дорога к&nbsp;покраске.</p>
     </li>
-    <li class="sec-limits__item">
-      <h3>Старое пятно может не&nbsp;уйти целиком</h3>
-      <p>Краска, чернила и&nbsp;пятна, которые давно въелись в&nbsp;ткань, иногда только светлеют. Это&nbsp;видно после пробной чистки.</p>
-    </li>
   </ul>
 </section>
 
@@ -376,7 +336,7 @@
     <ol class="steps sec-steps">
       <li class="steps__item">
         <h3>Заявка</h3>
-        <p>Запишитесь онлайн или&nbsp;позвоните в&nbsp;студию: расскажите, что&nbsp;беспокоит,&nbsp;— салон, лак, запах или&nbsp;всё сразу.</p>
+        <p>Оставьте заявку или&nbsp;позвоните в&nbsp;студию: расскажите, что&nbsp;беспокоит,&nbsp;— салон, лак, запах или&nbsp;всё сразу.</p>
       </li>
       <li class="steps__item">
         <h3>Осмотр и&nbsp;цена</h3>
@@ -388,7 +348,7 @@
       </li>
       <li class="steps__item">
         <h3>Проверка и&nbsp;выдача</h3>
-        <p>Проверяем результат вместе с&nbsp;вами. После химчистки салону нужно время, чтобы высохнуть, после керамики&nbsp;— чтобы покрытие набрало прочность.</p>
+        <p>Проверяем результат вместе с&nbsp;вами. После керамики покрытию нужно время, чтобы набрать прочность.</p>
       </li>
     </ol>
   </div>
@@ -401,7 +361,7 @@
   </header>
   <div class="sec-tiles col-ext">
 <ul class="work-tiles" role="list" data-works="detailing">
-  <li class="work-tiles__item"><a class="work-tile" href="#price-interior"><img class="work-tile__img" src="assets/img/works/detailing-1-800.webp" srcset="assets/img/works/detailing-1-800.webp 800w, assets/img/works/detailing-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Салон Mercedes V-класса: кожаные кресла с прострочкой «ромб», шторки на окнах" loading="lazy" decoding="async"><span class="work-tile__title">Кожаный салон</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="#price-leather"><img class="work-tile__img" src="assets/img/works/detailing-1-800.webp" srcset="assets/img/works/detailing-1-800.webp 800w, assets/img/works/detailing-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Салон Mercedes V-класса: кожаные кресла с прострочкой «ромб», шторки на окнах" loading="lazy" decoding="async"><span class="work-tile__title">Кожаный салон</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
   <li class="work-tiles__item"><a class="work-tile" href="#price-components"><img class="work-tile__img" src="assets/img/works/detailing-2-800.webp" srcset="assets/img/works/detailing-2-800.webp 800w, assets/img/works/detailing-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер в перчатке наносит средство из распылителя в открытом моторном отсеке" loading="lazy" decoding="async"><span class="work-tile__title">Моторный отсек</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
   <li class="work-tiles__item"><a class="work-tile" href="#price-components"><img class="work-tile__img" src="assets/img/works/detailing-3-800.webp" srcset="assets/img/works/detailing-3-800.webp 800w, assets/img/works/detailing-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер чистит кистью колёсный диск BMW с нанесённым очистителем" loading="lazy" decoding="async"><span class="work-tile__title">Уход за&nbsp;дисками</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
 </ul>
@@ -419,7 +379,7 @@
     </li>
     <li class="sec-points__item">
       <h3>Машина с&nbsp;пробегом</h3>
-      <p>Лак потускнел и&nbsp;покрылся паутинкой, салон затёрт&nbsp;— полировка и&nbsp;химчистка возвращают вид.</p>
+      <p>Лак потускнел и&nbsp;покрылся паутинкой, кожа в&nbsp;салоне затёрта&nbsp;— полировка и&nbsp;уход за&nbsp;кожей возвращают вид.</p>
     </li>
     <li class="sec-points__item">
       <h3>После зимы</h3>
@@ -436,7 +396,7 @@
     <li class="sec-points__item">
       <h3>Перед продажей</h3>
       <p>Чистый салон, блестящий кузов и&nbsp;вымытый моторный отсек&nbsp;— машину приятнее показывать. Предпродажная подготовка&nbsp;— от&nbsp;35&nbsp;000&nbsp;₽.</p>
-      <button class="link-arrow sec-points__action" type="button" data-request data-request-category="detailing" data-request-services="Предпродажная подготовка">Записаться онлайн<span class="sr">: предпродажная подготовка</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
+      <button class="link-arrow sec-points__action" type="button" data-request data-request-category="detailing" data-request-services="Предпродажная подготовка">Оставить заявку<span class="sr">: предпродажная подготовка</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
     </li>
   </ul>
 </section>
@@ -533,7 +493,7 @@
     <details class="accordion">
       <summary class="accordion__head">Сколько стоит детейлинг?</summary>
       <div class="accordion__body">
-        <p>Единой цены нет: она складывается из&nbsp;работ. Химчистка всего салона&nbsp;— от&nbsp;15&nbsp;000&nbsp;₽, полировка кузова с&nbsp;двумя слоями керамики&nbsp;— от&nbsp;40&nbsp;000&nbsp;₽, отдельные работы по&nbsp;салону&nbsp;— от&nbsp;500&nbsp;₽. Цена зависит от&nbsp;типа кузова и&nbsp;состояния машины, итог согласуем на&nbsp;осмотре.</p>
+        <p>Единой цены нет: она складывается из&nbsp;работ. Полировка кузова с&nbsp;двумя слоями керамики&nbsp;— от&nbsp;40&nbsp;000&nbsp;₽, уход за&nbsp;кожей и&nbsp;пластиком салона&nbsp;— от&nbsp;2&nbsp;000&nbsp;₽. Цена зависит от&nbsp;типа кузова и&nbsp;состояния машины, итог согласуем на&nbsp;осмотре.</p>
       </div>
     </details>
     <details class="accordion">
@@ -559,14 +519,8 @@
     <details class="accordion">
       <summary class="accordion__head">Сколько времени занимает детейлинг?</summary>
       <div class="accordion__body">
-        <p>Зависит от&nbsp;объёма. Отдельную деталь салона или&nbsp;кузова можно сделать за&nbsp;визит, полировку с&nbsp;керамикой и&nbsp;полную химчистку&nbsp;— дольше: салону нужно высохнуть, покрытию&nbsp;— набрать прочность.</p>
-        <p><span class="todo" data-no-typo>[нужно от клиента: сроки химчистки салона, полировки с керамикой и керамики кожи — сколько машина проводит в студии]</span></p>
-      </div>
-    </details>
-    <details class="accordion">
-      <summary class="accordion__head">Уйдут&nbsp;ли все&nbsp;пятна после химчистки?</summary>
-      <div class="accordion__body">
-        <p>Большинство загрязнений уходит. Старые пятна от&nbsp;краски, чернил или&nbsp;кофе, въевшиеся глубоко в&nbsp;ткань, иногда только светлеют&nbsp;— это&nbsp;видно после пробной чистки на&nbsp;месте.</p>
+        <p>Зависит от&nbsp;объёма. Отдельную деталь салона или&nbsp;кузова можно сделать за&nbsp;визит, полировку с&nbsp;керамикой&nbsp;— дольше: покрытию нужно набрать прочность.</p>
+        <p><span class="todo" data-no-typo>[нужно от клиента: сроки полировки с керамикой и керамики кожи — сколько машина проводит в студии]</span></p>
       </div>
     </details>
     <details class="accordion">
@@ -608,17 +562,17 @@
 
 <section class="section sec-seo col-narrow" aria-labelledby="detailing-seo-title">
   <h2 id="detailing-seo-title">Детейлинг автомобиля в&nbsp;Москве</h2>
-  <p>В&nbsp;студиях <span lang="en">MEATWASH</span> на&nbsp;Лубянке и&nbsp;в&nbsp;Технопарке делают химчистку салона, уход за&nbsp;кожей и&nbsp;пластиком, полировку кузова и&nbsp;фар, керамическое и&nbsp;кварцевое покрытие, антидождь, детейлинг дисков, моторного отсека и&nbsp;подвески. Цены&nbsp;— от&nbsp;500&nbsp;₽ за&nbsp;отдельную работу; химчистка всего салона&nbsp;— от&nbsp;15&nbsp;000&nbsp;₽.</p>
+  <p>В&nbsp;студиях <span lang="en">MEATWASH</span> на&nbsp;Лубянке и&nbsp;в&nbsp;Технопарке делают уход за&nbsp;кожей и&nbsp;пластиком салона, полировку кузова и&nbsp;фар, керамическое и&nbsp;кварцевое покрытие, антидождь, детейлинг дисков, моторного отсека и&nbsp;подвески. Цены&nbsp;— от&nbsp;1&nbsp;000&nbsp;₽ за&nbsp;отдельную работу. Химчистку салона делаем на&nbsp;<a href="wash#wash-interior">автомойке</a>.</p>
   <p>Полировку кузова делаем вместе с&nbsp;керамикой: покрытие закрепляет то&nbsp;состояние лака, которое под&nbsp;ним. От&nbsp;сколов керамика не&nbsp;спасает&nbsp;— для&nbsp;этого есть <a href="wrap">оклейка плёнкой</a>, а&nbsp;скол до&nbsp;металла убирают <a href="bodywork">кузовные работы</a>. Для&nbsp;регулярного ухода между визитами&nbsp;— <a href="wash">автомойка</a>.</p>
 </section>
 
 <section class="sec-cta" id="leave-request" aria-labelledby="leave-request-title">
   <div class="sec-cta__inner">
     <div class="sec-cta__head">
-      <h2 class="sec-cta__title" id="leave-request-title">Записаться онлайн</h2>
+      <h2 class="sec-cta__title" id="leave-request-title">Оставить заявку</h2>
       <p class="sec-cta__lead">Опишите, что&nbsp;хотите сделать с&nbsp;салоном или&nbsp;кузовом, или&nbsp;позвоните в&nbsp;студию&nbsp;— подскажем объём работ и&nbsp;цену.</p>
       <div class="actions">
-        <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Записаться онлайн</button>
+        <button class="btn btn--primary" type="button" data-request data-request-category="detailing">Оставить заявку</button>
       </div>
     </div>
     <ul class="sec-studios" role="list">
@@ -646,7 +600,7 @@
 <!-- SHARED:footer:START -->
 <!-- Подвал (план §1.4, паттерн Porsche 3.3). Владелец: WP1, с 05.11 — интегратор.
      Колонка «MEATWASH» — шесть направлений (Влад 05.11), за ними «Услуги и цены», работы, привоз,
-     статьи. «Связаться» — «Записаться онлайн» (форма #request с темой страницы), канал MEAT AUTO,
+     статьи. «Связаться» — кнопка заявки (форма #request с темой страницы), канал MEAT AUTO,
      клубная карта; личного Telegram нет.
      Сверху «Наверх», строка города, три колонки (Студии · MEATWASH · Связаться), юридическая
      строка, пометка о Meta, внизу по центру — белый бык и «Car Care Club».
@@ -694,7 +648,7 @@
     <section class="site-footer__col" aria-labelledby="footer-contact-title">
       <h3 class="site-footer__title" id="footer-contact-title">Связаться</h3>
       <ul class="site-footer__links">
-        <li><button type="button" data-request data-request-category="detailing">Записаться онлайн</button></li>
+        <li><button type="button" data-request data-request-category="detailing">Оставить заявку</button></li>
         <li><a href="https://t.me/MEATWASH_Auto" target="_blank" rel="noopener">Канал <span lang="en">MEAT AUTO</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> в&nbsp;Telegram (откроется в&nbsp;новой вкладке)</span></a></li>
         <li><a href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Клубная карта<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a></li>
       </ul>
@@ -714,15 +668,15 @@
 <!-- SHARED:footer:END -->
 
 <!-- SHARED:dialogs:START -->
-<!-- Окно «Записаться онлайн» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
+<!-- Окно кнопка заявки (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
      js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
      В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — «Записаться онлайн» с темой страницы (поле topic в src/content/pages.mjs). -->
-<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="detailing">Записаться онлайн</button>
+     Нижняя кнопка на телефоне — кнопка заявки с темой страницы (поле topic в src/content/pages.mjs). -->
+<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="detailing">Оставить заявку</button>
 
 <!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
      data-request-services, о чём заявка — data-request-context) и data-book у автомойки (тема
@@ -736,7 +690,7 @@
      это обещает Политика, п. 2.1. -->
 <dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Записаться онлайн</h2>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставить заявку</h2>
   <p class="dialog__context" id="request-context" hidden></p>
   <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
        «Администратор студии перезвонит и ответит на вопросы». -->

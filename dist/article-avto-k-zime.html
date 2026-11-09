@@ -45,8 +45,9 @@
 
 <!-- SHARED:header:START -->
 <!-- Шапка и меню-шторка (план §1.3, §1.5, §2.8; паттерн Porsche 3.1–3.2). Владелец: WP1,
-     с 05.11 — интегратор. Шапка: «Меню» слева, «Записаться онлайн» справа; быка в шапке нет (Влад 09.11 — знак
-     с быком стоит в первом экране главной)
+     с 05.11 — интегратор. Шапка: «Меню» слева, белый бык по центру — на всех страницах, кроме главной
+     (Влад 09.11: на главной знак стоит в первом экране), справа кнопка заявки (подстановка request-label:
+     на /wash кнопка заявки, на остальных «Оставить заявку» — Влад 09.11 вечер)
      (Влад 05.11: всё — по заявкам; кнопка открывает форму #request с темой страницы).
      Не липкая ни на одной странице; over — поверх фото со скримом сверху, solid — тёмная полоса
      (и на «бумаге»: белый бык на слоновой кости не виден).
@@ -63,7 +64,8 @@
 <header class="site-header site-header--solid" id="top">
   <div class="site-header__bar">
     <button class="site-header__menu" id="drawer-open" type="button" aria-controls="drawer" aria-expanded="false" aria-haspopup="dialog"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-menu"/></svg><span class="site-header__menu-label">Меню</span></button>
-    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="">Записаться онлайн</button>
+    <a class="site-header__logo" href="./" aria-label="MEATWASH — на главную"><svg class="bull" viewBox="0 0 1097 800" fill="currentColor" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-bull"/></svg></a>
+    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="">Оставить заявку</button>
   </div>
 </header>
 
@@ -86,7 +88,7 @@
         </ul>
       </div>
       <div class="drawer__foot">
-        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="">Записаться онлайн</button>
+        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="">Оставить заявку</button>
       </div>
     </nav>
 
@@ -99,7 +101,7 @@
       <div class="drawer__body">
         <div class="drawer__tiles">
           <a class="drawer__tile" href="services#price-wash"><span class="drawer__tile-media"><img src="assets/img/menu/wash-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Автомойка</span><span class="chip">от&nbsp;2&nbsp;150&nbsp;₽</span></a>
-          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;500&nbsp;₽</span></a>
+          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;1&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-wrap"><span class="drawer__tile-media"><img src="assets/img/menu/wrap-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Оклейка плёнкой</span><span class="chip">от&nbsp;10&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-bodywork"><span class="drawer__tile-media"><img src="assets/img/menu/bodywork-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Кузовные работы</span><span class="chip">от&nbsp;5&nbsp;000&nbsp;₽</span></a>
         </div>
@@ -197,7 +199,7 @@
         <h2 class="article__toc-title" id="toc-title" data-toc="no">Содержание</h2>
         <ol><li><a href="#chto-delaet-zima">Что&nbsp;зима делает с&nbsp;автомобилем</a></li><li><a href="#do-sezona-kuzov">До&nbsp;сезона: подготовить кузов</a></li><li><a href="#stekla">Стёкла и&nbsp;обзор</a></li><li><a href="#uplotniteli">Уплотнители и&nbsp;шины</a></li><li><a href="#salon">Салон</a></li><li><a href="#v-sezon">В&nbsp;сезон: как&nbsp;мыть машину</a></li><li><a href="#plan">Короткий план</a></li></ol>
       </nav>
-      <button class="btn btn--primary btn--block article__book" type="button" data-request data-request-category="">Записаться онлайн</button>
+      <button class="btn btn--primary btn--block article__book" type="button" data-request data-request-category="">Оставить заявку</button>
     </aside>
     <div class="article__body">
 <h2 id="chto-delaet-zima">Что&nbsp;зима делает с&nbsp;автомобилем</h2>
@@ -319,7 +321,7 @@
   </div>
 </article>
 <!-- Фото — настоящая автомойка студии (кадр плитки 1 главной v2, номер закрыт), не постановочный
-     рендер: рядом цена и «Записаться онлайн» (data-book — форма с темой автомойки, Влад 05.11). -->
+     рендер: рядом цена и «Оставить заявку» (data-book — форма с темой автомойки, Влад 05.11). -->
 <section class="promo col-ext article-promo" id="book-cta" aria-labelledby="book-cta-title">
   <div class="promo__media">
     <img src="assets/img/articles/foam-lexus-800.webp" srcset="assets/img/articles/foam-lexus-800.webp 800w, assets/img/articles/foam-lexus-1240.webp 1240w" sizes="(max-width: 759px) 100vw, 50vw" width="1240" height="930" alt="Внедорожник в активной пене на автомойке студии" loading="lazy" decoding="async">
@@ -328,7 +330,7 @@
     <h2 id="book-cta-title" data-toc="no">Детейлинг-мойка от&nbsp;реагентов</h2>
     <p>Очистка кузова, арок и&nbsp;порогов от&nbsp;дорожной химии&nbsp;— 60–90&nbsp;минут, от&nbsp;4&nbsp;950&nbsp;₽; цена зависит от&nbsp;типа кузова. Остальной зимний уход можно собрать в&nbsp;3D-гараже: отметьте работы, и&nbsp;итог «от» посчитается по&nbsp;каталогу.</p>
     <div class="promo__actions">
-      <button class="btn btn--primary" type="button" data-book data-program="2" data-book-context="Детейлинг-мойка от реагентов">Записаться онлайн<span class="sr">: Детейлинг-мойка от&nbsp;реагентов</span></button>
+      <button class="btn btn--primary" type="button" data-book data-program="2" data-book-context="Детейлинг-мойка от реагентов">Оставить заявку<span class="sr">: Детейлинг-мойка от&nbsp;реагентов</span></button>
       <a class="link-arrow" href="wash#programs">Программы мойки и&nbsp;цены<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
       <a class="link-arrow" href="services#garage-3d">Собрать уход в&nbsp;3D-гараже<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></a>
     </div>
@@ -338,16 +340,16 @@
 <!-- SHARED:book:START -->
 <!-- Блок заявки в конце страницы (план §4.2; есть на «Услугах и ценах», «Работах», «Статьях»
      и статье). Владелец: WP6, тексты 05.11 — исполнитель E, вид — css/dialogs.css. Влад 05.11:
-     все призывы — «Записаться онлайн» (тема страницы — подстановка topic); онлайн-запись YCLIENTS —
+     все призывы — кнопка заявки (тема страницы — подстановка topic); онлайн-запись YCLIENTS —
      только мелкой строкой внутри формы, здесь её нет. Карточки студий — звонок в студию.
      Цвета — из --on*: один и тот же блок работает на тёмной странице и на «бумаге». -->
 <section class="book-block" id="book" aria-labelledby="book-title">
   <div class="book-block__inner">
     <div class="book-block__head">
-      <h2 class="book-block__title" id="book-title">Записаться онлайн</h2>
+      <h2 class="book-block__title" id="book-title">Оставить заявку</h2>
       <p class="book-block__lead">Опишите задачу в&nbsp;заявке или&nbsp;позвоните в&nbsp;студию: администратор подскажет цену и&nbsp;время.</p>
       <div class="book-block__note actions">
-        <button class="btn btn--primary" type="button" data-request data-request-category="">Записаться онлайн</button>
+        <button class="btn btn--primary" type="button" data-request data-request-category="">Оставить заявку</button>
       </div>
     </div>
     <div class="book-block__studios">
@@ -362,7 +364,7 @@
 <!-- SHARED:footer:START -->
 <!-- Подвал (план §1.4, паттерн Porsche 3.3). Владелец: WP1, с 05.11 — интегратор.
      Колонка «MEATWASH» — шесть направлений (Влад 05.11), за ними «Услуги и цены», работы, привоз,
-     статьи. «Связаться» — «Записаться онлайн» (форма #request с темой страницы), канал MEAT AUTO,
+     статьи. «Связаться» — кнопка заявки (форма #request с темой страницы), канал MEAT AUTO,
      клубная карта; личного Telegram нет.
      Сверху «Наверх», строка города, три колонки (Студии · MEATWASH · Связаться), юридическая
      строка, пометка о Meta, внизу по центру — белый бык и «Car Care Club».
@@ -410,7 +412,7 @@
     <section class="site-footer__col" aria-labelledby="footer-contact-title">
       <h3 class="site-footer__title" id="footer-contact-title">Связаться</h3>
       <ul class="site-footer__links">
-        <li><button type="button" data-request data-request-category="">Записаться онлайн</button></li>
+        <li><button type="button" data-request data-request-category="">Оставить заявку</button></li>
         <li><a href="https://t.me/MEATWASH_Auto" target="_blank" rel="noopener">Канал <span lang="en">MEAT AUTO</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> в&nbsp;Telegram (откроется в&nbsp;новой вкладке)</span></a></li>
         <li><a href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Клубная карта<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a></li>
       </ul>
@@ -430,15 +432,15 @@
 <!-- SHARED:footer:END -->
 
 <!-- SHARED:dialogs:START -->
-<!-- Окно «Записаться онлайн» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
+<!-- Окно кнопка заявки (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
      js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
      В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — «Записаться онлайн» с темой страницы (поле topic в src/content/pages.mjs). -->
-<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="">Записаться онлайн</button>
+     Нижняя кнопка на телефоне — кнопка заявки с темой страницы (поле topic в src/content/pages.mjs). -->
+<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="">Оставить заявку</button>
 
 <!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
      data-request-services, о чём заявка — data-request-context) и data-book у автомойки (тема
@@ -452,7 +454,7 @@
      это обещает Политика, п. 2.1. -->
 <dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Записаться онлайн</h2>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставить заявку</h2>
   <p class="dialog__context" id="request-context" hidden></p>
   <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
        «Администратор студии перезвонит и ответит на вопросы». -->

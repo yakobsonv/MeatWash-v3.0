@@ -1,7 +1,7 @@
 <!-- Клуб (план §3.7 п. 11, паттерн P11 «фото | панель»). Владелец: WP5.
      Ссылка на оформление клубной карты — страница wahelp (адрес дал владелец; прямой ссылки
      на бота нет), класс membership__link и порядок атрибутов — контракт проверки, цель
-     club_card — по data-club-card. Вторая кнопка (05.11) — «Записаться онлайн» с темой club
+     club_card — по data-club-card. Вторая кнопка (05.11) — кнопка заявки с темой club
      (data-request, форма js/ui.js); условий клуба не придумываем. Фото карты клуба (на ней прежнее имя MEATWASH) не ставим: бренд нового
      сайта — MEATWASH; слева — знак (бык, MEAT WASH, Car Care Club из логотипа), не карта. -->
 <section class="promo col-ext membership" id="membership" aria-labelledby="membership-title">
@@ -10,10 +10,10 @@
   </div>
   <div class="promo__panel membership__panel">
     <h2 class="membership__title" id="membership-title">Больше, чем сервис</h2>
-    <p>Подарочные сертификаты, уход за корпоративным автопарком и индивидуальные комплексы. Запишитесь онлайн — расскажем об условиях клуба и подберём удобное время.</p>
+    <p>Подарочные сертификаты, уход за корпоративным автопарком и индивидуальные комплексы. {{request-say}} — расскажем об условиях клуба и подберём удобное время.</p>
     <div class="membership__actions">
       <a class="membership__link" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить клубную карту{{icon:arrow-up-right}}<span class="sr"> <span lang="en">MEATWASH Car Care Club</span> (откроется в новой вкладке)</span></a>
-      <button class="btn btn--secondary membership__talk" type="button" data-request data-request-category="club" data-request-services="Клубная карта">Записаться онлайн<span class="sr">: клубная карта</span></button>
+      <button class="btn btn--secondary membership__talk" type="button" data-request data-request-category="club" data-request-services="Клубная карта">{{request-label}}<span class="sr">: клубная карта</span></button>
     </div>
   </div>
 </section>

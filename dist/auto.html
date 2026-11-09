@@ -45,8 +45,9 @@
 
 <!-- SHARED:header:START -->
 <!-- Шапка и меню-шторка (план §1.3, §1.5, §2.8; паттерн Porsche 3.1–3.2). Владелец: WP1,
-     с 05.11 — интегратор. Шапка: «Меню» слева, «Записаться онлайн» справа; быка в шапке нет (Влад 09.11 — знак
-     с быком стоит в первом экране главной)
+     с 05.11 — интегратор. Шапка: «Меню» слева, белый бык по центру — на всех страницах, кроме главной
+     (Влад 09.11: на главной знак стоит в первом экране), справа кнопка заявки (подстановка request-label:
+     на /wash кнопка заявки, на остальных «Оставить заявку» — Влад 09.11 вечер)
      (Влад 05.11: всё — по заявкам; кнопка открывает форму #request с темой страницы).
      Не липкая ни на одной странице; over — поверх фото со скримом сверху, solid — тёмная полоса
      (и на «бумаге»: белый бык на слоновой кости не виден).
@@ -63,7 +64,8 @@
 <header class="site-header site-header--solid" id="top">
   <div class="site-header__bar">
     <button class="site-header__menu" id="drawer-open" type="button" aria-controls="drawer" aria-expanded="false" aria-haspopup="dialog"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-menu"/></svg><span class="site-header__menu-label">Меню</span></button>
-    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="auto">Записаться онлайн</button>
+    <a class="site-header__logo" href="./" aria-label="MEATWASH — на главную"><svg class="bull" viewBox="0 0 1097 800" fill="currentColor" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-bull"/></svg></a>
+    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="auto">Оставить заявку</button>
   </div>
 </header>
 
@@ -86,7 +88,7 @@
         </ul>
       </div>
       <div class="drawer__foot">
-        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto">Записаться онлайн</button>
+        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto">Оставить заявку</button>
       </div>
     </nav>
 
@@ -99,7 +101,7 @@
       <div class="drawer__body">
         <div class="drawer__tiles">
           <a class="drawer__tile" href="services#price-wash"><span class="drawer__tile-media"><img src="assets/img/menu/wash-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Автомойка</span><span class="chip">от&nbsp;2&nbsp;150&nbsp;₽</span></a>
-          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;500&nbsp;₽</span></a>
+          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;1&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-wrap"><span class="drawer__tile-media"><img src="assets/img/menu/wrap-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Оклейка плёнкой</span><span class="chip">от&nbsp;10&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-bodywork"><span class="drawer__tile-media"><img src="assets/img/menu/bodywork-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Кузовные работы</span><span class="chip">от&nbsp;5&nbsp;000&nbsp;₽</span></a>
         </div>
@@ -185,7 +187,7 @@
      Машины — src/data/cars.json, разметка карточек — scripts/cars.mjs (подстановки cars:sale,
      cars:sold, cars:date и счётчики count:*). Вид — dist/css/auto.css.
      Тексты — с прежней страницы (git show fd8d88d:src/content/auto.html), имя — MEATWASH.
-     05.11: связь — только форма «Записаться онлайн» с темой auto (личного мессенджера нет);
+     05.11: связь — только форма «Оставить заявку» с темой auto (личного мессенджера нет);
      канал MEAT AUTO в Telegram остаётся как лента предложений.
      Колонку задаёт класс col-* на содержимом; заголовок секции держит свою колонку сам (WP1).
      Надзаголовков и нумерации нет (решение Влада). -->
@@ -197,7 +199,7 @@
       <li><a href="#for-sale"><b>1</b> <span>в&nbsp;продаже</span></a></li>
       <li><a href="#sold"><b>16</b> <span>уже продали</span></a></li>
     </ul>
-    <button class="btn btn--primary" type="button" data-request data-request-category="auto">Записаться онлайн<span class="sr">: купить или&nbsp;продать автомобиль</span></button>
+    <button class="btn btn--primary" type="button" data-request data-request-category="auto">Оставить заявку<span class="sr">: купить или&nbsp;продать автомобиль</span></button>
   </div>
 </section>
 
@@ -251,7 +253,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">10&nbsp;350&nbsp;000&nbsp;₽ <span>с&nbsp;НДС&nbsp;— 12&nbsp;550&nbsp;000&nbsp;₽</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Lotus Eletre R">Записаться онлайн<span class="sr">: Lotus Eletre R</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Lotus Eletre R">Оставить заявку<span class="sr">: Lotus Eletre R</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -329,7 +331,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;сентябре 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-Benz S 580 4MATIC (W223)">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;Mercedes-Benz S&nbsp;580&nbsp;4MATIC (W223)</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-Benz S 580 4MATIC (W223)">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;Mercedes-Benz S&nbsp;580&nbsp;4MATIC (W223)</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -362,7 +364,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;сентябре 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW 7 серии">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW 7&nbsp;серии</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW 7 серии">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW 7&nbsp;серии</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -406,7 +408,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;сентябре 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW 740Ld xDrive">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW 740Ld xDrive</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW 740Ld xDrive">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW 740Ld xDrive</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -445,7 +447,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;июле 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW 530d xDrive (G30)">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW 530d xDrive (G30)</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW 530d xDrive (G30)">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW 530d xDrive (G30)</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -483,7 +485,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;июне 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-Benz GLE 450 4MATIC">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;Mercedes-Benz GLE 450&nbsp;4MATIC</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-Benz GLE 450 4MATIC">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;Mercedes-Benz GLE 450&nbsp;4MATIC</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -516,7 +518,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;июне 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Lotus Eletre">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;Lotus Eletre</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Lotus Eletre">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;Lotus Eletre</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -555,7 +557,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;июне 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW XM">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW XM</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW XM">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW XM</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -593,7 +595,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;апреле 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на MINI John Cooper Works">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;MINI John Cooper Works</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на MINI John Cooper Works">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;MINI John Cooper Works</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -632,7 +634,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;апреле 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M3 Competition (G80)">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW M3&nbsp;Competition (G80)</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M3 Competition (G80)">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW M3&nbsp;Competition (G80)</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -665,7 +667,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;апреле 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Toyota Land Cruiser 200">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;Toyota Land Cruiser 200</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Toyota Land Cruiser 200">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;Toyota Land Cruiser 200</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -704,7 +706,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;марте 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-Benz GLS 450 d">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;Mercedes-Benz GLS 450&nbsp;d</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-Benz GLS 450 d">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;Mercedes-Benz GLS 450&nbsp;d</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -742,7 +744,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;марте 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-AMG G 63">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;Mercedes-AMG G&nbsp;63</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на Mercedes-AMG G 63">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;Mercedes-AMG G&nbsp;63</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -780,7 +782,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;марте 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M4 CS">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW M4&nbsp;CS</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M4 CS">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW M4&nbsp;CS</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -818,7 +820,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;марте 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M340i">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW M340i</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M340i">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW M340i</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -856,7 +858,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;феврале 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M5 Competition (F90)">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW M5&nbsp;Competition (F90)</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M5 Competition (F90)">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW M5&nbsp;Competition (F90)</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -894,7 +896,7 @@
       <div class="car-card__offer">
         <p class="car-card__price">Продан в&nbsp;январе 2026<span>Подберём похожую: расскажите, что&nbsp;ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M3 (G80)">Записаться онлайн<span class="sr">: подобрать похожую на&nbsp;BMW M3 (G80)</span></button>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на BMW M3 (G80)">Оставить заявку<span class="sr">: подобрать похожую на&nbsp;BMW M3 (G80)</span></button>
           <a class="btn btn--secondary btn--block" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg>Позвонить<span class="sr"> в&nbsp;студию на&nbsp;Лубянке, +7 (930) 035-23-25</span></a>
         </div>
       </div>
@@ -920,7 +922,7 @@
       <li class="steps__item card--outline">
         <h3>Продажа вашей машины</h3>
         <p>Берём автомобиль на&nbsp;реализацию и&nbsp;ведём продажу до&nbsp;конца: показы, разговоры с&nbsp;покупателями, сделка.</p>
-        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Продажа автомобиля">Записаться онлайн<span class="sr">: продать машину</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
+        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Продажа автомобиля">Оставить заявку<span class="sr">: продать машину</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
       </li>
       <li class="steps__item card--outline">
         <h3>Подготовка к&nbsp;продаже</h3>
@@ -931,7 +933,7 @@
       <li class="steps__item card--outline">
         <h3>Подбор и&nbsp;покупка</h3>
         <p>Найдём автомобиль под&nbsp;задачу и&nbsp;купим под&nbsp;ключ. Опишите, какую машину ищете,&nbsp;— дальше задачу ведёт команда.</p>
-        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля">Записаться онлайн<span class="sr">: подбор и&nbsp;покупка автомобиля</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
+        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля">Оставить заявку<span class="sr">: подбор и&nbsp;покупка автомобиля</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
       </li>
     </ul>
   </div>
@@ -966,7 +968,7 @@
       <h2 id="auto-contact-title">Купить или&nbsp;продать&nbsp;— оставьте заявку</h2>
       <p>Расскажите, какую машину ищете или&nbsp;какую хотите продать. Дальше задачу ведёт команда.</p>
       <div class="actions promo__actions">
-        <button class="btn btn--primary" type="button" data-request data-request-category="auto">Записаться онлайн<span class="sr">: продажа или&nbsp;покупка автомобиля</span></button>
+        <button class="btn btn--primary" type="button" data-request data-request-category="auto">Оставить заявку<span class="sr">: продажа или&nbsp;покупка автомобиля</span></button>
         <a class="promo__tel" href="tel:+79300352325"><span>Или&nbsp;позвоните в&nbsp;студию на&nbsp;Лубянке</span> <b>+7 (930) 035-23-25</b></a>
       </div>
     </div>
@@ -977,7 +979,7 @@
 <!-- SHARED:footer:START -->
 <!-- Подвал (план §1.4, паттерн Porsche 3.3). Владелец: WP1, с 05.11 — интегратор.
      Колонка «MEATWASH» — шесть направлений (Влад 05.11), за ними «Услуги и цены», работы, привоз,
-     статьи. «Связаться» — «Записаться онлайн» (форма #request с темой страницы), канал MEAT AUTO,
+     статьи. «Связаться» — кнопка заявки (форма #request с темой страницы), канал MEAT AUTO,
      клубная карта; личного Telegram нет.
      Сверху «Наверх», строка города, три колонки (Студии · MEATWASH · Связаться), юридическая
      строка, пометка о Meta, внизу по центру — белый бык и «Car Care Club».
@@ -1025,7 +1027,7 @@
     <section class="site-footer__col" aria-labelledby="footer-contact-title">
       <h3 class="site-footer__title" id="footer-contact-title">Связаться</h3>
       <ul class="site-footer__links">
-        <li><button type="button" data-request data-request-category="auto">Записаться онлайн</button></li>
+        <li><button type="button" data-request data-request-category="auto">Оставить заявку</button></li>
         <li><a href="https://t.me/MEATWASH_Auto" target="_blank" rel="noopener">Канал <span lang="en">MEAT AUTO</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> в&nbsp;Telegram (откроется в&nbsp;новой вкладке)</span></a></li>
         <li><a href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Клубная карта<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a></li>
       </ul>
@@ -1045,15 +1047,15 @@
 <!-- SHARED:footer:END -->
 
 <!-- SHARED:dialogs:START -->
-<!-- Окно «Записаться онлайн» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
+<!-- Окно кнопка заявки (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
      js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
      В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — «Записаться онлайн» с темой страницы (поле topic в src/content/pages.mjs). -->
-<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="auto">Записаться онлайн</button>
+     Нижняя кнопка на телефоне — кнопка заявки с темой страницы (поле topic в src/content/pages.mjs). -->
+<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="auto">Оставить заявку</button>
 
 <!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
      data-request-services, о чём заявка — data-request-context) и data-book у автомойки (тема
@@ -1067,7 +1069,7 @@
      это обещает Политика, п. 2.1. -->
 <dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Записаться онлайн</h2>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставить заявку</h2>
   <p class="dialog__context" id="request-context" hidden></p>
   <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
        «Администратор студии перезвонит и ответит на вопросы». -->

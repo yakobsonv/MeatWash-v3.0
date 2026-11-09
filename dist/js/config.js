@@ -28,7 +28,7 @@ export const ZONES = [
   { id: 'premium', group: 'wash', price: { program: 4 } },
   // Химчистка в гараже — салон целиком, а не набор сидений и деталей:
   // отдельные элементы остаются в подробном прайсе.
-  { id: 'interior', group: 'detailing', price: { item: 'Детейлинг-химчистка салона' } },
+  { id: 'interior', group: 'wash', price: { item: 'Детейлинг-химчистка салона' } },
   { id: 'leather', group: 'detailing', price: { item: 'Кондиционер кожи сидений' } },
   { id: 'wheels', group: 'detailing', price: { item: 'Детейлинг дисков' } },
   { id: 'film', group: 'wrap', price: { item: 'Оклейка зон риска' } },

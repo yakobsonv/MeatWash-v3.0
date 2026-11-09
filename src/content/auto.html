@@ -3,7 +3,7 @@
      Машины — src/data/cars.json, разметка карточек — scripts/cars.mjs (подстановки cars:sale,
      cars:sold, cars:date и счётчики count:*). Вид — dist/css/auto.css.
      Тексты — с прежней страницы (git show fd8d88d:src/content/auto.html), имя — MEATWASH.
-     05.11: связь — только форма «Записаться онлайн» с темой auto (личного мессенджера нет);
+     05.11: связь — только форма «Оставить заявку» с темой auto (личного мессенджера нет);
      канал MEAT AUTO в Telegram остаётся как лента предложений.
      Колонку задаёт класс col-* на содержимом; заголовок секции держит свою колонку сам (WP1).
      Надзаголовков и нумерации нет (решение Влада). -->
@@ -15,7 +15,7 @@
       <li><a href="#for-sale"><b>{{count:sale}}</b> <span>в продаже</span></a></li>
       <li><a href="#sold"><b>{{count:sold}}</b> <span>уже продали</span></a></li>
     </ul>
-    <button class="btn btn--primary" type="button" data-request data-request-category="auto">Записаться онлайн<span class="sr">: купить или продать автомобиль</span></button>
+    <button class="btn btn--primary" type="button" data-request data-request-category="auto">Оставить заявку<span class="sr">: купить или продать автомобиль</span></button>
   </div>
 </section>
 
@@ -65,7 +65,7 @@
       <li class="steps__item card--outline">
         <h3>Продажа вашей машины</h3>
         <p>Берём автомобиль на реализацию и ведём продажу до конца: показы, разговоры с покупателями, сделка.</p>
-        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Продажа автомобиля">Записаться онлайн<span class="sr">: продать машину</span>{{icon:arrow-right}}</button>
+        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Продажа автомобиля">Оставить заявку<span class="sr">: продать машину</span>{{icon:arrow-right}}</button>
       </li>
       <li class="steps__item card--outline">
         <h3>Подготовка к продаже</h3>
@@ -76,7 +76,7 @@
       <li class="steps__item card--outline">
         <h3>Подбор и покупка</h3>
         <p>Найдём автомобиль под задачу и купим под ключ. Опишите, какую машину ищете, — дальше задачу ведёт команда.</p>
-        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля">Записаться онлайн<span class="sr">: подбор и покупка автомобиля</span>{{icon:arrow-right}}</button>
+        <button class="link-arrow" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля">Оставить заявку<span class="sr">: подбор и покупка автомобиля</span>{{icon:arrow-right}}</button>
       </li>
     </ul>
   </div>
@@ -111,7 +111,7 @@
       <h2 id="auto-contact-title">Купить или продать — оставьте заявку</h2>
       <p>Расскажите, какую машину ищете или какую хотите продать. Дальше задачу ведёт команда.</p>
       <div class="actions promo__actions">
-        <button class="btn btn--primary" type="button" data-request data-request-category="auto">Записаться онлайн<span class="sr">: продажа или покупка автомобиля</span></button>
+        <button class="btn btn--primary" type="button" data-request data-request-category="auto">Оставить заявку<span class="sr">: продажа или покупка автомобиля</span></button>
         <a class="promo__tel" href="tel:{{loc:myasnitskaya:tel}}"><span>Или позвоните в студию на Лубянке</span> <b>{{loc:myasnitskaya:phone}}</b></a>
       </div>
     </div>

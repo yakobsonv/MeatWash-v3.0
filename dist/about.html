@@ -47,8 +47,9 @@
 
 <!-- SHARED:header:START -->
 <!-- Шапка и меню-шторка (план §1.3, §1.5, §2.8; паттерн Porsche 3.1–3.2). Владелец: WP1,
-     с 05.11 — интегратор. Шапка: «Меню» слева, «Записаться онлайн» справа; быка в шапке нет (Влад 09.11 — знак
-     с быком стоит в первом экране главной)
+     с 05.11 — интегратор. Шапка: «Меню» слева, белый бык по центру — на всех страницах, кроме главной
+     (Влад 09.11: на главной знак стоит в первом экране), справа кнопка заявки (подстановка request-label:
+     на /wash кнопка заявки, на остальных «Оставить заявку» — Влад 09.11 вечер)
      (Влад 05.11: всё — по заявкам; кнопка открывает форму #request с темой страницы).
      Не липкая ни на одной странице; over — поверх фото со скримом сверху, solid — тёмная полоса
      (и на «бумаге»: белый бык на слоновой кости не виден).
@@ -65,7 +66,8 @@
 <header class="site-header site-header--over" id="top">
   <div class="site-header__bar">
     <button class="site-header__menu" id="drawer-open" type="button" aria-controls="drawer" aria-expanded="false" aria-haspopup="dialog"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-menu"/></svg><span class="site-header__menu-label">Меню</span></button>
-    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="">Записаться онлайн</button>
+    <a class="site-header__logo" href="./" aria-label="MEATWASH — на главную"><svg class="bull" viewBox="0 0 1097 800" fill="currentColor" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-bull"/></svg></a>
+    <button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="">Оставить заявку</button>
   </div>
 </header>
 
@@ -88,7 +90,7 @@
         </ul>
       </div>
       <div class="drawer__foot">
-        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="">Записаться онлайн</button>
+        <button class="btn btn--primary btn--block" type="button" data-request data-request-category="">Оставить заявку</button>
       </div>
     </nav>
 
@@ -101,7 +103,7 @@
       <div class="drawer__body">
         <div class="drawer__tiles">
           <a class="drawer__tile" href="services#price-wash"><span class="drawer__tile-media"><img src="assets/img/menu/wash-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Автомойка</span><span class="chip">от&nbsp;2&nbsp;150&nbsp;₽</span></a>
-          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;500&nbsp;₽</span></a>
+          <a class="drawer__tile" href="services#price-detailing"><span class="drawer__tile-media"><img src="assets/img/menu/detailing-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Детейлинг</span><span class="chip">от&nbsp;1&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-wrap"><span class="drawer__tile-media"><img src="assets/img/menu/wrap-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Оклейка плёнкой</span><span class="chip">от&nbsp;10&nbsp;000&nbsp;₽</span></a>
           <a class="drawer__tile" href="services#price-bodywork"><span class="drawer__tile-media"><img src="assets/img/menu/bodywork-400.webp" alt="" width="400" height="300" loading="lazy" decoding="async"></span><span class="drawer__tile-name">Кузовные работы</span><span class="chip">от&nbsp;5&nbsp;000&nbsp;₽</span></a>
         </div>
@@ -183,7 +185,7 @@
 
 <main id="main">
 <!-- Тело /about (план §3.7, поправки 3, 10, 13, 34; 05.11 — без личных имён, все призывы —
-     «Записаться онлайн»). Владелец: WP5, тексты 05.11 — исполнитель E.
+     «Оставить заявку»). Владелец: WP5, тексты 05.11 — исполнитель E.
      H1 не повторяет главную (поправка 34). Блок студий с картами — общая часть locations,
      клубный блок — membership (id membership внутри неё). Фото Технопарка (автор — ГЕОмаркетинг)
      на новых страницах не ставим (поправка 10). Надзаголовков и нумерации нет (решение Влада).
@@ -197,7 +199,7 @@
     <h1 id="page-title">О&nbsp;нас</h1>
     <p class="hero-a__lead">Уход, который сохраняет ценность</p>
     <div class="hero-a__actions actions">
-      <button class="btn btn--primary" type="button" data-request>Записаться онлайн</button>
+      <button class="btn btn--primary" type="button" data-request>Оставить заявку</button>
       <a class="btn btn--secondary" href="services">Услуги и&nbsp;цены</a>
     </div>
   </div>
@@ -225,7 +227,7 @@
   <div class="locations col-ext">
 <!-- SHARED:locations:START -->
   <!-- Студии (план §4.4, паттерн P23). Владелец: WP5. Слева карточка студии: название,
-       тип, адрес, часы, телефон, две строки деталей, «Записаться онлайн» (форма; онлайн-запись
+       тип, адрес, часы, телефон, две строки деталей, кнопка заявки (форма; онлайн-запись
        YCLIENTS — только мелкой строкой внутри формы, Влад 05.11) и маршрут;
        справа (до 1000 px — ниже) карта. iframe виджета Яндекс Карт создаёт js/maps.js, когда
        область подходит к экрану; в разметке его нет (check). До этого, без скриптов и при
@@ -244,7 +246,7 @@
       </ul>
       <p class="location__detail">Подземный паркинг, −1&nbsp;этаж.<br>Два часа парковки, Wi-Fi&nbsp;и&nbsp;зона ожидания.</p>
       <div class="location__actions">
-        <button class="btn btn--primary location__book" type="button" data-request data-request-studio="myasnitskaya" data-request-context="Студия на Лубянке">Записаться онлайн<span class="sr">: студия Лубянка</span></button>
+        <button class="btn btn--primary location__book" type="button" data-request data-request-studio="myasnitskaya" data-request-context="Студия на Лубянке">Оставить заявку<span class="sr">: студия Лубянка</span></button>
         <a class="btn btn--secondary location__route" href="https://yandex.ru/maps/?rtext=~55.761864%2C37.632492&amp;rtt=auto" target="_blank" rel="noopener noreferrer">Маршрут<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> до&nbsp;студии Лубянка в&nbsp;Яндекс Картах (откроется в&nbsp;новой вкладке)</span></a>
       </div>
     </div>
@@ -270,7 +272,7 @@
       </ul>
       <p class="location__detail">ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж.<br>Полировка, керамика, плёнка, кузовной ремонт и&nbsp;порошковая покраска дисков. Принимаем топливные карты.</p>
       <div class="location__actions">
-        <button class="btn btn--primary location__book" type="button" data-request data-request-studio="technopark" data-request-context="Студия в Технопарке">Записаться онлайн<span class="sr">: студия Технопарк</span></button>
+        <button class="btn btn--primary location__book" type="button" data-request data-request-studio="technopark" data-request-context="Студия в Технопарке">Оставить заявку<span class="sr">: студия Технопарк</span></button>
         <a class="btn btn--secondary location__route" href="https://yandex.ru/maps/?rtext=~55.697146%2C37.666144&amp;rtt=auto" target="_blank" rel="noopener noreferrer">Маршрут<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> до&nbsp;студии Технопарк в&nbsp;Яндекс Картах (откроется в&nbsp;новой вкладке)</span></a>
       </div>
     </div>
@@ -297,7 +299,7 @@
     <li class="card visit__item visit__item--offer">
       <h3>Первый визит</h3>
       <p>Новым клиентам&nbsp;— защитное кварцевое покрытие кузова в&nbsp;подарок и&nbsp;скидка 500&nbsp;₽ на&nbsp;первую автомойку. Условия уточняйте у&nbsp;администратора.</p>
-      <button class="link-arrow visit__link" type="button" data-book data-book-context="Первый визит">Записаться онлайн<span class="sr">: первый визит на&nbsp;автомойку</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
+      <button class="link-arrow visit__link" type="button" data-book data-book-context="Первый визит">Оставить заявку<span class="sr">: первый визит на&nbsp;автомойку</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button>
     </li>
     <li class="card visit__item visit__item--media">
       <figure class="vframe visit__media" data-video-host><img src="assets/video/clip-lounge-15-poster.webp?v=08213a9e" width="720" height="1280" alt="Зона ожидания: диван и игровая приставка" loading="lazy" decoding="async"><video class="vframe__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="assets/video/clip-lounge-15.mp4?v=325cb187"></video></figure>
@@ -325,7 +327,7 @@
     <p>Направления: <a href="wash">автомойка</a>, <a href="detailing">детейлинг</a>, <a href="wrap">оклейка плёнкой</a> и&nbsp;<a href="bodywork">кузовные работы</a>, а&nbsp;ещё <a href="auto">продажа автомобилей</a> и&nbsp;<a href="import">привоз авто <span class="nw">из-за</span> рубежа</a>.</p>
     <p>Клиенту не&nbsp;нужно разбираться в&nbsp;каждой услуге и&nbsp;искать исполнителей по&nbsp;отдельности: расскажите о&nbsp;задаче в&nbsp;заявке&nbsp;— дальше её&nbsp;ведёт наша команда.</p>
     <div class="actions">
-      <button class="btn btn--secondary" type="button" data-request>Записаться онлайн</button>
+      <button class="btn btn--secondary" type="button" data-request>Оставить заявку</button>
     </div>
   </div>
 </section>
@@ -449,7 +451,7 @@
 <!-- Клуб (план §3.7 п. 11, паттерн P11 «фото | панель»). Владелец: WP5.
      Ссылка на оформление клубной карты — страница wahelp (адрес дал владелец; прямой ссылки
      на бота нет), класс membership__link и порядок атрибутов — контракт проверки, цель
-     club_card — по data-club-card. Вторая кнопка (05.11) — «Записаться онлайн» с темой club
+     club_card — по data-club-card. Вторая кнопка (05.11) — кнопка заявки с темой club
      (data-request, форма js/ui.js); условий клуба не придумываем. Фото карты клуба (на ней прежнее имя MEATWASH) не ставим: бренд нового
      сайта — MEATWASH; слева — знак (бык, MEAT WASH, Car Care Club из логотипа), не карта. -->
 <section class="promo col-ext membership" id="membership" aria-labelledby="membership-title">
@@ -458,10 +460,10 @@
   </div>
   <div class="promo__panel membership__panel">
     <h2 class="membership__title" id="membership-title">Больше, чем&nbsp;сервис</h2>
-    <p>Подарочные сертификаты, уход за&nbsp;корпоративным автопарком и&nbsp;индивидуальные комплексы. Запишитесь онлайн&nbsp;— расскажем об&nbsp;условиях клуба и&nbsp;подберём удобное время.</p>
+    <p>Подарочные сертификаты, уход за&nbsp;корпоративным автопарком и&nbsp;индивидуальные комплексы. Оставьте заявку&nbsp;— расскажем об&nbsp;условиях клуба и&nbsp;подберём удобное время.</p>
     <div class="membership__actions">
       <a class="membership__link" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить клубную карту<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> <span lang="en">MEATWASH Car Care Club</span> (откроется в&nbsp;новой вкладке)</span></a>
-      <button class="btn btn--secondary membership__talk" type="button" data-request data-request-category="club" data-request-services="Клубная карта">Записаться онлайн<span class="sr">: клубная карта</span></button>
+      <button class="btn btn--secondary membership__talk" type="button" data-request data-request-category="club" data-request-services="Клубная карта">Оставить заявку<span class="sr">: клубная карта</span></button>
     </div>
   </div>
 </section>
@@ -471,7 +473,7 @@
 <!-- SHARED:footer:START -->
 <!-- Подвал (план §1.4, паттерн Porsche 3.3). Владелец: WP1, с 05.11 — интегратор.
      Колонка «MEATWASH» — шесть направлений (Влад 05.11), за ними «Услуги и цены», работы, привоз,
-     статьи. «Связаться» — «Записаться онлайн» (форма #request с темой страницы), канал MEAT AUTO,
+     статьи. «Связаться» — кнопка заявки (форма #request с темой страницы), канал MEAT AUTO,
      клубная карта; личного Telegram нет.
      Сверху «Наверх», строка города, три колонки (Студии · MEATWASH · Связаться), юридическая
      строка, пометка о Meta, внизу по центру — белый бык и «Car Care Club».
@@ -519,7 +521,7 @@
     <section class="site-footer__col" aria-labelledby="footer-contact-title">
       <h3 class="site-footer__title" id="footer-contact-title">Связаться</h3>
       <ul class="site-footer__links">
-        <li><button type="button" data-request data-request-category="">Записаться онлайн</button></li>
+        <li><button type="button" data-request data-request-category="">Оставить заявку</button></li>
         <li><a href="https://t.me/MEATWASH_Auto" target="_blank" rel="noopener">Канал <span lang="en">MEAT AUTO</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> в&nbsp;Telegram (откроется в&nbsp;новой вкладке)</span></a></li>
         <li><a href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Клубная карта<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-up-right"/></svg><span class="sr"> (откроется в&nbsp;новой вкладке)</span></a></li>
       </ul>
@@ -539,15 +541,15 @@
 <!-- SHARED:footer:END -->
 
 <!-- SHARED:dialogs:START -->
-<!-- Окно «Записаться онлайн» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
+<!-- Окно кнопка заявки (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
      js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
      В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — «Записаться онлайн» с темой страницы (поле topic в src/content/pages.mjs). -->
-<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="">Записаться онлайн</button>
+     Нижняя кнопка на телефоне — кнопка заявки с темой страницы (поле topic в src/content/pages.mjs). -->
+<button class="btn btn--primary mobile-cta" type="button" data-request data-request-category="">Оставить заявку</button>
 
 <!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
      data-request-services, о чём заявка — data-request-context) и data-book у автомойки (тема
@@ -561,7 +563,7 @@
      это обещает Политика, п. 2.1. -->
 <dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Записаться онлайн</h2>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставить заявку</h2>
   <p class="dialog__context" id="request-context" hidden></p>
   <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
        «Администратор студии перезвонит и ответит на вопросы». -->

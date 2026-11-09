@@ -54,6 +54,21 @@
   transition: background-color var(--t-fast) var(--ease);
 }
 .site-header__menu:hover { background-color: var(--frost-strong); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); }
+/* Бык по центру шапки — на всех страницах, кроме главной (Влад 09.11: на главной знак стоит
+   в первом экране, на остальных бык в шапке вернулся). */
+.site-header__logo {
+  grid-column: 2;
+  display: grid; place-items: center;
+  min-width: 44px; min-height: 44px; padding: 2px 6px;
+  border-radius: var(--r-xs);
+  color: #fff;
+}
+.site-header__logo .bull {
+  height: var(--bull-h); width: auto; aspect-ratio: 1097 / 800;
+  transition: opacity .4s var(--ease), transform .8s var(--expo);
+}
+.site-header--over .site-header__logo .bull { filter: drop-shadow(0 2px 10px rgb(0 0 0 / .55)); }
+.site-header__logo:hover .bull { opacity: .82; transform: scale(.96); }
 /* «Записаться онлайн» в шапке — от 760 px и в альбомной ориентации телефона (поправка 23);
    в портрете телефона её роль у нижней кнопки. В одну строку. */
 .site-header__book { grid-column: 3; justify-self: end; display: none; white-space: nowrap; }

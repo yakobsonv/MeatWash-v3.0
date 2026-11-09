@@ -63,7 +63,7 @@ def inventory(browser, base, pages, res):
     checks += [
         (b['founder'] and b['path'] >= 4 and b['team'], f"без портрета основателя и разворота интервью {b['founder']}, путь ({b['path']}), пресса ({b['press']}), команда"),
         (b['visit'], '«Перед визитом»: скидка 500 ₽, паркинг, оплата'),
-        (b['talk'] and b['wahelp'], '«Записаться онлайн» с темой «Клуб» и клубная карта wahelp'),
+        (b['talk'] and b['wahelp'], '«Оставить заявку» с темой «Клуб» и клубная карта wahelp'),
         (b['external'] == 2, f"«Открыть в Яндекс Картах» у обеих карт: {b['external']}"),
         (b['earlier'] == 0, f"«ранее Meat Wash» на «О нас» (имя снова Meat Wash, 29.10): {b['earlier']}"),
     ]
@@ -85,13 +85,13 @@ def inventory(browser, base, pages, res):
           const cta = document.querySelector('.mobile-cta'); const cs = cta && getComputedStyle(cta);
           return {phones: phones.every(p => t.includes(p)), meta: t.includes('Instagram принадлежит компании Meta'), articles: Boolean(f && f.querySelector('a[href="articles"], a[href="#"][aria-current], a[href=""]')) || t.includes('Статьи'),
                   cta: cta ? (cta.hasAttribute('data-request') ? 'request:' + (cta.dataset.requestCategory || '') + ':' + cta.textContent.replace(/\u00a0/g, ' ').trim() : cta.getAttribute('href') || '?') : null, visible: Boolean(cta && cs.display !== 'none' && cs.visibility !== 'hidden')}; }""", phones)
-        # Влад 05.11: нижняя кнопка «Записаться онлайн» на всех страницах, и на главной; тема — страницы.
+        # Влад 05.11: нижняя кнопка «Оставить заявку» на всех страницах, и на главной; тема — страницы.
         # Главная — без нижней кнопки, как прежняя главная (Влад 05.11: «главная как была»).
-        cta_ok = (r['cta'] is None) if p['id'] == 'home' else (r['cta'] == f"request:{p['topic']}:Записаться онлайн" and r['visible'])
+        cta_ok = (r['cta'] is None) if p['id'] == 'home' else (r['cta'] == f"request:{p['topic']}:{'Записаться онлайн' if p['id'] == 'wash' else 'Оставить заявку'}" and r['visible'])
         if not (r['phones'] and r['meta'] and r['articles'] and cta_ok):
             per.append(f"/{p['path']}: телефоны {r['phones']}, Meta {r['meta']}, «Статьи» {r['articles']}, нижняя кнопка {r['cta']} видна {r['visible']}")
     c2.close()
-    checks.append((not per, f'на всех {len(pages)} страницах: телефоны обеих студий, пометка о Meta, «Статьи» в подвале, нижняя кнопка «Записаться онлайн» с темой страницы на 390 (на главной её нет)'))
+    checks.append((not per, f'на всех {len(pages)} страницах: телефоны обеих студий, пометка о Meta, «Статьи» в подвале, нижняя кнопка «Оставить заявку» с темой страницы на 390 (на главной её нет)'))
     sitemap = (DIST / 'sitemap.xml').read_text(encoding='utf-8')
     locs = re.findall(r'<loc>([^<]+)</loc>', sitemap)
     checks.append((len(locs) == 15 and not any(l.endswith('.html') for l in locs), f'адресов в sitemap {len(locs)} (15: + /wash, /detailing, /bodywork 05.11), без .html'))
