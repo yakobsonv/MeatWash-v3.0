@@ -357,10 +357,11 @@ const services = html['services.html'];
         const row = block.match(new RegExp(`<li class="catalog__item" data-price-item="${esc(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">[\\s\\S]*?</li>`))?.[0];
         if (!ok(row, `Нет позиции «${name}» в подразделе ${section.id}`)) continue;
         ok(plain(row).includes(price == null ? 'После оценки' : `от ${money(price).replace(/\u00a0/g, ' ')}`), `«${name}»: цена не как в JSON (${price ?? 'после оценки'})`);
-        if (section.onsite) ok(!/data-book|data-request/.test(row) && plain(row).includes('добавим при приёмке'), `«${name}»: работа на месте — без кнопки, с подписью «добавим при приёмке»`);
+        const onsite = Boolean(section.onsite || section.onsiteItems?.includes(name));
+        if (onsite) ok(!/data-book|data-request/.test(row) && plain(row).includes('добавим при приёмке'), `«${name}»: работа на месте — без кнопки, с подписью «добавим при приёмке»`);
         else if (group.booking === 'yclients') ok(row.includes(`data-book data-book-context="${esc(name)}" data-yc-items="${esc(name)}"`), `«${name}»: нет заявки на автомойку с работой (data-book, корзина онлайн-записи)`);
         else ok(row.includes(`data-request data-request-category="${group.id}" data-request-services="${esc(name)}"`), `«${name}»: нет «${REQUEST_LABEL}» с работой`);
-        if (!section.onsite) ok(plain(row).includes(REQUEST_LABEL), `«${name}»: подпись кнопки — «${REQUEST_LABEL}»`);
+        if (!onsite) ok(plain(row).includes(REQUEST_LABEL), `«${name}»: подпись кнопки — «${REQUEST_LABEL}»`);
       }
     });
     if (group.booking === 'yclients') ok(/data-book/.test(panel) && !/data-request/.test(panel), `Категория ${group.id}: у автомойки — data-book (форма с программой и онлайн-записью), без data-request`);

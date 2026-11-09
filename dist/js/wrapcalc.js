@@ -1,17 +1,20 @@
 // Калькулятор оклейки на /wrap (Влад 09.11 вечер). Разметка — src/content/wrap.html (form[data-wrap-calc]),
 // вид — css/wrapcalc.css. Что делает:
-//   - наборы «Зоны риска» и «Весь кузов» отмечают свои детали; правка деталей вручную переключает
-//     набор на «Свой набор» (или обратно, если отмеченное совпало с набором);
+//   - наборы «Зоны риска» и «Весь кузов» отмечают свои детали, «Свой набор» снимает все — дальше
+//     человек отмечает сам; правка деталей вручную переключает набор на «Свой набор» (или обратно,
+//     если отмеченное совпало с набором). «Отдельно» (фары, лобовое) наборы не трогают;
 //   - нажатие на деталь схемы (g[data-part]) переключает её флажок; наведение на флажок подсвечивает деталь;
 //   - плёнка синхронна с переключателем героя (name="wrap-kind");
 //   - «Ваш расчёт»: детали кузова — «после осмотра» (цен по деталям в каталоге нет), фары и лобовое —
 //     ценой из каталога (data.js); итог — суммой, только если все выбранные работы с ценой;
 //   - «Получить расчёт» — кнопка data-request (окно заявки ui.js): тема wrap, работы каталога
-//     (data-request-services) и строка расчёта (data-request-context) обновляются при каждом изменении.
+//     (data-request-services: работа набора, если детали совпали с ним, и «Отдельно») и строка расчёта
+//     (data-request-context) обновляются при каждом изменении; data-request-replace — работы кнопки
+//     заменяют прежний выбор в окне, даже если их нет (свой набор — только строкой расчёта).
 import { PRICES } from './data.js';
 
 const PRESETS = {
-  risk: { parts: ['hood', 'bumper-f', 'fenders-f', 'mirrors', 'sills'], extras: ['headlights'], service: 'Оклейка зон риска' },
+  risk: { parts: ['hood', 'bumper-f', 'fenders-f', 'mirrors', 'sills'], service: 'Оклейка зон риска' },
   full: { parts: ['hood', 'bumper-f', 'fenders-f', 'mirrors', 'sills', 'doors-f', 'doors-r', 'roof', 'fenders-r', 'trunk', 'bumper-r'], service: 'Полная оклейка' },
 };
 const FILM = { clear: 'прозрачная плёнка', color: 'цветная плёнка' };
@@ -36,16 +39,14 @@ function setup(form) {
 
   const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
   const pickedParts = () => partBoxes.filter((b) => b.checked).map((b) => b.value);
+  const presetOf = (parts) => Object.entries(PRESETS).find(([, p]) => sameSet(p.parts, parts))?.[0];
 
   function applyPreset(id) {
-    const preset = PRESETS[id];
-    if (!preset) return;
-    for (const b of partBoxes) b.checked = preset.parts.includes(b.value);
-    for (const id of preset.extras || []) box(id).checked = true;
+    const parts = PRESETS[id]?.parts || [];
+    for (const b of partBoxes) b.checked = parts.includes(b.value);
   }
   function syncScope() {
-    const parts = pickedParts();
-    const match = Object.entries(PRESETS).find(([, p]) => sameSet(p.parts, parts))?.[0] || 'custom';
+    const match = presetOf(pickedParts()) || 'custom';
     const radio = form.querySelector(`input[name="scope"][value="${match}"]`);
     if (radio) radio.checked = true;
   }
@@ -58,7 +59,7 @@ function setup(form) {
     const body = form.querySelector('input[name="body"]:checked');
     const bodyName = body ? nameOf(body) : '';
     const film = FILM[value('film')] || '', mount = MOUNT[value('mount')] || '';
-    carEl.textContent = [bodyName, film, mount].filter(Boolean).join(' · ');
+    carEl.textContent = [bodyName, film, mount].filter(Boolean).join('\u00a0· ');
 
     const lines = [];
     if (parts.length) lines.push([`Детали кузова: ${parts.length}`, null]);
@@ -84,9 +85,9 @@ function setup(form) {
       : 'Итог назовём после осмотра';
 
     // Заявка: работы каталога и строка расчёта.
-    const scope = value('scope');
+    const preset = PRESETS[presetOf(parts.map((b) => b.value))];
     const services = [];
-    if (PRESETS[scope]) services.push(PRESETS[scope].service);
+    if (preset) services.push(preset.service);
     for (const b of extras) services.push(b.dataset.item);
     submit.dataset.requestServices = services.join('|');
     const what = [
@@ -94,7 +95,7 @@ function setup(form) {
       extras.length ? `отдельно: ${extras.map((b) => lower(nameOf(b))).join(', ')}` : '',
     ].filter(Boolean).join('; ');
     const head = [lower(bodyName), film, mount].filter(Boolean).join(', ');
-    submit.dataset.requestContext = `Расчёт оклейки: ${head}.${what ? ` ${what.charAt(0).toUpperCase() + what.slice(1)}.` : ''}`;
+    submit.dataset.requestContext = `Расчёт оклейки: ${head}. ${what ? what.charAt(0).toUpperCase() + what.slice(1) : 'Детали не выбраны'}.`;
   }
 
   form.addEventListener('change', (e) => {

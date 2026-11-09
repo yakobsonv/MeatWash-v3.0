@@ -438,8 +438,8 @@ export function setupGarage() {
     bookBtn.dataset.requestServices = titles(other).join('|');
     requestBtn.hidden = !other.length;
     requestBtn.dataset.requestServices = titles(other).join('|');
-    if (wash.length) { requestBtn.dataset.washContext = bookBtn.dataset.bookContext; requestBtn.dataset.washPrograms = bookBtn.dataset.ycPrograms; }
-    else { delete requestBtn.dataset.washContext; delete requestBtn.dataset.washPrograms; }
+    if (wash.length) { requestBtn.dataset.washContext = bookBtn.dataset.bookContext; requestBtn.dataset.washPrograms = bookBtn.dataset.ycPrograms; requestBtn.dataset.washItems = bookBtn.dataset.ycItems; }
+    else { delete requestBtn.dataset.washContext; delete requestBtn.dataset.washPrograms; delete requestBtn.dataset.washItems; }
     splitEl.hidden = !(wash.length && other.length);
   }
   // Часть работ в онлайн-записи не продаётся: их добавляет мастер при приёмке.

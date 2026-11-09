@@ -438,11 +438,13 @@ export function setupRequest(dialog, { show }) {
   //   services  — data-request-services: позиции, варианты или название темы;
   //   programs  — индексы программ мойки (data-program, data-yc-programs, data-wash-programs);
   //   items     — работы мойки (data-yc-items);
+  //   replace   — data-request-replace: работы кнопки заменяют прежний выбор, даже если их нет
+  //               (калькулятор оклейки: свой набор деталей — только строкой расчёта);
   //   context, contextPrefix — строка «о чём заявка» (#request-context);
   //   from      — где была кнопка (для цели).
   // Тема: у кнопки с работой — тема этой работы, иначе — из категории, иначе пусто. Работы из
   // кнопки заменяют прежний выбор; кнопка без работ оставляет только работы своей темы.
-  return function open({ book = false, category = '', services: list = [], programs = [], items = [], context: note = '', contextPrefix = '', studio = '', from = '' } = {}) {
+  return function open({ book = false, replace = false, category = '', services: list = [], programs = [], items = [], context: note = '', contextPrefix = '', studio = '', from = '' } = {}) {
     studioFirst = BRANCH_IN[studio] ? studio : '';
     const works = [...programs.map((i) => PROGRAM_NAMES[i]).filter(Boolean), ...items, ...list];
     const firstWork = list.map(topicOfWork).find(Boolean) || '';
@@ -450,7 +452,7 @@ export function setupRequest(dialog, { show }) {
     topicSelect.value = topic;
     topicSelect.removeAttribute('aria-invalid'); errorFor('topic').textContent = '';
     const picked = works.filter((name) => !TOPICS.some((t) => t.title === name));
-    if (works.length) services.splice(0, services.length, ...picked);
+    if (works.length || replace) services.splice(0, services.length, ...picked);
     else { const keep = services.filter((name) => worksOf(topicById(topic)).includes(name)); services.splice(0, services.length, ...keep); }
     context.textContent = note ? nb(contextPrefix + note) : '';
     context.hidden = !note;

@@ -27,7 +27,7 @@ def inventory(browser, base, pages, res):
       pairs: [...document.querySelectorAll('figure[data-ba]')].map(f => T(f.innerText).includes('Иллюстрация, не работа студии')),
       garage: Boolean(document.querySelector('#garage-3d [data-garage-open]')),
     }; }""")
-    onsite_want = sum(len(sec['items']) for g in d['groups'] for sec in g['sections'] if sec.get('onsite'))
+    onsite_want = sum(len(sec['items']) if sec.get('onsite') else len(sec.get('onsiteItems', [])) for g in d['groups'] for sec in g['sections'])
     want_sections = [sec['id'] for g in d['groups'] for sec in g['sections']]
     checks = [
         (s['items'] == 41 and s['notes'] == 41, f"позиций {s['items']}, с пояснением {s['notes']} (41)"),

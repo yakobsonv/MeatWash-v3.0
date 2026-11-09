@@ -101,8 +101,8 @@ export function setupUI() {
   if(control.hasAttribute('data-membership'))return {category:'club',services:['Клубная карта'],context:d.membership||'',from};
   // Гараж услуг: мойка и другие работы вместе — программы мойки идут в ту же заявку.
   // data-request-studio — студия кнопки (myasnitskaya, technopark): её телефон в окне первым.
-  if(d.requestContext)return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.requestContext,studio:d.requestStudio||'',from};
-  return {category:d.requestCategory||'',services:list(d.requestServices),programs:indexes(d.washPrograms),context:d.washContext||'',contextPrefix:d.washContext?'Вы выбрали: ':'',studio:d.requestStudio||'',from};
+  if(d.requestContext)return {category:d.requestCategory||'',services:list(d.requestServices),replace:control.hasAttribute('data-request-replace'),programs:indexes(d.washPrograms),context:d.requestContext,studio:d.requestStudio||'',from};
+  return {category:d.requestCategory||'',services:[...list(d.requestServices),...list(d.washItems)],programs:indexes(d.washPrograms),context:d.washContext||'',contextPrefix:d.washContext?'Вы выбрали: ':'',studio:d.requestStudio||'',from};
  };
  const openRequest=control=>{
   rememberOpener(control);

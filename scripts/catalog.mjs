@@ -75,14 +75,17 @@ const actionLabel=(label,name)=>`<span class="catalog__action-label">${label}</s
 const action=(group,name)=>group.booking==='yclients'
  ?`<button class="${ACTION_CLASS}" type="button" data-book data-book-context="${escape(name)}" data-yc-items="${escape(name)}">${actionLabel(REQUEST_LABEL,name)}</button>`
  :`<button class="${ACTION_CLASS}" type="button" data-request data-request-category="${escape(group.id)}" data-request-services="${escape(name)}">${actionLabel(REQUEST_LABEL,name)}</button>`;
-const itemRow=(group,section,[name,price,note])=>`<li class="catalog__item" data-price-item="${escape(name)}"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p>${note?`<p class="catalog__item-note">${escape(note)}</p>`:''}</div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${section.onsite?`<p class="catalog__item-onsite">${ONSITE_LABEL}</p>`:action(group,name)}</li>`;
+// Работа «на месте»: весь подраздел onsite или позиция из onsiteItems (её нет в онлайн-записи YCLIENTS —
+// химчистка салона на автомойке, Влад 09.11: пылесос, багажник, кондиционер).
+export const onsiteOf=(section,name)=>Boolean(section.onsite||section.onsiteItems?.includes(name));
+const itemRow=(group,section,[name,price,note])=>`<li class="catalog__item" data-price-item="${escape(name)}"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p>${note?`<p class="catalog__item-note">${escape(note)}</p>`:''}</div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${onsiteOf(section,name)?`<p class="catalog__item-onsite">${ONSITE_LABEL}</p>`:action(group,name)}</li>`;
 const itemOf=(group,name)=>group.items.find(([n])=>n===name)??(()=>{throw new Error(`Подраздел ${group.id}: нет позиции «${name}» в items`);})();
 
 // Ссылки подразделов на страницы направлений — здесь, не в JSON. page — id страницы из
 // реестра; на самой этой странице ({{prices}}) ссылка не выводится.
 export const SECTION_LINKS={
  programs:{page:'wash',label:'Подробнее об автомойке'},
- 'price-interior':{page:'wash',label:'Подробнее об автомойке'},
+ 'price-leather':{page:'detailing',label:'Подробнее о детейлинге'},
  'price-polish':{page:'detailing',label:'Подробнее о детейлинге'},
  'price-film':{page:'wrap',label:'Подробнее об оклейке'},
  'price-bodywork':{page:'bodywork',label:'Подробнее о кузовных работах'},

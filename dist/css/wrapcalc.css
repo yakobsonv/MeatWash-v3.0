@@ -18,14 +18,22 @@
 .wcalc__parts { grid-area: parts; }
 .wcalc__opts { grid-area: opts; }
 .wcalc__sum { grid-area: sum; }
-@media (min-width: 1000px) {
+/* До 1240 px схема и расчёт — обычными блоками сетки (схема сразу под объёмом); от 1240 px — общей
+   правой колонкой .wcalc__side: расчёт сразу под схемой, без пустоты. */
+.wcalc__side { display: contents; }
+@media (min-width: 1240px) {
   .wcalc {
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    grid-template-areas: "scope car" "parts car" "opts sum";
+    grid-template-areas: "scope side" "parts side" "opts side";
     grid-template-rows: auto auto 1fr;
     column-gap: var(--lg);
     align-items: start;
   }
+  .wcalc__side { grid-area: side; display: grid; gap: var(--md); }
+  .wcalc__side > .wcalc__car, .wcalc__side > .wcalc__sum { grid-area: auto; }
+}
+@media (min-width: 1240px) and (min-height: 960px) {
+  .wcalc__side { position: sticky; top: calc(var(--sticky-h) + 24px); }
 }
 
 .wcalc fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
@@ -35,10 +43,8 @@
 
 /* Варианты-карточки: объём и монтаж. Вся карточка — подпись радиокнопки. */
 .wcalc__options { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); clear: both; }
-@media (min-width: 600px) {
-  .wcalc__options--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .wcalc__options--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+@media (min-width: 600px) { .wcalc__options--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 760px) and (max-width: 1239px) { .wcalc__options--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .wcalc__option {
   position: relative; display: grid; gap: 6px; align-content: start;
   padding: 16px 18px; border-radius: var(--r-sm);
@@ -68,8 +74,9 @@
   padding: var(--md) var(--md) 18px; border-radius: var(--r-lg);
   background: radial-gradient(70% 55% at 50% 45%, rgb(var(--on-rgb) / .07), transparent 70%), var(--surface);
 }
-.wcalc__svg { width: auto; height: clamp(300px, 62vw, 440px); max-width: 100%; overflow: visible; }
-@media (min-width: 1000px) { .wcalc__svg { height: clamp(380px, 34vw, 500px); } }
+.wcalc__svg { width: auto; height: clamp(360px, 100vw, 460px); max-width: 100%; overflow: visible; }
+@media (min-width: 1240px) { .wcalc__svg { height: clamp(340px, 26vw, 440px); } }
+.wcalc__hit { fill: transparent; }
 .wcalc__hint { color: var(--on-muted); font-size: var(--fs-xs); text-align: center; }
 .wcalc__wheels rect { fill: rgb(var(--on-rgb) / .2); }
 .wcalc__base { fill: color-mix(in srgb, var(--on) 5%, var(--page)); }
@@ -139,6 +146,7 @@
   display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
   padding: 10px 0; box-shadow: inset 0 -1px 0 var(--on-line);
 }
+.wcalc__lines > li > span { white-space: nowrap; }
 .wcalc__lines > li > b { font-weight: 400; white-space: nowrap; }
 .wcalc__lines > li > b.is-estimate { color: var(--on-muted); }
 .wcalc__sum-parts { color: var(--on-muted); font-size: var(--fs-sm); line-height: 1.5; }
