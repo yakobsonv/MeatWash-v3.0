@@ -171,10 +171,13 @@ body[data-page="services"] .hero-a__media img { object-position: 50% 50%; }
 }
 
 /* Карточки программ (P02; Влад 09.11 — «как в карточке Яндекса»): плитка с кадром 4:3 сверху,
-   название, серое описание в 2–3 строки, «цена · время» жирным, запись. От 1240 px — пять в ряд
-   по колонке wide, от 1000 px — 3 + 2 по центру; общие строки — subgrid (кадры, названия,
-   цены и кнопки на одной линии). Ниже 1000 px — лента с прилипанием (кнопки внутри — фокус
-   доходит с клавиатуры, лента прокручивается), следующая карточка выглядывает справа. */
+   .program-card__text (название и серое описание в 2–3 строки), «цена · время» жирным, запись —
+   основная кнопка (btn--primary). От 1240 px — пять в ряд по колонке wide, от 1000 px — 3 + 2
+   по центру; общие строки — subgrid из четырёх: кадр, текст, цена, кнопка (кадры, цены и кнопки
+   на одной линии; описание идёт сразу под названием, запас высоты — над ценой, а не дырой под
+   коротким названием). Ниже 1000 px — лента с прилипанием (кнопки внутри — фокус доходит
+   с клавиатуры, лента прокручивается), следующая карточка выглядывает справа; цена и кнопка
+   прижаты к низу карточки. */
 ol.programs {
   margin-top: var(--md); padding: 0 var(--wide);
   display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--sm);
@@ -201,8 +204,8 @@ ol.programs {
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .program-card:hover .program-card__media img { transform: scale(1.04); }
 }
+.program-card__text { margin-top: 16px; }
 .program-card__name {
-  margin-top: 16px;
   font-size: clamp(18px, .35vw + 14px, 21px); font-weight: 400; line-height: 1.28; letter-spacing: -.01em;
   overflow-wrap: break-word; hyphens: auto; text-wrap: balance;
 }
@@ -221,7 +224,7 @@ ol.programs {
 .program-card__book { margin-top: 16px; width: auto; }
 @media (min-width: 1000px) {
   ol.programs { row-gap: var(--sm); }
-  .program-card { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: 0; }
+  .program-card { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
   .program-card__price { align-self: start; }
   .program-card__book { align-self: end; }
 }
@@ -232,14 +235,14 @@ ol.programs {
 }
 @media (max-width: 999px) {
   ol.programs {
-    display: flex; gap: 12px;
+    display: flex; gap: 12px; padding-inline: var(--basic);
     overflow-x: auto; overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory; scroll-padding-inline: var(--wide);
+    scroll-snap-type: x mandatory; scroll-padding-inline: var(--basic);
     padding-bottom: 8px;
     scrollbar-width: thin; scrollbar-color: rgb(var(--on-rgb) / .24) transparent;
   }
   .program-card { flex: 0 0 min(300px, 78vw); scroll-snap-align: start; }
-  .program-card__desc { flex: 1 0 auto; }
+  .program-card__price { margin-top: auto; padding-top: 14px; }
   .programs::after { content: ''; flex: 0 0 1px; }
 }
 
@@ -366,12 +369,24 @@ ol.programs {
 }
 
 /* «Топ-5 услуг» (подборка picks, на /wash вместо «Дополнительно на автомойке»): строки — как
-   у каталога (li.catalog__item); от 1240 px — пять плиток в ряд по колонке wide, под
-   карточками программ: название, описание, цена «от», запись. */
+   у каталога (li.catalog__item.pick), последней — серая строка p.pick__in «Уже входит
+   в программы …»: до 1239 px — на всю ширину строки под текстом, ценой и стрелкой (не сужает
+   описание), от 1240 px — под описанием плитки (order). До 1239 px действие — круглая стрелка, как у строк на телефоне (подпись —
+   для диктора): иначе на планшете колонка текста сужается до 4–5 строк. От 1240 px — пять
+   плиток в ряд под карточками программ, по той же колонке wide (section.css выравнивает
+   по ней переключатель, заголовки и сноску): название, описание, цена «от», запись. Кнопка
+   записи здесь второстепенная — главное действие блока у карточек программ. */
+.pick__in { grid-column: 1 / -1; margin-top: 2px; font-size: 13px; line-height: 1.4; color: var(--on-muted); }
+@media (min-width: 760px) and (max-width: 1239px) {
+  .pick.catalog__item { grid-template-columns: minmax(0, 1fr) auto auto; gap: 2px var(--md); }
+  .pick .catalog__action { width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%; }
+  .pick .catalog__action > .icon { display: block; width: 18px; height: 18px; }
+  .pick .catalog__action-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 @media (min-width: 1240px) {
+  .catalog__section--picks { padding-inline: var(--wide); }
   .catalog__items.picks {
     display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--sm);
-    margin-inline: calc(var(--wide) - var(--basic));
     border-top: 0;
   }
   .pick.catalog__item {
@@ -382,8 +397,11 @@ ol.programs {
   }
   .pick .catalog__item-name { font-size: 17px; line-height: 1.35; }
   .pick .catalog__item-note { margin-top: 8px; font-size: 14px; }
-  .pick .catalog__item-text { flex: 1 0 auto; }
-  .pick .catalog__item-price { margin-top: 18px; text-align: left; font-weight: 600; }
+  .pick__in { order: 1; margin-top: 10px; }
+  .pick .catalog__item-text { flex: 0 0 auto; }
+  .pick .catalog__item-price { order: 2; margin-top: auto; padding-top: 18px; }
+  .pick .catalog__action { order: 3; }
+  .pick .catalog__item-price { text-align: left; font-weight: 600; }
   .pick .catalog__action { margin-top: 14px; justify-self: auto; }
 }
 

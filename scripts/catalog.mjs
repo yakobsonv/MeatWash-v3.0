@@ -93,9 +93,11 @@ const SECTION_NOTE={
 
 // Программы и пакеты автомойки (P02; Влад 09.11 — «как в карточке Яндекса»): плитка li#program-i
 // (на неё ведут ссылки #program-0…4) — кадр 4:3 (programCards: файлы <photo>-800/-1200.webp),
-// название h4, описание в 2–3 строки (programCards.text), строка «цена · время» (цена — для
-// выбранного кузова, js/catalog.js меняет её по data-prices; время — сокращённо, «30 мин»),
-// под ней цена в студии, где программа дороже, и запись с программой в корзине YCLIENTS.
+// div.program-card__text с названием h4 и описанием в 2–3 строки (programCards.text; обёртка —
+// одна строка сетки карточки, поэтому под коротким названием нет пустой строки, а запас высоты
+// уходит над ценой), строка «цена · время» (цена — для выбранного кузова, js/catalog.js меняет её
+// по data-prices; время — сокращённо, «30 мин»), под ней цена в студии, где программа дороже, и
+// запись с программой в корзине YCLIENTS — основная кнопка (btn--primary, как до 09.11).
 // Состав по пунктам — в сравнении под карточками (renderCompare), в карточке его нет.
 const shortTime=time=>time.replace(/\s*минут[аы]?$/,' мин');
 const cardOf=i=>{
@@ -109,10 +111,9 @@ const programCard=([name,,time],i)=>{
  const card=cardOf(i);
  return `<li class="program-card" id="program-${i}">
       <div class="program-card__media"><img src="${escape(card.photo)}-800.webp" srcset="${escape(card.photo)}-800.webp 800w, ${escape(card.photo)}-1200.webp 1200w" sizes="${PROGRAM_SIZES}" width="800" height="600" alt="${escape(card.alt)}" loading="lazy" decoding="async"></div>
-      <h4 class="program-card__name">${escape(name)}</h4>
-      <p class="program-card__desc">${escape(card.text)}</p>
+      <div class="program-card__text"><h4 class="program-card__name">${escape(name)}</h4><p class="program-card__desc">${escape(card.text)}</p></div>
       <p class="program-card__price"><span data-program-price data-prices="${d.programPrices[i].join(',')}">${money(d.programPrices[i][0])}</span><span class="program-card__time"><span class="program-card__dot" aria-hidden="true">·</span><span class="sr">, </span>${escape(shortTime(time))}</span>${studioLine(i,'span','program-card__studio')}</p>
-      <button class="btn btn--secondary program-card__book" type="button" data-book data-program="${i}" data-book-context="${escape(programContext(i,0))}">${REQUEST_LABEL}${forName(name)}</button>
+      <button class="btn btn--primary program-card__book" type="button" data-book data-program="${i}" data-book-context="${escape(programContext(i,0))}">${REQUEST_LABEL}${forName(name)}</button>
      </li>`;
 };
 const programs=()=>`<fieldset class="body-types segmented"><legend class="sr">Тип кузова</legend>${d.bodyTypes.map((type,i)=>`<label><input type="radio" name="body-type" value="${i}"${i===0?' checked':''}><span>${escape(type)}</span></label>`).join('')}</fieldset>
@@ -182,21 +183,37 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
 // «Не является публичной офертой». page — id страницы (ссылка подраздела на неё не выводится).
 // Подборка «Топ-5 услуг» (picks в JSON, id price-wash-top): позиции каталога из разных категорий
 // своим описанием (сжато из YCLIENTS). Строки — та же разметка, что у строк каталога
-// (li.catalog__item: на телефоне и планшете — строки «как в чеке»), без data-price-item: позиции
-// уже есть в каталоге /services; от 1240 px — плитки в ряд под карточками программ (services.css).
-// Цена и действие — из каталога: у автомойки data-book с работой, у остального data-request
-// с категорией позиции.
+// (li.catalog__item.pick: на телефоне и планшете — строки «как в чеке» с круглой стрелкой),
+// без data-price-item: позиции уже есть в каталоге /services; от 1240 px — плитки в ряд под
+// карточками программ (services.css). Цена и действие — из каталога: у автомойки data-book
+// с работой, у остального data-request с категорией позиции; кнопка — второстепенная
+// (btn--secondary), главное действие блока — запись на программу. Если позиция уже входит
+// в программы (programItems), последним в строке — p.pick__in «Уже входит в программы «…»»
+// (до 1239 px — на всю ширину строки под ценой и стрелкой, от 1240 px — под описанием плитки)
+// (с первой программы, где она есть, до последней: каждая следующая включает предыдущую;
+// check.mjs сверяет строку с programItems). Рядом с заголовком — ссылка на вкладку
+// «Автомойка» /services, где полный прайс с «Дополнительно на автомойке».
 const pickOf=id=>d.picks?.items?.find(p=>p.id===id);
+const quoted=name=>name.replace(/^Пакет /,'').replace(/^(?!«)(.*)$/,'«$1»');
+const listRu=xs=>xs.length<2?xs.join(''):`${xs.slice(0,-1).join(', ')} и ${xs.at(-1)}`;
+export const pickIn=name=>{
+ const from=d.programItems.findIndex(list=>list.includes(name));
+ if(from<0)return '';
+ const names=d.programs.slice(from).map(([n])=>quoted(n));
+ return `Уже входит в ${names.length>1?'программы':'программу'} ${listRu(names)}`;
+};
 const pickRow=([name,text])=>{
  const group=d.groups.find(g=>g.items.some(([n])=>n===name));
  if(!group)throw new Error(`picks: нет позиции «${name}» в каталоге`);
  if(!text)throw new Error(`picks: у «${name}» нет описания`);
  const [,price]=itemOf(group,name);
- return `<li class="catalog__item pick"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p><p class="catalog__item-note">${escape(text)}</p></div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${action(group,name)}</li>`;
+ const inside=pickIn(name);
+ return `<li class="catalog__item pick"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p><p class="catalog__item-note">${escape(text)}</p></div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${action(group,name)}${inside?`<p class="pick__in">${escape(inside)}</p>`:''}</li>`;
 };
-const pickSection=p=>`<section class="catalog__section catalog__section--picks" id="${escape(p.id)}" aria-labelledby="${escape(p.id)}-title">
+const pickSection=(p,page)=>`<section class="catalog__section catalog__section--picks" id="${escape(p.id)}" aria-labelledby="${escape(p.id)}-title">
    <div class="catalog__section-head">
-    <h3 class="catalog__subhead" id="${escape(p.id)}-title">${escape(p.title)}</h3>
+    <h3 class="catalog__subhead" id="${escape(p.id)}-title">${escape(p.title)}</h3>${page==='services'?'':`
+    <a class="link-arrow catalog__section-link" href="${pageHref('services')}#price-wash">Все цены автомойки${icon('arrow-right')}</a>`}
    </div>
    <ul class="catalog__items picks" role="list">${p.items.map(pickRow).join('')}</ul>
   </section>`;
@@ -208,7 +225,7 @@ export function renderSections(ids,page){
  if(!ids.length||ids.some(id=>!id))throw new Error('{{prices}}: нужен список подразделов через запятую');
  if(new Set(ids).size!==ids.length)throw new Error(`{{prices:${ids.join(',')}}}: подраздел повторяется`);
  return `<div class="catalog catalog--prices" data-prices>
-  ${ids.map(id=>{if(pickOf(id))return pickSection(pickOf(id));const {group,s}=sectionOf(id);return section(group,s,page);}).join('\n  ')}
+  ${ids.map(id=>{if(pickOf(id))return pickSection(pickOf(id),page);const {group,s}=sectionOf(id);return section(group,s,page);}).join('\n  ')}
   <p class="catalog__note">Стоимость зависит от типа кузова и состояния автомобиля. Итоговый объём и цену согласуем перед работой. Не является публичной офертой.</p>
  </div>`;
 }

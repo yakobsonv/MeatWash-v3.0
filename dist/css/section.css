@@ -95,6 +95,14 @@
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
+/* Одна сетка от 1240 px (Влад 09.11, /wash): карточки программ и плитки «Топ-5 услуг» идут по
+   колонке wide — переключатель кузова, строка о ценах, сравнение «Чем отличаются программы»,
+   заголовок «Топ-5 услуг» (services.css) и сноска начинаются с того же левого края. Ниже 1240 px
+   всё — по колонке basic, как у остальных цен. */
+@media (min-width: 1240px) {
+  .sec-block--prices .catalog__section--programs > :not(.programs) { margin-inline: var(--wide); }
+  .sec-block--prices .catalog--prices:has(.catalog__section--programs) > .catalog__note { padding-inline: var(--wide); }
+}
 
 /* ── Тезисы в ряд (как принципы на «О нас»): линия сверху, красный штрих ── */
 .sec-points, .sec-limits, .sec-why {

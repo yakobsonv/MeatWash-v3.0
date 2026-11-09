@@ -33,7 +33,7 @@
   ведёт в ту же `#request` с темой `wash` и программой (`data-program="0…4"`) / работами (`data-yc-items`), контекст —
   `data-book-context`. В форме при теме «Автомойка» видна мелкая строка `[data-request-online]` «или запишитесь онлайн» со
   ссылками `a[data-branch="myasnitskaya|technopark"]` (корзина программ — `yclients.js`, как было в `#booking`) и строкой
-  «Онлайн-запись откроется в YCLIENTS (Meat Wash)».
+  «Онлайн-запись откроется в YCLIENTS (MEATWASH)» (`brand.legacy`; с 09.11 студии в YCLIENTS — «MEATWASH Лубянка/Технопарк»).
 - `[data-membership]` больше не используется: клуб — `data-request data-request-category="club"` (в `#membership` на «О нас»
   такая кнопка обязательна — QA п. 14). Ссылка «Оформить клубную карту» (`[data-club-card]`, wahelp) остаётся.
 - Форма (A), что читают проверки: `#request-title`, `p#request-context` (скрыт, когда пусто), `form[data-request-form]` с полем
@@ -156,7 +156,7 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
 - **Темы:** тёмная — услуги, оклейка, работы, привоз, авто, о нас, kit; **«бумага»** — список статей, статья, три документа
   (Влад 27.10); главная — `home` (светлая страница + `.is-dark`, как v2, делает WP2).
 - **JSON-LD:** хлебные крошки по иерархии (`Meat Auto` → Мойка и детейлинг → Оклейка / Наши работы; → Статьи → статья);
-  `AutoWash` ×2 на главной и «О нас» (`name` «Meat Auto — Мясницкая», `alternateName` «Meat Wash», `url` `…/about#map-<id>`,
+  `AutoWash` ×2 на главной и «О нас» (`name` «Meat Auto — Мясницкая», `alternateName` — только если `brand.legacy` ≠ `brand.name` (с 09.11 совпадают, поля нет), `url` `…/about#map-<id>`,
   часы из JSON, `sameAs` — карточка в Картах; фото Технопарка не ставим — автор «ГЕОмаркетинг»); `Article`, `CollectionPage`.
 - **Старые якоря главной** (`/#locations`, `#map-*`, `#membership`, `#club`, `#services`, `#proof`, `#garage`) уводятся
   `location.replace` на `about#…` / `services#…`; `#contacts` и `#top` остаются.
@@ -183,7 +183,7 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
 | `{{count:sale\|sold\|studios}}`, `{{count:sold:машина}}` | 2 / 16 / 2; «16 машин» (склонение — `NOUNS` в `pages.mjs`) |
 | `{{cars:sale}}`, `{{cars:sold}}`, `{{cars:date}}` | карточки `article.car-card#<id>`, `li.sold-card` ×16, «22 сентября 2026 года» |
 | `{{catalog}}`, `{{compare}}` | каталог и сравнение программ (`scripts/catalog.mjs`, WP3) |
-| `{{brand:name\|descriptor\|legacy\|since}}` | Meat Auto · Car Care Club · Meat Wash · 2021 |
+| `{{brand:name\|descriptor\|legacy\|since}}` | MEATWASH · Car Care Club · MEATWASH · 2021 |
 | `{{todo:<что нужно>}}` | `<span class="todo" data-no-typo>[нужно от клиента: …]</span>`; только `/import` и `/works` |
 | `{{icon:<имя>}}`, `{{icon:bull}}`, `{{icon:ccc:<класс>}}` | `<svg><use href="assets/brand/sprite.svg?v=<хеш>#i-…">`; иконки: menu close chevron-right/left/down arrow-right arrow-up-right arrow-up check phone telegram pin play pause cta-arrow |
 | `{{asset:<путь>}}` | путь с `?v=<хеш содержимого>` |
@@ -222,11 +222,11 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
 - **Запись (WP6; с 05.11 — см. «Заявка» выше, она важнее):** любой `[data-book]` + `data-book-context`, `data-program="0…4"`, `data-yc-programs`,
   `data-yc-items="A|B"`, `data-request-services`; «Узнать цену» — `[data-request][data-request-category][data-request-services]`;
   разговор — `[data-membership="…"]`; окно `#booking` и его id §4.2; клубная карта `[data-club-card]`; `[data-consent-open]`.
-  В окне записи — строка «Онлайн-запись откроется в YCLIENTS (Meat Wash)».
+  В окне записи — строка «Онлайн-запись откроется в YCLIENTS (MEATWASH)».
 - **Каталог (WP3, §4.3):** `#catalog`, `nav[data-catalog-tabs]`, `#price-<раздел>`, id подразделов из JSON, `#price-list`,
   `#programs`, `li.program-card#program-0…4` (с 09.11 — плитка как на Яндекс Картах: кадр `programCards`, «цена · время»; состав —
   в сравнении `#compare` «лесенкой» по `programStages`), `input[name=body-type]`, `#body-price-label`, `[data-program-price][data-prices]`,
-  `li.catalog__item[data-price-item]`; подборка `picks` (`#price-wash-top`, «Топ-5 услуг») — `{{prices:…,price-wash-top}}` на /wash. Сейчас `renderCatalog()` ещё отдаёт прежнюю разметку (на 320 px она шире экрана
+  `li.catalog__item[data-price-item]`; подборка `picks` (`#price-wash-top`, «Топ-5 услуг»: `li.catalog__item.pick` без `data-price-item`, `p.pick__in` «Уже входит в программы …» из `programItems`, ссылка «Все цены автомойки» на `services#price-wash`) — `{{prices:…,price-wash-top}}` на /wash; кнопка программы — `btn--primary`, у подборки — `btn--secondary`. Сейчас `renderCatalog()` ещё отдаёт прежнюю разметку (на 320 px она шире экрана
   на 23 px без стилей); тизер гаража и «Под вашу задачу» из неё убраны — они теперь `#garage-3d` и `#individual` в `services.html`.
   Пары «до/после» — с видимой подписью «Иллюстрация, не работа студии» (Влад 27.10).
 - **Карты (WP5, §4.4):** `div.location__map#map-<id>[data-map-embed=<id>][data-state=idle][tabindex=-1]`, `[data-map-status]`,

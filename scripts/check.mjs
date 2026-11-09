@@ -43,9 +43,10 @@
 //            в шторке и на /auto — из данных; /import без телефона;
 //   проекты  projects.wrap (Влад 07.11): w223, rr, g20 на /wrap и /works; у каждого фото alt, подпись,
 //            файлы 800/1600 размером 4:5, обложки 3:2; фото окна — только в <template> (грузятся по открытию);
-//   бренд    (Влад 09.11) имя — «MEATWASH» капсом и слитно: «Meat Wash» / «Meatwash» нет в тексте,
-//            alt, aria-label, title, og и строках скриптов; прежнее имя — только в строке YCLIENTS
-//            окна записи и в alternateName JSON-LD (так студии названы в YCLIENTS и Картах); знаков ↗ ✓ нет;
+//   бренд    (Влад 09.11) имя — «MEATWASH» капсом и слитно: «Meat Wash» / «Meatwash» нет нигде —
+//            ни в тексте, alt, aria-label, title, og, JSON-LD, ни в строках скриптов (исключений нет:
+//            в YCLIENTS студии теперь «MEATWASH Лубянка/Технопарк», строка окна записи —
+//            «Онлайн-запись откроется в YCLIENTS (MEATWASH)», alternateName не выводится); знаков ↗ ✓ нет;
 //            пары «до/после» подписаны «Иллюстрация, не работа студии»; «ранее Meat Wash» на
 //            «О нас» — один раз; {{todo}} — только на страницах направлений, /import и /works;
 //   заявка   request.js и api/request.php согласованы; секретов в коде нет.
@@ -265,8 +266,7 @@ for (const page of REGISTRY) {
   // Цены «от N ₽» в тексте — из каталога
   for (const price of priceIn(body)) if (!catalogPrices.has(price)) fail(`${file}: цена от ${money(price)} не из каталога`);
   // Бренд (поправка 12): текст, атрибуты, og, JSON-LD — без старого имени
-  const brandText = text.replace(/<!--[\s\S]*?-->/g, '').replace(/MeatWash\.detailing@gmail\.com/gi, '')
-    .replace(/"alternateName":"Meat Wash"/g, '').replace('YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span>', '');
+  const brandText = text.replace(/<!--[\s\S]*?-->/g, '').replace(/MeatWash\.detailing@gmail\.com/gi, '');
   const old = brandText.match(/.{0,30}(\bMeat(?:\s|&nbsp;|&#160;)+Wash\b|\bMeatwash\b|\bMeatWash\b).{0,30}/);
   if (old) fail(`${file}: старое имя: …${old[0].trim()}…`);
   const glyph = plain(body).match(/.{0,20}[↗✓].{0,20}/);
@@ -283,7 +283,8 @@ for (const page of REGISTRY) {
       if (/type="(?:radio|checkbox|file)"|name="mw_extra"/.test(field)) continue;
       if (!/\bym-disable-keys\b/.test(field)) fail(`${file}: поле заявки без ym-disable-keys: ${field.slice(0, 80)}`);
     }
-    if (!text.includes('Онлайн-запись откроется в YCLIENTS (Meat Wash)') && !plain(text).includes('Онлайн-запись откроется в YCLIENTS (Meat Wash)')) fail(`${file}: в окне записи нет строки «Онлайн-запись откроется в YCLIENTS (Meat Wash)» (поправка 17)`);
+    const ycLine = `Онлайн-запись откроется в YCLIENTS (${d.brand.legacy})`;
+    if (!plain(text).includes(ycLine)) fail(`${file}: в окне записи нет строки «${ycLine}» (поправка 17; имя — как студии названы в YCLIENTS)`);
   }
   if (!plain(text).includes('Instagram принадлежит компании Meta, которая признана экстремистской организацией и запрещена на территории РФ.')) fail(`${file}: нет пометки о Meta в подвале`);
   // «Записаться онлайн» (Влад 05.11): каждая кнопка заявки или записи — с этой подписью
@@ -389,6 +390,35 @@ const services = html['services.html'];
   // Прежние якоря (статьи, закладки, поиск, шторка, §1.7)
   for (const id of ['catalog', 'price-list', 'programs', ...d.programs.map((_, i) => `program-${i}`), ...d.groups.map((g) => `price-${g.id}`), ...d.groups.flatMap((g) => g.sections.map((s) => s.id)), 'proof', 'individual', 'garage-3d'])
     ok(ids['services.html'].has(id), `services.html: нет якоря #${id}`);
+}
+
+// ── «Топ-5 услуг» на /wash (Влад 09.11: вместо «Дополнительно на автомойке» — подборка из YCLIENTS) ──
+// Позиции — из picks (price-wash-top), цены — из каталога, у каждой «Записаться онлайн» (второстепенная
+// кнопка: главная — у программ); «Уже входит в …» — ровно у позиций из programItems, с первой программы,
+// где позиция есть, до последней (считаем здесь заново, не через catalog.mjs).
+{
+  const wash = html['wash.html'] || '';
+  const top = d.picks?.items?.find((p) => p.id === 'price-wash-top');
+  const block = wash.match(/<section class="catalog__section catalog__section--picks" id="price-wash-top"[\s\S]*?<\/section>/)?.[0] || '';
+  if (ok(top && block, 'wash.html: нет «Топ-5 услуг» (#price-wash-top из picks)')) {
+    ok(!wash.includes('id="price-wash-extras"'), 'wash.html: «Дополнительно на автомойке» вместо «Топ-5 услуг» убрано (Влад 09.11) — подраздела быть не должно');
+    ok(plain(block.match(/<a class="link-arrow catalog__section-link" href="services#price-wash">([\s\S]*?)<\/a>/)?.[1] || '').trim() === 'Все цены автомойки', 'wash.html: у «Топ-5 услуг» нет ссылки «Все цены автомойки» на services#price-wash');
+    const rows = [...block.matchAll(/<li class="catalog__item pick">([\s\S]*?)<\/li>/g)].map((m) => m[1]);
+    ok(rows.length === top.items.length, `wash.html: в «Топ-5 услуг» ${rows.length} позиций вместо ${top.items.length}`);
+    top.items.forEach(([name, text], i) => {
+      const row = rows[i] || '';
+      const group = d.groups.find((g) => g.items.some(([n]) => n === name));
+      if (!ok(group, `picks: «${name}» нет в каталоге`)) return;
+      const [, price] = group.items.find(([n]) => n === name);
+      ok(plain(row).includes(name) && plain(row).includes(text), `«Топ-5»: «${name}» — название или описание не из picks`);
+      ok(plain(row).includes(price == null ? 'После оценки' : `от ${money(price).replace(/\u00a0/g, ' ')}`), `«Топ-5»: «${name}» — цена не из каталога`);
+      ok(/class="catalog__action btn btn--compact btn--secondary"/.test(row) && plain(row).includes(REQUEST_LABEL), `«Топ-5»: «${name}» — нет второстепенной кнопки «${REQUEST_LABEL}»`);
+      const from = d.programItems.findIndex((list) => list.includes(name));
+      const note = plain(row.match(/<p class="pick__in">([\s\S]*?)<\/p>/)?.[1] || '');
+      if (from < 0) ok(!note, `«Топ-5»: «${name}» не входит в программы, а написано «${note}»`);
+      else ok(note.startsWith('Уже входит в ') && d.programs.every(([n], j) => note.includes(n.replace(/^Пакет /, '').replace(/^«|»$/g, '')) === (j >= from)), `«Топ-5»: «${name}» — «Уже входит в …» не как в programItems (с программы ${from}): «${note}»`);
+    });
+  }
 }
 
 // ── Якоря §1.7 на остальных страницах ────────────────────────────────────────

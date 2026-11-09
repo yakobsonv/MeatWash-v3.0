@@ -110,7 +110,10 @@ ${book}</main>
 }
 
 // ── JSON-LD ──────────────────────────────────────────────────────────────────
-const ORG = {'@type': 'Organization', name: `${d.brand.name} ${d.brand.descriptor}`, alternateName: d.brand.legacy, url: SITE, logo: {'@type': 'ImageObject', url: SITE + 'assets/favicon-bull.png'}};
+// alternateName — имя студий в YCLIENTS и на Картах (brand.legacy), только если оно не совпадает с
+// name: с 09.11 там тоже «MEATWASH», и поле не выводится (повтор имени поисковику ничего не даёт).
+const ALT = d.brand.legacy && d.brand.legacy !== d.brand.name ? {alternateName: d.brand.legacy} : {};
+const ORG = {'@type': 'Organization', name: `${d.brand.name} ${d.brand.descriptor}`, ...ALT, url: SITE, logo: {'@type': 'ImageObject', url: SITE + 'assets/favicon-bull.png'}};
 // Хлебные крошки по иерархии §1.2: MEATWASH → [родитель] → страница.
 function crumbs(page) {
   const chain = [];
@@ -136,7 +139,7 @@ const STREET = {myasnitskaya: 'Мясницкая ул., 11', technopark: 'пр�
 const STUDIO_IMAGE = {myasnitskaya: 'assets/img/about/studio-myasnitskaya-700.webp'};
 const autoWash = () => d.locations.map((l) => ({
   '@context': 'https://schema.org', '@type': 'AutoWash',
-  name: `${d.brand.name} — ${l.name}`, alternateName: d.brand.legacy,
+  name: `${d.brand.name} — ${l.name}`, ...ALT,
   url: `${SITE}about#map-${l.id}`,
   ...(STUDIO_IMAGE[l.id] ? {image: SITE + STUDIO_IMAGE[l.id]} : {}),
   telephone: l.tel,

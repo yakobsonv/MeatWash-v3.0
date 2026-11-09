@@ -114,7 +114,7 @@ def brand(browser, base, pages, res):
           for (const m of document.querySelectorAll('meta[property^="og:"], meta[name="description"]')) texts.push(m.content);
           for (const s of document.querySelectorAll('script[type="application/ld+json"]')) texts.push(s.textContent);
           for (const a of document.querySelectorAll('a[href]')) texts.push(a.getAttribute('href'));
-          let all = texts.join('\n').replace(/MeatWash\.detailing@gmail\.com/gi, '').replace(/\u00a0/g, ' ').replace(/"alternateName":"Meat Wash"/g, '').replace('откроется в YCLIENTS (Meat Wash)', '');
+          let all = texts.join('\n').replace(/MeatWash\.detailing@gmail\.com/gi, '').replace(/\u00a0/g, ' ');
           // Реквизиты оператора ПДн (152-ФЗ) — единственное место с именем: Политика и Согласия.
           if (operator && ['privacy', 'consent', 'consent-request'].includes(document.body.dataset.page)) all = all.split(operator).join('');
           return [...all.matchAll(/.{0,25}\b(Meat\s+Wash|Meatwash)\b.{0,25}|.{0,25}(Роман|Антонович|otec_roman).{0,25}/g)].map(m => m[0]);
