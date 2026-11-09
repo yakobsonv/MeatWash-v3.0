@@ -329,3 +329,17 @@
 .ds-call__phone:hover { text-decoration-color: var(--on); }
 @media (max-width: 899px) { .ds-call__panel.promo__panel { grid-template-columns: minmax(0, 1fr); gap: var(--md); } }
 @media (max-width: 759px) { .ds-call__head > .btn { width: 100%; } }
+
+/* Ролик в первом экране раздела (Влад 09.11, /wash: «сверху видео»; js/video.js data-video="hero").
+   .hero-a__media — div с фото-постером и роликом; ролик проявляется поверх фото, затемнение снизу
+   (::after) — над роликом. Кнопка паузы — .hero-a__toggle из services.css. */
+.sec-hero .hero-a__media > picture { position: absolute; inset: 0; }
+.sec-hero .hero-a__video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .9s var(--ease-out);
+}
+.sec-hero .hero-a__video.is-playing { opacity: 1; }
+.sec-hero .hero-a__media::after { z-index: 1; }
