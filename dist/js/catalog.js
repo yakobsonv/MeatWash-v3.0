@@ -5,7 +5,8 @@
 //   вкладку, в которой лежит цель;
 // - переключатель кузова меняет цены программ, подпись и контекст кнопок записи
 //   («Трёхфазная — Кроссовер, 2 250 ₽»). Выбор кузова общий с «Гаражом услуг» (body.js);
-// - работы автомойки, которых нет в онлайн-записи, помечены «на месте».
+// - работы автомойки, которых нет в онлайн-записи, помечены «на месте»;
+// - лента карточек программ на узком экране докручивается к карточке, где фокус (setupProgramStrip).
 import { PROGRAMS } from './data.js';
 import { getBody, setBody, bodyName } from './body.js';
 
@@ -296,7 +297,8 @@ function setupCompareBar(signal) {
   const cells = [...head.cells].map((th, i) => {
     const cell = document.createElement('span');
     cell.className = 'compare__bar-cell';
-    if (i) cell.textContent = th.textContent.trim();
+    // В шапке столбца — название (.compare__name) и «+N работ»: в полосе — только название.
+    if (i) cell.textContent = (th.querySelector('.compare__name') || th).textContent.trim();
     track.append(cell);
     return cell;
   });
@@ -333,10 +335,26 @@ function setupCompareBar(signal) {
   layout();
 }
 
+// Лента карточек программ (до 1000 px, scroll-snap): фокус с клавиатуры на кнопке карточки за
+// краем экрана браузер докручивает минимально, а прилипание возвращает ленту к прежней карточке —
+// кнопка остаётся за краем. Ставим всю карточку к началу ленты (её snap-точка).
+function setupProgramStrip(signal) {
+  document.querySelectorAll('ol.programs').forEach((strip) => {
+    strip.addEventListener('focusin', (event) => {
+      const card = event.target.closest('.program-card');
+      if (!card || strip.scrollWidth <= strip.clientWidth + 1) return;
+      const box = card.getBoundingClientRect(), view = strip.getBoundingClientRect();
+      if (box.left >= view.left - 1 && box.right <= view.right + 1) return;
+      strip.scrollTo({ left: strip.scrollLeft + box.left - view.left - parseFloat(getComputedStyle(strip).scrollPaddingLeft || 0), behavior: 'instant' });
+    }, { signal });
+  });
+}
+
 export function setupCatalog() {
   const abort = new AbortController();
   setupTabs(abort.signal);
   setupBody(abort.signal);
+  setupProgramStrip(abort.signal);
   setupScrollRegions(abort.signal);
   setupCompareBar(abort.signal);
   setupFolds(abort.signal);

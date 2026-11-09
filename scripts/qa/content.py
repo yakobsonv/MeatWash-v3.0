@@ -18,7 +18,8 @@ def inventory(browser, base, pages, res):
       estimate: document.querySelectorAll('.catalog__item-price--estimate').length,
       onsite: document.querySelectorAll('.catalog__item-onsite').length,
       programs: [...document.querySelectorAll('.program-card__price > [data-program-price]')].map(e => e.dataset.prices.split(',').length),
-      details: [...document.querySelectorAll('details[id^="program-"]')].map(e => e.id),
+      // #program-0…4 — плитки программ (Влад 09.11: карточки как на Яндекс Картах, состав — в сравнении).
+      details: [...document.querySelectorAll('li.program-card[id^="program-"]')].map(e => e.id),
       sections: [...document.querySelectorAll('.catalog__section[id]')].map(e => e.id),
       bodies: document.querySelectorAll('input[name="body-type"]').length,
       includesNote: T(document.body.innerText).includes('Каждая следующая включает предыдущую'),

@@ -88,6 +88,13 @@
 /* «Не является публичной офертой» — один раз, под последним блоком цен страницы. */
 .sec-block--prices:has(~ .sec-block--prices) .catalog__note { display: none; }
 .sec-block--prices .catalog__note { padding-inline: var(--basic); }
+/* Программы на странице направления (/wash, Влад 09.11): под h2 «Программы и цены» сразу
+   переключатель кузова и карточки — заголовок подраздела «Программы и пакеты» с пояснением
+   остаётся только для диктора (порядок h2 → h3 → h4 карточек не рвётся). */
+.sec-block--prices .catalog__section--programs > .catalog__section-head {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
 
 /* ── Тезисы в ряд (как принципы на «О нас»): линия сверху, красный штрих ── */
 .sec-points, .sec-limits, .sec-why {
