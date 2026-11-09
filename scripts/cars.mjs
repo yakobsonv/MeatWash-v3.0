@@ -7,7 +7,7 @@
 //   {{cars:sold}}  «Уже продали»: li.sold-card × N (обёртку ul.sold-grid[data-sold-tiles] пишет страница);
 //                  карточка — ссылка #<id>, с JS открывает окно машины (Влад 03.11)
 //   {{cars:sold-cards}}  полные карточки проданных машин для окна: та же car-card, вместо цены —
-//                  месяц продажи и «Оставьте заявку» (подобрать похожую); характеристики модели — с пометкой specsNote
+//                  месяц продажи и «Записаться онлайн» (подобрать похожую); характеристики модели — с пометкой specsNote
 //   {{cars:date}}  дата цен: «22 сентября 2026 года»
 //   {{count:sale}}, {{count:sold}}, {{count:sold:машина}} — считает scripts/pages.mjs по этим данным.
 //
@@ -18,9 +18,9 @@
 //   .car-figures        ключевые цифры (Паша 30.10, как у porsche.com): крупное число, единица,
 //                       подпись; числа «набегают» от нуля, когда блок показался (js/figures.js).
 //                       В разметке — итоговые значения: без JS и при «меньше движения» видно их же
-//   .car-card__offer    цена (+ с НДС, если задана), «Оставьте заявку» (data-request, тема auto) и «Позвонить»
+//   .car-card__offer    цена (+ с НДС, если задана), «Записаться онлайн» (data-request, тема auto) и «Позвонить»
 //                       (Мясницкая) — на компьютере колонка справа, на телефоне сразу после фактов
-//   .car-card__about    абзац, характеристики, «Подготовили в Meat Wash: …» (если задано)
+//   .car-card__about    абзац, характеристики, «Подготовили в MEATWASH: …» (если задано)
 // Названия проданных машин: слова с дефисом не рвутся (S-класс), номер модели не отрывается
 // от соседнего слова (BMW 740d, GLS 450 d) — как было в прежней разметке.
 // Владелец: WP4.
@@ -65,14 +65,14 @@ const SOLD_MONTHS = ['январе', 'феврале', 'марте', 'апрел
 const soldIn = (ym) => { const [y, m] = ym.split('-').map(Number); return `Продан в ${SOLD_MONTHS[m - 1]} ${y}`; };
 
 // Вместо цены у проданной машины — месяц продажи и просьба подобрать похожую.
-// Кнопки — «Оставьте заявку» (Влад 05.11): форма #request с темой auto и машиной в
+// Кнопки — «Записаться онлайн» (Влад 05.11): форма #request с темой auto и машиной в
 // data-request-context; личного Telegram на сайте нет.
 const soldOffer = (car) => `
       <div class="car-card__offer">
         <p class="car-card__price">${soldIn(car.sold)}<span>Подберём похожую: расскажите, что ищете</span></p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на ${escape(car.title)}">Оставьте заявку<span class="sr">: подобрать похожую на ${escape(car.title)}</span></button>
-          <a class="btn btn--secondary btn--block" href="tel:${escape(studio().tel)}">${icon('phone')}Позвонить<span class="sr"> в студию на Мясницкой, ${escape(studio().phone)}</span></a>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="Похожая на ${escape(car.title)}">Записаться онлайн<span class="sr">: подобрать похожую на ${escape(car.title)}</span></button>
+          <a class="btn btn--secondary btn--block" href="tel:${escape(studio().tel)}">${icon('phone')}Позвонить<span class="sr"> в студию на Лубянке, ${escape(studio().phone)}</span></a>
         </div>
       </div>`;
 
@@ -80,8 +80,8 @@ const saleOffer = (car) => `
       <div class="car-card__offer">
         <p class="car-card__price">${money(car.price)}${car.priceVat ? ` <span>с НДС — ${money(car.priceVat)}</span>` : ''}</p>
         <div class="car-card__actions">
-          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="${escape(car.title)}">Оставьте заявку<span class="sr">: ${escape(car.title)}</span></button>
-          <a class="btn btn--secondary btn--block" href="tel:${escape(studio().tel)}">${icon('phone')}Позвонить<span class="sr"> в студию на Мясницкой, ${escape(studio().phone)}</span></a>
+          <button class="btn btn--primary btn--block" type="button" data-request data-request-category="auto" data-request-services="Подбор и покупка автомобиля" data-request-context="${escape(car.title)}">Записаться онлайн<span class="sr">: ${escape(car.title)}</span></button>
+          <a class="btn btn--secondary btn--block" href="tel:${escape(studio().tel)}">${icon('phone')}Позвонить<span class="sr"> в студию на Лубянке, ${escape(studio().phone)}</span></a>
         </div>
       </div>`;
 
@@ -102,7 +102,7 @@ ${car.facts?.length ? `        <p class="car-card__facts">${car.facts.map((f) =>
       <div class="car-card__about">
 ${car.lead ? `        <p class="car-card__lead">${text(car.lead)}</p>\n` : ''}${car.specs?.length ? `        <ul class="car-card__specs">
           ${car.specs.map((s) => `<li>${text(s)}</li>`).join('\n          ')}
-        </ul>\n` : ''}${car.prepared ? `        <p class="car-card__prep"><b>Подготовили в Meat Wash:</b> ${text(car.prepared)}.</p>\n` : ''}${car.specsNote ? `        <p class="car-card__note">${text(car.specsNote)}</p>\n` : ''}      </div>
+        </ul>\n` : ''}${car.prepared ? `        <p class="car-card__prep"><b>Подготовили в MEATWASH:</b> ${text(car.prepared)}.</p>\n` : ''}${car.specsNote ? `        <p class="car-card__note">${text(car.specsNote)}</p>\n` : ''}      </div>
     </div>
   </article>`;
 }

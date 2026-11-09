@@ -47,7 +47,7 @@ export function resolve(branch, spec, body = 0) {
 }
 
 // Программы, которых в этой студии нет ни для одного типа кузова (все ячейки пустые):
-// «Трёхфазная» на Мясницкой. Такую студию в записи не предлагаем.
+// «Трёхфазная» на Лубянке. Такую студию в записи не предлагаем.
 export function unavailable(branch, spec) {
   if (!map) return [];
   return (spec.programs || []).map((i) => map.programs[i]).filter((row) => row && !(row[branch] || []).some(Boolean)).map((row) => row.name);

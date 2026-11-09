@@ -21,7 +21,7 @@ return [
         'enabled' => true,
         'to' => ['zayavki@example.com'],      // кто получает заявки (можно несколько)
         'from' => 'site@example.com',         // ящик на домене сайта, созданный в панели reg.ru
-        'from_name' => 'Сайт Meat Wash',
+        'from_name' => 'Сайт MEATWASH',
         'max_letter_mb' => 18,
     ],
 

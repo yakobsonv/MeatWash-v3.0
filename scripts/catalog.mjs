@@ -4,7 +4,7 @@
 // - цены подразделов на страницах направлений — {{prices:<id,…>}} (renderSections) и
 //   «от» подраздела — {{min-section:<id>}} (sectionMin);
 // - dist/js/data.js — те же цены и филиалы для скриптов (гараж, окно услуги, карты).
-// Запуск: npm run catalog — пишет только dist/js/data.js (Meat Wash, WP0 27.10).
+// Запуск: npm run catalog — пишет только dist/js/data.js (MEATWASH, WP0 27.10).
 // Владелец: WP3 (разметка каталога по §4.3 плана, renderCompare, SECTION_LINKS; 27.10).
 import {readFile,writeFile} from 'node:fs/promises';
 import {readFileSync} from 'node:fs';
@@ -33,14 +33,14 @@ export const minFor=id=>{
 // Контекст записи программы: название, кузов и цена для этого кузова. Тот же
 // формат собирает js/catalog.js при смене кузова.
 // Цена программы в филиале, если она выше общей (programStudioPrices): [{name,label,prices}].
-const STUDIO_LABEL={myasnitskaya:'на Мясницкой',technopark:'в Технопарке'};
+const STUDIO_LABEL={myasnitskaya:'на Лубянке',technopark:'в Технопарке'};
 export const studioPrices=i=>Object.entries(d.programStudioPrices?.[i]||{}).map(([id,prices])=>{
  const location=d.locations.find(l=>l.id===id);
  if(!location||!STUDIO_LABEL[id])throw new Error(`programStudioPrices: нет филиала ${id}`);
  return {name:location.name,label:STUDIO_LABEL[id],prices};
 });
 export const programContext=(i,body)=>`${d.programs[i][0]} — ${d.bodyTypes[body]}, ${money(d.programPrices[i][body])}${studioPrices(i).map(s=>`, ${s.label} — ${money(s.prices[body])}`).join('')}`;
-// Строка «На Мясницкой — 3 150 ₽» под ценой: тот же data-program-price, его меняет кузов.
+// Строка «На Лубянке — 3 150 ₽» под ценой: тот же data-program-price, его меняет кузов.
 const studioLine=(i,tag,cls)=>studioPrices(i).map(s=>`<${tag} class="${cls}">${s.label[0].toUpperCase()+s.label.slice(1)} — <span data-program-price data-prices="${s.prices.join(',')}">${money(s.prices[0])}</span></${tag}>`).join('');
 export const serviceCount=()=>d.groups.reduce((sum,group)=>sum+group.items.length,0);
 // Иконка спрайта — та же разметка, что у подстановки icon (scripts/pages.mjs). Своя копия:
@@ -51,9 +51,9 @@ const icon=name=>{
  spriteVersion??=createHash('sha256').update(readFileSync(new URL('dist/assets/brand/sprite.svg',root))).digest('hex').slice(0,8);
  return `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=${spriteVersion}#i-${name}"/></svg>`;
 };
-// Подпись кнопки для экранного диктора: «Оставьте заявку: Химчистка руля».
+// Подпись кнопки для экранного диктора: «Записаться онлайн: Химчистка руля».
 const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
-// Одно действие на позицию, подпись везде «Оставьте заявку» (Влад 05.11: всё — по заявкам).
+// Одно действие на позицию, подпись везде «Записаться онлайн» (Влад 05.11: всё — по заявкам).
 // Атрибуты — контракт формы (docs/meat-auto/CONTRACTS.md, «Заявка»): автомойка (booking:
 // yclients) — data-book с работой (форма #request с темой «Автомойка», мелкая ссылка онлайн-
 // записи YCLIENTS с этой работой в корзине); остальное — data-request с категорией и работой.
@@ -63,7 +63,7 @@ const forName=name=>`<span class="sr">: ${escape(name)}</span>`;
 export const ONSITE_LABEL='добавим при приёмке';
 const ACTION_CLASS='catalog__action btn btn--compact btn--secondary';
 // На телефоне от кнопки остаётся круглая стрелка (services.css), подпись — для диктора.
-export const REQUEST_LABEL='Оставьте заявку';
+export const REQUEST_LABEL='Записаться онлайн';
 const actionLabel=(label,name)=>`<span class="catalog__action-label">${label}</span>${forName(name)}${icon('arrow-right')}`;
 const action=(group,name)=>group.booking==='yclients'
  ?`<button class="${ACTION_CLASS}" type="button" data-book data-book-context="${escape(name)}" data-yc-items="${escape(name)}">${actionLabel(REQUEST_LABEL,name)}</button>`
@@ -132,7 +132,7 @@ const section=(group,s,page)=>`<section class="catalog__section${s.accent?' cata
    ${s.programs?programs():`<ul class="catalog__items" role="list">${s.items.map(name=>itemRow(group,s,itemOf(group,name))).join('')}</ul>`}
   </section>`;
 // Всё — по заявке (Влад 05.11): цену и время называет администратор.
-const LEAD={yclients:'Оставьте заявку — администратор подберёт время.',request:'Стоимость для вашей машины назовёт администратор: оставьте заявку у работы.'};
+const LEAD={yclients:'Записаться онлайн — администратор подберёт время.',request:'Стоимость для вашей машины назовёт администратор: оставьте заявку у работы.'};
 
 // Каталог /services (§4.3 плана) — подстановка {{catalog}}. Пять категорий; без JS
 // вкладки — ссылки на категории, панели идут подряд; js/catalog.js делает из них вкладки
@@ -160,7 +160,7 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
 
 // Цены подразделов на страницах направлений — {{prices:<id,…>}} (решение 05.11). Разметка —
 // та же, что у подразделов каталога /services (section.catalog__section с h3, строки
-// li.catalog__item с кнопкой «Оставьте заявку»: data-book у автомойки, data-request у остального),
+// li.catalog__item с кнопкой «Записаться онлайн»: data-book у автомойки, data-request у остального),
 // обёртка div.catalog.catalog--prices[data-prices]: по ней site.js подключает js/catalog.js
 // (переключатель кузова у программ). id подразделов — те же, что на /services (#price-film…):
 // на одной странице подраздел — один раз. programs выводит карточки программ, переключатель
@@ -187,7 +187,7 @@ export const sectionMin=id=>{
  return Math.min(...prices);
 };
 
-// Темы формы «Оставьте заявку» (site.requests.topics): позиции каталога каждой темы.
+// Темы формы «Записаться онлайн» (site.requests.topics): позиции каталога каждой темы.
 export const requestTopics=()=>(d.site?.requests?.topics||[]).map(t=>{
  const fromSections=(t.sections||[]).flatMap(id=>{const {s}=sectionOf(id);return s.programs?[]:s.items;});
  const items=[...fromSections,...(t.items||[])].filter(n=>!(t.except||[]).includes(n));
@@ -237,7 +237,7 @@ ${rows.map(row=>`        <tr${row.from===0?' data-same':''}><th scope="row">${es
     </div>`;
 }
 
-// Превью на главной (прежняя главная; на Meat Wash не используется) — четыре категории в порядке каталога, ссылка
+// Превью на главной (прежняя главная; на MEATWASH не используется) — четыре категории в порядке каталога, ссылка
 // ведёт на вкладку категории. Подпись — название и короткое описание, цена «от» —
 // минимальная в категории (у автомойки — минимальная цена программ), всё из JSON.
 // Кадры assets/shots — 1600×894, уменьшенные (-s) — 900 px.
@@ -296,7 +296,7 @@ export const CATEGORIES = ${JSON.stringify(categories,null,1)};
 // и сайты, где он работает (пусто — везде; копия на GitHub Pages PHP не выполняет).
 export const REQUESTS = ${JSON.stringify({endpoint:d.site?.requests?.endpoint??null,hosts:d.site?.requests?.hosts??[]})};
 export const LOCATIONS = ${JSON.stringify(locations,null,1)};
-// Темы формы «Оставьте заявку» (site.requests.topics) в порядке показа: programs — программы
+// Темы формы «Записаться онлайн» (site.requests.topics) в порядке показа: programs — программы
 // мойки (PROGRAMS), items — позиции каталога темы, options — варианты без каталога.
 // data-request-category кнопки — id темы или категории каталога (CATEGORY_TOPIC — тема
 // категории, если работа не указана; с работой тема — та, в чьих items она есть).

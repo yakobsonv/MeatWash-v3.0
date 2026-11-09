@@ -1,4 +1,4 @@
-// Главная Meat Wash (план §3.1): перенос v2.js (source/v2-design, 625ce74) — три поведения
+// Главная MEATWASH (план §3.1): перенос v2.js (source/v2-design, 625ce74) — три поведения
 // эталона, которые CSS сам не делает:
 //  1) страница темнеет, пока направления на экране, и светлеет после них (ref CarRange__toDark:
 //     верх секции ≤ 12 % высоты окна, низ — ниже 49 %, в обе стороны);
@@ -8,6 +8,8 @@
 //  4) клуб: карта поднимается над кадром при прокрутке (параллакс, не на телефоне), наклоняется к курсору (до 8°)
 //     и ловит блик (наклон — только мышь; всё — без «меньше движения»);
 //  5) ряды «Наших работ» на телефоне (лента): фокус с клавиатуры прокручивает ленту к плашке;
+//     кейсы (Влад 09.11) — кадры проекта сменяют друг друга, как короткий ролик: с мышью — пока
+//     наведена мышь или фокус, на сенсорном экране — пока плашка видна; «меньше движения» — обложка;
 //  6) отзывы — «тёмная сцена»: досчёт рейтинга, карусель карточек с автопрокруткой и паузой; у новой
 //     активной карточки строки поднимаются из маски, номер в счётчике прокручивается.
 // Своего наблюдения [data-reveal] нет: класс is-in ставит ui.js (план §3.1).
@@ -19,6 +21,7 @@ export function setupHome() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   setupClub(reduce);
   setupWorksFocus(reduce);
+  setupCaseReels(reduce);
   setupReviews(reduce);
 
   // 1. Цвет страницы.
@@ -489,4 +492,54 @@ function setupReviews(reduce) {
     if (!glowQueued) { glowQueued = true; requestAnimationFrame(glow); }
   });
   rv.addEventListener('pointerleave', () => rv.classList.remove('is-lit'));
+}
+
+// 5б. Кейсы «Наших работ»: лента span[data-case-reel] (data-frames — адреса кадров через «|», пишет
+// scripts/pages.mjs). Кадры создаются при первом запуске (до этого браузер их не грузит), сменяются
+// раз в 1,6 с с плавным переходом и лёгким приближением; после остановки возвращается обложка.
+const CASE_STEP = 1600;
+function setupCaseReels(reduce) {
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  for (const reel of document.querySelectorAll('[data-case-reel]')) {
+    const tile = reel.closest('.case-tile');
+    const urls = (reel.dataset.frames || '').split('|').filter(Boolean);
+    if (!tile || !urls.length) continue;
+    let frames = null, k = -1, timer = 0, hovered = false, focused = false, inView = false;
+    const build = () => {
+      frames = urls.map((src) => {
+        const img = document.createElement('img');
+        img.className = 'case-tile__frame'; img.alt = ''; img.decoding = 'async'; img.src = src;
+        reel.append(img);
+        return img;
+      });
+    };
+    const show = () => {
+      const next = (k + 1) % frames.length, img = frames[next];
+      const go = () => { frames.forEach((f, i) => f.classList.toggle('is-on', i === next)); k = next; };
+      if (img.complete) go(); else img.addEventListener('load', go, { once: true });
+    };
+    const want = () => !reduce.matches && !document.hidden && (fine.matches ? (hovered || focused) : inView);
+    const sync = () => {
+      if (want()) {
+        if (timer) return;
+        if (!frames) build();
+        tile.classList.add('is-reeling');
+        show();
+        timer = setInterval(show, CASE_STEP);
+      } else if (timer || tile.classList.contains('is-reeling')) {
+        clearInterval(timer); timer = 0; k = -1;
+        tile.classList.remove('is-reeling');
+        frames?.forEach((f) => f.classList.remove('is-on'));
+      }
+    };
+    tile.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hovered = true; sync(); } });
+    tile.addEventListener('pointerleave', () => { hovered = false; sync(); });
+    tile.addEventListener('focus', () => { focused = tile.matches(':focus-visible'); sync(); });
+    tile.addEventListener('blur', () => { focused = false; sync(); });
+    document.addEventListener('visibilitychange', sync);
+    reduce.addEventListener?.('change', sync);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => { inView = entries[entries.length - 1].isIntersecting; sync(); }, { threshold: 0.6 }).observe(tile);
+    }
+  }
 }

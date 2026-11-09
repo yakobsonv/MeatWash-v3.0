@@ -1,31 +1,34 @@
 <!-- Тело главной. Порядок блоков (Влад 05.11, структура porsche.com): первый экран → «Чем занимается
-     Meat Wash» (шесть направлений) → «Наши работы» (ряд плашек на направление) → клубная карта →
+     MEATWASH» (шесть направлений) → «Наши работы» (ряд плашек на направление) → клубная карта →
      отзывы → общий подвал. Вид и поведение — как на прежней главной (0d4a653): большие плитки
      с подписью над карточкой, по 2 в ряд, раскрытие 55/45 % при наведении, ролик по наведению,
      появление при прокрутке, смена цвета страницы; на телефоне — карусель с точками и паузой.
-     Первый экран — без изменений (связка MEATWASH + Car Care Club, ролик js/video.js).
+     Первый экран — ролик js/video.js, поверх — горизонтальный логотип из логобука (бык + MEATWASH +
+     Car Care Club 2021, Влад 09.11; assets/brand/hero-lockup.svg — Horizontal_Logo.svg с округлёнными координатами).
      Ролики плиток — квадратные svc-*-m (плитка на компьютере почти квадратная, на телефоне —
      вертикальная): мойка, детейлинг (кожа салона), оклейка (плёнка в студии); «О нас» — tile-about.
      У «Кузовных работ» и «Продажи» своих роликов нет — фото. Номеров и надписей в кадрах нет.
      Автомойка на компьютере — горизонтальный кадр dir-wash-wide (плитка там почти квадратная).
-     Ряды работ и отзывы — подстановки works и reviews из meatwash-content.json (плашки — tiles.css).
+     «Наши работы» — кейсы по машинам (Влад 09.11): подстановка projects:wrap:cases — оклейка Mercedes-Benz
+     W223, Range Rover, BMW G20, окно-галерея проекта (js/gallery.js), кадры сменяются как ролик (home.js).
+     Отзывы — подстановка reviews из meatwash-content.json (плашки — tiles.css, projects.css).
      Стили — dist/css/home.css, поведение — dist/js/home.js. -->
 <section class="hero" aria-labelledby="page-title">
   <picture class="hero__media">
     <source media="(max-width: 699px)" srcset="assets/img/home/hero-m-poster-720.webp" width="720" height="1280">
-    <img src="assets/img/home/hero-wash-1920.webp" width="1920" height="1080" alt="Автомойка чёрного седана в студии Meat Wash: пена и струя воды" fetchpriority="high" decoding="async">
+    <img src="assets/img/home/hero-wash-1920.webp" width="1920" height="1080" alt="Автомойка чёрного седана в студии MEATWASH: пена и струя воды" fetchpriority="high" decoding="async">
   </picture>
   <video class="hero__video" data-video="hero" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src-m="{{asset:assets/video/hero-m-720.mp4}}" data-src="{{asset:assets/video/hero-1280.mp4}}" data-src-hd="{{asset:assets/video/hero-1920.mp4}}"></video>
   <button class="hero__toggle" type="button" data-video-toggle aria-pressed="false" aria-label="Остановить видео" hidden>{{icon:pause:hero__pause}}{{icon:play:hero__play}}</button>
   <h1 class="hero__title" id="page-title">
-    <span class="sr" lang="en">Meat Wash Car Care Club</span>
-    {{icon:mwccc:hero__lockup}}
+    <span class="sr" lang="en">MEATWASH Car Care Club</span>
+    <img class="hero__lockup" src="{{asset:assets/brand/hero-lockup.svg}}" width="2520" height="654" alt="" fetchpriority="high" decoding="async">
   </h1>
 </section>
 
 <section class="dirs" aria-labelledby="dirs-title">
   <div class="dirs__head" data-reveal>
-    <h2 class="dirs__heading" id="dirs-title"><span class="ln"><span class="ln__in"><span class="wd">Чем</span>&nbsp;<span class="wd">занимается</span></span></span> <span class="ln"><span class="ln__in"><span class="wd" lang="en">Meat&nbsp;Wash</span></span></span></h2>
+    <h2 class="dirs__heading" id="dirs-title"><span class="ln"><span class="ln__in"><span class="wd">Чем</span>&nbsp;<span class="wd">занимается</span></span></span> <span class="ln"><span class="ln__in"><span class="wd" lang="en">MEATWASH</span></span></span></h2>
   </div>
 
   <div class="dirs__grid">
@@ -41,7 +44,7 @@
         <div class="dir__content">
           <div class="dir__body">
             <ul class="dir__tags"><li class="chip chip--photo">Программы от {{min:wash}}</li></ul>
-            <p class="dir__desc">Пять программ — от мойки за {{program:0:time}} до пакета «Премиум». Мясницкая и Технопарк.</p>
+            <p class="dir__desc">Пять программ — от мойки за {{program:0:time}} до пакета «Премиум». Лубянка и Технопарк.</p>
           </div>
           <a class="dir__cta" href="wash"><span class="dir__label">Программы и цены</span><span class="sr">: автомойка</span>{{icon:cta-arrow:dir__arrow}}</a>
         </div>
@@ -103,7 +106,7 @@
         <div class="dir__content">
           <div class="dir__body">
             <ul class="dir__tags"><li class="chip chip--photo">Уже продали {{count:sold:машина}}</li></ul>
-            <p class="dir__desc">Продаём автомобили и делаем предпродажную подготовку: детейлинг, полировку, химчистку салона.</p>
+            <p class="dir__desc">Продажа, привоз и&nbsp;выкуп автомобилей.</p>
           </div>
           <a class="dir__cta" href="auto"><span class="dir__label">Смотреть машины</span><span class="sr"> на продажу</span>{{icon:cta-arrow:dir__arrow}}</a>
         </div>
@@ -115,14 +118,14 @@
       <div class="dir__card" data-video-host>
         <picture>
           <source media="(max-width: 759px)" srcset="assets/img/home/tile-4-m-860.webp 860w, assets/img/home/tile-4-m-1280.webp 1280w" sizes="(min-height: 810px) 447px, 55vh" width="1280" height="1924">
-          <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/tile-4-800.webp" srcset="assets/img/home/tile-4-800.webp 800w, assets/img/home/tile-4-1240.webp 1240w" sizes="(min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="825" loading="lazy" decoding="async" alt="Серый BMW 8 серии в зале студии Meat Wash">
+          <img class="dir__img" style="--focus-xy: 50% 50%" src="assets/img/home/tile-4-800.webp" srcset="assets/img/home/tile-4-800.webp 800w, assets/img/home/tile-4-1240.webp 1240w" sizes="(min-width: 1760px) calc(76.7vh + 15vw), (min-width: 1300px) calc(10.5vh + 58.6vw), 67.6vw" width="1240" height="825" loading="lazy" decoding="async" alt="Серый BMW 8 серии в зале студии MEATWASH">
         </picture>
         <video class="dir__img dir__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/tile-about.mp4}}"></video>
         <a class="dir__hit" href="about" tabindex="-1" aria-hidden="true"></a>
         <div class="dir__content">
           <div class="dir__body">
             <ul class="dir__tags"><li class="chip chip--photo">С {{brand:since}} года · {{count:studios:студия}} в Москве</li></ul>
-            <p class="dir__desc"><span lang="en">Meat Wash Car Care Club</span>: студии на Мясницкой и в Технопарке, команда и наша история.</p>
+            <p class="dir__desc"><span lang="en">MEATWASH Car Care Club</span>: студии на Лубянке и в Технопарке, команда и наша история.</p>
           </div>
           <a class="dir__cta" href="about"><span class="dir__label">О компании</span>{{icon:cta-arrow:dir__arrow}}</a>
         </div>
@@ -151,7 +154,7 @@
   </div>
 
   <div class="home-works__row" data-reveal>
-    {{works:home}}
+    {{projects:wrap:cases}}
   </div>
 
 </section>
@@ -162,11 +165,10 @@
      фраза и короткий текст, справа — кадр зоны ожидания (ролик clip-lounge-club — только диван у окна
      в бокс, без пультов и приставки; постер club-lounge-720 — его первый кадр, тёплая цветокоррекция),
      поверх кадра — красная карта без фона (Влад 03.11: «чёрный фон за карты убери»). Снизу — три факта.
-     Только подтверждённое (meatwash-content.json, locations): две студии, каждый день до 22:00,
-     2 часа закрытого паркинга на Мясницкой включены в визит. Условий клуба (скидки, баллы) в данных
-     нет — не пишем; «кофе» и студию кадра не называем (не подтверждены).
-     Карта ведёт на оформление (wahelp, цель Метрики club_card по data-club-card); главная кнопка —
-     «Оставьте заявку» с темой «Клубная карта».
+     Влад 09.11: одна большая кнопка «Оформить карту» (wahelp, цель Метрики club_card по data-club-card),
+     бонусы клуба — его текстом, тремя группами (за вступление, кэшбэк, постоянное). Факты: две студии
+     (Лубянка и Технопарк), часы (будни с 8:00, выходные с 9:00, обе до 22:00), кэшбэк до 25 % вместо
+     паркинга. «Кофе» и студию кадра не называем (не подтверждены).
      Движение (home.js, home.css): карта поднимается над кадром при прокрутке (без инерции, не на
      телефоне); с мышью карта наклоняется к курсору и ловит блик, ролик играет по наведению (video.js),
      на сенсорных экранах ролика нет — постер; «меньше движения» — всё на месте, без движения. -->
@@ -174,14 +176,34 @@
   <div class="home-club__copy" data-reveal>
     <p class="home-club__eyebrow"><span class="home-club__rule" aria-hidden="true"></span>Клубная карта<span class="home-club__sep" aria-hidden="true"> · </span><span class="nw home-club__brand" lang="en">Car Care Club</span></p>
     <h2 class="home-club__title" id="home-club-title">Клуб для&nbsp;тех, <span class="home-club__keep">кто <em>возвращается</em></span></h2>
-    <p class="home-club__lead">Карта постоянного клиента — тем, кто приезжает к&nbsp;нам снова. Оформите&nbsp;её онлайн или оставьте заявку — расскажем об&nbsp;условиях клуба.</p>
-    <div class="home-club__actions">
-      <button class="home-club__request" type="button" data-request data-request-category="club" data-request-services="Клубная карта">Оставьте заявку<span class="sr"> на клубную карту</span>{{icon:arrow-right}}</button>
-      <div class="home-club__links">
-        <a class="link-arrow home-club__more" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить карту онлайн{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
-        <a class="link-arrow home-club__more" href="about#membership">Подробнее о клубе{{icon:arrow-right}}</a>
+    <p class="home-club__lead">Карта постоянного клиента — тем, кто приезжает к&nbsp;нам снова.</p>
+    <div class="home-club__perks">
+      <h3 class="home-club__perks-title">Бонусы для участников клуба</h3>
+      <div class="home-club__groups">
+        <section class="home-club__group" aria-labelledby="club-g1">
+          <h4 class="home-club__group-title" id="club-g1">За вступление</h4>
+          <ul class="home-club__perk-list" role="list">
+            <li class="home-club__perk"><b>1&nbsp;000&nbsp;₽</b><span>за регистрацию</span></li>
+            <li class="home-club__perk"><b>1&nbsp;000&nbsp;₽</b><span>за отзыв на Картах</span></li>
+          </ul>
+        </section>
+        <section class="home-club__group" aria-labelledby="club-g2">
+          <h4 class="home-club__group-title" id="club-g2">Кэшбэк</h4>
+          <ul class="home-club__perk-list" role="list">
+            <li class="home-club__perk"><b>до&nbsp;25&nbsp;%</b><span>кэшбэк баллами</span></li>
+            <li class="home-club__perk"><b>до&nbsp;100&nbsp;%</b><span>списание бонусов</span></li>
+          </ul>
+        </section>
+        <section class="home-club__group" aria-labelledby="club-g3">
+          <h4 class="home-club__group-title" id="club-g3">Постоянное</h4>
+          <ul class="home-club__perk-list" role="list">
+            <li class="home-club__perk"><b>1&nbsp;000&nbsp;₽</b><span>каждый день рождения</span></li>
+            <li class="home-club__perk"><b>5&nbsp;000&nbsp;₽</b><span>за&nbsp;каждого приглашённого</span></li>
+          </ul>
+        </section>
       </div>
     </div>
+    <a class="home-club__join" href="https://admin.wahelp.cards/lendings/019c6b46-a042-7121-8e8c-23717fd3195e" target="_blank" rel="noopener noreferrer" data-club-card>Оформить карту{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
   </div>
 
   <figure class="home-club__stage" data-club-tilt data-video-host data-reveal>
@@ -199,9 +221,9 @@
   </figure>
 
   <ul class="home-club__facts" role="list" data-reveal>
-    <li class="home-club__fact"><span class="home-club__num">{{count:studios}}<small>студии</small></span><span class="home-club__label">в&nbsp;Москве: на&nbsp;Мясницкой и&nbsp;в&nbsp;Технопарке</span></li>
-    <li class="home-club__fact"><span class="home-club__num">22:00</span><span class="home-club__label">до&nbsp;этого часа обе студии открыты каждый день</span></li>
-    <li class="home-club__fact"><span class="home-club__num">2<small>часа</small></span><span class="home-club__label">закрытого паркинга на&nbsp;Мясницкой включены в&nbsp;визит</span></li>
+    <li class="home-club__fact"><span class="home-club__num">{{count:studios}}<small>студии</small></span><span class="home-club__label">в&nbsp;Москве: на&nbsp;Лубянке и&nbsp;в&nbsp;Технопарке</span></li>
+    <li class="home-club__fact"><span class="home-club__num">22:00</span><span class="home-club__label">до&nbsp;этого часа открыты обе студии: в&nbsp;будни с&nbsp;8:00, в&nbsp;выходные с&nbsp;9:00</span></li>
+    <li class="home-club__fact"><span class="home-club__num">25<small>%</small></span><span class="home-club__label">кэшбэк до&nbsp;25&nbsp;% баллами с&nbsp;каждой услуги</span></li>
   </ul>
   <p class="home-club__note" data-reveal>Подарочные сертификаты и&nbsp;уход за&nbsp;корпоративным автопарком — обсудим в&nbsp;заявке.</p>
 </section>

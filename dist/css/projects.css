@@ -116,7 +116,7 @@ dialog.dialog--gallery::backdrop { background: #0b0b0b; }
 .gallery__of, .gallery__count [data-gallery-total] { color: var(--on-muted); }
 .gallery__nav { display: flex; gap: 12px; }
 .gallery__count { flex: none; }
-/* «Оставьте заявку»: на тёмном окне — светлая (тёмная основная из dialogs.css тут слилась бы с фоном),
+/* «Записаться онлайн»: на тёмном окне — светлая (тёмная основная из dialogs.css тут слилась бы с фоном),
    наведение — красная, как стрелки. Высота — как у круглых кнопок полосы. */
 dialog.dialog--gallery .btn.gallery__cta {
   display: block; flex: 0 1 auto; min-width: 0; min-height: 0; height: 52px; margin-left: auto; padding: 0 22px;
@@ -140,7 +140,7 @@ dialog.dialog--gallery .btn.gallery__cta:focus-visible { outline: 3px solid var(
   .gallery__lead { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; max-width: 90ch; font-size: 15px; }
   .gallery__top { padding-bottom: 12px; }
 }
-/* Телефон: счётчик, «Оставьте заявку» и стрелки — в одну полосу (стрелки 44 px); уже 380 —
+/* Телефон: счётчик, «Записаться онлайн» и стрелки — в одну полосу (стрелки 44 px); уже 380 —
    кнопка заявки отдельной строкой во всю ширину под счётчиком и стрелками. */
 @media (max-width: 759px) {
   .gallery__bar { gap: 10px; }
@@ -187,3 +187,24 @@ dialog.dialog--gallery .btn.gallery__cta:focus-visible { outline: 3px solid var(
 @media (prefers-reduced-motion: reduce) {
   .gallery__slide, .gallery__btn { transition: none; }
 }
+
+/* Кейсы на главной (Влад 09.11; projects:wrap:cases, home.js): кадры проекта поверх обложки сменяют
+   друг друга с плавным переходом и медленным приближением — как короткий ролик. Затемнение
+   плашки (::after, z −1) остаётся над кадрами: заголовок читается. */
+.case-tile__reel { position: absolute; inset: 0; z-index: -2; pointer-events: none; }
+.case-tile__frame {
+  position: absolute; inset: 0;
+  display: block; width: 100%; height: 100%; max-width: none;
+  object-fit: cover; object-position: 50% 45%;
+  opacity: 0; transform: scale(1.02);
+  transition: opacity .7s var(--ease), transform 2.4s linear;
+}
+.case-tile__frame.is-on { opacity: 1; transform: scale(1.09); }
+/* «Идёт ролик» — тонкая полоса времени внизу плашки. */
+.case-tile::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; height: 3px;
+  background: var(--red-ink); transform: scaleX(0); transform-origin: left; pointer-events: none;
+}
+.case-tile.is-reeling::before { animation: case-run 1.6s linear infinite; }
+@keyframes case-run { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .case-tile__reel { display: none; } }

@@ -1,5 +1,5 @@
 <!-- Тело /about (план §3.7, поправки 3, 10, 13, 34; 05.11 — без личных имён, все призывы —
-     «Оставьте заявку»). Владелец: WP5, тексты 05.11 — исполнитель E.
+     «Записаться онлайн»). Владелец: WP5, тексты 05.11 — исполнитель E.
      H1 не повторяет главную (поправка 34). Блок студий с картами — общая часть locations,
      клубный блок — membership (id membership внутри неё). Фото Технопарка (автор — ГЕОмаркетинг)
      на новых страницах не ставим (поправка 10). Надзаголовков и нумерации нет (решение Влада).
@@ -7,13 +7,13 @@
 <section class="hero-a about-hero" aria-labelledby="page-title">
   <picture class="hero-a__media">
     <source media="(min-width: 760px)" srcset="assets/img/about/hero-1600.webp 1240w" sizes="100vw" width="1240" height="531">
-    <img src="assets/img/about/hero-900.webp" width="900" height="900" alt="Серый BMW 8 серии в зале студии Meat Wash" fetchpriority="high" decoding="async">
+    <img src="assets/img/about/hero-900.webp" width="900" height="900" alt="Серый BMW 8 серии в зале студии MEATWASH" fetchpriority="high" decoding="async">
   </picture>
   <div class="hero-a__body">
     <h1 id="page-title">О нас</h1>
     <p class="hero-a__lead">Уход, который сохраняет ценность</p>
     <div class="hero-a__actions actions">
-      <button class="btn btn--primary" type="button" data-request>Оставьте заявку</button>
+      <button class="btn btn--primary" type="button" data-request>Записаться онлайн</button>
       <a class="btn btn--secondary" href="services">Услуги и цены</a>
     </div>
   </div>
@@ -36,7 +36,7 @@
 <section class="section about-visit" id="visit-locations" aria-labelledby="visit-locations-title">
   <header class="section-head col-title">
     <h2 id="visit-locations-title">Студии и контакты</h2>
-    <p class="section-head__lead">Две студии <span class="nw" lang="en">Meat Wash</span> в Москве. Мясницкая — премиальная автомойка, Технопарк — <span class="nw">детейлинг-центр</span> полного цикла.</p>
+    <p class="section-head__lead">Две студии <span class="nw" lang="en">MEATWASH</span> в Москве. На Лубянке и в Технопарке — автомойка и детейлинг.</p>
   </header>
   <div class="locations col-ext">
 <!-- SHARED:locations:START -->
@@ -52,16 +52,16 @@
     <li class="card visit__item visit__item--offer">
       <h3>Первый визит</h3>
       <p>Новым клиентам — защитное кварцевое покрытие кузова в подарок и скидка 500 ₽ на первую автомойку. Условия уточняйте у администратора.</p>
-      <button class="link-arrow visit__link" type="button" data-book data-book-context="Первый визит">Оставьте заявку<span class="sr">: первый визит на автомойку</span>{{icon:arrow-right}}</button>
+      <button class="link-arrow visit__link" type="button" data-book data-book-context="Первый визит">Записаться онлайн<span class="sr">: первый визит на автомойку</span>{{icon:arrow-right}}</button>
     </li>
     <li class="card visit__item visit__item--media">
       <figure class="vframe visit__media" data-video-host><img src="{{asset:assets/video/clip-lounge-15-poster.webp}}" width="720" height="1280" alt="Зона ожидания: диван и игровая приставка" loading="lazy" decoding="async"><video class="vframe__video" data-video="hover" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/clip-lounge-15.mp4}}"></video></figure>
       <h3>Пока ждёте</h3>
-      <p>На Мясницкой два часа закрытого паркинга включены в автомойку. В зоне ожидания — <span class="nw">Wi-Fi</span>, вода и кофе. Кофемания — этажом выше.</p>
+      <p>На Лубянке два часа закрытого паркинга включены в автомойку. В зоне ожидания — <span class="nw">Wi-Fi</span>, вода и кофе. Кофемания — этажом выше.</p>
     </li>
     <li class="card visit__item">
       <h3>Оплата</h3>
-      <p>Карта, СБП, QR, наличные, безналичный расчёт и рассрочка. На Мясницкой можно оплатить из автомобиля.</p>
+      <p>Карта, СБП, QR, наличные, безналичный расчёт и рассрочка. На Лубянке можно оплатить из автомобиля.</p>
     </li>
   </ul>
 </section>
@@ -76,11 +76,11 @@
     <img src="assets/img/works/about-1-800.webp" srcset="assets/img/works/about-1-800.webp 800w, assets/img/works/about-1-1240.webp 1240w" sizes="(min-width: 760px) 40vw, 100vw" width="1240" height="930" alt="Въезд в моечный бокс с красной росписью на стенах, внутри автомобиль в пене" loading="lazy" decoding="async">
   </figure>
   <div class="founder__text">
-    <p><span class="nw" lang="en">Meat Wash</span> — студии ухода за автомобилем в Москве с {{brand:since}} года: премиальная автомойка на Мясницкой и <span class="nw">детейлинг-центр</span> полного цикла в Технопарке.</p>
+    <p><span class="nw" lang="en">MEATWASH</span> — студии ухода за автомобилем в Москве с {{brand:since}} года: автомойка и детейлинг на Лубянке и в Технопарке.</p>
     <p>Направления: <a href="wash">автомойка</a>, <a href="detailing">детейлинг</a>, <a href="wrap">оклейка плёнкой</a> и <a href="bodywork">кузовные работы</a>, а ещё <a href="auto">продажа автомобилей</a> и <a href="import">привоз авто <span class="nw">из-за</span> рубежа</a>.</p>
     <p>Клиенту не нужно разбираться в каждой услуге и искать исполнителей по отдельности: расскажите о задаче в заявке — дальше её ведёт наша команда.</p>
     <div class="actions">
-      <button class="btn btn--secondary" type="button" data-request>Оставьте заявку</button>
+      <button class="btn btn--secondary" type="button" data-request>Записаться онлайн</button>
     </div>
   </div>
 </section>
@@ -94,7 +94,7 @@
   </header>
   <ul class="counters col-ext" role="list">
     <li class="counter"><b class="counter__value">5,0</b><span class="counter__label">рейтинг на Яндекс Картах</span></li>
-    <li class="counter"><b class="counter__value">{{count:studios}}</b><span class="counter__label">студии в Москве — Мясницкая и Технопарк</span></li>
+    <li class="counter"><b class="counter__value">{{count:studios}}</b><span class="counter__label">студии в Москве — Лубянка и Технопарк</span></li>
     <li class="counter"><b class="counter__value">{{program:0:time}}</b><span class="counter__label">самая короткая программа автомойки</span></li>
   </ul>
   <ul class="principles col-ext" role="list" aria-label="Три принципа ухода">
@@ -129,7 +129,7 @@
     <li class="milestone">
       <time class="milestone__date" datetime="2025-11">Ноябрь 2025</time>
       <h3>Интервью в журнале</h3>
-      <p>Материал о проекте <span class="nw" lang="en">Meat Wash</span> в <span class="nw" lang="en">Service &amp; Parts</span>: про автокультуру, системный подход и развитие проекта.</p>
+      <p>Материал о проекте <span class="nw" lang="en">MEATWASH</span> в <span class="nw" lang="en">Service &amp; Parts</span>: про автокультуру, системный подход и развитие проекта.</p>
       <a class="link-arrow" href="https://car-pr.com/news/service-and-parts-7-noyabr-2025/" target="_blank" rel="noopener">Читать номер{{icon:arrow-up-right}}<span class="sr"> (откроется в новой вкладке)</span></a>
     </li>
     <li class="milestone">
@@ -148,13 +148,13 @@
     <div class="press__pages">
       <img src="assets/img/press-service-parts-cover.webp" width="561" height="800" alt="Обложка журнала Service &amp; Parts, № 7, ноябрь 2025" loading="lazy" decoding="async">
     </div>
-    <figcaption><span class="nw" lang="en">Service &amp; Parts</span>, № 7, ноябрь 2025 — материал о проекте <span class="nw" lang="en">Meat Wash</span>.</figcaption>
+    <figcaption><span class="nw" lang="en">Service &amp; Parts</span>, № 7, ноябрь 2025 — материал о проекте <span class="nw" lang="en">MEATWASH</span>.</figcaption>
   </figure>
 </section>
 
 <!-- Студии и работы — мозаика 1 + 2 (P26): фото Технопарка не ставим (поправка 10);
      работы — кадры химчистки и полировки, обрезаны без старого водяного знака. Кадр
-     Мясницкой обрезан без стены с объёмной вывеской прежнего имени (бренд — Meat Wash). -->
+     Мясницкой обрезан без стены с объёмной вывеской прежнего имени (бренд — MEATWASH). -->
 <section class="section about-studios" id="studios" aria-labelledby="studios-title">
   <header class="section-head col-title">
     <h2 id="studios-title">Студии и работы</h2>
@@ -165,8 +165,8 @@
       <figcaption>Полировка кузова — работа студии</figcaption>
     </figure>
     <figure class="studios__item" data-reveal>
-      <img src="assets/img/about/studio-myasnitskaya-480.webp" srcset="assets/img/about/studio-myasnitskaya-480.webp 480w, assets/img/about/studio-myasnitskaya-700.webp 700w" sizes="(min-width: 760px) 30vw, 50vw" width="700" height="525" alt="Range Rover в студии на Мясницкой" loading="lazy" decoding="async">
-      <figcaption>Студия на Мясницкой</figcaption>
+      <img src="assets/img/about/studio-myasnitskaya-480.webp" srcset="assets/img/about/studio-myasnitskaya-480.webp 480w, assets/img/about/studio-myasnitskaya-700.webp 700w" sizes="(min-width: 760px) 30vw, 50vw" width="700" height="525" alt="Range Rover в студии на Лубянке" loading="lazy" decoding="async">
+      <figcaption>Студия на Лубянке</figcaption>
     </figure>
     <figure class="studios__item" data-reveal>
       <img src="assets/img/about/work-interior-640.webp" srcset="assets/img/about/work-interior-640.webp 640w, assets/img/about/work-interior-1105.webp 1105w" sizes="(min-width: 760px) 30vw, 50vw" width="1105" height="829" alt="Мастер студии очищает кожаную дверную карту и салон автомобиля" loading="lazy" decoding="async">
@@ -174,7 +174,7 @@
     </figure>
   </div>
   <div class="studios__foot col-wide">
-    <p class="studios__credit">Фото студии на Мясницкой — из карточки студии в Яндекс Картах.</p>
+    <p class="studios__credit">Фото студии на Лубянке — из карточки студии в Яндекс Картах.</p>
     <a class="link-arrow" href="works">Все наши работы{{icon:arrow-right}}</a>
   </div>
 </section>
@@ -187,7 +187,7 @@
   <ul class="team col-basic" role="list">
     <li class="team__row">
       <h3>Мастера студий</h3>
-      <p>Автомойка, детейлинг и полировка — на Мясницкой и в Технопарке, оклейка плёнкой — в Технопарке.</p>
+      <p>Автомойка, детейлинг и полировка — на Лубянке и в Технопарке, оклейка плёнкой — в Технопарке.</p>
     </li>
     <li class="team__row">
       <h3>Сопровождение</h3>

@@ -1,7 +1,7 @@
 """§6.4 п. 5 (заявка), п. 6 (согласие), п. 7 (карты), п. 8 (шторка и клавиатура; WebKit —
 поправка 23). Переходы в YCLIENTS не открываются. Владелец: WP7, с 05.11 — интегратор.
 
-П. 5 после решения Влада 05.11 («всё — по заявкам»): любая «Оставьте заявку» ([data-request]
+П. 5 после решения Влада 05.11 («всё — по заявкам»): любая «Записаться онлайн» ([data-request]
 или [data-book] у программ мойки) открывает форму #request; онлайн-запись YCLIENTS — мелкая
 строка [data-request-online] внутри формы со ссылками студий a[data-branch] (корзина программ
 сохраняется). Контракт — docs/meat-auto/CONTRACTS.md, «Заявка»."""
@@ -47,7 +47,7 @@ def booking(browser, base, pages, res):
         pg = c.page()
         for p in pages:
             load(pg, f"{base}/{p['path']}")
-            # Общая «Оставьте заявку» страницы: в шапке на компьютере, нижняя кнопка на телефоне.
+            # Общая «Записаться онлайн» страницы: в шапке на компьютере, нижняя кнопка на телефоне.
             # Кнопки в теле страницы (клубная карта на главной, работы на /works) несут свою тему —
             # их проверяют сценарии ниже, а здесь — тема страницы из реестра (05.11).
             btn = pg.locator('.site-header__book:visible, .mobile-cta:visible').first
@@ -56,7 +56,7 @@ def booking(browser, base, pages, res):
             btn.click()
             pg.wait_for_timeout(450)
             s = pg.evaluate(REQUEST_STATE)
-            good = s['open'] and s['locked'] and label.startswith('Оставьте заявку') and (s['topic'] or '') == p['topic']
+            good = s['open'] and s['locked'] and label.startswith('Записаться онлайн') and (s['topic'] or '') == p['topic']
             pg.keyboard.press('Escape')
             pg.wait_for_timeout(450)
             closed = pg.evaluate("() => !document.querySelector('#request').open && !document.documentElement.classList.contains('is-locked')")
@@ -85,7 +85,7 @@ def booking(browser, base, pages, res):
     cart_ok = s['open'] and s['topic'] == 'wash' and all(f'short?o=m-1s{want[b]}' in hrefs.get(b, '') for b in STUDIOS if want[b])
     pg.keyboard.press('Escape')
     pg.wait_for_timeout(400)
-    # /services: «Оставьте заявку» в «Защите» → форма с темой «Детейлинг» и этой работой
+    # /services: «Записаться онлайн» в «Защите» → форма с темой «Детейлинг» и этой работой
     load(pg, f'{base}/services')
     pg.click('#tab-price-protection')
     pg.wait_for_timeout(300)
@@ -114,9 +114,9 @@ def booking(browser, base, pages, res):
         c.close()
     total = len(pages) * 2
     res.add('5', 'Заявка', ok_pages == total and cart_ok and talk_ok and not typo_bad,
-            f'первая «Оставьте заявку» → #request[open] с темой страницы, блокировка и Esc: {ok_pages}/{total} ({len(pages)} страниц × 1440 и 390); '
+            f'первая «Записаться онлайн» → #request[open] с темой страницы, блокировка и Esc: {ok_pages}/{total} ({len(pages)} страниц × 1440 и 390); '
             f'/wash «{label}» + программа 3 → тема {s["topic"]}, онлайн-запись {", ".join(f"{b}: …{hrefs.get(b, "")[-24:]}" for b in STUDIOS)} (ожидалось m-1s{want["myasnitskaya"]}/{want["technopark"]}) — {"да" if cart_ok else "нет"}; '
-            f'«Оставьте заявку» в «Защите» → тема {t["topic"]}, работы {t["chips"]}, онлайн-записи нет: {not t["links"]}; '
+            f'«Записаться онлайн» в «Защите» → тема {t["topic"]}, работы {t["chips"]}, онлайн-записи нет: {not t["links"]}; '
             f'строка контекста в форме: {typo_total} открытий на 320 и 390, висящих слов и тире — {len(typo_bad)}',
             details + ([] if cart_ok else [f'корзина: {s}']) + ([] if talk_ok else [f'«Защита»: {t}']) + typo_bad[:10])
 

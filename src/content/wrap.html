@@ -8,7 +8,7 @@
      price-glass стоит на /detailing.
      Якоря #wrap-kind, #wrap-prices, #wrap-steps, #wrap-call проверяет check (старые ссылки).
      Стили — блок «D: wrap + bodywork» в конце dist/css/section.css (классы ds-*); герой и переключатель
-     плёнки — services.css (wrap-hero). Призывы — только «Оставьте заявку» (data-request, тема wrap).
+     плёнки — services.css (wrap-hero). Призывы — только «Записаться онлайн» (data-request, тема wrap).
      «Наши работы» (07.11) — три проекта с окном-галереей: подстановка projects (данные projects.wrap,
      окно js/gallery.js, вид css/projects.css); ряд works.wrap больше не выводится.
      В комментариях фигурные скобки подстановок не писать. -->
@@ -27,7 +27,7 @@
   </div>
   <p class="hero-c__price">Фары — {{price:Оклейка фар плёнкой}} · зоны риска и весь кузов — после осмотра</p>
   <div class="hero-c__actions actions">
-    <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на оклейку плёнкой</span></button>
+    <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Записаться онлайн<span class="sr"> на оклейку плёнкой</span></button>
     <a class="btn btn--secondary" href="#wrap-prices">Что оклеиваем</a>
   </div>
 </section>
@@ -35,7 +35,7 @@
 <div class="page-bar" data-page-bar>
   <p class="page-bar__title">Оклейка плёнкой</p>
   <div class="page-bar__actions">
-    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на оклейку плёнкой</span></button>
+    <button class="btn btn--compact btn--primary" type="button" data-request data-request-category="wrap">Записаться онлайн<span class="sr"> на оклейку плёнкой</span></button>
   </div>
   <span class="page-bar__progress" aria-hidden="true"></span>
 </div>
@@ -106,7 +106,7 @@
       <h3>Фары и лобовое стекло</h3>
       <p>Отдельные работы: плёнка бережёт фары от сколов и помутнения, лобовое — от мелких сколов и трещин из-за них.</p>
       <p class="ds-card-price">Фары — {{price:Оклейка фар плёнкой}}<br>Лобовое стекло — {{price:Бронирование лобового стекла}}</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Бронирование лобового стекла">Оставьте заявку<span class="sr">: плёнка на лобовое стекло</span></button>
+      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="wrap" data-request-services="Бронирование лобового стекла">Записаться онлайн<span class="sr">: плёнка на лобовое стекло</span></button>
     </article>
   </div>
   <div class="ds-prices">
@@ -122,7 +122,7 @@
   <ol class="steps sec-steps">
     <li class="steps__item">
       <h3>Заявка</h3>
-      <p>Оставьте заявку: марка и модель, что хотите защитить, прозрачная или цветная плёнка. Чтобы договориться об осмотре быстрее, позвоните в Технопарк: <span class="nw">{{loc:technopark:phone}}</span>.</p>
+      <p>Записаться онлайн: марка и модель, что хотите защитить, прозрачная или цветная плёнка. Чтобы договориться об осмотре быстрее, позвоните в Технопарк: <span class="nw">{{loc:technopark:phone}}</span>.</p>
     </li>
     <li class="steps__item">
       <h3>Осмотр и расчёт</h3>
@@ -185,12 +185,12 @@
 
 <section class="section" id="wrap-why" aria-labelledby="wrap-why-title">
   <header class="section-head">
-    <h2 id="wrap-why-title">Почему <span class="nw" lang="en">Meat Wash</span></h2>
+    <h2 id="wrap-why-title">Почему <span class="nw" lang="en">MEATWASH</span></h2>
   </header>
   <ul class="cards cards--3 col-basic" role="list">
     <li class="card">
       <h3>С {{brand:since}} года</h3>
-      <p><span lang="en">Meat Wash</span> ухаживает за машинами с {{brand:since}} года. Оклейкой занимается <span class="nw">детейлинг-центр</span> в Технопарке.</p>
+      <p><span lang="en">MEATWASH</span> ухаживает за машинами с {{brand:since}} года. Оклейкой занимается <span class="nw">детейлинг-центр</span> в Технопарке.</p>
     </li>
     <li class="card">
       <h3>Подготовка — в той же студии</h3>
@@ -283,9 +283,9 @@
 <section class="promo col-ext ds-call" id="wrap-call" aria-labelledby="wrap-call-title">
   <div class="promo__panel ds-call__panel">
     <div class="ds-call__head">
-      <h2 id="wrap-call-title">Оставьте заявку на оклейку</h2>
+      <h2 id="wrap-call-title">Записаться онлайн на оклейку</h2>
       <p>Напишите марку и модель и что хотите защитить — или позвоните в Технопарк, чтобы договориться об осмотре.</p>
-      <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Оставьте заявку<span class="sr"> на оклейку плёнкой</span></button>
+      <button class="btn btn--primary" type="button" data-request data-request-category="wrap">Записаться онлайн<span class="sr"> на оклейку плёнкой</span></button>
     </div>
     <div class="ds-call__contact">
       <p class="ds-call__studio"><strong>{{loc:technopark:name}}</strong> <span>{{loc:technopark:type}}</span></p>

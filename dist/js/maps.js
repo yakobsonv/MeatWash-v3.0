@@ -141,8 +141,8 @@ function embed(box) {
     const settled = new Promise((resolve) => { release = resolve; setTimeout(resolve, QUEUE_STEP_MS); });
     const iframe = document.createElement('iframe');
     iframe.src = location.mapWidget;
-    // Имя на сайте — Meat Wash (в самих Картах студии пока под прежним именем, Meat Wash).
-    iframe.title = `Яндекс Карты: Meat Wash — ${location.name}, ${location.address}`;
+    // Имя на сайте — MEATWASH (в самих Картах студии пока под прежним именем, MEATWASH).
+    iframe.title = `Яндекс Карты: MEATWASH — ${location.name}, ${location.address}`;
     iframe.allowFullscreen = true;
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
     // Итог проверки: 'ok', 'fail' — запрос отклонён (блокировка, обрыв, нет сети),

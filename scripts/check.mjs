@@ -22,7 +22,7 @@
 //            в подвале; карты студий без <iframe>; заявка (согласие, «До 5 фото», ловушка,
 //            ym-hide-content / ym-disable-keys); Вебвизор назван в уведомлении и документах;
 //            клубная карта ведёт на wahelp;
-//   заявки   (Влад 05.11) все призывы — «Оставьте заявку»: кнопки data-request / data-book с этой
+//   заявки   (Влад 05.11) все призывы — «Записаться онлайн»: кнопки data-request / data-book с этой
 //            подписью, кнопка в шапке и нижняя кнопка на телефоне — data-request с темой страницы;
 //            data-request-category — тема (site.requests.topics) или категория каталога; каждая
 //            позиция каталога входит в тему;
@@ -43,8 +43,9 @@
 //            в шторке и на /auto — из данных; /import без телефона;
 //   проекты  projects.wrap (Влад 07.11): w223, rr, g20 на /wrap и /works; у каждого фото alt, подпись,
 //            файлы 800/1600 размером 4:5, обложки 3:2; фото окна — только в <template> (грузятся по открытию);
-//   бренд    нет «MEATWASH» / «Meatwash» в тексте, alt, aria-label, title, og, JSON-LD и
-//            строках скриптов (кроме адреса канала и почты, поправка 12); знаков ↗ ✓ нет;
+//   бренд    (Влад 09.11) имя — «MEATWASH» капсом и слитно: «Meat Wash» / «Meatwash» нет в тексте,
+//            alt, aria-label, title, og и строках скриптов; прежнее имя — только в строке YCLIENTS
+//            окна записи и в alternateName JSON-LD (так студии названы в YCLIENTS и Картах); знаков ↗ ✓ нет;
 //            пары «до/после» подписаны «Иллюстрация, не работа студии»; «ранее Meat Wash» на
 //            «О нас» — один раз; {{todo}} — только на страницах направлений, /import и /works;
 //   заявка   request.js и api/request.php согласованы; секретов в коде нет.
@@ -100,7 +101,7 @@ const breach = (file, text, at, message) => {
   if (pending(file, place)) soft(`[переходное: ${place === 'main' ? 'тело страницы' : place}] ${message}`);
   else fail(message);
 };
-const REQUEST_LABEL = 'Оставьте заявку';
+const REQUEST_LABEL = 'Записаться онлайн';
 const topics = d.site?.requests?.topics || [];
 const topicIds = new Set(topics.map((t) => t.id));
 
@@ -264,8 +265,9 @@ for (const page of REGISTRY) {
   // Цены «от N ₽» в тексте — из каталога
   for (const price of priceIn(body)) if (!catalogPrices.has(price)) fail(`${file}: цена от ${money(price)} не из каталога`);
   // Бренд (поправка 12): текст, атрибуты, og, JSON-LD — без старого имени
-  const brandText = text.replace(/<!--[\s\S]*?-->/g, '').replace(/t\.me\/MEATWASH_Auto/g, '').replace(/MeatWash\.detailing@gmail\.com/gi, '');
-  const old = brandText.match(/.{0,30}\b(MEATWASH|Meatwash|MeatWash)\b.{0,30}/);
+  const brandText = text.replace(/<!--[\s\S]*?-->/g, '').replace(/MeatWash\.detailing@gmail\.com/gi, '')
+    .replace(/"alternateName":"Meat Wash"/g, '').replace('YCLIENTS <span class="nw">(<span lang="en">Meat Wash</span>)</span>', '');
+  const old = brandText.match(/.{0,30}(\bMeat(?:\s|&nbsp;|&#160;)+Wash\b|\bMeatwash\b|\bMeatWash\b).{0,30}/);
   if (old) fail(`${file}: старое имя: …${old[0].trim()}…`);
   const glyph = plain(body).match(/.{0,20}[↗✓].{0,20}/);
   if (glyph) fail(`${file}: знак ↗ или ✓ в тексте (нет в Manrope — иконка спрайта): …${glyph[0].trim()}…`);
@@ -284,7 +286,7 @@ for (const page of REGISTRY) {
     if (!text.includes('Онлайн-запись откроется в YCLIENTS (Meat Wash)') && !plain(text).includes('Онлайн-запись откроется в YCLIENTS (Meat Wash)')) fail(`${file}: в окне записи нет строки «Онлайн-запись откроется в YCLIENTS (Meat Wash)» (поправка 17)`);
   }
   if (!plain(text).includes('Instagram принадлежит компании Meta, которая признана экстремистской организацией и запрещена на территории РФ.')) fail(`${file}: нет пометки о Meta в подвале`);
-  // «Оставьте заявку» (Влад 05.11): каждая кнопка заявки или записи — с этой подписью
+  // «Записаться онлайн» (Влад 05.11): каждая кнопка заявки или записи — с этой подписью
   // (продолжение для диктора — в .sr), тема — из site.requests.topics или категория каталога.
   const clean = text.replace(/<!--[\s\S]*?-->/g, (m) => ' '.repeat(m.length));
   for (const m of clean.matchAll(/<(button|a)\b([^>]*\sdata-(?:request|book)(?=[\s>=])[^>]*)>([\s\S]*?)<\/\1>/g)) {
@@ -294,7 +296,7 @@ for (const page of REGISTRY) {
     const category = attrs.match(/\bdata-request-category="([^"]*)"/)?.[1];
     if (category && !topicIds.has(category) && !d.groups.some((g) => g.id === category)) fail(`${file}: data-request-category="${category}" — не тема из site.requests.topics и не категория каталога`);
   }
-  // Кнопка в шапке, «Оставьте заявку» в шторке и подвале, нижняя кнопка — заявка с темой страницы.
+  // Кнопка в шапке, «Записаться онлайн» в шторке и подвале, нижняя кнопка — заявка с темой страницы.
   if (page.shared.includes('header')) {
     const want = `type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`;
     ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" ${want}`), `${file}: кнопка в шапке — не «${REQUEST_LABEL}» с темой «${page.topic || ''}»`);
@@ -509,7 +511,7 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
         const at = `${where}.photos[${i}]`;
         ok(x.img && x.alt?.trim() && x.caption?.trim(), `${at}: нужны img, alt и caption`);
         ok(!seen.has(x.img), `${at}: кадр ${x.img} повторяется`); seen.add(x.img);
-        ok(!/MEATWASH|Meatwash|гаранти|\d+\s*(дн|час|лет|год)|₽/i.test(`${x.alt} ${x.caption}`), `${at}: в alt/подписи бренд капсом, гарантия, сроки или цена — подписи только по фактам кадра`);
+        ok(!/Meat\s?Wash|Meatwash|гаранти|\d+\s*(дн|час|лет|год)|₽/i.test(`${x.alt} ${x.caption}`), `${at}: в alt/подписи бренд капсом, гарантия, сроки или цена — подписи только по фактам кадра`);
         for (const [w, dims] of [[800, [640, 800]], [1600, [1280, 1600]]]) {
           const f = `${x.img}-${w}.webp`;
           if (ok(await exists(resolve(dist, f)), `${at}: нет файла ${f}`)) ok(same(await size(f), dims), `${at}: ${f} — не ${dims.join('×')} (кадры галереи 4:5)`);
@@ -526,7 +528,7 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
         ok((tpl.match(/<img\b/g) || []).length === p.photos.length, `${file}: в шаблоне ${p.id} не ${p.photos.length} фото`);
         for (const x of p.photos) ok(tpl.includes(`alt="${esc(x.alt)}"`) && tpl.includes(`${x.img}-800.webp 640w`) && tpl.includes(`${x.img}-1600.webp 1280w`), `${file}: фото ${x.img} — нет alt или srcset 640w/1280w (настоящая ширина файлов 4:5)`);
       }
-      ok(new RegExp(`id="gallery-${dir}"[\\s\\S]*?data-request-category="${dir}"[\\s\\S]*?</dialog>`).test(text), `${file}: в окне-галерее нет «Оставьте заявку» (data-request-category="${dir}")`);
+      ok(new RegExp(`id="gallery-${dir}"[\\s\\S]*?data-request-category="${dir}"[\\s\\S]*?</dialog>`).test(text), `${file}: в окне-галерее нет «Записаться онлайн» (data-request-category="${dir}")`);
       const outside = strip(text).replace(/<template\b[\s\S]*?<\/template>/g, '');
       ok(!/gallery__img/.test(outside), `${file}: фото окна-галереи вне <template> — загрузятся до открытия`);
       ok(/css\/projects\.css/.test(text) && /css\/tiles\.css/.test(text), `${file}: нужны css/tiles.css и css/projects.css`);
@@ -645,7 +647,7 @@ ok(/import\('\.\/garage\.js'\)/.test(js['site.js']) && /data-garage-open/.test(j
 for (const [name, text] of Object.entries(js)) {
   if (is3d(name)) continue;
   const code = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
-  const old = code.replace(/t\.me\/MEATWASH_Auto/g, '').match(/.{0,30}\b(MEATWASH|Meatwash|MeatWash)\b.{0,30}/);
+  const old = code.match(/.{0,30}(\bMeat(?:\s|\\u00a0)+Wash\b|\bMeatwash\b|\bMeatWash\b).{0,30}/);
   if (old) fail(`js/${name}: старое имя в строке: …${old[0].trim()}…`);
   const glyph = code.match(/.{0,20}[↗✓].{0,20}/);
   if (glyph) fail(`js/${name}: знак ↗ или ✓ (нет в Manrope): …${glyph[0].trim()}…`);
@@ -694,7 +696,7 @@ for (const [name, text] of Object.entries(js)) {
     if (path === '' || files.has(path + '.html')) continue;
     if (!await exists(resolve(dist, path))) fail(`server/404.html: нет файла ${u}`);
   }
-  if (/MEATWASH|Meatwash/.test(page404)) fail('server/404.html: старое имя');
+  if (/Meat\s+Wash|Meatwash/.test(page404)) fail('server/404.html: старое имя');
   // 404 свёрстана вручную, вне генератора: её текст уже должен быть таким, каким его сделал бы typo().
   {
     const {typo} = await import('./typo.mjs');

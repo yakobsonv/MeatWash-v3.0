@@ -1,4 +1,4 @@
-// Окно «Оставьте заявку» (Влад 05.11: все призывы сайта — заявка). Окно — <dialog id="request">
+// Окно «Записаться онлайн» (Влад 05.11: все призывы сайта — заявка). Окно — <dialog id="request">
 // из src/partials/dialogs.html; модуль грузит ui.js по первому нажатию [data-request] или
 // [data-book] (автомойка). Владелец: исполнитель A.
 //
@@ -55,7 +55,7 @@ const topicOfWork = (name) => TOPICS.find((t) => t.title === name || worksOf(t).
 // Технопарк первым — где работу делают только там (оклейка, кузов: данные каталога).
 const TECHNOPARK_FIRST = new Set(['wrap', 'bodywork']);
 // Где студия «в/на» — для строки «„Трёхфазная“ — только в Технопарке».
-const BRANCH_IN = { myasnitskaya: 'на Мясницкой', technopark: 'в Технопарке' };
+const BRANCH_IN = { myasnitskaya: 'на Лубянке', technopark: 'в Технопарке' };
 const quoted = (name) => /[«»]/.test(name) ? name : `«${name}»`;
 
 // Телефон: российский номер — маской +7 (999) 123-45-67; начатый с «+» и другим кодом страны —

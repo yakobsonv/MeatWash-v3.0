@@ -33,7 +33,7 @@ export const PROGRAMS = [
   ],
   "studio": [
    {
-    "label": "на Мясницкой",
+    "label": "на Лубянке",
     "prices": [
      3150,
      3450,
@@ -631,7 +631,7 @@ export const REQUESTS = {"endpoint":null,"hosts":["meatwash.ru","www.meatwash.ru
 export const LOCATIONS = [
  {
   "id": "myasnitskaya",
-  "name": "Мясницкая",
+  "name": "Лубянка",
   "address": "ул. Мясницкая, 11",
   "booking": "https://n975571.yclients.com/company/906067/personal/select-services",
   "map": "https://yandex.ru/maps/org/meat_wash/191686454110/",
@@ -646,7 +646,7 @@ export const LOCATIONS = [
   "mapWidget": "https://yandex.ru/map-widget/v1/?ll=37.666144%2C55.697146&z=16&pt=37.666144%2C55.697146%2Cpm2rdm"
  }
 ];
-// Темы формы «Оставьте заявку» (site.requests.topics) в порядке показа: programs — программы
+// Темы формы «Записаться онлайн» (site.requests.topics) в порядке показа: programs — программы
 // мойки (PROGRAMS), items — позиции каталога темы, options — варианты без каталога.
 // data-request-category кнопки — id темы или категории каталога (CATEGORY_TOPIC — тема
 // категории, если работа не указана; с работой тема — та, в чьих items она есть).

@@ -1,4 +1,4 @@
-// Подстановки и общие части страниц Meat Wash.
+// Подстановки и общие части страниц MEATWASH.
 //
 // Общие части (шапка со шторкой, подвал, окна записи и заявки, нижняя кнопка, карточки
 // студий с картами, блок записи, клубный блок, аналитика в <head>) живут в src/partials/*.html
@@ -33,7 +33,7 @@
 //   {{cars:sale|sold|date}}      разметка машин и дата цен (scripts/cars.mjs, WP4)
 //   {{catalog}}, {{compare}}     каталог и сравнение программ (scripts/catalog.mjs, WP3)
 //   {{prices:<id,id,…>}}   цены подразделов каталога в разметке каталога /services, кнопки
-//                          «Оставьте заявку»: {{prices:price-interior,price-leather}};
+//                          «Записаться онлайн»: {{prices:price-interior,price-leather}};
 //                          programs — карточки программ мойки со сравнением (catalog.mjs)
 //   {{min-section:<id>}}   «5 000 ₽» — минимальная цена подраздела: от {{min-section:price-bodywork}}
 //   {{reviews}}            блок отзывов с Яндекс Карт из JSON (reviews), {{reviews:<тема>}} —
@@ -43,7 +43,7 @@
 //                          bodywork, sales, about; классы — ниже
 //   {{projects:<направление>}}  плашки проектов с окном-галереей из JSON (projects): wrap; классы — ниже
 //   {{related:<id,id,…>}}  плашки направлений из JSON (directions): {{related:detailing,wrap}}
-//   {{brand:name|descriptor|legacy|since}}  Meat Wash · Car Care Club · Meat Wash · 2021
+//   {{brand:name|descriptor|legacy|since}}  MEATWASH · Car Care Club · MEATWASH · 2021
 //   {{op:<поле>}}, {{site:url|date}}        реквизиты оператора и документы
 //   {{todo:<что нужно>}}   заметная пометка «[нужно от клиента: …]» (span.todo);
 //                          npm run check перечисляет, check:release — падает
@@ -182,7 +182,7 @@ const ANALYTICS = {
 };
 function fail(field) { throw new Error(`Неверное значение ${field} в meatwash-content.json`); }
 
-// Нижняя кнопка на телефоне (.mobile-cta, src/partials/dialogs.html) — «Оставьте заявку» на всех
+// Нижняя кнопка на телефоне (.mobile-cta, src/partials/dialogs.html) — «Записаться онлайн» на всех
 // страницах (Влад 05.11) с темой страницы (поле topic реестра). ui.js делает её inert под окнами,
 // CSS прячет при открытом окне.
 const loc = (id) => d.locations.find((l) => l.id === id);
@@ -275,7 +275,7 @@ function renderWorks(dir, entry, token) {
 //     [data-gallery-open=<id>] — плашка как у работ (tiles.css): обложка 3:2 (alt="" — имя кнопки
 //     даёт заголовок), метка «N фото», заголовок, круглая стрелка;
 //   dialog.dialog.dialog--gallery#gallery-<направление> — одно окно на ряд (js/gallery.js, css/projects.css):
-//     шапка (заголовок и вводная проекта), лента ul.gallery__track, счётчик, «Оставьте заявку»
+//     шапка (заголовок и вводная проекта), лента ul.gallery__track, счётчик, «Записаться онлайн»
 //     (data-request-category=<направление>, окно заявки встаёт поверх галереи) и стрелки; фото каждого
 //     проекта — в <template data-gallery-project>: браузер не грузит их, пока окно не открыто.
 // Фото проекта — 4:5 (-800.webp 640×800, -1600.webp 1280×1600; check.mjs сверяет файлы и размеры).
@@ -295,7 +295,16 @@ const PROJECT_DIMS = Object.fromEntries(await Promise.all(Object.entries(d.proje
   .flatMap(([, list]) => list.flatMap((p) => [p.cover, ...p.photos.map((x) => x.img)]))
   .map(async (img) => [img, await imgSize(`${img}-${PROJECT_WIDTHS[0]}.webp`)])));
 const srcset = (img, widths = {800: 800, 1600: 1600}) => PROJECT_WIDTHS.map((w) => `${escape(`${img}-${w}.webp`)} ${widths[w]}w`).join(', ');
-function renderProjects(dir, token) {
+// Вариант cases (главная, Влад 09.11: «наши работы — кейсы на разных машинах: оклейка мерседеса,
+// оклейка ренджровера»): те же плашки и окно, заголовок «Оклейка <машина>», в плашке — лента
+// span.case-tile__reel[data-case-reel] с адресами первых кадров проекта (data-frames): home.js
+// сменяет их, пока на плашку наведена мышь (на телефоне — пока плашка на экране), как короткий ролик.
+// Своих видео этих машин в съёмке нет — кадры проекта; появятся ролики — встанут в эту же ленту.
+const CASE_VERB = {wrap: 'Оклейка'};
+const CASE_FRAMES = 4;
+function renderProjects(dir, token, variant = '') {
+  if (variant && variant !== 'cases') throw new Error(`${token}: вариант «${variant}» — только cases`);
+  if (variant && !CASE_VERB[dir]) throw new Error(`${token}: для кейсов нет глагола направления «${dir}» (CASE_VERB)`);
   const list = d.projects?.[dir];
   if (!Array.isArray(list) || !list.length) throw new Error(`${token}: нет проектов «${dir}» в meatwash-content.json (projects)`);
   const dialogId = `gallery-${dir}`;
@@ -305,7 +314,9 @@ function renderProjects(dir, token) {
   }
   const tile = (p) => {
     const c = PROJECT_DIMS[p.cover];
-    return `<button class="work-tile project-tile" type="button" data-gallery-open="${escape(p.id)}" aria-haspopup="dialog" aria-controls="${dialogId}"><img class="work-tile__img" src="${escape(`${p.cover}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(p.cover)}" sizes="${TILE_SIZES}" width="${c.width}" height="${c.height}" alt="" loading="lazy" decoding="async"><span class="work-tile__badge project-tile__count">${plural(p.photos.length, 'фото')}</span><span class="work-tile__title">${escape(p.title)}</span>${tileGo()}</button>`;
+    const title = variant ? `${CASE_VERB[dir]} ${p.title}` : p.title;
+    const reel = variant ? `<span class="case-tile__reel" data-case-reel data-frames="${escape(p.photos.slice(0, CASE_FRAMES).map((x) => `${x.img}-${PROJECT_WIDTHS[0]}.webp`).join('|'))}" aria-hidden="true"></span>` : '';
+    return `<button class="work-tile project-tile${variant ? ' case-tile' : ''}" type="button" data-gallery-open="${escape(p.id)}" aria-haspopup="dialog" aria-controls="${dialogId}"><img class="work-tile__img" src="${escape(`${p.cover}-${PROJECT_WIDTHS[0]}.webp`)}" srcset="${srcset(p.cover)}" sizes="${TILE_SIZES}" width="${c.width}" height="${c.height}" alt="" loading="lazy" decoding="async">${reel}<span class="work-tile__badge project-tile__count">${plural(p.photos.length, 'фото')}</span><span class="work-tile__title">${escape(title)}</span>${tileGo()}</button>`;
   };
   const slide = (x, i, all) => {
     const s = PROJECT_DIMS[x.img];
@@ -334,7 +345,7 @@ ${p.photos.map(slide).join('\n')}
     <p class="gallery__count" data-gallery-count><span data-gallery-index>1</span><span class="gallery__of"> / </span><span data-gallery-total>1</span></p>
     <p class="sr" aria-live="polite" data-gallery-status></p>
     <p class="gallery__note" aria-hidden="true" data-gallery-note></p>
-    <button class="btn btn--primary btn--compact gallery__cta" type="button" data-request data-request-category="${escape(dir)}">Оставьте заявку</button>
+    <button class="btn btn--primary btn--compact gallery__cta" type="button" data-request data-request-category="${escape(dir)}">Записаться онлайн</button>
     <div class="gallery__nav">
       <button class="gallery__btn" type="button" aria-label="Предыдущее фото" data-gallery-prev>${icon('arrow-left')}</button>
       <button class="gallery__btn" type="button" aria-label="Следующее фото" data-gallery-next>${icon('arrow-right')}</button>
@@ -506,7 +517,7 @@ export function renderPartial(template, page) {
       case 'prices': return renderSections(args.join(':').split(',').map((x) => x.trim()), id);
       case 'reviews': return renderReviews(args[0] || '', token);
       case 'works': return renderWorks(args[0], entry, token);
-      case 'projects': return renderProjects(args[0], token);
+      case 'projects': return renderProjects(args[0], token, args[1] || '');
       case 'related': return renderRelated(args.join(':').split(',').map((x) => x.trim()), entry, token);
       case 'analytics': {
         if (!ANALYTICS[args[0]]) throw new Error(`Нет поля аналитики ${args[0]} (${token})`);

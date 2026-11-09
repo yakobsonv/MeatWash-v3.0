@@ -1,11 +1,11 @@
-<!-- Окно «Оставьте заявку» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
+<!-- Окно «Записаться онлайн» (Влад 05.11: всё — по заявкам). Владелец: исполнитель A (раньше WP6).
      Вид — css/dialogs.css: на экране от 760 px — панель справа (как flyout Porsche),
      на телефоне — лист снизу. Цвет панели — слоновая кость, текст тёмный: так же, как шторка
      меню и уведомление о cookie. Id, классы и data-атрибуты ниже — контракт js/ui.js,
      js/request.js и проверок (docs/meat-auto/CONTRACTS.md, «Заявка»); менять только вместе с ними.
      В комментариях фигурные скобки подстановок не писать: сборка их подставит или упадёт.
 
-     Нижняя кнопка на телефоне — «Оставьте заявку» с темой страницы (поле topic в src/content/pages.mjs). -->
+     Нижняя кнопка на телефоне — «Записаться онлайн» с темой страницы (поле topic в src/content/pages.mjs). -->
 {{mobile-cta}}
 
 <!-- Одно окно на все призывы: любая кнопка data-request (тема — data-request-category, работы —
@@ -14,13 +14,13 @@
      Отправка — только на адрес site.requests.endpoint (meatwash-content.json; на meatwash.ru —
      api/request.php) и только на сайтах из hosts. Пока адреса нет, «Отправить» проверяет поля и
      честно говорит, что заявка не отправлена, с телефонами студий; введённое остаётся черновиком.
-     Онлайн-запись YCLIENTS — только мелкой строкой при теме «Автомойка»: у Мясницкой и Технопарка
+     Онлайн-запись YCLIENTS — только мелкой строкой при теме «Автомойка»: у Лубянки и Технопарка
      разные компании в YCLIENTS, ссылки ведут каждая в свою запись (с выбранной программой в корзине,
      js/yclients.js). Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
      это обещает Политика, п. 2.1. -->
 <dialog class="dialog dialog--request request-dialog" id="request" aria-labelledby="request-title" aria-describedby="request-lead">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть заявку">{{icon:close}}</button></form>
-  <h2 class="dialog__title" id="request-title" tabindex="-1">Оставьте заявку</h2>
+  <h2 class="dialog__title" id="request-title" tabindex="-1">Записаться онлайн</h2>
   <p class="dialog__context" id="request-context" hidden></p>
   <!-- Первая строка: пока приёма нет — без обещания звонка; когда адрес приёма есть, request.js ставит
        «Администратор студии перезвонит и ответит на вопросы». -->

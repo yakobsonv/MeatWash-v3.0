@@ -4,7 +4,7 @@
      наши работы → почему мы → отзывы → вопросы → другие направления → коротко для поиска → заявка
      и студии. Цены и время — только подстановками из каталога (meatwash-content.json): prices,
      program, min-section, price. Мойка — в обеих студиях, «Трёхфазная» — только в Технопарке
-     (в записи Мясницкой её нет). Кнопки программ — data-book с номером программы (контракт формы:
+     (в записи Лубянки её нет). Кнопки программ — data-book с номером программы (контракт формы:
      тема «Автомойка», мелкая ссылка онлайн-записи в окне). Ссылок YCLIENTS вне окон нет.
      Вид — css/section.css (общий для страниц направлений), каталожные строки — css/services.css,
      плашки и отзывы — css/tiles.css. Надзаголовков и нумерации нет (решение Влада).
@@ -19,10 +19,10 @@
     <h1 id="page-title">Автомойка в&nbsp;Москве</h1>
     <p class="hero-a__lead">Бесконтактная и ручная мойка кузова, уборка салона, удаление реагентов и защита лака. Пять программ от {{min-section:programs}} — цена зависит от типа кузова.</p>
     <div class="hero-a__actions actions">
-      <button class="btn btn--primary" type="button" data-request data-request-category="wash">Оставьте заявку</button>
+      <button class="btn btn--primary" type="button" data-request data-request-category="wash">Записаться онлайн</button>
       <a class="btn btn--secondary" href="#programs">Программы и цены</a>
     </div>
-    <p class="sec-hero__where">{{icon:pin}}<span>Мясницкая и Технопарк — каждый день до 22:00</span></p>
+    <p class="sec-hero__where">{{icon:pin}}<span>Лубянка и Технопарк — каждый день до 22:00</span></p>
   </div>
 </section>
 
@@ -30,7 +30,7 @@
   <li class="sec-facts__item"><b class="sec-facts__value">{{program:0:price}}</b><span class="sec-facts__label">«Трёхфазная»: кузов, воск и шины за {{program:0:time}}, в Технопарке</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">{{program:1:price}}</b><span class="sec-facts__label">«Комплексная с воском»: кузов и салон за один визит</span></li>
   <li class="sec-facts__item"><b class="sec-facts__value">{{program:2:price}}</b><span class="sec-facts__label">«Детейлинг-мойка от реагентов»: обезжиривание и удаление реагентов</span></li>
-  <li class="sec-facts__item"><b class="sec-facts__value">{{count:studios}} студии</b><span class="sec-facts__label">Мясницкая, 11 и Технопарк на проспекте Андропова</span></li>
+  <li class="sec-facts__item"><b class="sec-facts__value">{{count:studios}} студии</b><span class="sec-facts__label">Лубянка (Мясницкая, 11) и Технопарк на проспекте Андропова</span></li>
 </ul>
 
 <nav class="anchor-tabs" data-anchor-tabs aria-label="Разделы страницы">
@@ -89,7 +89,7 @@
         <p>Кузов, воск и шины без захода в салон — самое быстрое.</p>
       </div>
       <p class="sec-choice__offer"><span class="sec-choice__name">{{program:0}}</span><span class="sec-choice__price">{{program:0:price}} · {{program:0:time}}</span></p>
-      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="0">Оставьте заявку<span class="sr">: «Трёхфазная»</span></button>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="0">Записаться онлайн<span class="sr">: «Трёхфазная»</span></button>
     </li>
     <li class="sec-choice__item">
       <div class="sec-choice__text">
@@ -97,7 +97,7 @@
         <p>Пылесос, влажная уборка пластика и кожи, стёкла изнутри и продувка воздуховодов.</p>
       </div>
       <p class="sec-choice__offer"><span class="sec-choice__name">{{program:1}}</span><span class="sec-choice__price">{{program:1:price}} · {{program:1:time}}</span></p>
-      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="1">Оставьте заявку<span class="sr">: «Комплексная с воском»</span></button>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="1">Записаться онлайн<span class="sr">: «Комплексная с воском»</span></button>
     </li>
     <li class="sec-choice__item">
       <div class="sec-choice__text">
@@ -105,7 +105,7 @@
         <p>К комплексной мойке добавляется обезжиривание кузова и удаление реагентов, плюс уборка багажника.</p>
       </div>
       <p class="sec-choice__offer"><span class="sec-choice__name">{{program:2}}</span><span class="sec-choice__price">{{program:2:price}} · {{program:2:time}}</span></p>
-      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="2">Оставьте заявку<span class="sr">: «Детейлинг-мойка от реагентов»</span></button>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="2">Записаться онлайн<span class="sr">: «Детейлинг-мойка от реагентов»</span></button>
     </li>
     <li class="sec-choice__item">
       <div class="sec-choice__text">
@@ -113,7 +113,7 @@
         <p>Химчистка дисков, удаление битума и кварцевое покрытие кузова.</p>
       </div>
       <p class="sec-choice__offer"><span class="sec-choice__name">{{program:3}}</span><span class="sec-choice__price">{{program:3:price}} · {{program:3:time}}</span></p>
-      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="3">Оставьте заявку<span class="sr">: пакет «Экстерьер»</span></button>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="3">Записаться онлайн<span class="sr">: пакет «Экстерьер»</span></button>
     </li>
     <li class="sec-choice__item">
       <div class="sec-choice__text">
@@ -121,7 +121,7 @@
         <p>Ещё очистка от металлических вкраплений, лёгкая химчистка салона, кондиционер кожи, озонация или сухой туман и антидождь.</p>
       </div>
       <p class="sec-choice__offer"><span class="sec-choice__name">{{program:4}}</span><span class="sec-choice__price">{{program:4:price}} · {{program:4:time}}</span></p>
-      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="4">Оставьте заявку<span class="sr">: пакет «Премиум»</span></button>
+      <button class="btn btn--secondary btn--compact sec-choice__action" type="button" data-book data-program="4">Записаться онлайн<span class="sr">: пакет «Премиум»</span></button>
     </li>
   </ul>
 </section>
@@ -134,7 +134,7 @@
     <ol class="steps sec-steps">
       <li class="steps__item">
         <h3>Заявка</h3>
-        <p>Оставьте заявку на сайте или позвоните в студию. Когда в форме выбрана автомойка, там же есть ссылка на <span class="nw">онлайн-запись</span>.</p>
+        <p>Записаться онлайн на сайте или позвоните в студию. Когда в форме выбрана автомойка, там же есть ссылка на <span class="nw">онлайн-запись</span>.</p>
       </li>
       <li class="steps__item">
         <h3>Приёмка</h3>
@@ -142,7 +142,7 @@
       </li>
       <li class="steps__item">
         <h3>Мойка</h3>
-        <p>От {{program:0:time}} до {{program:4:time}} — смотря по программе. На Мясницкой два часа закрытого паркинга включены в визит, ждать можно в зоне ожидания с <span class="nw">Wi-Fi</span>.</p>
+        <p>От {{program:0:time}} до {{program:4:time}} — смотря по программе. На Лубянке два часа закрытого паркинга включены в визит, ждать можно в зоне ожидания с <span class="nw">Wi-Fi</span>.</p>
       </li>
       <li class="steps__item">
         <h3>Выдача</h3>
@@ -164,16 +164,16 @@
 
 <section class="section sec-block" id="wash-why" aria-labelledby="wash-why-title">
   <header class="section-head col-title">
-    <h2 id="wash-why-title">Почему <span class="nw" lang="en">Meat Wash</span></h2>
+    <h2 id="wash-why-title">Почему <span class="nw" lang="en">MEATWASH</span></h2>
   </header>
   <ul class="sec-why col-ext" role="list">
     <li class="sec-why__item">
       <h3>Две студии</h3>
-      <p>Мясницкая — премиальная автомойка в центре, Технопарк — <span class="nw">детейлинг-центр</span> полного цикла. Обе открыты каждый день.</p>
+      <p>Лубянка — в центре, Технопарк — на проспекте Андропова. В обеих автомойка и детейлинг, обе открыты каждый день.</p>
     </li>
     <li class="sec-why__item">
       <h3>Паркинг и зона ожидания</h3>
-      <p>На Мясницкой два часа закрытого паркинга включены в визит, есть <span class="nw">Wi-Fi</span>, а Кофемания — этажом выше. Оплатить можно, не выходя из машины.</p>
+      <p>На Лубянке два часа закрытого паркинга включены в визит, есть <span class="nw">Wi-Fi</span>, а Кофемания — этажом выше. Оплатить можно, не выходя из машины.</p>
     </li>
     <li class="sec-why__item">
       <h3>Цена — до начала</h3>
@@ -198,7 +198,7 @@
     <details class="accordion">
       <summary class="accordion__head">Сколько стоит мойка?</summary>
       <div class="accordion__body">
-        <p>Программы — от {{min-section:programs}}: столько стоит «Трёхфазная» для седана. Цена зависит от типа кузова — седан, кроссовер, внедорожник или микроавтобус, переключатель стоит <a href="#programs">над карточками программ</a>. «Комплексная с воском» на Мясницкой стоит дороже, её цена указана под основной.</p>
+        <p>Программы — от {{min-section:programs}}: столько стоит «Трёхфазная» для седана. Цена зависит от типа кузова — седан, кроссовер, внедорожник или микроавтобус, переключатель стоит <a href="#programs">над карточками программ</a>. «Комплексная с воском» на Лубянке стоит дороже, её цена указана под основной.</p>
         <p>Дополнительные работы считаются отдельно, итог согласуем на приёмке.</p>
       </div>
     </details>
@@ -211,7 +211,7 @@
     <details class="accordion">
       <summary class="accordion__head">В какой студии можно помыть машину?</summary>
       <div class="accordion__body">
-        <p>В обеих: на Мясницкой и в Технопарке. «Трёхфазную» делаем только в Технопарке, остальные программы — в обеих студиях. Адреса и часы — <a href="#leave-request">внизу страницы</a>.</p>
+        <p>В обеих: на Лубянке и в Технопарке. «Трёхфазную» делаем только в Технопарке, остальные программы — в обеих студиях. Адреса и часы — <a href="#leave-request">внизу страницы</a>.</p>
       </div>
     </details>
     <details class="accordion">
@@ -249,7 +249,7 @@
     <details class="accordion">
       <summary class="accordion__head">Как оплатить?</summary>
       <div class="accordion__body">
-        <p>Картой, по СБП, QR-коду, наличными или по безналичному расчёту. На Мясницкой можно оплатить, не выходя из машины, в Технопарке принимаем топливные карты.</p>
+        <p>Картой, по СБП, QR-коду, наличными или по безналичному расчёту. На Лубянке можно оплатить, не выходя из машины, в Технопарке принимаем топливные карты.</p>
       </div>
     </details>
   </div>
@@ -266,18 +266,18 @@
 </section>
 
 <section class="section sec-seo col-narrow" aria-labelledby="wash-seo-title">
-  <h2 id="wash-seo-title">Автомойка <span class="nw" lang="en">Meat Wash</span> в Москве</h2>
-  <p><span lang="en">Meat Wash</span> моет машины с {{brand:since}} года. Сейчас студий две: на Мясницкой, 11 — в подземном паркинге в центре, и в Технопарке — в ТЦ «Мегаполис» на проспекте Андропова. Каждая мойка начинается с бесконтактной фазы и продолжается ручной: так песок и реагент уходят с кузова до того, как к нему прикоснутся.</p>
+  <h2 id="wash-seo-title">Автомойка <span class="nw" lang="en">MEATWASH</span> в Москве</h2>
+  <p><span lang="en">MEATWASH</span> моет машины с {{brand:since}} года. Сейчас студий две: на Лубянке (Мясницкая, 11) — в подземном паркинге в центре, и в Технопарке — в ТЦ «Мегаполис» на проспекте Андропова. Каждая мойка начинается с бесконтактной фазы и продолжается ручной: так песок и реагент уходят с кузова до того, как к нему прикоснутся.</p>
   <p>Пять программ — от быстрой мойки кузова за {{program:0:time}} до полного ухода за кузовом и салоном. Цена зависит от типа кузова. Зимой выбирайте программу с удалением реагентов, весной и после трассы — с удалением битума и кварцевым покрытием. Моторный отсек, подвеску, химчистку салона и полировку делаем в <a href="detailing">детейлинге</a>.</p>
 </section>
 
 <section class="sec-cta" id="leave-request" aria-labelledby="leave-request-title">
   <div class="sec-cta__inner">
     <div class="sec-cta__head">
-      <h2 class="sec-cta__title" id="leave-request-title">Оставьте заявку</h2>
+      <h2 class="sec-cta__title" id="leave-request-title">Записаться онлайн</h2>
       <p class="sec-cta__lead">Напишите, какую программу и в какой студии хотите, или позвоните — подберём время.</p>
       <div class="actions">
-        <button class="btn btn--primary" type="button" data-request data-request-category="wash">Оставьте заявку</button>
+        <button class="btn btn--primary" type="button" data-request data-request-category="wash">Записаться онлайн</button>
       </div>
     </div>
     <ul class="sec-studios" role="list">
@@ -287,7 +287,7 @@
         <p class="sec-studio__address">{{loc:myasnitskaya:address}}<br>{{loc:myasnitskaya:floor}}</p>
         <p class="sec-studio__hours">{{loc:myasnitskaya:hours}}</p>
         <a class="sec-studio__phone" href="tel:{{loc:myasnitskaya:tel}}">{{loc:myasnitskaya:phone}}</a>
-        <p class="sec-studio__links"><a class="link-arrow" href="{{locations}}#map-myasnitskaya">На карте{{icon:arrow-right}}</a><a class="link-arrow" href="{{loc:myasnitskaya:route}}" target="_blank" rel="noopener noreferrer">Маршрут{{icon:arrow-up-right}}<span class="sr"> до студии на Мясницкой (Яндекс Карты, откроется в новой вкладке)</span></a></p>
+        <p class="sec-studio__links"><a class="link-arrow" href="{{locations}}#map-myasnitskaya">На карте{{icon:arrow-right}}</a><a class="link-arrow" href="{{loc:myasnitskaya:route}}" target="_blank" rel="noopener noreferrer">Маршрут{{icon:arrow-up-right}}<span class="sr"> до студии на Лубянке (Яндекс Карты, откроется в новой вкладке)</span></a></p>
       </li>
       <li class="sec-studio">
         <h3 class="sec-studio__name">{{loc:technopark:name}}</h3>

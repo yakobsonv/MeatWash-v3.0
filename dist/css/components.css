@@ -233,7 +233,7 @@
   background: var(--red); transform-origin: left center; transform: scaleX(var(--progress, 0));
 }
 @media (max-width: 759px) { .page-bar__actions > :not(:first-child) { display: none; } }
-/* На телефоне «Оставьте заявку» уже есть в нижней кнопке — вторая такая же в панели не нужна. */
+/* На телефоне «Записаться онлайн» уже есть в нижней кнопке — вторая такая же в панели не нужна. */
 @media (max-width: 759px) { body:has(.mobile-cta) .page-bar__actions { display: none; } }
 
 /* ── Аккордеон (P21): радиус 16, фон --surface, шеврон в круге 24 слева ────── */
