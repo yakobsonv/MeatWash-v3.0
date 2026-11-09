@@ -172,8 +172,11 @@ body[data-page="services"] .hero-a__media img { object-position: 50% 50%; }
 
 /* Карточки программ (P02; Влад 09.11 — «как в карточке Яндекса»): плитка с кадром 4:3 сверху,
    .program-card__text (название и серое описание в 2–3 строки), «цена · время» жирным, запись —
-   основная кнопка (btn--primary). От 1240 px — пять в ряд по колонке wide, от 1000 px — 3 + 2
-   по центру; общие строки — subgrid из четырёх: кадр, текст, цена, кнопка (кадры, цены и кнопки
+   основная кнопка (btn--primary) в одну строку (поля кнопки уже обычных: «Записаться онлайн»
+   152 px текста + 2 × 12 входит в самую узкую карточку — 185 px при 1240). От 1000 px — 3 + 2
+   по центру колонки basic (на /services так при любой ширине: карточки в одной колонке
+   с заголовком, переключателем и сравнением панели); на /wash от 1240 px — пять в ряд по
+   колонке wide (section.css, «Одна сетка»); общие строки — subgrid из четырёх: кадр, текст, цена, кнопка (кадры, цены и кнопки
    на одной линии; описание идёт сразу под названием, запас высоты — над ценой, а не дырой под
    коротким названием). Ниже 1000 px — лента с прилипанием (кнопки внутри — фокус доходит
    с клавиатуры, лента прокручивается), следующая карточка выглядывает справа; цена и кнопка
@@ -221,14 +224,14 @@ ol.programs {
 .program-card__dot { margin-inline: .4em; }
 /* Цена в студии, где программа дороже (programStudioPrices), — строкой под ценой. */
 .program-card__studio { display: block; margin-top: 2px; font-size: 13px; font-weight: 400; color: var(--on-muted); }
-.program-card__book { margin-top: 16px; width: auto; }
+.program-card__book { margin-top: 16px; width: auto; padding-inline: 12px; white-space: nowrap; }
 @media (min-width: 1000px) {
   ol.programs { row-gap: var(--sm); }
   .program-card { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
   .program-card__price { align-self: start; }
   .program-card__book { align-self: end; }
 }
-@media (min-width: 1000px) and (max-width: 1239px) {
+@media (min-width: 1000px) {
   ol.programs { grid-template-columns: repeat(6, minmax(0, 1fr)); padding-inline: var(--basic); }
   .program-card { grid-column: span 2; }
   .program-card:nth-child(4) { grid-column: 2 / span 2; }
@@ -248,21 +251,25 @@ ol.programs {
 
 /* ---------- Сравнение программ «лесенкой» (P04; Влад 09.11) ----------
    Строки по этапам (tbody), полоса «входит» начинается с программы, где работа появилась,
-   и идёт до последней колонки — ступени видны глазом. От 900 px — таблица, ниже — список
-   по шагам .compare__steps со шкалой «N из M работ» (таблица там скрыта: в 5 колонок на
-   телефоне не читается). */
+   и идёт до последней колонки — ступени видны глазом. От 1100 px — таблица (min-width 760 px
+   входит в колонку basic целиком: 1100 − 2 × 170), ниже — список по шагам .compare__steps
+   со шкалой «N из M работ» (таблица там скрыта: в 900–1099 px колонка Премиума уходила под
+   край, на телефоне 5 колонок не читаются). */
 .compare { margin-top: var(--xl); }
 .compare__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sm) var(--md); }
 .compare__title { font-size: var(--fs-xl); font-weight: 300; line-height: 1.31; letter-spacing: -.01em; }
 
 /* Липкая строка названий программ (catalog.js, setupCompareBar): высоты в потоке нет,
-   видна, пока thead ушёл под вкладки, а итог таблицы ещё ниже. */
+   видна, пока thead ушёл под вкладки, а итог таблицы ещё ниже. Под липкими вкладками
+   (.anchor-tabs, [data-page-bar] — /services) — на --sticky-h, без них (/wash) — у самого
+   верха окна; catalog.js берёт отступ из вычисленного top полосы. */
 .compare__bar {
   position: sticky; top: var(--sticky-h); z-index: 3;
   height: 0;
   overflow-x: clip; overflow-y: visible;   /* дорожка шире ленты: обрезать по бокам, не давая прокрутки странице */
   pointer-events: none;
 }
+html:not(:has(.anchor-tabs, [data-page-bar])) .compare__bar { top: 0; }
 @supports not (overflow: clip) { .compare__bar { display: none; } }
 .compare__bar-track, .compare__bar-mask {
   position: absolute; top: 0; left: 0;
@@ -338,9 +345,9 @@ ol.programs {
 .compare__studio { display: block; font-size: 12px; font-weight: 400; color: var(--on-muted); }
 @media (forced-colors: active) { .compare__yes::before { border-block: 1px solid CanvasText; } }
 
-/* Список по шагам (до 900 px): программа, цена · время, шкала накопленного состава, что добавляется. */
+/* Список по шагам (до 1100 px): программа, цена · время, шкала накопленного состава, что добавляется. */
 .compare__steps { display: none; margin: var(--md) 0 0; padding: 0; list-style: none; }
-@media (max-width: 899px) {
+@media (max-width: 1099px) {
   .compare__scroll { display: none; }
   .compare__bar { display: none; }
   .compare__steps { display: grid; gap: 12px; max-width: 40rem; }
@@ -377,6 +384,15 @@ ol.programs {
    по ней переключатель, заголовки и сноску): название, описание, цена «от», запись. Кнопка
    записи здесь второстепенная — главное действие блока у карточек программ. */
 .pick__in { grid-column: 1 / -1; margin-top: 2px; font-size: 13px; line-height: 1.4; color: var(--on-muted); }
+/* Телефон: строка в чеке (название слева, цена и стрелка справа) сжимает текст до 135 px на 320
+   (название в 4 строки) — текст на всю ширину, под ним цена слева и стрелка справа. */
+@media (max-width: 759px) {
+  .pick.catalog__item { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+  .pick .catalog__item-text { grid-column: 1 / -1; grid-row: 1; }
+  .pick .catalog__item-price { grid-column: 1; grid-row: 2; justify-self: start; text-align: left; font-weight: 600; }
+  .pick .catalog__action { grid-column: 2; grid-row: 2; }
+  .pick__in { grid-row: 3; margin-top: 0; }
+}
 @media (min-width: 760px) and (max-width: 1239px) {
   .pick.catalog__item { grid-template-columns: minmax(0, 1fr) auto auto; gap: 2px var(--md); }
   .pick .catalog__action { width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%; }

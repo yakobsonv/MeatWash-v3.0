@@ -39,9 +39,11 @@ export const studioPrices=i=>Object.entries(d.programStudioPrices?.[i]||{}).map(
  if(!location||!STUDIO_LABEL[id])throw new Error(`programStudioPrices: нет филиала ${id}`);
  return {name:location.name,label:STUDIO_LABEL[id],prices};
 });
-export const programContext=(i,body)=>`${d.programs[i][0]} — ${d.bodyTypes[body]}, ${money(d.programPrices[i][body])}${studioPrices(i).map(s=>`, ${s.label} — ${money(s.prices[body])}`).join('')}`;
+export const programContext=(i,body)=>`${d.programs[i][0]} — ${d.bodyTypes[body]}, ${money(d.programPrices[i][body])}${studioPrices(i).filter(s=>s.prices[body]!==d.programPrices[i][body]).map(s=>`, ${s.label} — ${money(s.prices[body])}`).join('')}`;
 // Строка «На Лубянке — 3 150 ₽» под ценой: тот же data-program-price, его меняет кузов.
-const studioLine=(i,tag,cls)=>studioPrices(i).map(s=>`<${tag} class="${cls}">${s.label[0].toUpperCase()+s.label.slice(1)} — <span data-program-price data-prices="${s.prices.join(',')}">${money(s.prices[0])}</span></${tag}>`).join('');
+// Для кузова, где цена студии равна общей (микроавтобус: 4 250 ₽ в обеих), строки нет: data-base —
+// общие цены, js/catalog.js ставит hidden при совпадении; в контексте записи — тоже без неё.
+const studioLine=(i,tag,cls)=>studioPrices(i).map(s=>`<${tag} class="${cls}" data-studio-line data-base="${d.programPrices[i].join(',')}"${s.prices[0]===d.programPrices[i][0]?' hidden':''}>${s.label[0].toUpperCase()+s.label.slice(1)} — <span data-program-price data-prices="${s.prices.join(',')}">${money(s.prices[0])}</span></${tag}>`).join('');
 export const serviceCount=()=>d.groups.reduce((sum,group)=>sum+group.items.length,0);
 // Иконка спрайта — та же разметка, что у подстановки icon (scripts/pages.mjs). Своя копия:
 // pages.mjs импортирует этот модуль, обратный импорт дал бы цикл при npm run catalog.
@@ -252,10 +254,10 @@ export const requestTopics=()=>(d.site?.requests?.topics||[]).map(t=>{
 // внутри этапа строки идут по программе, с которой пункт входит, — полосы «входит» начинаются
 // всё правее, и ступени видны глазом. Программа j отмечена в строках программ 0…j: буквальное
 // правило «каждая следующая включает предыдущую».
-// Разметка: таблица (от 900 px; tbody на этап с заголовком th scope="rowgroup"; в шапке столбца —
+// Разметка: таблица (от 1100 px; tbody на этап с заголовком th scope="rowgroup"; в шапке столбца —
 // .compare__name и «+N работ»; ячейка «входит» — td.compare__yes, первая в строке — ещё и
 // --start с галочкой; внизу время и цена, цену меняет кузов — тот же data-program-price) и тот же
-// состав списком по шагам ol.compare__steps (до 900 px, таблица там скрыта): программа, цена ·
+// состав списком по шагам ol.compare__steps (до 1100 px, таблица там скрыта): программа, цена ·
 // время, шкала «N из M работ» и что добавляется к предыдущей.
 const works=n=>{const a=n%10,b=n%100;return `${n} ${a===1&&b!==11?'работа':a>=2&&a<=4&&(b<12||b>14)?'работы':'работ'}`;};
 export function compareRows(){

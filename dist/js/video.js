@@ -4,7 +4,8 @@
 // Сеть до вызова не тратится: preload="none", адрес ролика — в data-src*.
 //  data-video="hero"  — играет сам после load; ролик по ширине окна: data-src-m до 699 px,
 //                       data-src-hd от 1600 px (или от 2200 физических пикселей), иначе data-src.
-//                       Кнопка [data-video-toggle] останавливает и запускает (WCAG 2.2.2);
+//                       Кнопка [data-video-toggle] (ищется в той же <section>, у /wash она
+//                       вне обёртки ролика) останавливает и запускает (WCAG 2.2.2);
 //                       пока ролик не играет, кнопка скрыта. Вне экрана — пауза.
 //  data-video="hover" — с мышью играет, пока указатель над [data-video-host]. На сенсорных
 //                       экранах (клиент 28.10: «ролик к каждому блоку» — смотрят с телефона)
@@ -90,7 +91,7 @@ export function setupVideo() {
     const { srcM, src, srcHd } = video.dataset;
     const wide = innerWidth >= 1600 || innerWidth * (devicePixelRatio || 1) >= 2200;
     const url = innerWidth < 700 && srcM ? srcM : wide && srcHd ? srcHd : src;
-    const toggle = video.parentElement.querySelector('[data-video-toggle]');
+    const toggle = (video.closest('section') || video.parentElement).querySelector('[data-video-toggle]');
     let stopped = false, visible = true;
     video.muted = true;
     mark(video);

@@ -31,7 +31,7 @@
 //   отзывы   reviews в JSON: дата среза, рейтинги студий, авторы «Имя И.» или «Клиент», без имён
 //            сотрудников и Романа; блок на странице — как в JSON; работы и направления — страницы,
 //            машины, позиции каталога и файлы есть;
-//   ключи    data-price-item / data-yc-items / data-request-services — названия из каталога,
+//   ключи    data-price-item / data-yc-items / data-request-services и ключи yclients.json — названия из каталога,
 //            data-book-context — без неразрывных пробелов (поправка 16);
 //   каталог  по смыслу (§4.3, поправка 30): 4 вкладки и панели, подразделы и якоря из JSON,
 //            41 позиция с ценой и действием, 5 программ с ценами по кузову и составом,
@@ -129,6 +129,13 @@ const groupItems = d.groups.flatMap((g) => g.items);
 const itemPrice = Object.fromEntries(groupItems.map(([name, price]) => [name, price]));
 // Темы заявок и их варианты без каталога (site.requests.topics) — тоже допустимые названия работ.
 const itemNames = new Set([...groupItems.map(([n]) => n), ...d.groups.flatMap((g) => g.sections.map((s) => s.title)), ...d.programs.map(([n]) => n), ...(d.site?.requests?.topics || []).flatMap((t) => [t.title, ...(t.options || [])])]);
+// Корзина онлайн-записи (yclients.js resolve): ключ items в yclients.json — побуквенно название из каталога,
+// иначе кнопка с data-yc-items молча открывает пустой выбор услуг (09.11: «реагента» против «реагентов»).
+{
+  const yc = JSON.parse(await readFile(resolve(dist, 'assets/yclients.json'), 'utf8'));
+  for (const name of Object.keys(yc.items || {})) ok(itemNames.has(name), `yclients.json: «${name}» нет в каталоге — корзина записи его не найдёт`);
+  for (const row of yc.programs || []) ok(d.programs.some(([n]) => n === row.name), `yclients.json: программы «${row.name}» нет в каталоге`);
+}
 // Любая цена «от N ₽» на сайте и в description — цена позиции, программы или «от» раздела.
 const catalogPrices = new Set([...d.programPrices.flat(), ...Object.entries(d.programStudioPrices || {}).filter(([k]) => k !== "_comment").flatMap(([, v]) => Object.values(v).flat()), ...groupItems.map(([, p]) => p).filter((p) => p != null)]);
 const priceIn = (text) => [...plain(text).matchAll(/от (\d{1,3}(?: \d{3})*) ₽/g)].map((m) => Number(m[1].replace(/\D/g, '')));

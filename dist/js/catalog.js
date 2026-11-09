@@ -242,12 +242,17 @@ function setupBody(signal) {
     document.querySelectorAll('[data-program-price]').forEach((price) => {
       price.textContent = money(Number(price.dataset.prices.split(',')[i]));
     });
+    // Цена студии, равная общей для этого кузова, не показывается (catalog.mjs, studioLine).
+    document.querySelectorAll('[data-studio-line]').forEach((line) => {
+      const own = line.querySelector('[data-program-price]');
+      line.hidden = Boolean(own) && own.dataset.prices.split(',')[i] === line.dataset.base.split(',')[i];
+    });
     if (label) label.textContent = 'Цены для\u00a0типа кузова: ' + bodyName(i);   // как в разметке после typo()
     // Формат тот же, что в scripts/catalog.mjs (programContext).
     document.querySelectorAll('[data-book][data-program]').forEach((button) => {
       const program = PROGRAMS[Number(button.dataset.program)];
       if (program) button.dataset.bookContext = `${program.name} — ${bodyName(i)}, ${money(program.prices[i])}`
-        + (program.studio || []).map((s) => `, ${s.label} — ${money(s.prices[i])}`).join('');
+        + (program.studio || []).filter((s) => s.prices[i] !== program.prices[i]).map((s) => `, ${s.label} — ${money(s.prices[i])}`).join('');
     });
   }
 
@@ -320,7 +325,8 @@ function setupCompareBar(signal) {
   let frame = 0;
   const toggle = () => {
     frame = 0;
-    const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sticky-h')) || 0;
+    // Отступ — вычисленный top полосы: --sticky-h под вкладками /services, 0 на /wash (services.css).
+    const top = parseFloat(getComputedStyle(bar).top) || 0;
     const headBottom = head.getBoundingClientRect().bottom;
     const foot = table.tFoot || table.tBodies[0];
     const end = foot.getBoundingClientRect().top;
