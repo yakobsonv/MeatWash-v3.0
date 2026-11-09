@@ -355,24 +355,36 @@ const services = html['services.html'];
   });
   const itemCount = groupItems.length;
   ok([...services.matchAll(/data-price-item=/g)].length === itemCount, `services.html: позиций в каталоге не ${itemCount}`);
-  // Программы: цена по кузову, состав в details#program-i, запись с программой
+  // Программы: карточка li#program-i (кадр из programCards, цена по кузову, запись с программой);
+  // состав по пунктам — в сравнении (Влад 09.11: карточки как на Яндекс Картах, без «Что входит»)
   const progBlock = services.slice(services.indexOf('id="programs"'), services.indexOf('id="price-wash-extras"'));
   d.programs.forEach(([name], i) => {
     ok([...progBlock.matchAll(/<h4 class="program-card__name">([\s\S]*?)<\/h4>/g)].map((m) => plain(m[1]))[i] === name, `Программа ${i} «${name}»: нет карточки`);
     const shown = progBlock.match(new RegExp(`data-prices="${d.programPrices[i].join(',')}">([^<]*)<`))?.[1];
     ok(shown != null && plain(shown) === plain(money(d.programPrices[i][0])), `Программа ${i}: цены по кузову не из JSON`);
-    const list = progBlock.match(new RegExp(`<details class="[^"]*" id="program-${i}">[\\s\\S]*?<ul class="program-includes">([\\s\\S]*?)</ul>`))?.[1] || '';
-    ok(same([...list.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => plain(m[1])), d.programIncludes[i]), `Программа ${i}: состав в details#program-${i} не как в JSON`);
+    const card = progBlock.match(new RegExp(`<li class="program-card" id="program-${i}">[\\s\\S]*?</li>`))?.[0] || '';
+    ok(card && card.includes(`src="${d.programCards.items[i].photo}-800.webp"`) && card.includes(`alt="${esc(d.programCards.items[i].alt)}"`), `Программа ${i}: нет карточки li#program-${i} с кадром и alt из programCards`);
+    // Список по шагам: «Всё из …, плюс:» и добавленные пункты — состав programIncludes побуквенно.
+    const step = [...progBlock.matchAll(/<li class="compare__step">([\s\S]*?)<\/ul>/g)][i]?.[1] || '';
+    const listed = [...(step.match(/<ul class="compare__step-list">([\s\S]*)$/)?.[1] || '').matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => plain(m[1]));
+    const base = plain(step.match(/<p class="compare__step-base">([\s\S]*?)<\/p>/)?.[1] || '').replace(/, плюс:$|^Входит:$/, '');
+    ok(same(i ? [base, ...listed] : listed, d.programIncludes[i]), `Программа ${i}: состав в списке сравнения по шагам не как в JSON`);
     ok(progBlock.includes(`data-book data-program="${i}"`), `Программа ${i}: нет записи с программой`);
   });
   ok([...progBlock.matchAll(/<input type="radio" name="body-type" value="(\d)"/g)].length === d.bodyTypes.length && progBlock.includes('id="body-price-label"'), 'services.html: нет переключателя кузова (4) или #body-price-label');
-  // Сравнение программ: столбцы — программы, строки — состав, цены — из JSON
+  // Сравнение программ «лесенкой» (Влад 09.11): столбцы — программы, строки — состав по этапам
+  // programStages, полоса «входит» начинается с программы, где пункт появился, и идёт до последней;
+  // цены — из JSON. Переключателя «Только различия» больше нет: различия видны по ступеням.
   const compare = progBlock.match(/<div class="compare" id="compare">[\s\S]*?<\/table>/)?.[0] || '';
   if (ok(compare, 'services.html: нет сравнения программ (#compare)')) {
-    const heads = [...(compare.match(/<thead>([\s\S]*?)<\/thead>/)?.[1] || '').matchAll(/<th scope="col">([\s\S]*?)<\/th>/g)].map((m) => plain(m[1]).trim()).filter((h) => h !== 'Работа');
+    const heads = [...(compare.match(/<thead>([\s\S]*?)<\/thead>/)?.[1] || '').matchAll(/<span class="compare__name">([\s\S]*?)<\/span>/g)].map((m) => plain(m[1]).trim());
     ok(same(heads, d.programs.map(([n]) => n)), 'Сравнение: столбцы не совпадают с программами');
     for (let i = 0; i < d.programs.length; i++) ok(compare.includes(`data-prices="${d.programPrices[i].join(',')}"`), `Сравнение: нет цен программы ${i}`);
-    ok(compare.includes('data-compare-only'), 'Сравнение: нет переключателя «Только различия»');
+    const from = new Map(d.programIncludes.flatMap((list, j) => list.slice(j ? 1 : 0).map((item) => [item, j])));
+    const rows = [...compare.matchAll(/<tr><th scope="row">([\s\S]*?)<\/th>([\s\S]*?)<\/tr>/g)].map((m) => [plain(m[1]), [...m[2].matchAll(/<td class="([^"]*)"/g)].map((c) => /compare__yes/.test(c[1]))]);
+    ok(same(rows.map(([item]) => item).sort(), [...from.keys()].sort()), 'Сравнение: строки — не все пункты состава программ (programIncludes) или с повтором');
+    for (const [item, cells] of rows) ok(cells.length === d.programs.length && cells.every((yes, j) => yes === (j >= from.get(item))), `Сравнение: «${item}» — полоса не с программы ${from.get(item)} до последней`);
+    ok(same([...compare.matchAll(/<th scope="rowgroup"[^>]*>([\s\S]*?)<\/th>/g)].map((m) => plain(m[1])), d.programStages.items.map((s) => s.title)), 'Сравнение: этапы не как в programStages');
   }
   // Прежние якоря (статьи, закладки, поиск, шторка, §1.7)
   for (const id of ['catalog', 'price-list', 'programs', ...d.programs.map((_, i) => `program-${i}`), ...d.groups.map((g) => `price-${g.id}`), ...d.groups.flatMap((g) => g.sections.map((s) => s.id)), 'proof', 'individual', 'garage-3d'])

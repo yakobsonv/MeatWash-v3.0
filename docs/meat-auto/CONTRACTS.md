@@ -224,8 +224,9 @@ python3 scripts/qa/run.py [--preview URL --forwarded-proto https]   # приём
   разговор — `[data-membership="…"]`; окно `#booking` и его id §4.2; клубная карта `[data-club-card]`; `[data-consent-open]`.
   В окне записи — строка «Онлайн-запись откроется в YCLIENTS (Meat Wash)».
 - **Каталог (WP3, §4.3):** `#catalog`, `nav[data-catalog-tabs]`, `#price-<раздел>`, id подразделов из JSON, `#price-list`,
-  `#programs`, `details#program-0…4`, `input[name=body-type]`, `#body-price-label`, `[data-program-price][data-prices]`,
-  `li.catalog__item[data-price-item]`. Сейчас `renderCatalog()` ещё отдаёт прежнюю разметку (на 320 px она шире экрана
+  `#programs`, `li.program-card#program-0…4` (с 09.11 — плитка как на Яндекс Картах: кадр `programCards`, «цена · время»; состав —
+  в сравнении `#compare` «лесенкой» по `programStages`), `input[name=body-type]`, `#body-price-label`, `[data-program-price][data-prices]`,
+  `li.catalog__item[data-price-item]`; подборка `picks` (`#price-wash-top`, «Топ-5 услуг») — `{{prices:…,price-wash-top}}` на /wash. Сейчас `renderCatalog()` ещё отдаёт прежнюю разметку (на 320 px она шире экрана
   на 23 px без стилей); тизер гаража и «Под вашу задачу» из неё убраны — они теперь `#garage-3d` и `#individual` в `services.html`.
   Пары «до/после» — с видимой подписью «Иллюстрация, не работа студии» (Влад 27.10).
 - **Карты (WP5, §4.4):** `div.location__map#map-<id>[data-map-embed=<id>][data-state=idle][tabindex=-1]`, `[data-map-status]`,
