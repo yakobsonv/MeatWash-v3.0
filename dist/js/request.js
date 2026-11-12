@@ -307,7 +307,7 @@ export function setupRequest(dialog, { show }) {
 
   // Приёма нет: заявка не отправлена — так и пишем, с телефонами обеих студий. Порядок — по теме.
   function showOffline() {
-    const first = studioFirst || onlyBranch || (TECHNOPARK_FIRST.has(topicId()) ? 'technopark' : 'myasnitskaya');
+    const first = onlyBranch || studioFirst || (TECHNOPARK_FIRST.has(topicId()) ? 'technopark' : 'myasnitskaya');
     const links = [...phones.querySelectorAll('[data-phone]')];
     phones.append(...links.sort((a, b) => (b.dataset.phone === first) - (a.dataset.phone === first)));
     offline.hidden = false;
@@ -325,6 +325,7 @@ export function setupRequest(dialog, { show }) {
     if (!response.ok || result?.ok !== true) {
       const error = new Error(result?.error || `сервер ответил ${response.status}`);
       error.result = result || {};
+      error.status = response.status;
       throw error;
     }
     return result;
@@ -361,7 +362,9 @@ export function setupRequest(dialog, { show }) {
     body.append('contact', phoneInput.value.trim());
     body.append('car', '');
     // Студия кнопки (карточка студии) — заявка ляжет в её лист ожидания YCLIENTS; иначе выберет сервер.
-    body.append('branch', studioFirst || onlyBranch || '');
+    body.append('branch', onlyBranch || studioFirst || '');
+    // Тип кузова (0 седан … 3 микроавтобус) — услуга мойки в YCLIENTS берётся для него.
+    body.append('body', String(getBody()));
     const note = context.hidden ? '' : context.textContent.replace(/ /g, ' ');
     body.append('comment', [note, form.elements.comment.value.trim()].filter(Boolean).join('\n'));
     body.append('consent', 'yes');
@@ -390,8 +393,10 @@ export function setupRequest(dialog, { show }) {
       try { sessionStorage.removeItem(KEY); } catch { /* приватный режим */ }
       form.hidden = true; done.hidden = false; done.focus();
     } catch (error) {
+      // Приём на сервере не настроен (503) — как без адреса приёма: не отправлено, звоните.
+      if (error.status === 503) { showOffline(); return; }
       const reason = error.name === 'AbortError' ? 'нет ответа от сервера' : error.name === 'TypeError' ? 'нет связи с сервером' : error.message;
-      formError.textContent = nb(`Не удалось отправить заявку: ${reason}. Всё введённое и фото сохранены — попробуйте ещё раз или позвоните в студию.`);
+      formError.textContent = nb(`Не удалось отправить заявку: ${reason}. Всё введённое${photosOn && photos.length ? ' и фото' : ''} сохранено — попробуйте ещё раз или позвоните в студию.`);
       formError.hidden = false;
       // Сервер назвал поле — показываем ошибку и у него (контакт на сервере — телефон здесь).
       const field = error.result?.field === 'contact' ? 'phone' : error.result?.field;

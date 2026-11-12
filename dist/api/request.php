@@ -184,7 +184,11 @@ function loadConfig(): ?array
         $user = (string) ($yc['user_token'] ?? '');
         $companies = array_filter(array_map('intval', (array) ($yc['companies'] ?? [])));
         $default = (string) ($yc['default_branch'] ?? '');
-        if (preg_match('/^[A-Za-z0-9]{10,}$/', $partner) && preg_match('/^[A-Za-z0-9]{10,}$/', $user)
+        $fallback = array_map('intval', (array) ($yc['fallback_service'] ?? []));
+        $missing = array_diff_key($companies, array_filter($fallback, static function ($id) { return $id > 0; }));
+        if ($missing) {
+            note('config: yclients fallback_service is not set for ' . implode(', ', array_keys($missing)) . ' — channel is off');
+        } elseif (preg_match('/^[A-Za-z0-9]{10,}$/', $partner) && preg_match('/^[A-Za-z0-9]{10,}$/', $user)
             && $companies && isset($companies[$default]) && !array_diff_key($companies, BRANCHES)) {
             $channels['yclients'] = [
                 'partner' => $partner,
@@ -192,11 +196,11 @@ function loadConfig(): ?array
                 'companies' => $companies,
                 'default_branch' => $default,
                 'topic_branch' => array_filter((array) ($yc['topic_branch'] ?? []), static function ($b) use ($companies) { return isset($companies[$b]); }),
-                'fallback_service' => array_map('intval', (array) ($yc['fallback_service'] ?? [])),
+                'fallback_service' => $fallback,
                 'map_file' => is_string($yc['map_file'] ?? null) && $yc['map_file'] !== '' ? $yc['map_file'] : dirname(__DIR__) . '/assets/yclients.json',
                 'api' => rtrim(is_string($yc['api_base'] ?? null) && $yc['api_base'] !== '' ? $yc['api_base'] : 'https://api.yclients.ru', '/'),
             ];
-        } else {
+        } elseif (!$missing) {
             note('config: yclients enabled, but tokens, companies or default_branch are not set');
         }
     }
@@ -344,6 +348,8 @@ function readFields(): array
     // branch — id студии из формы (myasnitskaya, technopark) или пусто; в тексте — название.
     $data['branch_id'] = isset(BRANCHES[$data['branch']]) ? $data['branch'] : '';
     $data['branch'] = $data['branch_id'] !== '' ? BRANCHES[$data['branch_id']] : ($data['branch'] === '' ? 'Любая' : $data['branch']);
+    $body = clean($_POST['body'] ?? '', false);
+    $data['body'] = is_string($body) && preg_match('/^[0-3]$/', $body) ? (int) $body : 0;
     $topic = clean($_POST['topic_id'] ?? '', false);
     $data['topic_id'] = is_string($topic) && preg_match('/^[a-z]{1,20}$/', $topic) ? $topic : '';
 
@@ -735,6 +741,10 @@ function ycCall(array $yc, string $method, string $path, ?array $body = null): ?
 function ycPhone(string $contact): string
 {
     $digits = preg_replace('/\D/', '', $contact);
+    // Иностранный номер (+ и не +7) — как есть, 10–15 цифр.
+    if (preg_match('/^\s*\+\s*[0-689]/', $contact)) {
+        return strlen($digits) >= 10 && strlen($digits) <= 15 ? $digits : '';
+    }
     if (strlen($digits) === 11 && $digits[0] === '8') {
         $digits = '7' . substr($digits, 1);
     } elseif (strlen($digits) === 10) {
@@ -757,9 +767,10 @@ function ycBranch(array $data, array $yc): string
 
 // Услуги YCLIENTS студии по названиям работ: позиции (items) и программы мойки (programs —
 // по кузову; берём первую услугу, что есть в студии). Нет ни одной — запасная услуга студии.
-function ycServices(array $names, string $branch, array $yc): array
+function ycServices(array $names, string $branch, array $yc, int $body = 0, bool $fallback = true): array
 {
-    $map = is_file($yc['map_file']) ? json_decode((string) file_get_contents($yc['map_file']), true) : null;
+    static $cache = null;
+    $map = $cache ??= (is_file($yc['map_file']) ? json_decode((string) file_get_contents($yc['map_file']), true) : null);
     $ids = [];
     if (is_array($map)) {
         $programs = [];
@@ -771,7 +782,7 @@ function ycServices(array $names, string $branch, array $yc): array
         foreach ($names as $name) {
             $id = $map['items'][$name][$branch] ?? null;
             if (!$id && isset($programs[$name])) {
-                $id = current(array_filter($programs[$name])) ?: null;
+                $id = ($programs[$name][$body] ?? null) ?: (current(array_filter($programs[$name])) ?: null);
             }
             if (is_int($id) || ctype_digit((string) $id)) {
                 $ids[] = (int) $id;
@@ -781,23 +792,27 @@ function ycServices(array $names, string $branch, array $yc): array
         note('yclients: service map is missing or broken');
     }
     $ids = array_values(array_unique(array_filter($ids)));
-    if (!$ids && !empty($yc['fallback_service'][$branch])) {
+    if (!$ids && $fallback && !empty($yc['fallback_service'][$branch])) {
         $ids = [(int) $yc['fallback_service'][$branch]];
     }
     return $ids;
 }
 
-function ycClient(array $yc, int $company, string $phone, string $name): ?int
+// [id, имя]: найденный по телефону — со своим именем из базы (имя в листе ожидания перезаписывает
+// карточку, поэтому форма имя существующего клиента не меняет); новый — с именем из формы и без
+// SMS-рассылок (согласие на рекламу посетитель не давал).
+function ycClient(array $yc, int $company, string $phone, string $name): ?array
 {
     $found = ycCall($yc, 'GET', "/api/v1/clients/$company?" . http_build_query(['phone' => $phone, 'count' => 20]));
     foreach ((array) ($found['data'] ?? []) as $client) {
         if (is_array($client) && preg_replace('/\D/', '', (string) ($client['phone'] ?? '')) === $phone && (int) ($client['id'] ?? 0) > 0) {
-            return (int) $client['id'];
+            $stored = trim((string) ($client['name'] ?? ''));
+            return [(int) $client['id'], $stored !== '' ? $stored : $name];
         }
     }
-    $made = ycCall($yc, 'POST', "/api/v1/clients/$company", ['name' => $name, 'phone' => $phone, 'comment' => 'Заявка с сайта meatwash.ru']);
+    $made = ycCall($yc, 'POST', "/api/v1/clients/$company", ['name' => $name, 'phone' => $phone, 'comment' => 'Заявка с сайта meatwash.ru', 'sms_not' => 1]);
     $id = (int) ($made['data']['id'] ?? $made['id'] ?? 0);
-    return $id > 0 ? $id : null;
+    return $id > 0 ? [$id, $name] : null;
 }
 
 function sendYclients(array $data, array $yc): bool
@@ -808,8 +823,18 @@ function sendYclients(array $data, array $yc): bool
         return false;
     }
     $branch = ycBranch($data, $yc);
+    $services = ycServices($data['services'], $branch, $yc, $data['body'], false);
+    // Работы этой студии нет, а в другой есть (например, «Трёхфазная» — только Технопарк) — туда.
+    if (!$services && !isset($yc['topic_branch'][$data['topic_id']])) {
+        foreach (array_keys($yc['companies']) as $other) {
+            if ($other !== $branch && ycServices($data['services'], $other, $yc, $data['body'], false)) {
+                $branch = $other;
+                break;
+            }
+        }
+    }
     $company = (int) $yc['companies'][$branch];
-    $services = ycServices($data['services'], $branch, $yc);
+    $services = ycServices($data['services'], $branch, $yc, $data['body']);
     if (!$services) {
         note("yclients: no service id for the request in $branch (set fallback_service)");
         return false;
@@ -818,14 +843,26 @@ function sendYclients(array $data, array $yc): bool
     if ($client === null) {
         return false;
     }
-    $data['branch'] = BRANCHES[$branch];
-    $comment = plainText(lines($data, 0), 'Заявка с сайта meatwash.ru');
-    if (mb_strlen($comment, 'UTF-8') > 1000) {
-        $comment = mb_substr($comment, 0, 990, 'UTF-8') . "\n…";
+    // Комментарий: сначала слова клиента и «о чём заявка», потом работы и остальное — если YCLIENTS
+    // где-то обрежет текст, пропадёт хвост, а не сам запрос.
+    $text = ['Заявка с сайта meatwash.ru', ''];
+    if ($data['comment'] !== '') {
+        $text[] = 'Комментарий: ' . $data['comment'];
+    }
+    $text[] = 'Работы: ' . implode('; ', $data['services']);
+    $text[] = 'Имя в заявке: ' . $data['name'] . ', телефон: ' . $data['contact'];
+    $text[] = 'Студия: ' . BRANCHES[$branch];
+    if ($data['page'] !== '') {
+        $text[] = 'Страница: ' . $data['page'];
+    }
+    $text[] = 'Согласие на обработку ПДн: дано';
+    $comment = implode("\n", $text);
+    if (mb_strlen($comment, 'UTF-8') > 3000) {
+        $comment = mb_substr($comment, 0, 2990, 'UTF-8') . "\n…";
     }
     $entry = ycCall($yc, 'POST', "/api/v2/companies/$company/waiting_list", [
         'comment' => $comment,
-        'client' => ['id' => $client, 'name' => $data['name']],
+        'client' => ['id' => $client[0], 'name' => $client[1], 'phone' => $phone, 'surname' => null, 'patronymic' => null],
         'service_ids' => $services,
     ]);
     return $entry !== null && !empty($entry['data']['id']);
