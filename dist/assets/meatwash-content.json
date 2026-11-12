@@ -775,10 +775,10 @@
       "address": "101000, г. Москва",
       "email": "MeatWash.detailing@gmail.com"
     },
-    "documentsDate": "2026-10-27",
+    "documentsDate": "2026-11-12",
     "requests": {
-      "_comment": "Заявка с фото для немоечных работ. endpoint — адрес приёма заявок (POST multipart/form-data, ответ JSON {\"ok\":true}); пока null — форма не отправляет и предлагает позвонить. На meatwash.ru — \"api/request.php\" (обработчик dist/api/request.php, настройки — вне папки сайта, README «Заявка с фото на meatwash.ru»). hosts — сайты, где отправка работает: на копии GitHub Pages PHP нет, там форма остаётся «позвоните». Секретов и токенов здесь быть не должно. topics — темы формы «Оставьте заявку» (один список для всех направлений): sections — подразделы каталога, чьи позиции входят в тему (programs — программы мойки), items — позиции из других подразделов, except — исключить, options — варианты без каталога (их можно передать в data-request-services). Порядок — порядок в форме. В data.js — REQUEST_TOPICS.",
-      "endpoint": null,
+      "_comment": "Заявка с фото для немоечных работ. endpoint — адрес приёма заявок (POST multipart/form-data, ответ JSON {\"ok\":true}); пока null — форма не отправляет и предлагает позвонить. На meatwash.ru — \"api/request.php\" (обработчик dist/api/request.php, настройки — вне папки сайта, README «Заявка с фото на meatwash.ru»). hosts — сайты, где отправка работает: на копии GitHub Pages PHP нет, там форма остаётся «позвоните». Секретов и токенов здесь быть не должно. topics — темы формы «Оставьте заявку» (один список для всех направлений): sections — подразделы каталога, чьи позиции входят в тему (programs — программы мойки), items — позиции из других подразделов, except — исключить, options — варианты без каталога (их можно передать в data-request-services). Порядок — порядок в форме. В data.js — REQUEST_TOPICS. photos — показывать ли в форме фото (false: заявки уходят в YCLIENTS, а он фото не принимает; Влад 12.11).",
+      "endpoint": "api/request.php",
       "hosts": [
         "meatwash.ru",
         "www.meatwash.ru"
@@ -852,7 +852,8 @@
           "title": "Другое",
           "options": []
         }
-      ]
+      ],
+      "photos": false
     }
   },
   "reviews": {

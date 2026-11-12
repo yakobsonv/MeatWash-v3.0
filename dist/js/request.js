@@ -119,7 +119,9 @@ export function setupRequest(dialog, { show }) {
     topicSelect.append(option);
   }
   // Фото — только когда приём подключён; без него их некуда отправить.
-  photosBox.hidden = !endpoint;
+  // Фото — только если приём их берёт (site.requests.photos; заявки в YCLIENTS фото не принимают).
+  const photosOn = Boolean(endpoint) && REQUESTS.photos !== false;
+  photosBox.hidden = !photosOn;
   // Обещание звонка — только когда заявка действительно уходит администратору.
   if (endpoint) $('#request-lead').textContent = 'Администратор студии перезвонит и ответит на вопросы.';
   // Ссылки онлайн-записи — как в разметке, пока корзина не собрана.
@@ -354,17 +356,19 @@ export function setupRequest(dialog, { show }) {
     const body = new FormData();
     body.append('services', (services.length ? services : [topic?.title || 'Другое']).join('\n'));
     body.append('topic', topic?.title || '');
+    body.append('topic_id', topic?.id || '');
     body.append('name', form.elements.name.value.trim());
     body.append('contact', phoneInput.value.trim());
     body.append('car', '');
-    body.append('branch', '');
+    // Студия кнопки (карточка студии) — заявка ляжет в её лист ожидания YCLIENTS; иначе выберет сервер.
+    body.append('branch', studioFirst || onlyBranch || '');
     const note = context.hidden ? '' : context.textContent.replace(/ /g, ' ');
     body.append('comment', [note, form.elements.comment.value.trim()].filter(Boolean).join('\n'));
     body.append('consent', 'yes');
     body.append('consentDocument', new URL('consent-request', location.href).href);
     body.append('page', location.href);
     body.append('mw_extra', form.elements.mw_extra?.value || '');
-    for (const { file } of photos) body.append('photos[]', file, file.name);
+    if (photosOn) for (const { file } of photos) body.append('photos[]', file, file.name);
     sending = true; submitBtn.disabled = true; submitBtn.textContent = 'Отправляем…';
     const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 180_000);
     try {

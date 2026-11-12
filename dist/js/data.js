@@ -627,7 +627,7 @@ export const CATEGORIES = [
 ];
 // Заявка с фото: адрес приёма (null — отправка не подключена, форма предлагает позвонить)
 // и сайты, где он работает (пусто — везде; копия на GitHub Pages PHP не выполняет).
-export const REQUESTS = {"endpoint":null,"hosts":["meatwash.ru","www.meatwash.ru"]};
+export const REQUESTS = {"endpoint":"api/request.php","hosts":["meatwash.ru","www.meatwash.ru"],"photos":false};
 export const LOCATIONS = [
  {
   "id": "myasnitskaya",

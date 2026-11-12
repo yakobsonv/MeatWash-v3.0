@@ -18,7 +18,7 @@ return [
     // делятся на несколько писем, чтобы каждое было не больше max_letter_mb вложений
     // (почтовые серверы не принимают письма больше ~25–30 МБ).
     'mail' => [
-        'enabled' => true,
+        'enabled' => false,
         'to' => ['zayavki@example.com'],      // кто получает заявки (можно несколько)
         'from' => 'site@example.com',         // ящик на домене сайта, созданный в панели reg.ru
         'from_name' => 'Сайт MEATWASH',
@@ -32,6 +32,30 @@ return [
         'enabled' => false,
         'token' => '',
         'chat_id' => '',
+    ],
+
+    // YCLIENTS — основной канал (Влад 12.11.2026: «заявка должна падать в YCLIENTS»). Заявка
+    // ложится в «Лист ожидания» студии: клиент ищется по телефону (нет — создаётся), услуги — по
+    // названиям работ из assets/yclients.json, всё остальное (машина, расчёт, комментарий,
+    // страница) — в комментарий заявки. Фото YCLIENTS не принимает: форма их не показывает,
+    // пока в meatwash-content.json site.requests.photos = false.
+    //   partner_token — API-ключ разработчика: регистрация в маркетплейсе интеграций YCLIENTS
+    //                   (https://developers.yclients.com/ru/), «Настройки аккаунта» → API-ключ;
+    //   user_token    — ключ пользователя-администратора студий: метод auth API (логин и пароль
+    //                   администратора) — один раз, в файл кладётся только ключ, не пароль;
+    //   companies     — id филиалов (как в assets/yclients.json → branches.*.company);
+    //   topic_branch  — направления, которые есть только в одной студии;
+    //   default_branch — куда, если студия не выбрана;
+    //   fallback_service — услуга студии для заявок, чьих работ нет в онлайн-записи (оклейка, кузов):
+    //                   завести в YCLIENTS услугу, например «Заявка с сайта», и вписать её id.
+    'yclients' => [
+        'enabled' => false,
+        'partner_token' => '',
+        'user_token' => '',
+        'companies' => ['myasnitskaya' => 906067, 'technopark' => 1743348],
+        'topic_branch' => ['wrap' => 'technopark', 'bodywork' => 'technopark'],
+        'default_branch' => 'myasnitskaya',
+        'fallback_service' => ['myasnitskaya' => 0, 'technopark' => 0],
     ],
 
     // Только для проверки: письма сохраняются файлами .eml в папку вместо отправки.

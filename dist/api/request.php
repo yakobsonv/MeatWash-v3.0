@@ -13,7 +13,7 @@
 // Протокол (только POST, ответ всегда JSON):
 //   action=token → {"ok":true,"token":"…","wait":N} — подписанная метка времени, форма
 //                  получает её при открытии окна и отправляет не раньше чем через N секунд;
-//   заявка (multipart/form-data): services, name, contact, car, branch, comment,
+//   заявка (multipart/form-data): services, topic_id, name, contact, car, branch, comment,
 //                  consent=yes, consentDocument, page, token, mw_extra (ловушка, пустое),
 //                  photos[] (до 5) → {"ok":true} | {"ok":false,"error":"…"}.
 //   Коды: 400 — ошибка в данных, 405 — не POST, 413 — слишком большой файл или запрос,
@@ -40,6 +40,8 @@ const FIELDS = [
     'branch' => [60, false, false],
     'comment' => [1000, false, true],
 ];
+// Студии (поле branch — id из формы) и их названия в тексте заявки.
+const BRANCHES = ['myasnitskaya' => 'Лубянка', 'technopark' => 'Технопарк'];
 const MAX_SERVICES = 30;
 const MAX_SERVICE_LENGTH = 200;
 
@@ -173,6 +175,29 @@ function loadConfig(): ?array
             ];
         } else {
             note('config: telegram enabled, but token or chat_id is not set');
+        }
+    }
+    // YCLIENTS (Влад 12.11: «заявка должна падать в YCLIENTS») — заявка в «Лист ожидания» студии.
+    $yc = $config['yclients'] ?? [];
+    if (!empty($yc['enabled'])) {
+        $partner = (string) ($yc['partner_token'] ?? '');
+        $user = (string) ($yc['user_token'] ?? '');
+        $companies = array_filter(array_map('intval', (array) ($yc['companies'] ?? [])));
+        $default = (string) ($yc['default_branch'] ?? '');
+        if (preg_match('/^[A-Za-z0-9]{10,}$/', $partner) && preg_match('/^[A-Za-z0-9]{10,}$/', $user)
+            && $companies && isset($companies[$default]) && !array_diff_key($companies, BRANCHES)) {
+            $channels['yclients'] = [
+                'partner' => $partner,
+                'user' => $user,
+                'companies' => $companies,
+                'default_branch' => $default,
+                'topic_branch' => array_filter((array) ($yc['topic_branch'] ?? []), static function ($b) use ($companies) { return isset($companies[$b]); }),
+                'fallback_service' => array_map('intval', (array) ($yc['fallback_service'] ?? [])),
+                'map_file' => is_string($yc['map_file'] ?? null) && $yc['map_file'] !== '' ? $yc['map_file'] : dirname(__DIR__) . '/assets/yclients.json',
+                'api' => rtrim(is_string($yc['api_base'] ?? null) && $yc['api_base'] !== '' ? $yc['api_base'] : 'https://api.yclients.ru', '/'),
+            ];
+        } else {
+            note('config: yclients enabled, but tokens, companies or default_branch are not set');
         }
     }
     // Только для проверки: письмо сохраняется в папку вместо отправки (в работе — выключено).
@@ -316,9 +341,11 @@ function readFields(): array
     if (mb_strlen($data['contact'], 'UTF-8') < 5) {
         fail(400, 'укажите телефон или ник в Telegram, чтобы мастер мог ответить', ['field' => 'contact']);
     }
-    if ($data['branch'] === '') {
-        $data['branch'] = 'Любая';
-    }
+    // branch — id студии из формы (myasnitskaya, technopark) или пусто; в тексте — название.
+    $data['branch_id'] = isset(BRANCHES[$data['branch']]) ? $data['branch'] : '';
+    $data['branch'] = $data['branch_id'] !== '' ? BRANCHES[$data['branch_id']] : ($data['branch'] === '' ? 'Любая' : $data['branch']);
+    $topic = clean($_POST['topic_id'] ?? '', false);
+    $data['topic_id'] = is_string($topic) && preg_match('/^[a-z]{1,20}$/', $topic) ? $topic : '';
 
     $services = clean($_POST['services'] ?? '', true);
     if ($services === null) {
@@ -665,6 +692,145 @@ function sendTelegram(array $data, array $photos, array $tg): bool
     return $sent;
 }
 
+// ── YCLIENTS: клиент по телефону и заявка в листе ожидания ───────────────────
+// Документация: https://developers.yclients.com/ru/ — заголовок «Bearer <partner>, User <user>»,
+// Accept application/vnd.yclients.v2+json. Порядок: студия → услуги по assets/yclients.json →
+// клиент (поиск по телефону, иначе создание) → POST /api/v2/companies/{id}/waiting_list.
+// В журнал — только метод, путь без параметров и код ответа (ни телефона, ни имени, ни токенов).
+
+function ycCall(array $yc, string $method, string $path, ?array $body = null): ?array
+{
+    if (!function_exists('curl_init')) {
+        note('yclients: curl extension is missing');
+        return null;
+    }
+    $curl = curl_init($yc['api'] . $path);
+    $options = [
+        CURLOPT_CUSTOMREQUEST => $method,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTPHEADER => [
+            'Accept: application/vnd.yclients.v2+json',
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $yc['partner'] . ', User ' . $yc['user'],
+        ],
+    ];
+    if ($body !== null) {
+        $options[CURLOPT_POSTFIELDS] = json_encode($body, JSON_UNESCAPED_UNICODE);
+    }
+    curl_setopt_array($curl, $options);
+    $response = curl_exec($curl);
+    $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+    $curlError = curl_errno($curl);
+    $result = is_string($response) ? json_decode($response, true) : null;
+    if ($status >= 200 && $status < 300 && is_array($result) && ($result['success'] ?? true) !== false) {
+        return $result;
+    }
+    $message = is_array($result) && is_string($result['meta']['message'] ?? null) ? mb_substr($result['meta']['message'], 0, 120, 'UTF-8') : '';
+    note('yclients ' . $method . ' ' . preg_replace('/\?.*$/', '', $path) . ": HTTP $status, curl $curlError" . ($message !== '' ? ", $message" : ''));
+    return null;
+}
+
+function ycPhone(string $contact): string
+{
+    $digits = preg_replace('/\D/', '', $contact);
+    if (strlen($digits) === 11 && $digits[0] === '8') {
+        $digits = '7' . substr($digits, 1);
+    } elseif (strlen($digits) === 10) {
+        $digits = '7' . $digits;
+    }
+    return preg_match('/^7\d{10}$/', $digits) ? $digits : '';
+}
+
+function ycBranch(array $data, array $yc): string
+{
+    $topic = $data['topic_id'];
+    if ($topic !== '' && isset($yc['topic_branch'][$topic])) {
+        return $yc['topic_branch'][$topic];
+    }
+    if ($data['branch_id'] !== '' && isset($yc['companies'][$data['branch_id']])) {
+        return $data['branch_id'];
+    }
+    return $yc['default_branch'];
+}
+
+// Услуги YCLIENTS студии по названиям работ: позиции (items) и программы мойки (programs —
+// по кузову; берём первую услугу, что есть в студии). Нет ни одной — запасная услуга студии.
+function ycServices(array $names, string $branch, array $yc): array
+{
+    $map = is_file($yc['map_file']) ? json_decode((string) file_get_contents($yc['map_file']), true) : null;
+    $ids = [];
+    if (is_array($map)) {
+        $programs = [];
+        foreach ((array) ($map['programs'] ?? []) as $program) {
+            if (is_string($program['name'] ?? null)) {
+                $programs[$program['name']] = (array) ($program[$branch] ?? []);
+            }
+        }
+        foreach ($names as $name) {
+            $id = $map['items'][$name][$branch] ?? null;
+            if (!$id && isset($programs[$name])) {
+                $id = current(array_filter($programs[$name])) ?: null;
+            }
+            if (is_int($id) || ctype_digit((string) $id)) {
+                $ids[] = (int) $id;
+            }
+        }
+    } else {
+        note('yclients: service map is missing or broken');
+    }
+    $ids = array_values(array_unique(array_filter($ids)));
+    if (!$ids && !empty($yc['fallback_service'][$branch])) {
+        $ids = [(int) $yc['fallback_service'][$branch]];
+    }
+    return $ids;
+}
+
+function ycClient(array $yc, int $company, string $phone, string $name): ?int
+{
+    $found = ycCall($yc, 'GET', "/api/v1/clients/$company?" . http_build_query(['phone' => $phone, 'count' => 20]));
+    foreach ((array) ($found['data'] ?? []) as $client) {
+        if (is_array($client) && preg_replace('/\D/', '', (string) ($client['phone'] ?? '')) === $phone && (int) ($client['id'] ?? 0) > 0) {
+            return (int) $client['id'];
+        }
+    }
+    $made = ycCall($yc, 'POST', "/api/v1/clients/$company", ['name' => $name, 'phone' => $phone, 'comment' => 'Заявка с сайта meatwash.ru']);
+    $id = (int) ($made['data']['id'] ?? $made['id'] ?? 0);
+    return $id > 0 ? $id : null;
+}
+
+function sendYclients(array $data, array $yc): bool
+{
+    $phone = ycPhone($data['contact']);
+    if ($phone === '') {
+        note('yclients: contact is not a Russian phone number');
+        return false;
+    }
+    $branch = ycBranch($data, $yc);
+    $company = (int) $yc['companies'][$branch];
+    $services = ycServices($data['services'], $branch, $yc);
+    if (!$services) {
+        note("yclients: no service id for the request in $branch (set fallback_service)");
+        return false;
+    }
+    $client = ycClient($yc, $company, $phone, $data['name']);
+    if ($client === null) {
+        return false;
+    }
+    $data['branch'] = BRANCHES[$branch];
+    $comment = plainText(lines($data, 0), 'Заявка с сайта meatwash.ru');
+    if (mb_strlen($comment, 'UTF-8') > 1000) {
+        $comment = mb_substr($comment, 0, 990, 'UTF-8') . "\n…";
+    }
+    $entry = ycCall($yc, 'POST', "/api/v2/companies/$company/waiting_list", [
+        'comment' => $comment,
+        'client' => ['id' => $client, 'name' => $data['name']],
+        'service_ids' => $services,
+    ]);
+    return $entry !== null && !empty($entry['data']['id']);
+}
+
 // ── Запрос ──────────────────────────────────────────────────────────────────
 
 try {
@@ -708,7 +874,8 @@ try {
     foreach ($config['channels'] as $name => $channel) {
         try {
             $ok = $name === 'mail' ? sendMail($data, $photos, $channel)
-                : ($name === 'telegram' ? sendTelegram($data, $photos, $channel) : saveFiles($data, $photos, $channel));
+                : ($name === 'telegram' ? sendTelegram($data, $photos, $channel)
+                : ($name === 'yclients' ? sendYclients($data, $channel) : saveFiles($data, $photos, $channel)));
         } catch (Throwable $error) {
             note("$name: " . get_class($error) . ' at line ' . $error->getLine());
             $ok = false;
