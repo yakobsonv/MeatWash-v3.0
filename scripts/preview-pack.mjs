@@ -27,6 +27,11 @@
 //   7. пишет список файлов пакета рядом с папкой (<out>.manifest.txt — не в загрузку);
 //      с --previous <старый manifest> печатает файлы прошлой выкладки, которых в новой
 //      нет: их Влад удаляет на сервере сам (поправка 37).
+// --prod (Влад 12.11: «перенеси новый сайт на основной домен») — боевой пакет для meatwash.ru:
+//   те же сжатие, склейка CSS, ?v= и вырезка комментариев, но без noindex и без подмены адресов,
+//   с Метрикой, боевыми robots.txt, sitemap.xml и файлом Вебмастера, .htaccess — server/htaccess.txt
+//   как есть, без PREVIEW.txt; api/ и kit.html в пакет не идут (api на сервере не трогаем).
+//   node scripts/preview-pack.mjs --prod --out ../meatwash-prod
 // Код выхода 1 — пакет не прошёл проверку или превышен бюджет.
 // Владелец: WP7.
 import {cp, rm, mkdir, readdir, readFile, writeFile, stat} from 'node:fs/promises';
@@ -39,14 +44,15 @@ import {gzipSync} from 'node:zlib';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..'), dist = resolve(root, 'dist');
 const args = process.argv.slice(2);
 const opt = (name, fallback) => { const i = args.indexOf(name); return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : fallback; };
-const host = opt('--host', 'new.meatwash.ru');
+const prod = args.includes('--prod');
+const host = prod ? 'meatwash.ru' : opt('--host', 'new.meatwash.ru');
 const out = resolve(opt('--out', resolve(root, '..', 'meat-auto-preview')));
-const metrika = args.includes('--metrika') && !args.includes('--no-metrika');
+const metrika = prod || (args.includes('--metrika') && !args.includes('--no-metrika'));
 const previous = opt('--previous', null);
 const PROD = 'https://meatwash.ru';
 const SITE = `https://${host}`;
 
-if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(host) || host === 'meatwash.ru' || host === 'www.meatwash.ru') { console.error(`--host: нужен поддомен превью, не боевой сайт (${host})`); process.exit(1); }
+if (!prod && !/^[a-z0-9.-]+\.[a-z]{2,}$/.test(host) || !prod && host === 'meatwash.ru' || host === 'www.meatwash.ru') { console.error(`--host: нужен поддомен превью, не боевой сайт (${host})`); process.exit(1); }
 const inside = (a, b) => a === b || a.startsWith(b + sep);
 if (inside(out, root) || inside(dist, out) || out === '/' ) { console.error(`--out: папка вне репозитория и не над ним (${out})`); process.exit(1); }
 if (!existsSync(resolve(dist, 'index.html'))) { console.error('Нет dist/index.html — сначала npm run build'); process.exit(1); }
@@ -64,8 +70,8 @@ const before = previous ? (await readFile(resolve(previous), 'utf8')).split('\n'
 await rm(out, {recursive: true, force: true});
 await mkdir(dirname(out), {recursive: true});
 await cp(dist, out, {recursive: true});
-for (const name of ['sitemap.xml', 'kit.html', 'robots.txt']) await rm(resolve(out, name), {force: true});
-for (const name of await readdir(out)) if (/^yandex_\w+\.html$/.test(name)) await rm(resolve(out, name));
+for (const name of prod ? ['kit.html'] : ['sitemap.xml', 'kit.html', 'robots.txt']) await rm(resolve(out, name), {force: true});
+if (!prod) for (const name of await readdir(out)) if (/^yandex_\w+\.html$/.test(name)) await rm(resolve(out, name));
 await rm(resolve(out, 'api'), {recursive: true, force: true});
 const pruned = node('prune-deploy.mjs', out).trim().split('\n').pop();
 await cp(resolve(root, 'server/404.html'), resolve(out, '404.html'));
@@ -124,6 +130,27 @@ const stripComments = (html) => html.split(/(<(script|style|textarea|pre)\b[\s\S
   .join('');
 const pages = (await readdir(out)).filter((n) => n.endsWith('.html'));
 let todo = 0;
+const TODO = '<span class="todo"[^>]*>[^<]*</span>';
+const textOf = (h) => h.replace(/<[^>]+>/g, '').replace(/&nbsp;|\u00a0/g, ' ').trim();
+function dropTodos(html, name) {
+  // 1. Вопрос FAQ, в ответе которого только пометки.
+  html = html.replace(/[ \t]*<details class="accordion">[\s\S]*?<\/details>\n?/g, (block) => {
+    if (!new RegExp(TODO).test(block)) return block;
+    const answer = block.replace(/^[\s\S]*?<div class="accordion__body">/, '').replace(new RegExp(TODO, 'g'), '');
+    return textOf(answer) ? block : '';
+  });
+  // 2. Абзац или пункт, где кроме пометки только подпись «Метка:».
+  html = html.replace(new RegExp(`[ \\t]*<(p|li)\\b[^>]*>(?:(?!</\\1>)[\\s\\S])*?${TODO}(?:(?!</\\1>)[\\s\\S])*?</\\1>\\n?`, 'g'), (block) => {
+    const rest = textOf(block.replace(new RegExp(TODO, 'g'), ''));
+    return !rest || /^[^.!?]*:$/.test(rest) ? '' : block;
+  });
+  // 3. Пометка в конце абзаца — вместе с фразой перед ней (до конца предыдущего предложения).
+  html = html.replace(new RegExp(`(?<=[.!?])\\s+[^.!?<>]*:?\\s*${TODO}`, 'g'), '');
+  // 4. Опустевшие списки и обёртки.
+  html = html.replace(/[ \t]*<ul class="import-todo">\s*<\/ul>\n?/g, '').replace(/[ \t]*<div class="col-basic">\s*<\/div>\n?/g, '');
+  if (new RegExp(TODO).test(html)) problems.push(`${name}: пометка «нужно от клиента» осталась на боевой странице`);
+  return html;
+}
 for (const name of pages) {
   const file = resolve(out, name);
   let html = stripComments(await readFile(file, 'utf8'));
@@ -131,16 +158,27 @@ for (const name of pages) {
   if (end < 0) { problems.push(`${name}: нет </head>`); continue; }
   let head = html.slice(0, end), body = html.slice(end);
   head = head.replace(/<meta name="robots" content="[^"]*">\n?/g, '');
+  if (!prod) {
   head = head.replace(/(<meta charset="utf-8">\n?)/i, `$1<meta name="robots" content="noindex, nofollow">\n`);
   if (!head.includes('<meta name="robots" content="noindex, nofollow">')) head = head.replace(/<head>\n?/, `<head>\n<meta name="robots" content="noindex, nofollow">\n`);
   head = head.split(PROD + '/').join(SITE + '/').split(`"${PROD}"`).join(`"${SITE}"`);
+  }
   if (!metrika) head = head.replace(/<meta name="mw-metrika" content="\d+">\n?/g, '');
+  // Боевой сайт: пометки «нужно от клиента» не показываем (Влад 12.11, запуск до ответов Романа) —
+  // вопрос FAQ, абзац, пункт списка или пояснение «Метка: …», где кроме пометки ничего нет, уходят
+  // целиком; пометка в конце абзаца уходит вместе со своей фразой «Сколько ждать: …».
+  if (prod) body = dropTodos(body, name);
   html = head + body;
   todo += (html.match(/<span class="todo"/g) || []).length;
   await writeFile(file, html);
 }
 
 // 4. robots.txt и .htaccess
+if (prod) {
+  const htaccess = (await readFile(resolve(root, 'server/htaccess.txt'), 'utf8')).replace(/^# MEATWASH — meatwash\.ru\n/m, `# MEATWASH — meatwash.ru (боевой пакет scripts/preview-pack.mjs --prod из server/htaccess.txt, ${sha}).\n`);
+  if (/X-Robots-Tag/.test(htaccess.split('\n').filter((l) => !/^\s*#/.test(l)).join('\n'))) problems.push('.htaccess: X-Robots-Tag в боевом файле');
+  await writeFile(resolve(out, '.htaccess'), htaccess);
+} else {
 await writeFile(resolve(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 let htaccess = await readFile(resolve(root, 'server/htaccess.txt'), 'utf8');
 htaccess = htaccess.split(PROD).join(SITE);
@@ -152,10 +190,11 @@ const leak = rules.match(/.{0,40}(?<![\w.-])meatwash\.ru.{0,20}/);
 if (leak) problems.push(`.htaccess: в правилах остался адрес боевого сайта: …${leak[0].trim()}…`);
 if (!rules.includes(`${SITE}%1 [R=301,L,NE]`) || !rules.includes(`${SITE}/$1 [R=301,L]`)) problems.push('.htaccess: переадресации не ведут на поддомен');
 await writeFile(resolve(out, '.htaccess'), htaccess);
+}
 
-// 5. PREVIEW.txt
+// 5. PREVIEW.txt (только превью)
 const date = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
-await writeFile(resolve(out, 'PREVIEW.txt'), `Meat Auto — превью\nhost: ${host}\nsha: ${sha}${dirty ? ' (рабочая копия с правками)' : ''}\nbuilt: ${date}\nmetrika: ${metrika ? 'on' : 'off'}\n`);
+if (!prod) await writeFile(resolve(out, 'PREVIEW.txt'), `Meat Auto — превью\nhost: ${host}\nsha: ${sha}${dirty ? ' (рабочая копия с правками)' : ''}\nbuilt: ${date}\nmetrika: ${metrika ? 'on' : 'off'}\n`);
 
 // 6. Проверка пакета
 async function collect(dir) {
@@ -167,8 +206,10 @@ async function collect(dir) {
   return list;
 }
 const all = (await collect(out)).map((f) => relative(out, f).split(sep).join('/')).sort();
-for (const banned of ['sitemap.xml', 'kit.html', 'api/request.php', 'assets/meatwash-content.json']) if (all.includes(banned)) problems.push(`в пакете ${banned}`);
-if (all.some((f) => /^yandex_\w+\.html$/.test(f))) problems.push('в пакете файл Вебмастера');
+for (const banned of [...(prod ? [] : ['sitemap.xml']), 'kit.html', 'api/request.php', 'assets/meatwash-content.json', ...(prod ? ['PREVIEW.txt'] : [])]) if (all.includes(banned)) problems.push(`в пакете ${banned}`);
+if (!prod && all.some((f) => /^yandex_\w+\.html$/.test(f))) problems.push('в пакете файл Вебмастера');
+if (prod) for (const need of ['sitemap.xml', 'robots.txt', '.htaccess', '404.html']) if (!all.includes(need)) problems.push(`в боевом пакете нет ${need}`);
+if (prod && !all.some((f) => /^yandex_\w+\.html$/.test(f))) problems.push('в боевом пакете нет файла Вебмастера');
 let versioned = 0;
 const gz = async (p) => gzipSync(await readFile(resolve(out, p)), {level: 9}).length;
 const js = {};
@@ -187,10 +228,12 @@ const BUDGET = {html: 20 * 1024, css: 30 * 1024, js: 30 * 1024, font: 60 * 1024,
 const budgets = [];
 for (const name of pages) {
   const html = await readFile(resolve(out, name), 'utf8');
-  if (!html.includes('<meta name="robots" content="noindex, nofollow">')) problems.push(`${name}: нет noindex`);
+  if (!prod && !html.includes('<meta name="robots" content="noindex, nofollow">')) problems.push(`${name}: нет noindex`);
+  if (prod && /noindex/.test(html.slice(0, html.indexOf('</head>')))) problems.push(`${name}: noindex в боевом пакете`);
+  if (prod && name !== '404.html' && !/^yandex_/.test(name) && !/<meta name="mw-metrika" content="\d+">/.test(html)) problems.push(`${name}: нет Метрики в боевом пакете`);
   if (html.includes('<!--')) problems.push(`${name}: остался HTML-комментарий`);
   const head = html.slice(0, html.indexOf('</head>'));
-  if (head.includes(PROD + '/')) problems.push(`${name}: в <head> остался адрес ${PROD}/`);
+  if (!prod && head.includes(PROD + '/')) problems.push(`${name}: в <head> остался адрес ${PROD}/`);
   if (!metrika && /mw-metrika|mc\.yandex\.ru/.test(html)) problems.push(`${name}: Метрика в пакете при --no-metrika`);
   for (const [, u] of html.matchAll(/<(?:link\b[^>]*\bhref|script\b[^>]*\bsrc)="(\/?(?:css|js)\/[^"]+)"/g)) { if (u.includes(`?v=${sha}`)) versioned++; else problems.push(`${name}: без ?v=${sha}: ${u}`); }
   if (name === '404.html') continue;
@@ -226,7 +269,7 @@ for (const f of all.filter((f) => /\.(html|js|css|txt)$/.test(f) && f !== 'js/po
 }
 const fontSize = (await stat(resolve(out, 'assets/fonts/manrope-vf.woff2'))).size;
 if (fontSize > BUDGET.font) problems.push(`шрифт ${fontSize} Б > 60 КБ`);
-if (/meatwash\.ru\/(?!\w)/.test(await readFile(resolve(out, 'robots.txt'), 'utf8'))) problems.push('robots.txt: ссылка на боевой sitemap');
+if (!prod && /meatwash\.ru\/(?!\w)/.test(await readFile(resolve(out, 'robots.txt'), 'utf8'))) problems.push('robots.txt: ссылка на боевой sitemap');
 
 // 7. Список файлов (вне папки загрузки) и файлы прошлой выкладки, которых нет в новой
 const manifest = `${out}.manifest.txt`;
@@ -241,12 +284,12 @@ if (before) {
 let bytes = 0;
 for (const f of all) bytes += (await stat(resolve(out, f))).size;
 const kb = (n) => (n / 1024).toFixed(1);
-console.log(`Пакет превью: ${out}`);
+console.log(`${prod ? 'Боевой пакет' : 'Пакет превью'}: ${out}`);
 console.log(`  хост ${host}, sha ${sha}${dirty ? ' (в рабочей копии есть незакоммиченные правки)' : ''}, Метрика ${metrika ? 'включена' : 'выключена (--no-metrika)'}`);
 console.log(`  страниц: ${pages.length} (из них 404.html), файлов: ${all.length}, размер: ${(bytes / 1048576).toFixed(2)} МБ`);
 console.log(`  ${pruned}`);
 console.log(`  ${stamped}; адресов CSS/JS с ?v=${sha} в HTML: ${versioned}; файлов стилей после склейки: ${bundles}`);
-console.log(`  пометок «нужно от клиента»: ${todo}`);
+console.log(`  пометок «нужно от клиента»: ${todo}${prod ? ' (на боевых страницах убраны)' : ''}`);
 console.log(`  шрифт manrope-vf.woff2: ${kb(fontSize)} КБ`);
 console.log('  бюджеты, КБ gzip (HTML ≤ 20, CSS ≤ 30, JS до взаимодействия ≤ 30; LCP-картинка ≤ 120 телефон / ≤ 200 компьютер, КБ):');
 for (const r of budgets) console.log(`    ${r.page.padEnd(26)} html ${kb(r.html).padStart(5)}  css ${kb(r.css).padStart(5)}  js ${kb(r.js).padStart(5)}  lcp ${r.lcpPhone ? kb(r.lcpPhone) : '—'} / ${r.lcpDesktop ? kb(r.lcpDesktop) : '—'}`);
