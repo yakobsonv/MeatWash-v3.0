@@ -122,8 +122,9 @@ export function setupRequest(dialog, { show }) {
   // Фото — только если приём их берёт (site.requests.photos; заявки в YCLIENTS фото не принимают).
   const photosOn = Boolean(endpoint) && REQUESTS.photos !== false;
   photosBox.hidden = !photosOn;
-  // Обещание звонка — только когда заявка действительно уходит администратору.
-  if (endpoint) $('#request-lead').textContent = 'Администратор студии перезвонит и ответит на вопросы.';
+  // Обещание звонка — только когда сервер принимает заявки: ставится после метки (loadToken);
+  // приём не настроен (503) — остаётся «Расскажите, что нужно машине, — или позвоните в студию».
+  const promiseCall = () => { $('#request-lead').textContent = 'Администратор студии перезвонит и ответит на вопросы.'; };
   // Ссылки онлайн-записи — как в разметке, пока корзина не собрана.
   for (const link of branchLinks) link.dataset.href = link.getAttribute('href');
 
@@ -336,6 +337,7 @@ export function setupRequest(dialog, { show }) {
     body.append('action', 'token');
     tokenLoading ??= post(body, signal).then((result) => {
       token = String(result.token || ''); tokenAt = Date.now(); tokenWait = Math.min(Number(result.wait) || 0, 30);
+      promiseCall();
     }).finally(() => { tokenLoading = null; });
     return tokenLoading;
   }

@@ -122,7 +122,7 @@ const programCard=([name,,time],i)=>{
  return `<li class="program-card" id="program-${i}">
       <div class="program-card__media"><img src="${escape(card.photo)}-800.webp" srcset="${escape(card.photo)}-800.webp 800w, ${escape(card.photo)}-1200.webp 1200w" sizes="${PROGRAM_SIZES}" width="800" height="600" alt="${escape(card.alt)}" loading="lazy" decoding="async"></div>
       <div class="program-card__text"><h4 class="program-card__name">${escape(name)}</h4><p class="program-card__desc">${escape(card.text)}</p></div>
-      <p class="program-card__price"><span data-program-price data-prices="${d.programPrices[i].join(',')}">${money(d.programPrices[i][0])}</span><span class="program-card__time"><span class="program-card__dot" aria-hidden="true">·</span><span class="sr">, </span>${escape(shortTime(time))}</span>${studioLine(i,'span','program-card__studio')}</p>
+      <p class="program-card__price"><span data-program-price data-prices="${d.programPrices[i].join(',')}">${money(d.programPrices[i][0])}</span><span class="program-card__time"><span class="program-card__dot" aria-hidden="true">·</span><span class="sr">, </span>${escape(shortTime(time))}</span>${studioLine(i,'span','program-card__studio')}${card.only?`<span class="program-card__studio">${escape(card.only)}</span>`:''}</p>
       <button class="btn btn--primary program-card__book" type="button" data-book data-program="${i}" data-book-context="${escape(programContext(i,0))}">${REQUEST_LABEL}${forName(name)}</button>
      </li>`;
 };
