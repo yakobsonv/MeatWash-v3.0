@@ -11,8 +11,14 @@ import { PROGRAMS } from './data.js';
 import { getBody, setBody, bodyName } from './body.js';
 
 const money = (n) => n.toLocaleString('ru-RU') + '\u00a0₽';   // ₽ не отрывается от числа
+// Якоря вкладок до 17.11 («Защита», «Помощь») ведут туда, где теперь их работы.
+const RETIRED = { 'price-protection': 'price-polish', 'price-help': 'price-body' };
 const byHash = (hash) => {
-  try { return hash && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null; } catch { return null; }
+  try {
+    if (!hash || hash.length < 2) return null;
+    const id = decodeURIComponent(hash.slice(1));
+    return document.getElementById(RETIRED[id] || id);
+  } catch { return null; }
 };
 
 // Работы автомойки, которые не продаются в онлайн-записи, помечаются прямо в прайсе:

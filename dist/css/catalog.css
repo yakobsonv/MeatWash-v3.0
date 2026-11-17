@@ -4,7 +4,7 @@
    с тёмной витриной. Карточки превью на главной — четыре категории. */
 .strip .card>img{filter:saturate(.78);will-change:auto}
 .strip .card--detailing>img{object-position:50% 58%}
-.strip .card--protection>img{object-position:30% 55%}
+.strip .card--wrap>img{object-position:30% 55%}
 /* Скол в кадре мелкий: чуть ближе, чтобы его было видно и в узкой карточке. */
 .strip .card--help>img{transform:scale(1.35);transform-origin:50% 50%}
 .strip .card::after{background:linear-gradient(180deg,rgb(var(--black-rgb)/.65),transparent 38%,transparent 60%,rgb(var(--black-rgb)/.7))}

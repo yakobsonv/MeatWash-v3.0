@@ -373,8 +373,8 @@ function renderReviews(topic, token) {
   // Где делают работу темы: оклейка и кузов — только в Технопарке (студии отзывов темы),
   // мойка и детейлинг — в обеих студиях: рейтинг показываем у каждой студии темы.
   const topicStudios = topic && !BOTH_STUDIOS.has(topic) ? new Set(items.map((x) => x.studio)) : new Set(r.studios.map((s) => s.id));
-  // Меньше трёх отзывов по теме — добираем отзывы той же студии (ряд не пустует).
-  for (const x of r.items) if (items.length < 3 && !items.includes(x) && topicStudios.has(x.studio)) items.push(x);
+  // Только отзывы темы (Влад 17.11: «везде релевантное»): чужие отзывы той же студии не добираем,
+  // даже если по теме их один-два.
   const studios = r.studios.filter((s) => topicStudios.has(s.id));
   const name = (id) => loc(id)?.name ?? (() => { throw new Error(`reviews: нет студии ${id}`); })();
   return `<section class="reviews" id="reviews" aria-labelledby="reviews-title">

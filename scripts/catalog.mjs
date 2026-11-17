@@ -86,7 +86,6 @@ const itemOf=(group,name)=>group.items.find(([n])=>n===name)??(()=>{throw new Er
 export const SECTION_LINKS={
  programs:{page:'wash',label:'Подробнее об автомойке'},
  'price-leather':{page:'detailing',label:'Подробнее о детейлинге'},
- 'price-polish':{page:'detailing',label:'Подробнее о детейлинге'},
  'price-film':{page:'wrap',label:'Подробнее об оклейке'},
  'price-bodywork':{page:'bodywork',label:'Подробнее о кузовных работах'},
  'price-presale':{page:'auto',hash:'sell',label:'Продажа автомобилей'},
@@ -158,7 +157,7 @@ const section=(group,s,page)=>`<section class="catalog__section${s.accent?' cata
 // Всё — по заявке (Влад 05.11): цену и время называет администратор.
 const LEAD={yclients:'Оставьте заявку — администратор подберёт время.',request:'Стоимость для вашей машины назовёт администратор: оставьте заявку у работы.'};
 
-// Каталог /services (§4.3 плана) — подстановка {{catalog}}. Пять категорий; без JS
+// Каталог /services (§4.3 плана) — подстановка {{catalog}}. Четыре категории — разделы сайта (Влад 17.11); без JS
 // вкладки — ссылки на категории, панели идут подряд; js/catalog.js делает из них вкладки
 // (WAI-ARIA tabs: role="tablist" ставится на .anchor-tabs__track[data-catalog-tabs] —
 // вкладки его прямые потомки) и показывает одну. H1 стоит в герое, поэтому категории — h2,
@@ -340,8 +339,8 @@ const shot=(id,size)=>`assets/shots/${id}${size==='s'?'-s':''}.webp`;
 const PREVIEW={
  wash:{shot:'cf-foam-crop',alt:'Спорткупе в активной пене на тёмном полу студии'},
  detailing:{shot:'cf-interior-seat',alt:'Салон классического купе: руль и кожаные сиденья с тканевыми вставками'},
- protection:{shot:'cf-front-corner',alt:'Фара и переднее крыло бордового автомобиля крупным планом'},
- help:{shot:'cf-chip-macro',alt:'Скол на тёмно-бордовом лаке крупным планом'},
+ wrap:{shot:'cf-front-corner',alt:'Фара и переднее крыло бордового автомобиля крупным планом'},
+ body:{shot:'cf-chip-macro',alt:'Скол на тёмно-бордовом лаке крупным планом'},
 };
 const previewFrom=group=>{
  const prices=group.sections.some(section=>section.programs)?d.programPrices.flat():priced(group.items);
@@ -364,7 +363,7 @@ ${d.groups.map((group,i)=>{
 // позиции с пояснением, категорией и подразделом, четыре категории с подразделами,
 // настройка заявок и филиалы (карты в карточках, цель записи).
 // Категория каталога → тема заявки по умолчанию (без указанной работы).
-export const CATEGORY_TOPIC={wash:'wash',detailing:'detailing',wrap:'wrap',protection:'detailing',help:'bodywork'};
+export const CATEGORY_TOPIC={wash:'wash',detailing:'detailing',wrap:'wrap',body:'bodywork'};
 export function renderData(){
  const prices=Object.fromEntries(d.groups.flatMap(g=>g.items.map(([name,price])=>[name,price])));
  const items=Object.fromEntries(d.groups.flatMap(g=>g.sections.filter(s=>s.items).flatMap(s=>s.items.map(name=>{
@@ -383,7 +382,7 @@ export const PROGRAMS = ${JSON.stringify(d.programs.map(([name,,time,description
 export const PRICES = ${JSON.stringify(prices,null,1)};
 // Позиции каталога: цена (null — после оценки), короткое пояснение, категория и подраздел.
 export const ITEMS = ${JSON.stringify(items,null,1)};
-// Пять категорий в порядке показа: booking yclients — запись в филиал, request —
+// Четыре категории в порядке показа (как разделы сайта): booking yclients — запись в филиал, request —
 // заявка с фото; sections — подразделы (programs: true — программы и пакеты автомойки,
 // accent: true — выделенный подраздел).
 export const CATEGORIES = ${JSON.stringify(categories,null,1)};

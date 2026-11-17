@@ -207,6 +207,11 @@
   .reviews__asof { grid-column: 2; }
 }
 @media (min-width: 760px) and (max-width: 1099px) { .reviews__list { columns: 2; } }
+/* Отзывов по теме один-два (17.11: только отзывы темы): без пустых колонок. */
+@media (min-width: 760px) {
+  .reviews__list:has(> .reviews__item:only-child) { columns: 1; max-width: 46rem; }
+  .reviews__list:has(> .reviews__item:nth-child(2):last-child) { columns: 2; }
+}
 @media (max-width: 759px) {
   .reviews__list {
     display: flex; align-items: flex-start; gap: 12px;
@@ -221,5 +226,9 @@
   }
   .reviews__list::-webkit-scrollbar { display: none; }
   .reviews__list::after { content: ""; flex: 0 0 max(1px, calc(var(--tiles-gutter, 0px) - 12px)); }
-  .reviews__item { flex: 0 0 min(84vw, 380px); margin: 0; scroll-snap-align: start; }
+  .reviews__item { flex: 0 0 min(78vw, 380px); margin: 0; scroll-snap-align: start; }
+  /* Один отзыв — без ленты: не листается вбок. */
+  .reviews__list:has(> .reviews__item:only-child) { overflow-x: visible; scroll-snap-type: none; }
+  .reviews__list:has(> .reviews__item:only-child)::after { display: none; }
+  .reviews__list > .reviews__item:only-child { flex: 1 1 auto; }
 }

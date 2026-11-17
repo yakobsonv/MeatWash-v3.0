@@ -85,11 +85,11 @@ def booking(browser, base, pages, res):
     cart_ok = s['open'] and s['topic'] == 'wash' and all(f'short?o=m-1s{want[b]}' in hrefs.get(b, '') for b in STUDIOS if want[b])
     pg.keyboard.press('Escape')
     pg.wait_for_timeout(400)
-    # /services: «Оставить заявку» в «Защите» → форма с темой «Детейлинг» и этой работой
+    # /services: «Оставить заявку» во вкладке «Детейлинг» (полировка, 17.11 — бывшая «Защита») → форма с темой «Детейлинг» и этой работой
     load(pg, f'{base}/services')
-    pg.click('#tab-price-protection')
+    pg.click('#tab-price-detailing')
     pg.wait_for_timeout(300)
-    row = pg.locator('#price-protection [data-request][data-request-category="protection"]').first
+    row = pg.locator('#price-polish [data-request][data-request-category="detailing"]').first
     service = row.get_attribute('data-request-services')
     row.click()
     pg.wait_for_timeout(450)
@@ -116,9 +116,9 @@ def booking(browser, base, pages, res):
     res.add('5', 'Заявка', ok_pages == total and cart_ok and talk_ok and not typo_bad,
             f'первая «Оставить заявку» → #request[open] с темой страницы, блокировка и Esc: {ok_pages}/{total} ({len(pages)} страниц × 1440 и 390); '
             f'/wash «{label}» + программа 3 → тема {s["topic"]}, онлайн-запись {", ".join(f"{b}: …{hrefs.get(b, "")[-24:]}" for b in STUDIOS)} (ожидалось m-1s{want["myasnitskaya"]}/{want["technopark"]}) — {"да" if cart_ok else "нет"}; '
-            f'«Оставить заявку» в «Защите» → тема {t["topic"]}, работы {t["chips"]}, онлайн-записи нет: {not t["links"]}; '
+            f'«Оставить заявку» у полировки во вкладке «Детейлинг» → тема {t["topic"]}, работы {t["chips"]}, онлайн-записи нет: {not t["links"]}; '
             f'строка контекста в форме: {typo_total} открытий на 320 и 390, висящих слов и тире — {len(typo_bad)}',
-            details + ([] if cart_ok else [f'корзина: {s}']) + ([] if talk_ok else [f'«Защита»: {t}']) + typo_bad[:10])
+            details + ([] if cart_ok else [f'корзина: {s}']) + ([] if talk_ok else [f'«Детейлинг» (полировка): {t}']) + typo_bad[:10])
 
 
 def consent(browser, base, res):

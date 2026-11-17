@@ -189,6 +189,12 @@
      факты — общеотраслевые. Только Технопарк (каталог и карточка студии). Цены — подстановками из подраздела
      каталога price-bodywork (якорь #price-bodywork — подстановка prices). Блоки #pdr, #paint, #chips — на них
      ведут плашки ряда работ bodywork (главная) и таблица «повреждение — способ».
+     Влад 17.11 («нет лишнего текста, всё просто, визуально»): сняты «Сначала — заводское покрытие»,
+     текстовые блоки вмятин, сколов и окраски, «Что написать в заявке», «С чем приезжают», «Как
+     проверить работу при приёмке», «Почему в Технопарке». Якоря #pdr, #chips, #paint — у строк
+     таблицы #bodywork-methods (на них ссылаются detailing и старые ссылки); вопросы к клиенту из
+     снятых блоков — пометками в ответах «Вопросов и ответов». Цены — price-bodywork и ремонт
+     стёкол (price-glass-repair, перенесён из детейлинга).
      Своих кадров кузовных работ нет: фото не ставим (ни cf-chip, ни пары «до/после» с /services — там
      иллюстрации), ряд плашек-услуг без фото — подстановка works. Отправку фото через сайт не обещаем:
      канала доставки заявок пока нет — фото показывают на осмотре.
@@ -199,7 +205,7 @@
   <p class="hero-c__mark" aria-hidden="true" lang="en" data-mark="BODY"></p>
   <h1 id="page-title">Кузовные работы в&nbsp;Москве</h1>
   <p class="chip section-hero__where">Только в&nbsp;Технопарке</p>
-  <p class="hero-c__lead">Вмятины без&nbsp;покраски, ремонт сколов, подкраска и&nbsp;окраска элемента. Сначала ищем способ, при&nbsp;котором заводского покрытия останется больше всего.</p>
+  <p class="hero-c__lead">Вмятины без&nbsp;покраски, ремонт сколов и&nbsp;окраска элемента, покраска дисков и&nbsp;ремонт стёкол. Сначала ищем способ, при&nbsp;котором заводского покрытия останется больше всего.</p>
   <p class="hero-c__price">Сколы&nbsp;— от&nbsp;5&nbsp;000&nbsp;₽ · вмятины&nbsp;— от&nbsp;7&nbsp;000&nbsp;₽ · окрас элемента&nbsp;— от&nbsp;20&nbsp;000&nbsp;₽</p>
   <div class="hero-c__actions actions">
     <button class="btn btn--primary" type="button" data-request data-request-category="bodywork">Оставить заявку<span class="sr"> на&nbsp;кузовные работы</span></button>
@@ -227,37 +233,15 @@
 <section class="section" id="bodywork-services" aria-labelledby="bodywork-services-title">
   <header class="section-head">
     <h2 id="bodywork-services-title">Что&nbsp;делаем</h2>
-    <p class="section-head__lead">Три вида работ&nbsp;— от&nbsp;самого бережного к&nbsp;самому объёмному. Какой из&nbsp;них подойдёт, станет ясно на&nbsp;осмотре.</p>
+    <p class="section-head__lead">От&nbsp;самого бережного способа к&nbsp;самому объёмному&nbsp;— какой подойдёт, станет ясно на&nbsp;осмотре.</p>
   </header>
   <div class="col-basic">
     <ul class="work-tiles" role="list" data-works="bodywork">
   <li class="work-tiles__item"><a class="work-tile" href="#pdr"><img class="work-tile__img" src="assets/img/works/bodywork-1-800.webp" srcset="assets/img/works/bodywork-1-800.webp 800w, assets/img/works/bodywork-1-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Заднее крыло чёрного седана в отражениях ламп, за ним световые панели на стене зала" loading="lazy" decoding="async"><span class="work-tile__price">от&nbsp;7&nbsp;000&nbsp;₽</span><span class="work-tile__title">Удаление вмятин без&nbsp;покраски</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
-  <li class="work-tiles__item"><a class="work-tile" href="#paint"><img class="work-tile__img" src="assets/img/works/bodywork-2-800.webp" srcset="assets/img/works/bodywork-2-800.webp 800w, assets/img/works/bodywork-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер обрабатывает машинкой заднее крыло чёрного автомобиля у кромки арки" loading="lazy" decoding="async"><span class="work-tile__price">от&nbsp;20&nbsp;000&nbsp;₽</span><span class="work-tile__title">Покраска элемента</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
   <li class="work-tiles__item"><a class="work-tile" href="#chips"><img class="work-tile__img" src="assets/img/works/bodywork-3-800.webp" srcset="assets/img/works/bodywork-3-800.webp 800w, assets/img/works/bodywork-3-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Фара и переднее крыло чёрного минивэна Mercedes крупно, в лаке отражаются лампы зала" loading="lazy" decoding="async"><span class="work-tile__price">от&nbsp;5&nbsp;000&nbsp;₽</span><span class="work-tile__title">Ремонт сколов</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
+  <li class="work-tiles__item"><a class="work-tile" href="#paint"><img class="work-tile__img" src="assets/img/works/bodywork-2-800.webp" srcset="assets/img/works/bodywork-2-800.webp 800w, assets/img/works/bodywork-2-1240.webp 1240w" sizes="(max-width: 759px) 85vw, (max-width: 1099px) 46vw, 31vw" width="800" height="600" alt="Мастер обрабатывает машинкой заднее крыло чёрного автомобиля у кромки арки" loading="lazy" decoding="async"><span class="work-tile__price">от&nbsp;20&nbsp;000&nbsp;₽</span><span class="work-tile__title">Покраска элемента</span><span class="work-tile__go" aria-hidden="true"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span></a></li>
 </ul>
   </div>
-</section>
-
-<section class="section" id="bodywork-principle" aria-labelledby="bodywork-principle-title">
-  <header class="section-head">
-    <h2 id="bodywork-principle-title">Сначала&nbsp;— заводское покрытие</h2>
-    <p class="section-head__lead">Краска, нанесённая на&nbsp;заводе, держится лучше любого ремонта. Поэтому мы&nbsp;идём от&nbsp;меньшего вмешательства к&nbsp;большему.</p>
-  </header>
-  <ol class="cards cards--3 col-basic ds-order" role="list">
-    <li class="card">
-      <h3>Без&nbsp;покраски</h3>
-      <p>Если краска цела, вмятину выправляют, не&nbsp;трогая лак. Деталь остаётся заводской.</p>
-    </li>
-    <li class="card">
-      <h3>Локально</h3>
-      <p>Скол или&nbsp;короткую царапину заполняют краской только в&nbsp;месте повреждения, без&nbsp;окраски всей детали.</p>
-    </li>
-    <li class="card">
-      <h3>Деталь целиком</h3>
-      <p>Когда повреждение большое или&nbsp;краска уже отслаивается, окрашивают элемент полностью&nbsp;— так переход не&nbsp;будет заметен.</p>
-    </li>
-  </ol>
-  <div class="col-basic"><p class="ds-aside">Заводской лак ценят и&nbsp;при&nbsp;продаже: кузов нередко проверяют толщиномером, и&nbsp;перекрашенные детали вызывают вопросы, даже если ремонт сделан хорошо.</p></div>
 </section>
 
 <section class="section" id="bodywork-methods" aria-labelledby="bodywork-methods-title">
@@ -276,83 +260,23 @@
           <td data-label="Способ"><a href="detailing#price-polish">Полировка</a>&nbsp;— часто хватает её</td>
           <td data-label="Цена">от&nbsp;1&nbsp;000&nbsp;₽</td>
         </tr>
-        <tr>
+        <tr id="pdr">
           <th scope="row">Вмятина, краска на&nbsp;ней цела</th>
-          <td data-label="Способ"><a href="#pdr">Удаление вмятины без&nbsp;покраски</a></td>
+          <td data-label="Способ">Удаление вмятины без&nbsp;покраски</td>
           <td data-label="Цена">от&nbsp;7&nbsp;000&nbsp;₽</td>
         </tr>
-        <tr>
+        <tr id="chips">
           <th scope="row">Скол или&nbsp;царапина до&nbsp;грунта или&nbsp;металла на&nbsp;небольшом участке</th>
-          <td data-label="Способ"><a href="#chips">Ремонт скола и&nbsp;подкраска</a>, металл&nbsp;— с&nbsp;защитой от&nbsp;коррозии</td>
+          <td data-label="Способ">Ремонт скола и&nbsp;подкраска, металл&nbsp;— с&nbsp;защитой от&nbsp;коррозии</td>
           <td data-label="Цена">от&nbsp;5&nbsp;000&nbsp;₽</td>
         </tr>
-        <tr>
+        <tr id="paint">
           <th scope="row">Повреждение на&nbsp;большой площади, трещины или&nbsp;отслоение краски, вмятина с&nbsp;заломом</th>
-          <td data-label="Способ"><a href="#paint">Окраска элемента</a>, при&nbsp;вмятине&nbsp;— с&nbsp;выравниванием</td>
+          <td data-label="Способ">Окраска элемента, при&nbsp;вмятине&nbsp;— с&nbsp;выравниванием</td>
           <td data-label="Цена">от&nbsp;20&nbsp;000&nbsp;₽</td>
         </tr>
       </tbody>
     </table>
-  </div>
-</section>
-
-<section class="section ds-block" id="pdr" aria-labelledby="pdr-title">
-  <div class="col-basic ds-block__grid">
-    <div class="ds-block__text">
-      <h2 id="pdr-title">Вмятины без&nbsp;покраски</h2>
-      <p>Металл возвращают на&nbsp;место специальным инструментом: изнутри детали&nbsp;— рычагами, снаружи&nbsp;— вытягиванием. Краску при&nbsp;этом не&nbsp;шлифуют и&nbsp;не&nbsp;перекрашивают, поэтому после ремонта деталь остаётся заводской.</p>
-      <h3>Когда это&nbsp;возможно</h3>
-      <ul class="ds-ticks" role="list">
-        <li>Краска на&nbsp;вмятине цела&nbsp;— без&nbsp;трещин и&nbsp;сколов.</li>
-        <li>Металл не&nbsp;заломан и&nbsp;не&nbsp;растянут острым краем.</li>
-        <li>К&nbsp;обратной стороне можно подобраться&nbsp;— иногда для&nbsp;этого снимают обшивку, фонарь или&nbsp;подкрылок.</li>
-      </ul>
-      <p>Чаще всего так убирают следы от&nbsp;дверей соседних машин на&nbsp;парковке, вмятины от&nbsp;града и&nbsp;упавших предметов. Обычно это&nbsp;двери и&nbsp;крылья, а&nbsp;также крыша, капот и&nbsp;крышка багажника. Цена зависит от&nbsp;размера и&nbsp;глубины вмятины, места и&nbsp;того, насколько легко к&nbsp;ней подобраться.</p>
-      <p class="ds-aside">Работаете&nbsp;ли с&nbsp;алюминиевыми деталями: <span class="todo" data-no-typo>[нужно от клиента: берёмся ли за вмятины на алюминиевых деталях]</span></p>
-    </div>
-    <aside class="ds-block__price" aria-label="Цена">
-      <p class="ds-block__name">Удаление вмятин без&nbsp;покраски</p>
-      <p class="ds-block__value">от&nbsp;7&nbsp;000&nbsp;₽</p>
-      <p class="ds-block__note">Можно&nbsp;ли обойтись без&nbsp;покраски, скажем на&nbsp;осмотре.</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="bodywork" data-request-services="Удаление вмятин PDR">Оставить заявку<span class="sr">: удаление вмятин без&nbsp;покраски</span></button>
-    </aside>
-  </div>
-</section>
-
-<section class="section ds-block" id="chips" aria-labelledby="chips-title">
-  <div class="col-basic ds-block__grid">
-    <div class="ds-block__text">
-      <h2 id="chips-title">Сколы и&nbsp;подкраска</h2>
-      <p>Скол до&nbsp;металла&nbsp;— не&nbsp;только вид: открытый металл начинает ржаветь, а&nbsp;зимой реагенты ускоряют это. Чем&nbsp;раньше закрыть скол, тем меньше будет ремонт потом.</p>
-      <p>Чаще всего сколы находят на&nbsp;переднем бампере и&nbsp;капоте, на&nbsp;крыльях, кромках дверей и&nbsp;над&nbsp;лобовым стеклом. Место очищают, металл защищают от&nbsp;коррозии, скол заполняют краской в&nbsp;цвет и&nbsp;выравнивают&nbsp;— без&nbsp;окраски всей детали.</p>
-      <p>Собираетесь клеить плёнку&nbsp;— сначала стоит отремонтировать сколы: под&nbsp;прозрачной плёнкой они останутся видны. Об&nbsp;этом&nbsp;— на&nbsp;странице <a href="wrap">«Оклейка плёнкой»</a>.</p>
-    </div>
-    <aside class="ds-block__price" aria-label="Цена">
-      <p class="ds-block__name">Удаление сколов и&nbsp;подкраска</p>
-      <p class="ds-block__value">от&nbsp;5&nbsp;000&nbsp;₽</p>
-      <p class="ds-block__note">Точечно по&nbsp;месту, без&nbsp;перекраса всего элемента.</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="bodywork" data-request-services="Удаление сколов и подкраска">Оставить заявку<span class="sr">: ремонт сколов и&nbsp;подкраска</span></button>
-    </aside>
-  </div>
-</section>
-
-<section class="section ds-block" id="paint" aria-labelledby="paint-title">
-  <div class="col-basic ds-block__grid">
-    <div class="ds-block__text">
-      <h2 id="paint-title">Окраска элемента</h2>
-      <p>Когда повреждение слишком большое для&nbsp;подкраски, окрашивают одну деталь: бампер, дверь, крыло, капот, порог или&nbsp;крышку багажника. Остальной кузов остаётся заводским.</p>
-      <h3>Как&nbsp;попадают в&nbsp;цвет</h3>
-      <p>Заводского кода краски мало: за&nbsp;годы оттенок меняется на&nbsp;солнце, а&nbsp;у&nbsp;одного кода бывает несколько вариантов. Поэтому цвет подбирают по&nbsp;коду и&nbsp;по&nbsp;самой машине, сверяя пробные выкрасы при&nbsp;разном свете. Металлик, перламутр и&nbsp;многослойные цвета сложнее&nbsp;— их&nbsp;оценивают отдельно.</p>
-      <h3>Из&nbsp;чего состоит работа</h3>
-      <p>Подготовка и&nbsp;выравнивание поверхности, грунт, базовый цвет, лак, сушка, сборка и&nbsp;контроль при&nbsp;хорошем свете.</p>
-      <p class="ds-aside">Чем&nbsp;красим: <span class="todo" data-no-typo>[нужно от клиента: марки краски и лака; кто выполняет кузовные и малярные работы — свои мастера или партнёр]</span></p>
-    </div>
-    <aside class="ds-block__price" aria-label="Цена">
-      <p class="ds-block__name">Окраска элемента</p>
-      <p class="ds-block__value">от&nbsp;20&nbsp;000&nbsp;₽</p>
-      <p class="ds-block__note">Цена одной детали зависит от&nbsp;её&nbsp;размера, подготовки и&nbsp;цвета.</p>
-      <button class="btn btn--secondary btn--compact" type="button" data-request data-request-category="bodywork" data-request-services="Локальный окрас элемента">Оставить заявку<span class="sr">: окраска элемента</span></button>
-    </aside>
   </div>
 </section>
 
@@ -367,7 +291,13 @@
    <div class="catalog__section-head">
     <h3 class="catalog__subhead" id="price-bodywork-title">Кузов и&nbsp;диски</h3>
    </div>
-   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Удаление сколов и подкраска"><div class="catalog__item-text"><p class="catalog__item-name">Удаление сколов и&nbsp;подкраска</p><p class="catalog__item-note">Точечно по&nbsp;месту, без&nbsp;перекраса всего элемента.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="help" data-request-services="Удаление сколов и подкраска"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Удаление сколов и&nbsp;подкраска</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Удаление вмятин PDR"><div class="catalog__item-text"><p class="catalog__item-name">Удаление вмятин PDR</p><p class="catalog__item-note">Вмятина выправляется без&nbsp;покраски.</p></div><p class="catalog__item-price">от&nbsp;7&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="help" data-request-services="Удаление вмятин PDR"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Удаление вмятин PDR</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Локальный окрас элемента"><div class="catalog__item-text"><p class="catalog__item-name">Локальный окрас элемента</p><p class="catalog__item-note">Окраска одной детали кузова.</p></div><p class="catalog__item-price">от&nbsp;20&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="help" data-request-services="Локальный окрас элемента"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Локальный окрас элемента</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Порошковая покраска дисков"><div class="catalog__item-text"><p class="catalog__item-name">Порошковая покраска дисков</p><p class="catalog__item-note">Только в&nbsp;Технопарке. Стоимость&nbsp;— после осмотра дисков.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="help" data-request-services="Порошковая покраска дисков"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Порошковая покраска дисков</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
+   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Удаление сколов и подкраска"><div class="catalog__item-text"><p class="catalog__item-name">Удаление сколов и&nbsp;подкраска</p><p class="catalog__item-note">Точечно по&nbsp;месту, без&nbsp;перекраса всего элемента.</p></div><p class="catalog__item-price">от&nbsp;5&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="body" data-request-services="Удаление сколов и подкраска"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Удаление сколов и&nbsp;подкраска</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Удаление вмятин PDR"><div class="catalog__item-text"><p class="catalog__item-name">Удаление вмятин PDR</p><p class="catalog__item-note">Вмятина выправляется без&nbsp;покраски.</p></div><p class="catalog__item-price">от&nbsp;7&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="body" data-request-services="Удаление вмятин PDR"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Удаление вмятин PDR</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Локальный окрас элемента"><div class="catalog__item-text"><p class="catalog__item-name">Локальный окрас элемента</p><p class="catalog__item-note">Окраска одной детали кузова.</p></div><p class="catalog__item-price">от&nbsp;20&nbsp;000&nbsp;₽</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="body" data-request-services="Локальный окрас элемента"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Локальный окрас элемента</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li><li class="catalog__item" data-price-item="Порошковая покраска дисков"><div class="catalog__item-text"><p class="catalog__item-name">Порошковая покраска дисков</p><p class="catalog__item-note">Только в&nbsp;Технопарке. Стоимость&nbsp;— после осмотра дисков.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="body" data-request-services="Порошковая покраска дисков"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Порошковая покраска дисков</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
+  </section>
+  <section class="catalog__section catalog__section--accent" id="price-glass-repair" aria-labelledby="price-glass-repair-title" data-summary="1 позиция">
+   <div class="catalog__section-head">
+    <h3 class="catalog__subhead" id="price-glass-repair-title">Ремонт стёкол</h3>
+   </div>
+   <ul class="catalog__items" role="list"><li class="catalog__item" data-price-item="Ремонт автомобильных стёкол"><div class="catalog__item-text"><p class="catalog__item-name">Ремонт автомобильных стёкол</p><p class="catalog__item-note">Стоимость&nbsp;— после осмотра повреждения.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="body" data-request-services="Ремонт автомобильных стёкол"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Ремонт автомобильных стёкол</span><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></button></li></ul>
   </section>
   <p class="catalog__note">Стоимость зависит от&nbsp;типа кузова и&nbsp;состояния автомобиля. Итоговый объём и&nbsp;цену согласуем перед работой. Не&nbsp;является публичной офертой.</p>
  </div>
@@ -401,93 +331,6 @@
   </div>
 </section>
 
-<section class="section" id="bodywork-assess" aria-labelledby="bodywork-assess-title">
-  <header class="section-head">
-    <h2 id="bodywork-assess-title">Что&nbsp;написать в&nbsp;заявке</h2>
-    <p class="section-head__lead">Чем&nbsp;точнее описание, тем точнее администратор сориентирует по&nbsp;цене до&nbsp;осмотра.</p>
-  </header>
-  <div class="col-basic ds-split">
-    <ul class="ds-ticks" role="list">
-      <li>Марка, модель и&nbsp;год машины.</li>
-      <li>Какая деталь повреждена и&nbsp;где&nbsp;на&nbsp;ней повреждение.</li>
-      <li>Примерный размер: с&nbsp;монету, с&nbsp;ладонь или&nbsp;больше.</li>
-      <li>Задета&nbsp;ли краска: есть&nbsp;ли скол, трещина или&nbsp;вмятина при&nbsp;целом лаке.</li>
-      <li>Красили&nbsp;ли эту деталь раньше.</li>
-      <li>Код краски, если знаете&nbsp;— обычно он&nbsp;на&nbsp;табличке в&nbsp;проёме двери или&nbsp;под&nbsp;капотом.</li>
-    </ul>
-    <p class="ds-note">Фотографии повреждения покажите администратору на&nbsp;осмотре: окончательно способ ремонта выбирают, когда машина перед глазами.</p>
-  </div>
-</section>
-
-<section class="section" id="bodywork-when" aria-labelledby="bodywork-when-title">
-  <header class="section-head">
-    <h2 id="bodywork-when-title">С&nbsp;чем&nbsp;приезжают</h2>
-  </header>
-  <ul class="cards cards--3 col-basic" role="list">
-    <li class="card">
-      <h3>Вмятина на&nbsp;парковке</h3>
-      <p>Дверь соседней машины или&nbsp;тележка оставили вмятину, а&nbsp;краска цела.</p>
-    </li>
-    <li class="card">
-      <h3>После града</h3>
-      <p>Много мелких вмятин на&nbsp;капоте, крыше и&nbsp;крышке багажника.</p>
-    </li>
-    <li class="card">
-      <h3>Сколы спереди</h3>
-      <p>Капот и&nbsp;бампер в&nbsp;точках сколов, кое-где&nbsp;уже виден металл.</p>
-    </li>
-    <li class="card">
-      <h3>Перед продажей</h3>
-      <p>Убрать мелкие повреждения и&nbsp;сохранить как&nbsp;можно больше заводского покрытия.</p>
-    </li>
-    <li class="card">
-      <h3>Перед оклейкой</h3>
-      <p>Отремонтировать сколы и&nbsp;вмятины, чтобы их&nbsp;не&nbsp;было видно под&nbsp;плёнкой.</p>
-    </li>
-    <li class="card">
-      <h3>Царапина на&nbsp;детали</h3>
-      <p>Решим, хватит&nbsp;ли полировки, подкраски или&nbsp;нужна окраска элемента.</p>
-    </li>
-  </ul>
-</section>
-
-<section class="section" id="bodywork-accept" aria-labelledby="bodywork-accept-title">
-  <header class="section-head">
-    <h2 id="bodywork-accept-title">Как&nbsp;проверить работу при&nbsp;приёмке</h2>
-  </header>
-  <div class="col-basic ds-split">
-    <ul class="ds-ticks" role="list">
-      <li>Посмотрите на&nbsp;деталь при&nbsp;дневном свете и&nbsp;под&nbsp;углом: оттенок совпадает с&nbsp;соседними.</li>
-      <li>Лак гладкий, без&nbsp;потёков и&nbsp;пылинок, блестит так&nbsp;же, как&nbsp;рядом.</li>
-      <li>На&nbsp;месте вмятины отражение ровное, без&nbsp;волны.</li>
-      <li>Зазоры между деталями одинаковые, уплотнители и&nbsp;молдинги чистые.</li>
-      <li>Спросите, когда можно мыть машину, полировать деталь и&nbsp;клеить на&nbsp;неё плёнку.</li>
-    </ul>
-    <p class="ds-note">Плёнку на&nbsp;окрашенную деталь клеят только после того, как&nbsp;краска полностью высохнет и&nbsp;наберёт твёрдость. Сколько ждать: <span class="todo" data-no-typo>[нужно от клиента: через сколько дней после окраски можно мыть, полировать и клеить плёнку]</span></p>
-  </div>
-</section>
-
-<section class="section" id="bodywork-why" aria-labelledby="bodywork-why-title">
-  <header class="section-head">
-    <h2 id="bodywork-why-title">Почему в&nbsp;Технопарке</h2>
-  </header>
-  <ul class="cards cards--3 col-basic" role="list">
-    <li class="card">
-      <h3>Всё в&nbsp;одном месте</h3>
-      <p>В&nbsp;детейлинг-центре Технопарк есть полировка, керамика и&nbsp;оклейка плёнкой: когда краска наберёт твёрдость, отремонтированную деталь можно защитить там&nbsp;же.</p>
-    </li>
-    <li class="card">
-      <h3>Сначала&nbsp;— без&nbsp;покраски</h3>
-      <p>Предлагаем самый бережный способ, который подходит к&nbsp;повреждению, и&nbsp;честно говорим, если он&nbsp;не&nbsp;сработает.</p>
-    </li>
-    <li class="card">
-      <h3>Часы и&nbsp;адрес</h3>
-      <p>Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00, пр-т&nbsp;Андропова, 8, стр. 2, ТЦ&nbsp;«Мегаполис», 1&nbsp;этаж.</p>
-    </li>
-  </ul>
-  <div class="col-basic"><p class="ds-aside">Гарантия на&nbsp;кузовные и&nbsp;малярные работы: <span class="todo" data-no-typo>[нужно от клиента: есть ли гарантия и на какой срок]</span></p></div>
-</section>
-
 <section class="reviews" id="reviews" aria-labelledby="reviews-title">
   <header class="reviews__head">
     <h2 class="reviews__title" id="reviews-title">Отзывы клиентов</h2>
@@ -509,20 +352,6 @@
         <figcaption class="review__meta"><span class="review__author">Клиент</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-09-24">24&nbsp;сентября 2026</time></figcaption>
       </figure>
     </li>
-    <li class="reviews__item">
-      <figure class="review">
-        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
-        <blockquote class="review__text"><p>Обслуживание шикарное, приехал просто помыть машину, но&nbsp;в&nbsp;итоге решил оставить её&nbsp;на&nbsp;полный детейлинг, трёхэтапную полировку, керамику, полную химчистку, реставрацию четырёх дисков, мойку подвески и&nbsp;оклейку зон риска, удалось пообщаться с&nbsp;управляющими, ребята очень отзывчивые, всё объясняют по&nbsp;факту, без&nbsp;лишней воды и&nbsp;навязывания, в&nbsp;итоге забрал машину как&nbsp;новую, очень рад что&nbsp;попал именно к&nbsp;ним</p></blockquote>
-        <figcaption class="review__meta"><span class="review__author">Amin S.</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-05-27">27&nbsp;мая 2026</time></figcaption>
-      </figure>
-    </li>
-    <li class="reviews__item">
-      <figure class="review">
-        <span class="review__stars" role="img" aria-label="Оценка 5 из 5"><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg><svg class="review__star" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-star"/></svg></span>
-        <blockquote class="review__text"><p>В&nbsp;первую очередь хочу поблагодарить мастеров которые оклеивали мой автомобиль, настоящие профессионалы своего дела, […] качество оклейки отличное, отдал им&nbsp;второй автомобиль и&nbsp;во&nbsp;второй раз доволен результатом, спасибо большое !)</p></blockquote>
-        <figcaption class="review__meta"><span class="review__author">Константин К.</span><span class="review__studio">Технопарк</span><time class="review__date" datetime="2026-07-01">1&nbsp;июля 2026</time></figcaption>
-      </figure>
-    </li>
   </ul>
 </section>
 
@@ -541,6 +370,7 @@
       <summary class="accordion__head">Любую вмятину можно убрать без&nbsp;покраски?</summary>
       <div class="accordion__body">
         <p>Нет. Нужно, чтобы краска была цела, металл не&nbsp;был заломан и&nbsp;к&nbsp;вмятине можно было подобраться. Если это&nbsp;не&nbsp;так, предложим подкраску или&nbsp;окраску элемента.</p>
+        <p><span class="todo" data-no-typo>[нужно от клиента: берёмся ли за вмятины на алюминиевых деталях]</span></p>
       </div>
     </details>
     <details class="accordion">
@@ -565,12 +395,14 @@
       <summary class="accordion__head">Попадёте&nbsp;ли в&nbsp;цвет?</summary>
       <div class="accordion__body">
         <p>Цвет подбирают по&nbsp;коду краски и&nbsp;по&nbsp;самой машине, сверяя пробные выкрасы. Сложные цвета&nbsp;— металлик, перламутр, многослойные&nbsp;— оцениваем на&nbsp;осмотре отдельно.</p>
+        <p><span class="todo" data-no-typo>[нужно от клиента: марки краски и лака]</span></p>
       </div>
     </details>
     <details class="accordion">
       <summary class="accordion__head">Сколько времени займёт ремонт?</summary>
       <div class="accordion__body">
         <p><span class="todo" data-no-typo>[нужно от клиента: сроки — вмятина без покраски, ремонт скола, окраска одной детали]</span></p>
+        <p><span class="todo" data-no-typo>[нужно от клиента: через сколько дней после окраски можно мыть, полировать и клеить плёнку]</span></p>
       </div>
     </details>
     <details class="accordion">

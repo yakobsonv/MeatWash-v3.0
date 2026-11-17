@@ -11,7 +11,7 @@
      страницы (wash, detailing, wrap, bodywork) — ссылки на них сразу под первым экраном.
      Все призывы — «Оставить заявку» (data-request; автомойка в каталоге — data-book). -->
 <!-- Шапка (Влад 30.10): ролик открытой вкладки каталога — data-category как у панели
-     #price-<id>; переключает js/video.js по событию mw:category из js/catalog.js. У «Помощи»
+     #price-<id>; переключает js/video.js по событию mw:category из js/catalog.js. У «Кузовных работ»
      ролика нет — видно фото. Ролики: полоса 21:9 (-w, от 760 px) и квадрат (-m). -->
 <section class="hero-a hero-a--tabs" aria-labelledby="page-title">
   <div class="hero-a__media">
@@ -22,12 +22,11 @@
     <video class="hero-a__video" data-video="tab" data-category="wash" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-wash-w.mp4}}" data-src-m="{{asset:assets/video/svc-wash-m.mp4}}"></video>
     <video class="hero-a__video" data-video="tab" data-category="detailing" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-detailing-w.mp4}}" data-src-m="{{asset:assets/video/svc-detailing-m.mp4}}"></video>
     <video class="hero-a__video" data-video="tab" data-category="wrap" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-wrap-w.mp4}}" data-src-m="{{asset:assets/video/svc-wrap-m.mp4}}"></video>
-    <video class="hero-a__video" data-video="tab" data-category="protection" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src="{{asset:assets/video/svc-protection-w.mp4}}" data-src-m="{{asset:assets/video/svc-protection-m.mp4}}"></video>
   </div>
   <button class="hero-a__toggle" type="button" data-video-toggle aria-pressed="false" aria-label="Остановить видео" hidden>{{icon:pause:hero-a__pause}}{{icon:play:hero-a__play}}</button>
   <div class="hero-a__body">
     <h1 id="page-title">Услуги и цены</h1>
-    <p class="hero-a__lead">Все работы студий с ценами «от» в одном каталоге: автомойка, детейлинг, оклейка, защита и помощь. Точную цену администратор назовёт после заявки.</p>
+    <p class="hero-a__lead">Все работы студий с ценами «от» в одном каталоге: автомойка, детейлинг, оклейка и кузовные работы. Точную цену администратор назовёт после заявки.</p>
     <div class="hero-a__actions actions">
       <button class="btn btn--primary" type="button" data-request>Оставить заявку</button>
       <a class="btn btn--secondary" href="#catalog">Смотреть цены</a>
@@ -65,7 +64,7 @@
         <i>Мутный рассеиватель снова прозрачный: свет идёт на дорогу, а не теряется в пластике.</i>
         <span class="ba__note">Иллюстрация, не работа студии</span>
       </figcaption>
-      <button class="link-arrow proof__ask" type="button" data-request data-request-category="protection" data-request-services="Полировка фар">Оставить заявку<span class="sr">: полировка фар</span>{{icon:arrow-right}}</button>
+      <button class="link-arrow proof__ask" type="button" data-request data-request-category="detailing" data-request-services="Полировка фар">Оставить заявку<span class="sr">: полировка фар</span>{{icon:arrow-right}}</button>
     </figure>
     <figure class="ba proof__item" data-ba data-split="72">
       <div class="ba__frame">
@@ -82,7 +81,7 @@
         <i>Отражение лампы идёт по крылу без разрыва — скол не читается ни под каким углом.</i>
         <span class="ba__note">Иллюстрация, не работа студии</span>
       </figcaption>
-      <button class="link-arrow proof__ask" type="button" data-request data-request-category="help" data-request-services="Удаление сколов и подкраска">Оставить заявку<span class="sr">: удаление сколов и подкраска</span>{{icon:arrow-right}}</button>
+      <button class="link-arrow proof__ask" type="button" data-request data-request-category="bodywork" data-request-services="Удаление сколов и подкраска">Оставить заявку<span class="sr">: удаление сколов и подкраска</span>{{icon:arrow-right}}</button>
     </figure>
   </div>
 </section>

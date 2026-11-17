@@ -6,9 +6,12 @@
      Влад 09.11 вечер: блока «Что входит в детейлинг» нет; химчистка салона (price-interior) — услуга
      автомойки, стоит на /wash (#wash-interior).
      Цены — только подстановками из каталога. Подразделы: price-leather,
-     price-polish, price-coatings, price-components; предпродажная подготовка — строкой в «Когда нужен». «Стёкла» каталога (price-glass)
-     целиком не ставим: «Бронирование лобового стекла» — тема «Оклейка плёнкой» (PLAN.md), поэтому
-     антидождь и ремонт стёкол — своими строками в разметке каталога, цены — подстановкой price.
+     price-polish, price-coatings, price-components, price-presale (свой блок без шапки: заголовок — у подраздела). «Стёкла» — своими
+     строками в разметке каталога (подраздел price-glass — только антидождь; плёнка на лобовое — в
+     price-film на /wrap, ремонт стёкол — price-glass-repair на /bodywork), цены — подстановкой price.
+     Влад 17.11 («нет лишнего текста, всё просто, визуально»): блоки «Когда детейлинг особенно нужен» и
+     «Почему MEATWASH» сняты; «Наши работы» — полировка, Lotus (полировка и керамика), антидождь,
+     салон, мотор, диски (works.detailing).
      Детейлинг — в обеих студиях (запись YCLIENTS обеих). Что есть только в Технопарке — пометка
      «нужно от клиента». Ограничения (полировка не убирает скол до грунта, керамика не защищает
      от камней) — общеотраслевые. Вид — css/section.css, строки цен — css/services.css.
@@ -72,7 +75,6 @@
       <ul class="catalog__items" role="list">
         <li class="catalog__item" data-price-item="Антидождь передней полусферы"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь передней полусферы</p><p class="catalog__item-note">Лобовое и передние боковые стёкла: на скорости вода срывается сама.</p></div><p class="catalog__item-price">{{price:Антидождь передней полусферы}}</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь передней полусферы"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Антидождь передней полусферы</span>{{icon:arrow-right}}</button></li>
         <li class="catalog__item" data-price-item="Антидождь всех стёкол автомобиля"><div class="catalog__item-text"><p class="catalog__item-name">Антидождь всех стёкол автомобиля</p><p class="catalog__item-note">Гидрофобная защита всех стёкол автомобиля.</p></div><p class="catalog__item-price">{{price:Антидождь всех стёкол автомобиля}}</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Антидождь всех стёкол автомобиля"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Антидождь всех стёкол автомобиля</span>{{icon:arrow-right}}</button></li>
-        <li class="catalog__item" data-price-item="Ремонт автомобильных стёкол"><div class="catalog__item-text"><p class="catalog__item-name">Ремонт автомобильных стёкол</p><p class="catalog__item-note">Стоимость — после осмотра повреждения.</p></div><p class="catalog__item-price catalog__item-price--estimate">После оценки</p><button class="catalog__action btn btn--compact btn--secondary" type="button" data-request data-request-category="detailing" data-request-services="Ремонт автомобильных стёкол"><span class="catalog__action-label">Оставить заявку</span><span class="sr">: Ремонт автомобильных стёкол</span>{{icon:arrow-right}}</button></li>
       </ul>
     </section>
     <p class="catalog__note">Стоимость зависит от типа кузова и состояния автомобиля. Итоговый объём и цену согласуем перед работой. Не является публичной офертой.</p>
@@ -85,6 +87,10 @@
     <p class="section-head__lead">Диски, моторный отсек и подвеска собирают тормозную пыль, масло и реагент. Их чистят отдельно от кузова и другими средствами, а под капотом электронику закрывают и не направляют на неё сильный напор.</p>
   </header>
 {{prices:price-components}}
+</section>
+
+<section class="section sec-block sec-block--prices" id="detailing-presale" aria-label="Подготовка к продаже">
+{{prices:price-presale}}
 </section>
 
 <section class="section sec-block" id="detailing-limits" aria-labelledby="detailing-limits-title">
@@ -139,68 +145,11 @@
 <section class="section sec-block" id="detailing-works" aria-labelledby="detailing-works-title">
   <header class="section-head col-title">
     <h2 id="detailing-works-title">Наши работы</h2>
-    <p class="section-head__lead">Кадры из наших студий: салон, моторный отсек, диски.</p>
+    <p class="section-head__lead">Кадры из наших студий: полировка и керамика, антидождь, салон, моторный отсек, диски.</p>
   </header>
   <div class="sec-tiles col-ext">
 {{works:detailing}}
   </div>
-</section>
-
-<section class="section sec-block" id="detailing-when" aria-labelledby="detailing-when-title">
-  <header class="section-head col-title">
-    <h2 id="detailing-when-title">Когда детейлинг особенно нужен</h2>
-  </header>
-  <ul class="sec-points sec-points--3 col-ext" role="list">
-    <li class="sec-points__item">
-      <h3>Новая машина</h3>
-      <p>Заводской лак ещё без паутинки — самое время закрыть его керамикой, пока не начались мойки щётками и зимы.</p>
-    </li>
-    <li class="sec-points__item">
-      <h3>Машина с пробегом</h3>
-      <p>Лак потускнел и покрылся паутинкой, кожа в салоне затёрта — полировка и уход за кожей возвращают вид.</p>
-    </li>
-    <li class="sec-points__item">
-      <h3>После зимы</h3>
-      <p>Реагент въелся в диски и подвеску, на коврах и порогах — соль. Весной стоит пройти узлы, диски и салон.</p>
-    </li>
-    <li class="sec-points__item">
-      <h3>Кожа и пластик устали</h3>
-      <p>Кондиционер и крем питают кожу сидений, выгоревший пластик салона восстанавливаем.</p>
-    </li>
-    <li class="sec-points__item">
-      <h3>Перед оклейкой</h3>
-      <p>Плёнка ложится на то, что есть. Царапины и паутинку убирают полировкой заранее.</p>
-    </li>
-    <li class="sec-points__item">
-      <h3>Перед продажей</h3>
-      <p>Чистый салон, блестящий кузов и вымытый моторный отсек — машину приятнее показывать. Предпродажная подготовка — {{price:Предпродажная подготовка}}.</p>
-      <button class="link-arrow sec-points__action" type="button" data-request data-request-category="detailing" data-request-services="Предпродажная подготовка">Оставить заявку<span class="sr">: предпродажная подготовка</span>{{icon:arrow-right}}</button>
-    </li>
-  </ul>
-</section>
-
-<section class="section sec-block" id="detailing-why" aria-labelledby="detailing-why-title">
-  <header class="section-head col-title">
-    <h2 id="detailing-why-title">Почему <span class="nw" lang="en">MEATWASH</span></h2>
-  </header>
-  <ul class="sec-why col-ext" role="list">
-    <li class="sec-why__item">
-      <h3>Под материал и покрытие</h3>
-      <p>Средства подбираем под лак, плёнку или керамику, кожу, алькантару или ткань.</p>
-    </li>
-    <li class="sec-why__item">
-      <h3>Объём — по состоянию машины</h3>
-      <p>Можно взять одну деталь салона или одну деталь кузова, а не весь пакет. Список и цену согласуем до начала.</p>
-    </li>
-    <li class="sec-why__item">
-      <h3>Технопарк — полный цикл</h3>
-      <p>В <span class="nw">детейлинг-центре</span> делают полировку, керамику, оклейку плёнкой и кузовной ремонт — машину не нужно возить по разным местам.</p>
-    </li>
-    <li class="sec-why__item">
-      <h3>Проверка перед выдачей</h3>
-      <p>Результат смотрим вместе с вами, до того как вы уедете.</p>
-    </li>
-  </ul>
 </section>
 
 <div class="sec-reviews">
@@ -255,7 +204,7 @@
       <summary class="accordion__head">В какой студии делаете детейлинг?</summary>
       <div class="accordion__body">
         <p>В обеих: на Лубянке и в Технопарке. В Технопарке также оклеивают плёнкой и делают кузовной ремонт.</p>
-        <p>{{todo:какие работы детейлинга есть только в Технопарке (керамика кожи, восстановление пластика, ремонт стёкол и т. п.)}}</p>
+        <p>{{todo:какие работы детейлинга есть только в Технопарке (керамика кожи, восстановление пластика и т. п.)}}</p>
       </div>
     </details>
     <details class="accordion">

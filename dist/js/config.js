@@ -30,18 +30,18 @@ export const ZONES = [
   // отдельные элементы остаются в подробном прайсе.
   { id: 'interior', group: 'wash', price: { item: 'Детейлинг-химчистка салона' } },
   { id: 'leather', group: 'detailing', price: { item: 'Кондиционер кожи сидений' } },
+  { id: 'polish', group: 'detailing', price: { item: 'Полировка кузова + 2 слоя керамики' } },
+  { id: 'headlights', group: 'detailing', price: { item: 'Полировка фар' } },
+  { id: 'ceramic', group: 'detailing', price: { item: 'Керамическое покрытие кузова' } },
+  { id: 'rain', group: 'detailing', price: { item: 'Антидождь передней полусферы' } },
+  { id: 'rain-all', group: 'detailing', price: { item: 'Антидождь всех стёкол автомобиля' } },
   { id: 'wheels', group: 'detailing', price: { item: 'Детейлинг дисков' } },
   { id: 'film', group: 'wrap', price: { item: 'Оклейка зон риска' } },
   { id: 'film-full', group: 'wrap', price: { item: 'Полная оклейка' } },
   { id: 'film-lights', group: 'wrap', price: { item: 'Оклейка фар плёнкой' } },
-  { id: 'polish', group: 'protection', price: { item: 'Полировка кузова + 2 слоя керамики' } },
-  { id: 'headlights', group: 'protection', price: { item: 'Полировка фар' } },
-  { id: 'ceramic', group: 'protection', price: { item: 'Керамическое покрытие кузова' } },
-  { id: 'armor', group: 'protection', price: { item: 'Бронирование лобового стекла' } },
-  { id: 'rain', group: 'protection', price: { item: 'Антидождь передней полусферы' } },
-  { id: 'rain-all', group: 'protection', price: { item: 'Антидождь всех стёкол автомобиля' } },
-  { id: 'glass-repair', group: 'help', price: { item: 'Ремонт автомобильных стёкол' } },
-  { id: 'chips', group: 'help', price: { item: 'Удаление сколов и подкраска' } },
+  { id: 'armor', group: 'wrap', price: { item: 'Бронирование лобового стекла' } },
+  { id: 'chips', group: 'body', price: { item: 'Удаление сколов и подкраска' } },
+  { id: 'glass-repair', group: 'body', price: { item: 'Ремонт автомобильных стёкол' } },
 ];
 for (const zone of ZONES) {
   const program = zone.price.program != null ? PROGRAMS[zone.price.program] : null;
