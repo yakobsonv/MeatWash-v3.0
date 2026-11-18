@@ -44,14 +44,15 @@ def inventory(browser, base, pages, res):
     load(pg, f'{base}/auto')
     a = pg.evaluate("""() => ({cards: [...document.querySelectorAll('article.car-card')].map(c => [c.id, c.querySelectorAll('.strip img').length]),
       sold: document.querySelectorAll('li.sold-card').length, channel: [...document.querySelectorAll('a[href*="t.me/MEATWASH_Auto"], a[href*="t.me/meat"]')].length,
-      date: document.body.innerText.replace(/\u00a0/g, ' ').includes('22 сентября 2026')})""")
+      date: document.body.innerText.replace(/\u00a0/g, ' ').includes('18 ноября 2026')})""")
     checks += [
         # 03.11: BMW 740Ld продана (Влад); карточки проданных — для окна «Уже продали»
         ([x[0] for x in a['cards']] == [c['id'] for c in cars['forSale'] + cars['sold']] and all(x[1] == len(c['photos']) for x, c in zip(a['cards'], cars['forSale'] + cars['sold'])),
          f"карточек {len(a['cards'])} ({len(cars['forSale'])} в продаже + {len(cars['sold'])} проданных), фото {sum(x[1] for x in a['cards'])}"),
-        (a['sold'] == len(cars['sold']) == 16, f"проданных {a['sold']} (16)"),
+        # 18.11: в продаже 8 (закреп t.me/meat_wash), проданных 10
+        (len(cars['forSale']) == 8 and a['sold'] == len(cars['sold']) == 10, f"в продаже {len(cars['forSale'])} (8), проданных {a['sold']} (10)"),
         (a['channel'] >= 1, 'ссылка на канал MEAT AUTO'),
-        (a['date'], 'дата цен «22 сентября 2026»'),
+        (a['date'], 'дата цен «18 ноября 2026»'),
     ]
     load(pg, f'{base}/about')
     # 05.11: блока основателя и разворота интервью нет (имя убрано со всего сайта).

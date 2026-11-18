@@ -109,8 +109,9 @@ ${car.lead ? `        <p class="car-card__lead">${text(car.lead)}</p>\n` : ''}${
 
 // Плитка: первый кадр, название, год и цена, стрелка. Подпись ссылки — название (кадр
 // декоративный, alt=""). Плитки стоят близко к верху страницы — их кадры без ленивой загрузки.
+// Кадр плитки — car.tile (горизонтальный кадр 4:3 для машин с вертикальными фото), иначе первое фото.
 const tile = (car) => {
-  const p = car.photos[0];
+  const p = car.tile || car.photos[0];
   return `<li><a class="car-tile" href="#${escape(car.id)}" data-car-open="${escape(car.id)}">
       <img class="car-tile__img" src="${escape(p.src)}" width="${p.w}" height="${p.h}" alt="" decoding="async">
       <span class="car-tile__text"><span class="car-tile__name">${escape(car.title)}</span><span class="car-tile__meta">${car.year} · ${money(car.price)}</span></span>

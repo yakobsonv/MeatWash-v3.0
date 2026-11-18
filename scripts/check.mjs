@@ -637,8 +637,10 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
     if (car.sold) ok(/Продан в /.test(plain(card)), `${car.id}: нет месяца продажи`);
     else ok(plain(card).includes(money(car.price).replace(/\u00a0/g, ' ')), `${car.id}: цена не из cars.json`);
   });
-  // 03.11: BMW 740Ld продана (Влад) — в продаже одна машина; у каждой проданной есть адрес и фото для окна.
-  ok(cars.forSale.length === 1 && cars.sold.length === 16, `cars.json: ${cars.forSale.length} машины в продаже, ${cars.sold.length} проданных — ожидается 1 и 16`);
+  // 18.11: в продаже — по закрепу «В наличии» канала t.me/meat_wash (Влад): 8 машин, 530i ждёт фото;
+  // 6 «проданных» оказались в наличии — осталось 10. У каждой проданной есть адрес и фото для окна.
+  ok(cars.forSale.length === 8 && cars.sold.length === 10, `cars.json: ${cars.forSale.length} машин в продаже, ${cars.sold.length} проданных — ожидается 8 и 10`);
+  ok(cars.forSale.every((c) => c.id && c.year && c.price > 0 && c.photos?.length && !JSON.stringify(c).includes('TODO')), 'cars.json: у машины в продаже нет года, цены или фото, или осталась заглушка TODO');
   ok(cars.sold.every((c) => c.id && /^\d{4}-\d{2}$/.test(c.sold) && c.photos?.length), 'cars.json: у проданной машины нет id, месяца sold или фото');
   ok((auto.match(/<li class="sold-card"><a class="sold-card__link" href="#[\w-]+" data-car-open=/g) || []).length === cars.sold.length, `auto.html: проданных карточек-ссылок не ${cars.sold.length}`);
   // Цены машин — на дату pricesDate (план §4.6): старше 30 дней — сверить с клиентом
