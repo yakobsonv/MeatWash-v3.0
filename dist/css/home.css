@@ -110,13 +110,16 @@ body.no-tr, body.no-tr * { transition: none !important; }
 @media (min-width: 760px) {
   .hero__title { --w: min(calc(var(--fs-hero) * 8.6), calc((100vw - 2 * var(--ext) - var(--md)) * .62)); }
 }
-/* Влад 18.11: знак меньше (≈0,7 прежнего), правее и ниже — отступ слева в две колонки extended,
-   низ — две строки md над краем экрана; тень под ним идёт следом. */
+/* Влад 18.11: знак меньше и ниже, у левого края — по значку «Меню» шапки (--wide; на телефоне
+   до 479 px шапка с полем 16 px); на телефоне ≈2/3 ширины экрана, не меньше 220 px; тень следом. */
+.hero { padding-left: var(--wide); padding-bottom: calc(2 * var(--md) + 20px); }
+.hero__title { --w: max(220px, min(68vw, 300px)); }
+.hero::before { background: radial-gradient(ellipse 75% 60% at 14% 88%, rgb(8 8 8 / .55), rgb(8 8 8 / .25) 55%, rgb(8 8 8 / 0) 80%); }
+@media (max-width: 479px) { .hero { padding-left: 16px; } }
 @media (min-width: 760px) {
-  .hero { padding-left: calc(2 * var(--ext)); padding-bottom: calc(2 * var(--md) + 20px); }
   .hero__title { --w: min(calc(var(--fs-hero) * 6), calc((100vw - 3 * var(--ext) - var(--md)) * .5)); }
-  .hero::before { background: radial-gradient(ellipse 70% 60% at 30% 86%, rgb(8 8 8 / .55), rgb(8 8 8 / .25) 55%, rgb(8 8 8 / 0) 80%); }
 }
+
 /* Горизонтальный логотип из логобука (Влад 09.11): бык + MEATWASH + Car Care Club 2021, белый,
    SVG-картинкой (assets/brand/hero-lockup.svg). Слово MEATWASH — 58 % ширины знака: ширина знака
    подобрана так, чтобы слово было почти прежнего размера (Влад 02.11). */
