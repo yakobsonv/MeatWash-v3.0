@@ -620,7 +620,7 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
   const includes = (i) => d.programItems.slice(0, i + 1).flat();
   for (const program of programZones) for (const zone of config.ZONES.filter((z) => includes(program.price.program).includes(z.price.item)))
     for (let b = 0; b < d.bodyTypes.length; b++) ok(config.garageSum([program.id, zone.id], b) === expected(program, b), `Гараж: «${zone.title}» входит в «${program.title}», но считается второй раз`);
-  // В запись YCLIENTS уходят работы категории автомойки: программы и химчистка салона (Влад 09.11).
+  // В запись YCLIENTS уходят работы категории автомойки: программы (Влад 09.11); химчистка салона целиком — детейлинг (19.11).
   ok(same(config.ZONES.filter((z) => config.isWash(z)).map((z) => z.id), config.ZONES.filter((z) => z.group === 'wash').map((z) => z.id)), 'Гараж: в запись YCLIENTS уходит только мойка');
 }
 

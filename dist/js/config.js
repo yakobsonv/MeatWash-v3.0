@@ -27,8 +27,8 @@ export const ZONES = [
   { id: 'exterior', group: 'wash', price: { program: 3 } },
   { id: 'premium', group: 'wash', price: { program: 4 } },
   // Химчистка в гараже — салон целиком, а не набор сидений и деталей:
-  // отдельные элементы остаются в подробном прайсе.
-  { id: 'interior', group: 'wash', price: { item: 'Детейлинг-химчистка салона' } },
+  // отдельные элементы остаются в подробном прайсе. С 19.11 — детейлинг (Влад): заявка, не YCLIENTS.
+  { id: 'interior', group: 'detailing', price: { item: 'Детейлинг-химчистка салона' } },
   { id: 'leather', group: 'detailing', price: { item: 'Кондиционер кожи сидений' } },
   { id: 'polish', group: 'detailing', price: { item: 'Полировка кузова + 2 слоя керамики' } },
   { id: 'headlights', group: 'detailing', price: { item: 'Полировка фар' } },
