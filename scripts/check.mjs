@@ -431,7 +431,8 @@ const services = html['services.html'];
       const [, price] = group.items.find(([n]) => n === name);
       ok(plain(row).includes(name) && plain(row).includes(text), `«Топ-5»: «${name}» — название или описание не из picks`);
       ok(plain(row).includes(price == null ? 'После оценки' : `от ${money(price).replace(/\u00a0/g, ' ')}`), `«Топ-5»: «${name}» — цена не из каталога`);
-      ok(/class="catalog__action btn btn--compact btn--secondary"/.test(row) && plain(row).includes(REQUEST_LABEL), `«Топ-5»: «${name}» — нет второстепенной кнопки «${REQUEST_LABEL}»`);
+      // Влад 19.11: подборка — допы к заказу, кнопка «Добавить к заказу» (data-addon) вместо записи.
+      ok(row.includes(`data-addon="${esc(name)}"`) && plain(row).includes('Добавить к заказу'), `«Топ-5»: «${name}» — нет кнопки «Добавить к заказу» (data-addon)`);
       const from = d.programItems.findIndex((list) => list.includes(name));
       const note = plain(row.match(/<p class="pick__in">([\s\S]*?)<\/p>/)?.[1] || '');
       if (from < 0) ok(!note, `«Топ-5»: «${name}» не входит в программы, а написано «${note}»`);

@@ -421,6 +421,38 @@ html:not(:has(.anchor-tabs, [data-page-bar])) .compare__bar { top: 0; }
   .pick .catalog__action { margin-top: 14px; justify-self: auto; }
 }
 
+/* Допы к заказу (Влад 19.11): «Добавить к заказу» ↔ «В заказе» с галочкой (js/addons.js);
+   «Уже входит в программы …» — с красной галочкой и цветом текста, а не серым; строка заказа под
+   подборками липнет к низу экрана, пока каталог на экране, — допы видны, когда выбираешь программу. */
+.pick__add .pick__add-on, .pick__add[aria-pressed="true"] .pick__add-off { display: none; }
+.pick__add[aria-pressed="true"] .pick__add-on { display: inline; }
+.pick__add > .icon:not(.pick__plus) { display: none !important; }
+.pick__add[aria-pressed="true"] > .pick__plus { display: none !important; }
+.pick__add[aria-pressed="true"] > .icon:not(.pick__plus) { display: block !important; }
+@media (min-width: 1240px) {
+  .pick__add[aria-pressed="true"] > .icon:not(.pick__plus) { display: inline-block !important; width: 16px; height: 16px; margin-left: 8px; vertical-align: -3px; }
+  .pick__add > .pick__plus { display: none !important; }
+  .pick__add[aria-pressed="true"] { --btn-bg: var(--on); --btn-fg: var(--on-inverse); }
+}
+@media (max-width: 1239px) { .pick__add[aria-pressed="true"] { --btn-bg: var(--on); --btn-fg: var(--on-inverse); } }
+.pick__in { display: flex; gap: 6px; align-items: flex-start; color: var(--on); }
+.pick__in > .icon { flex: none; width: 15px; height: 15px; margin-top: 1px; color: var(--on-red); }
+.pick .catalog__item-onsite { text-align: right; }
+@media (max-width: 759px) { .pick .catalog__item-onsite { grid-column: 2; grid-row: 2; align-self: center; font-size: 12px; } }
+@media (min-width: 760px) and (max-width: 1239px) { .pick .catalog__item-onsite { align-self: center; } }
+@media (min-width: 1240px) { .pick .catalog__item-onsite { order: 3; margin-top: 14px; text-align: left; } }
+.catalog__section--picks + .catalog__section--picks { margin-top: var(--lg); }
+.addons-bar {
+  position: sticky; bottom: calc(var(--cta-zone, 0px) + 12px); z-index: 5;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px var(--md);
+  margin: var(--md) var(--basic) 0; padding: 12px 12px 12px 18px;
+  border-radius: var(--r-lg); background: color-mix(in srgb, var(--page) 86%, var(--on) 14%); color: var(--on);
+  box-shadow: 0 12px 30px -16px rgb(0 0 0 / .6), inset 0 0 0 1px var(--on-line);
+}
+.addons-bar[hidden] { display: none; }
+.addons-bar__text { margin: 0; font-size: 14px; line-height: 1.45; min-width: 0; flex: 1 1 16rem; }
+@media (min-width: 1240px) { .addons-bar { margin-inline: var(--wide); } }
+
 .catalog__note {
   margin-top: var(--lg); padding-inline: var(--basic);
   max-width: calc(46rem + 2 * var(--basic));

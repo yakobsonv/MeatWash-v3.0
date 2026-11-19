@@ -207,6 +207,17 @@ ${d.groups.map(group=>` <section class="catalog__panel" id="price-${escape(group
 // check.mjs сверяет строку с programItems). Рядом с заголовком — ссылка на вкладку
 // «Автомойка» /services, где полный прайс с «Дополнительно на автомойке».
 const pickOf=id=>d.picks?.items?.find(p=>p.id===id);
+// Влад 19.11: подборки на /wash — допы к заказу. Кнопка «Добавить к заказу» (button.pick__add
+// [data-addon], js/addons.js) копит допы, они уходят в окно записи вместе с программой; доп,
+// которого нет в онлайн-записи YCLIENTS (assets/yclients.json items), — «добавим при приёмке».
+// Под подборками — строка заказа div[data-addons-bar] (что в заказе, «Выбрать программу»).
+const ycOnline=new Set(Object.keys(JSON.parse(readFileSync(new URL('dist/assets/yclients.json',root),'utf8')).items||{}));
+const PLUS='<svg class="icon pick__plus" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5.5v13M5.5 12h13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const addonButton=name=>`<button class="catalog__action btn btn--compact btn--secondary pick__add" type="button" data-addon="${escape(name)}" aria-pressed="false"><span class="catalog__action-label"><span class="pick__add-off">Добавить к заказу</span><span class="pick__add-on">В заказе</span></span>${forName(name)}${PLUS}${icon('check')}</button>`;
+export const ADDONS_BAR=`<div class="addons-bar" data-addons-bar hidden>
+   <p class="addons-bar__text" data-addons-text aria-live="polite"></p>
+   <a class="btn btn--compact btn--secondary addons-bar__go" href="#programs">Выбрать программу</a>
+  </div>`;
 const quoted=name=>name.replace(/^Пакет /,'').replace(/^(?!«)(.*)$/,'«$1»');
 const listRu=xs=>xs.length<2?xs.join(''):`${xs.slice(0,-1).join(', ')} и ${xs.at(-1)}`;
 export const pickIn=name=>{
@@ -221,11 +232,12 @@ const pickRow=([name,text])=>{
  if(!text)throw new Error(`picks: у «${name}» нет описания`);
  const [,price]=itemOf(group,name);
  const inside=pickIn(name);
- return `<li class="catalog__item pick"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p><p class="catalog__item-note">${escape(text)}</p></div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${action(group,name)}${inside?`<p class="pick__in">${escape(inside)}</p>`:''}</li>`;
+ const act=ycOnline.has(name)?addonButton(name):`<p class="catalog__item-onsite">${ONSITE_LABEL}</p>`;
+ return `<li class="catalog__item pick"><div class="catalog__item-text"><p class="catalog__item-name">${escape(name)}</p><p class="catalog__item-note">${escape(text)}</p></div><p class="catalog__item-price${price==null?' catalog__item-price--estimate':''}">${priceText(price)}</p>${act}${inside?`<p class="pick__in">${icon('check')}${escape(inside)}</p>`:''}</li>`;
 };
 const pickSection=(p,page)=>`<section class="catalog__section catalog__section--picks" id="${escape(p.id)}" aria-labelledby="${escape(p.id)}-title">
    <div class="catalog__section-head">
-    <h3 class="catalog__subhead" id="${escape(p.id)}-title">${escape(p.title)}</h3>${page==='services'?'':`
+    <h3 class="catalog__subhead" id="${escape(p.id)}-title">${escape(p.title)}</h3>${page==='services'||p.id!=='price-wash-top'?'':`
     <a class="link-arrow catalog__section-link" href="${pageHref('services')}#price-wash">Все цены автомойки${icon('arrow-right')}</a>`}
    </div>
    <ul class="catalog__items picks" role="list">${p.items.map(pickRow).join('')}</ul>
@@ -239,7 +251,7 @@ export function renderSections(ids,page){
  if(!ids.length||ids.some(id=>!id))throw new Error('{{prices}}: нужен список подразделов через запятую');
  if(new Set(ids).size!==ids.length)throw new Error(`{{prices:${ids.join(',')}}}: подраздел повторяется`);
  return `<div class="catalog catalog--prices" data-prices>
-  ${ids.map(id=>{if(pickOf(id))return pickSection(pickOf(id),page);const {group,s}=sectionOf(id);return section(group,s,page);}).join('\n  ')}
+  ${ids.map(id=>{if(pickOf(id))return pickSection(pickOf(id),page);const {group,s}=sectionOf(id);return section(group,s,page);}).join('\n  ')}${ids.some(id=>pickOf(id))?`\n  ${ADDONS_BAR}`:''}
   <p class="catalog__note">Стоимость зависит от типа кузова и состояния автомобиля. Итоговый объём и цену согласуем перед работой. Не является публичной офертой.</p>
  </div>`;
 }

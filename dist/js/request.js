@@ -31,6 +31,7 @@ import { REQUEST_TOPICS, CATEGORY_TOPIC, PROGRAMS, REQUESTS } from './data.js';
 import { goal } from './analytics.js';
 import { getBody } from './body.js';
 import { nb } from './ui.js';
+import { getAddons } from './addons.js';
 
 const KEY = 'mw:request';
 const MAX_FILES = 5;
@@ -458,6 +459,18 @@ export function setupRequest(dialog, { show }) {
   return function open({ book = false, replace = false, category = '', services: list = [], programs = [], items = [], context: note = '', contextPrefix = '', studio = '', from = '' } = {}) {
     studioFirst = BRANCH_IN[studio] ? studio : '';
     const works = [...programs.map((i) => PROGRAM_NAMES[i]).filter(Boolean), ...items, ...list];
+    // Допы к заказу (Влад 19.11, js/addons.js): при записи на мойку идут вместе с программой;
+    // доп, который уже входит в выбранную программу, второй раз не добавляется.
+    let addonNote = '';
+    if (book) {
+      const top = programs.length ? Math.max(...programs) : -1;
+      const inside = new Set(PROGRAMS.slice(0, top + 1).flatMap((p) => p.items || []));
+      const extra = getAddons().filter((n) => !works.includes(n));
+      const add = extra.filter((n) => !inside.has(n)), skip = extra.filter((n) => inside.has(n));
+      works.push(...add);
+      if (add.length) addonNote += `; допы: ${add.join(', ')}`;
+      if (skip.length) addonNote += ` (${skip.join(', ')} — уже в программе)`;
+    }
     const firstWork = list.map(topicOfWork).find(Boolean) || '';
     const topic = book ? 'wash' : firstWork || (topicById(category) ? category : CATEGORY_TOPIC[category] || '');
     topicSelect.value = topic;
@@ -465,8 +478,9 @@ export function setupRequest(dialog, { show }) {
     const picked = works.filter((name) => !TOPICS.some((t) => t.title === name));
     if (works.length || replace) services.splice(0, services.length, ...picked);
     else { const keep = services.filter((name) => worksOf(topicById(topic)).includes(name)); services.splice(0, services.length, ...keep); }
-    context.textContent = note ? nb(contextPrefix + note) : '';
-    context.hidden = !note;
+    const fullNote = note + addonNote;
+    context.textContent = fullNote ? nb(contextPrefix + fullNote.replace(/^; /, '')) : '';
+    context.hidden = !fullNote;
     renderChips(); save();
     form.hidden = false; done.hidden = true; formError.hidden = true; offline.hidden = true;
     if (endpoint && !tokenFresh()) { token = null; loadToken().catch(() => { /* повторим при отправке */ }); }
