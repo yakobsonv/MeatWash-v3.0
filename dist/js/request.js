@@ -234,8 +234,19 @@ export function setupRequest(dialog, { show }) {
   const bookBox = $('[data-request-book]'), incBox = $('[data-request-includes]'), incList = $('[data-request-inc]');
   const whenBox = $('[data-request-when]'), datesEl = $('[data-request-dates]'), timesEl = $('[data-request-times]'), whenNote = $('[data-request-when-note]');
   const branchInputs = [...dialog.querySelectorAll('input[name="book_branch"]')];
+  const embedBox = $('[data-request-embed]'), frameBox = $('[data-request-frame-box]');
+  let frame = null;   // iframe встроенной записи — создаётся при первом показе (в разметке iframe нет)
+  const frameFor = () => {
+    if (!frame) {
+      frame = document.createElement('iframe');
+      frame.className = 'request__frame';
+      frame.title = 'Онлайн-запись в YCLIENTS: день, время и контакты';
+      frameBox.append(frame);
+    }
+    return frame;
+  };
   const doneTitle = $('[data-request-done-title]'), doneText = $('[data-request-done-text]');
-  let slotsOff = !endpoint, slotJob = 0, chosen = null;   // chosen: {datetime, branch, label}
+  let slotsOff = !endpoint, slotJob = 0, chosen = null;   // slotsOff — своего выбора времени нет, только встроенная запись   // chosen: {datetime, branch, label}
   const DAYS = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
   const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
   const dayOf = (iso) => { const [y, m, d] = iso.slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
@@ -291,11 +302,37 @@ export function setupRequest(dialog, { show }) {
       })));
     }).catch(() => { if (job === slotJob) whenNote.textContent = 'Время не загрузилось — оставьте заявку, администратор подберёт время.'; });
   }
+  // Ключа API YCLIENTS нет (сервер ответил 503): время выбирают во встроенной записи YCLIENTS с
+  // корзиной заказа (yclients.js embedUrl) — студия, где есть все программы; строку «или запишитесь
+  // онлайн» тогда прячем: та же запись уже в окне.
+  function renderEmbed(job) {
+    embedBox.hidden = false; whenNote.textContent = '';
+    for (const input of branchInputs) input.disabled = false;
+    loadYc().then(() => {
+      if (job !== slotJob || !yc?.embedUrl) return;
+      const spec = washSpec();
+      const blocked = branchInputs.map((i) => i.value).filter((b) => (yc.unavailable?.(b, spec) || []).length);
+      let branch = branchNow();
+      if (blocked.length && blocked.length < branchInputs.length) {
+        for (const input of branchInputs) input.disabled = blocked.includes(input.value);
+        if (blocked.includes(branch)) { branch = branchInputs.find((i) => !blocked.includes(i.value)).value; setBranch(branch); }
+        whenNote.textContent = nb(`Эти работы — только ${BRANCH_IN[branch] || ''}.`);
+      }
+      const { ids, missing } = yc.resolve(branch, spec, getBody());
+      if (missing.length) whenNote.textContent = nb(`${whenNote.textContent} ${missing.join(', ')} мастер добавит при приёмке.`.trim());
+      const url = yc.embedUrl(branch, ids);
+      const f = frameFor();
+      if (url && f.dataset.src !== url) { f.dataset.src = url; f.src = url; }
+      online.hidden = true;
+    }).catch(() => { embedBox.hidden = true; whenBox.hidden = true; });
+  }
   function renderWhen() {
     chosen = null; updateSubmit();
     const job = ++slotJob;
     datesEl.replaceChildren(); timesEl.replaceChildren(); whenNote.textContent = '';
-    if (slotsOff || !isWash()) { whenBox.hidden = true; bookBox.hidden = incBox.hidden; return; }
+    embedBox.hidden = true;
+    if (!isWash()) { whenBox.hidden = true; bookBox.hidden = incBox.hidden; return; }
+    if (slotsOff) { whenBox.hidden = false; bookBox.hidden = false; renderEmbed(job); return; }
     whenBox.hidden = false; bookBox.hidden = false; whenNote.textContent = 'Загружаем свободное время…';
     for (const input of branchInputs) input.disabled = false;
     const asked = branchNow();
@@ -314,7 +351,7 @@ export function setupRequest(dialog, { show }) {
       datesEl.replaceChildren(...dates.map((d) => slotButton(`${DAYS[dayOf(d).getDay()]}, ${dateLabel(d)}`, false, () => pickDate(d))));
     }).catch((error) => {
       if (job !== slotJob) return;
-      if (error.status === 503) slotsOff = true;   // запись на время не подключена — больше не спрашиваем
+      if (error.status === 503 || !endpoint) { slotsOff = true; renderEmbed(job); return; }   // без ключей — встроенная запись
       whenBox.hidden = true; bookBox.hidden = incBox.hidden;
     });
   }

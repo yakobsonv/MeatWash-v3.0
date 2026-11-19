@@ -300,6 +300,9 @@ legend.request__legend + * { clear: both; }
 .request__slot[aria-pressed="true"] { background: var(--ink); color: var(--fg); }
 .request__when-note { margin: 10px 0 0; font-size: var(--fs-sm); color: var(--on-muted); }
 .request__when-note:empty { display: none; }
+.request__embed { margin-top: 12px; }
+.request__frame { display: block; width: 100%; height: min(680px, 78vh); height: min(680px, 78svh); border: 0; border-radius: var(--r-md, 16px); background: #111; }
+.request__embed-note { margin: 10px 0 0; font-size: var(--fs-xs, 13px); line-height: 1.45; color: var(--on-muted); }
 
 /* Фото. */
 .request p.request__rules { margin-top: 0; font-size: var(--fs-sm); color: var(--on-muted); }

@@ -53,6 +53,16 @@ export function unavailable(branch, spec) {
   return (spec.programs || []).map((i) => map.programs[i]).filter((row) => row && !(row[branch] || []).some(Boolean)).map((row) => row.name);
 }
 
+// Встроенная запись (Влад 19.11, ключа API YCLIENTS нет — партнёрские аккаунты не выдают): та же
+// корзина на домене официального виджета b{form}.yclients.ru — в окне сайта выбирают день, время,
+// имя и телефон, запись создаётся в YCLIENTS. Домен n….yclients.com в рамке отказывает части запросов.
+export function embedUrl(branch, ids = []) {
+  const b = branchOf(branch);
+  if (!b) return null;
+  const base = `https://b${b.form}.yclients.ru/company/${b.company}/personal/`;
+  return ids.length ? `${base}short?o=m-1${ids.map((id) => 's' + id).join('')}` : `${base}select-services?o=`;
+}
+
 export function bookingUrl(branch, ids = []) {
   const b = branchOf(branch);
   if (!b) return null;
