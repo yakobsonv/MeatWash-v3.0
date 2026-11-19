@@ -1163,5 +1163,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
   [data-theme="home"] body :not(a, button, summary, label, input, select, textarea, a *, button *, summary *, label *) {
     transition: color 1.2s var(--ease-color), background-color 1.2s var(--ease-color), border-color 1.2s var(--ease-color) !important;
   }
+  /* Точки карусели направлений (телефон): цвет точки — от темы страницы, хоть она и внутри кнопки. */
+  [data-theme="home"] .dirs__dot span { transition: background-color 1.2s var(--ease-color) !important; }
   [data-theme="home"] body.no-tr, [data-theme="home"] body.no-tr * { transition: none !important; }
 }

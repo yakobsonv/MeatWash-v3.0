@@ -431,8 +431,8 @@ export function setupGarage() {
     // Состав автомойки — в «Вы выбрали: …» окна записи, с кузовом (цена от него зависит).
     if (wash.length) bookBtn.dataset.bookContext = titles(wash).join(', ') + ' · ' + bodyName(body) + ' · предварительно от ' + money(garageSum(wash, body));
     else delete bookBtn.dataset.bookContext;
-    // Для онлайн-записи — индексы программ и работы автомойки (химчистка салона — услуга мойки,
-    // Влад 09.11); ui.js переведёт их в услуги YCLIENTS филиала.
+    // Для онлайн-записи — индексы программ и работы автомойки (с 19.11 — только программы: химчистка салона
+    // целиком — детейлинг, идёт в заявку); ui.js переведёт их в услуги YCLIENTS филиала.
     bookBtn.dataset.ycPrograms = wash.filter((id) => byId(id).price.program != null).map((id) => byId(id).price.program).join(',');
     bookBtn.dataset.ycItems = wash.filter((id) => byId(id).price.item).map((id) => byId(id).price.item).join('|');
     bookBtn.dataset.requestServices = titles(other).join('|');
