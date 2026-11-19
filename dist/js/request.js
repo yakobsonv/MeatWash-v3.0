@@ -305,8 +305,18 @@ export function setupRequest(dialog, { show }) {
   // Ключа API YCLIENTS нет (сервер ответил 503): время выбирают во встроенной записи YCLIENTS с
   // корзиной заказа (yclients.js embedUrl) — студия, где есть все программы; строку «или запишитесь
   // онлайн» тогда прячем: та же запись уже в окне.
+  // Пока в окне запись YCLIENTS, своя форма (имя, телефон, отправка) спрятана — она открывается
+  // ссылкой «Не нашли удобное время? Оставить заявку» (form.is-embed, dialogs.css).
+  const lead = $('#request-lead'), leadText = lead.textContent;
+  const embedMode = (on) => {
+    form.classList.toggle('is-embed', on);
+    if (on) lead.textContent = 'Выберите студию, день и время — запись сразу попадёт в студию.';
+    else if (lead.textContent.startsWith('Выберите студию')) lead.textContent = leadText;
+  };
+  $('[data-request-embed-alt]')?.addEventListener('click', () => { embedMode(false); form.querySelector('input[name=name]')?.focus(); });
   function renderEmbed(job) {
     embedBox.hidden = false; whenNote.textContent = '';
+    embedMode(true);
     for (const input of branchInputs) input.disabled = false;
     loadYc().then(() => {
       if (job !== slotJob || !yc?.embedUrl) return;
@@ -324,13 +334,14 @@ export function setupRequest(dialog, { show }) {
       const f = frameFor();
       if (url && f.dataset.src !== url) { f.dataset.src = url; f.src = url; }
       online.hidden = true;
-    }).catch(() => { embedBox.hidden = true; whenBox.hidden = true; });
+    }).catch(() => { embedBox.hidden = true; whenBox.hidden = true; embedMode(false); });
   }
   function renderWhen() {
     chosen = null; updateSubmit();
     const job = ++slotJob;
     datesEl.replaceChildren(); timesEl.replaceChildren(); whenNote.textContent = '';
     embedBox.hidden = true;
+    if (typeof embedMode === 'function') embedMode(false);
     if (!isWash()) { whenBox.hidden = true; bookBox.hidden = incBox.hidden; return; }
     if (slotsOff) { whenBox.hidden = false; bookBox.hidden = false; renderEmbed(job); return; }
     whenBox.hidden = false; bookBox.hidden = false; whenNote.textContent = 'Загружаем свободное время…';

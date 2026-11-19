@@ -303,6 +303,12 @@ legend.request__legend + * { clear: both; }
 .request__embed { margin-top: 12px; }
 .request__frame { display: block; width: 100%; height: min(680px, 78vh); height: min(680px, 78svh); border: 0; border-radius: var(--r-md, 16px); background: #111; }
 .request__embed-note { margin: 10px 0 0; font-size: var(--fs-xs, 13px); line-height: 1.45; color: var(--on-muted); }
+.request__embed-alt { display: inline; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: var(--on); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.request__embed-alt:hover { color: var(--red-ink); }
+/* Запись YCLIENTS в окне: своя форма заявки спрятана, пока не нажали «Оставить заявку». */
+.request.is-embed > .request__card:not(.request__about):not(.request__book) { display: none; }
+.request.is-embed .request__embed-alt { display: inline; }
+.request:not(.is-embed) .request__embed-alt { display: none; }
 
 /* Фото. */
 .request p.request__rules { margin-top: 0; font-size: var(--fs-sm); color: var(--on-muted); }
