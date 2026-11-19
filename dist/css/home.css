@@ -14,8 +14,23 @@
 
 /* ---------- Цвет страницы: светлая ↔ тёмная (ref CarRange__toDark) ---------- */
 [data-theme="home"] body {
-  transition: background-color 1.2s var(--ease-color), color 1.2s var(--ease-color);
+  transition: color 1.2s var(--ease-color);
 }
+/* Влад 19.11, второй заход: на iPhone фон всё равно темнел рывком — Safari не успевал плавно
+   перекрашивать фон тела страницы (оно высотой во всю главную). Поэтому сам фон не перекрашиваем:
+   у body фона нет (светлый — у html), поверх лежит тёмная заслонка во весь экран и проявляется
+   прозрачностью (opacity) — её телефон анимирует видеокартой, не перерисовывая страницу.
+   Высота — 100lvh: заслонка не кончается, когда Safari прячет адресную строку. */
+[data-theme="home"] body { background: transparent; }
+[data-theme="home"] body::before {
+  content: ""; position: fixed; z-index: -1;
+  top: 0; left: 0; right: 0; height: 100vh; height: 100lvh;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s var(--ease-color);
+}
+[data-theme="home"] body.is-dark::before { opacity: 1; }
 [data-theme="home"] body.is-dark {
   --page: var(--bg);
   --on: var(--fg);
@@ -32,7 +47,7 @@
    в шторке, в подвале и на страницах направлений), поэтому и зоны под неё нет. */
 :root[data-theme="home"] { --cta-zone: 0px; }
 /* Первое состояние без перехода (перезагрузка посреди страницы). */
-body.no-tr, body.no-tr * { transition: none !important; }
+body.no-tr, body.no-tr::before, body.no-tr * { transition: none !important; }
 
 /* ---------- Герой: фото + «MEAT AUTO» и «Car Care Club», больше ничего ---------- */
 /* Заголовок внизу слева по колонке extended; его блок кончается на fluid-md + строка
@@ -1165,5 +1180,6 @@ body.no-tr, body.no-tr * { transition: none !important; }
   }
   /* Точки карусели направлений (телефон): цвет точки — от темы страницы, хоть она и внутри кнопки. */
   [data-theme="home"] .dirs__dot span { transition: background-color 1.2s var(--ease-color) !important; }
-  [data-theme="home"] body.no-tr, [data-theme="home"] body.no-tr * { transition: none !important; }
+  [data-theme="home"] body::before { transition: opacity 1.2s var(--ease-color) !important; }
+  [data-theme="home"] body.no-tr, [data-theme="home"] body.no-tr::before, [data-theme="home"] body.no-tr * { transition: none !important; }
 }
