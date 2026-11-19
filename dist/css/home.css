@@ -1212,3 +1212,16 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .rv__play { display: none !important; }
   .rv-card__q { transform: none; }
 }
+
+/* ---------- Смена темы и «Уменьшение движения» (Влад 19.11) ---------- */
+/* На iPhone с «Уменьшением движения» (Универсальный доступ → Движение) переходы выше и в base.css
+   сняты — фон в «Чем занимается MEATWASH» темнел рывком, а на компьютере — за 1,2 s. Смена цвета —
+   не движение: её возвращаем и здесь, только цвета (сдвиги и появления остаются выключенными).
+   Ссылки, кнопки и поля не трогаем — их отклик на наведение и нажатие остаётся мгновенным. */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="home"] body,
+  [data-theme="home"] body :not(a, button, summary, label, input, select, textarea, a *, button *, summary *, label *) {
+    transition: color 1.2s var(--ease-color), background-color 1.2s var(--ease-color), border-color 1.2s var(--ease-color) !important;
+  }
+  [data-theme="home"] body.no-tr, [data-theme="home"] body.no-tr * { transition: none !important; }
+}
