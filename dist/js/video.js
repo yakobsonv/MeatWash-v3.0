@@ -116,12 +116,26 @@ export function setupVideo() {
   setupTabVideos(play);
 
   const load = (video) => { if (!video.src) { video.muted = true; video.src = video.dataset.src; } };
+  // Сенсорный экран: ролик карточки стартует не сразу, а когда карточка задержалась на экране
+  // (0,6 s) и страница не меняет цвет (главная: window.__mwFadeUntil из home.js) — Влад 19.11:
+  // запуск ролика на iPhone совпадал со сменой фона, и переход 1,2 s проскакивал за кадр.
+  const SETTLE = 600;
+  const startLater = (host) => {
+    clearTimeout(host.__wait);
+    const wait = Math.max(SETTLE, (window.__mwFadeUntil || 0) - performance.now());
+    host.__wait = setTimeout(() => {
+      const fade = (window.__mwFadeUntil || 0) - performance.now();
+      if (fade > 0) { startLater(host); return; }
+      if (host.__in && !document.hidden) { load(host.__video); play(host.__video); }
+    }, wait);
+  };
   const inView = new IntersectionObserver((entries) => {
     entries.forEach(({ target, isIntersecting }) => {
       const video = target.__video;
       target.__in = isIntersecting;
       if (fine.matches) return;
-      if (isIntersecting && !document.hidden) { load(video); play(video); } else video.pause();
+      if (isIntersecting && !document.hidden) startLater(target);
+      else { clearTimeout(target.__wait); video.pause(); }
     });
   }, { threshold: 0.6 });
 
@@ -142,7 +156,7 @@ export function setupVideo() {
     document.querySelectorAll('video[data-video="hover"]').forEach((video) => {
       const host = video.closest('[data-video-host]') || video.parentElement;
       if (document.hidden) video.pause();
-      else if (!fine.matches && host.__in) { load(video); play(video); }
+      else if (!fine.matches && host.__in) startLater(host);
     });
   });
 }

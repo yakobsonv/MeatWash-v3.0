@@ -29,7 +29,14 @@ export function setupHome() {
   const paint = () => {
     queued = false;
     const r = dirs.getBoundingClientRect(), vh = window.innerHeight;
-    body.classList.toggle('is-dark', r.top <= vh * 0.12 && r.bottom > vh * 0.49);
+    const dark = r.top <= vh * 0.12 && r.bottom > vh * 0.49;
+    if (dark === body.classList.contains('is-dark')) return;
+    body.classList.toggle('is-dark', dark);
+    // Влад 19.11 (запись с iPhone): при первом входе в направления и выходе из них переход 1,2 s
+    // проскакивал за кадр — телефон в этот момент запускал ролик карточки и грузил кадры кейсов
+    // «Наших работ» и не обновлял экран. Пока цвет меняется, тяжёлое ждёт (calm в video.js и
+    // кейсах ниже): отметка — до конца перехода.
+    if (!body.classList.contains('no-tr')) window.__mwFadeUntil = performance.now() + 1300;
   };
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
   // Первое состояние — без перехода 1,2 s (перезагрузка посреди страницы).
@@ -519,9 +526,13 @@ function setupCaseReels(reduce) {
       if (img.complete) go(); else img.addEventListener('load', go, { once: true });
     };
     const want = () => !reduce.matches && !document.hidden && (fine.matches ? (hovered || focused) : inView);
+    let waiting = 0;
     const sync = () => {
       if (want()) {
-        if (timer) return;
+        if (timer || waiting) return;
+        // Кадры ленты (8–12 картинок) создаются один раз — не во время смены цвета страницы.
+        const wait = (window.__mwFadeUntil || 0) - performance.now();
+        if (!frames && wait > 0) { waiting = setTimeout(() => { waiting = 0; sync(); }, wait); return; }
         if (!frames) build();
         tile.classList.add('is-reeling');
         show();
