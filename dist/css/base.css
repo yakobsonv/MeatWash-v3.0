@@ -88,6 +88,10 @@ a:not([class]):hover { text-decoration-color: var(--on-red); }
 }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 :focus:not(:focus-visible) { outline: none; }
+/* Влад 19.11: после ссылки на блок этой страницы ui.js ставит фокус на сам блок (tabindex=-1),
+   и Safari рисовал вокруг секции красную рамку — сверху виден край во всю ширину. Цель прыжка,
+   панели шторки и заголовки окон с клавиатуры не достать, рамка им не нужна. */
+[tabindex="-1"]:focus { outline: none; }
 .skip-link {
   position: fixed; left: 16px; top: 12px; z-index: 1000;
   padding: 12px 20px; border-radius: var(--r-sm);
