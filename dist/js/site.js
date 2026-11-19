@@ -20,6 +20,8 @@ if (document.querySelector('[data-car-tiles], [data-sold-tiles]')) import('./car
 if (document.querySelector('[data-gallery]')) import('./gallery.js').then((m) => m.setupGallery()).catch(warn('Галерея проектов'));
 if (document.querySelector('[data-figures]')) import('./figures.js').then((m) => m.setupFigures()).catch(warn('Цифры машин'));
 if (document.querySelector('[data-wrap-calc]')) import('./wrapcalc.js').then((m) => m.setupWrapCalc()).catch(warn('Калькулятор оклейки'));
+// Временный замер смены фона (Влад 19.11) — только с ?probe в адресе.
+if (/[?&]probe\b/.test(location.search)) import('./probe.js').then((m) => m.setupProbe()).catch(warn('Замер'));
 if (document.querySelector('[data-video]')) import('./video.js').then((m) => m.setupVideo()).catch(warn('Видео'));
 
 // 3D-гараж (решение Влада 27.10): блок #garage на /services. Скрипт окна (garage.js)
