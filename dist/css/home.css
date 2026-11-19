@@ -560,7 +560,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
    Слева — подзаголовок с красной чертой, крупная лёгкая фраза (как «Наши работы»), текст и кнопки,
    под ними сноска; справа — кадр зоны ожидания (скругление и затемнение — как у плашек работ),
    поверх — красная карта без фона (вырезка club-card-cut; подложки за картой нет — Влад 03.11),
-   за ней — мягкое красное свечение (статичный градиент). Снизу — три факта.
+   за ней — мягкое красное свечение (статичный градиент). Ряд фактов снят 19.11 (Влад: дублировал).
    Движение (home.js): --club-y (px, 0…−60) — параллакс: карта только поднимается над кадром (вниз к
    фактам не едет), кадр внутри рамки — на −0,35 от него; без инерции, только при прокрутке; на
    телефоне выключен. Наклон к курсору — --px, --py (−1…1), блик — --gx, --gy. */
@@ -569,7 +569,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
   --panel-r: clamp(28px, 1.6vw + 16px, 48px);
   position: relative; isolation: isolate;             /* свечение (z-index −1) — над фоном панели */
   display: grid; grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "copy" "stage" "facts" "note";
+  grid-template-areas: "copy" "stage" "note";
   row-gap: var(--lg);
   width: 100%;
   margin: var(--md) auto var(--lg);
@@ -598,15 +598,8 @@ body.no-tr, body.no-tr * { transition: none !important; }
 /* «кто возвращается» — одной строкой: «кто» не висит в конце первой (на 320 — мельче, чтобы влезло). */
 .home-club__keep { white-space: nowrap; }
 .home-club__title em { font-style: normal; color: var(--on-red); }
-.home-club__lead {
-  margin: var(--md) 0 0; max-width: 31em;
-  font-size: var(--fs-md); line-height: 1.5;
-  color: var(--on-muted); text-wrap: pretty;
-  transition: color 1.2s var(--ease-color);
-}
-.home-club__lead { max-width: 26em; }
 /* Бонусы клуба (Влад 09.11) — три группы: подпись капсом с красной чертой, ниже по две строки
-   «сумма — за что»; сумма — лёгкой цифрой, как факты внизу блока, только мельче. */
+   «сумма — за что»; сумма — лёгкой цифрой. */
 .home-club__perks { margin-top: var(--lg); }
 .home-club__perks-title {
   margin: 0 0 var(--md);
@@ -693,15 +686,6 @@ body.no-tr, body.no-tr * { transition: none !important; }
     linear-gradient(0deg, var(--fade)) bottom / 100% 52% no-repeat;
   pointer-events: none;
 }
-.home-club__chip {
-  position: absolute; top: var(--md); left: var(--md);
-  padding: 7px 14px; border-radius: var(--r-pill);
-  background: rgb(20 20 20 / .5);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  font: 500 13px/1.3 var(--sans); color: #fff;
-  max-width: calc(100% - 2 * var(--md));
-}
 /* Карта: обёртка едет с параллаксом (без перехода), сама карта — появление (translate/rotate) и
    наклон (transform). Ссылка — только сама карта, остальная обёртка мышь не ловит. */
 .home-club__float {
@@ -743,50 +727,15 @@ body.no-tr, body.no-tr * { transition: none !important; }
   opacity: 0;
 }
 
-/* Три факта: лёгкие цифры (мельче, чем «5,0» отзывов ниже), единица — мелко рядом; над каждым —
-   тонкая линия с красным отрезком. Телефон: столбик, цифра слева, подпись справа. */
-.home-club__facts {
-  grid-area: facts;
-  display: grid; grid-template-columns: minmax(0, 1fr);
-  gap: var(--md);
-  margin: 0; padding: 0; list-style: none;
-}
-.home-club__fact {
-  position: relative; min-width: 0;
-  display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); align-items: baseline; gap: 4px var(--sm);
-  padding-top: var(--sm);
-  border-top: 1px solid var(--on-line);
-  transition: border-color 1.2s var(--ease-color);
-}
-.home-club__fact::before {
-  content: ""; position: absolute; left: 0; top: -1px;
-  width: 40px; height: 2px; background: var(--on-red);
-  transform-origin: left;
-}
-.home-club__num {
-  font: 300 clamp(2.1rem, 2.4vw + 1.3rem, 4.6rem)/1 var(--sans);
-  letter-spacing: -.04em;
-  font-variant-numeric: lining-nums;
-  white-space: nowrap;
-}
-.home-club__num small { margin-left: .22em; font-size: .36em; font-weight: 400; letter-spacing: -.01em; }
-.home-club__label {
-  max-width: 22em;
-  font-size: var(--fs-sm); line-height: 1.45;
-  color: var(--on-muted); text-wrap: pretty;
-  transition: color 1.2s var(--ease-color);
-}
 @media (max-width: 759px) {
   /* Телефон: кнопка во всю ширину. */
   .home-club__join { max-width: none; }
-  .home-club__chip { top: var(--sm); left: var(--sm); }
 }
 @media (max-width: 374px) {
   /* Узкий телефон: «Car Care Club» — своей строкой под «Клубная карта», без висячей точки. */
   .home-club__sep { display: none; }
   .home-club__brand { display: block; padding-left: 58px; }
   .home-club__title { font-size: 2.05rem; }
-  .home-club__fact { grid-template-columns: 5.6rem minmax(0, 1fr); }
 }
 @media (min-width: 760px) {
   .home-club {
@@ -794,8 +743,6 @@ body.no-tr, body.no-tr * { transition: none !important; }
     padding: clamp(48px, 4vw + 16px, 112px) clamp(28px, 3.4vw + 4px, 88px);
     border-radius: var(--panel-r);
   }
-  .home-club__facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--lg) var(--md); }
-  .home-club__fact { display: flex; flex-direction: column; gap: 10px; }
   .home-club__stage { width: min(100%, 560px); justify-self: end; margin-bottom: 14%; }
   .home-club__float { left: -28%; bottom: -12%; width: 84%; }
 }
@@ -804,7 +751,7 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .home-club__perk { grid-template-columns: minmax(0, 1fr); }
 }
 @media (min-width: 760px) and (max-width: 999px) {
-  .home-club { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "copy copy" "stage stage" "facts facts" "note note"; }
+  .home-club { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "copy copy" "stage stage" "note note"; }
   .home-club__stage { width: 64%; }
 }
 @media (min-width: 1000px) {
@@ -812,18 +759,17 @@ body.no-tr, body.no-tr * { transition: none !important; }
      сверху и снизу), сноска сразу под кнопками. Кадр 4:4,5. */
   .home-club {
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-    grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr) auto;
-    grid-template-areas: ". stage" "copy stage" "note stage" ". stage" "facts facts";
+    grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr);
+    grid-template-areas: ". stage" "copy stage" "note stage" ". stage";
     column-gap: clamp(48px, 5vw, 120px); row-gap: 0;
   }
   .home-club__note { margin-top: var(--lg); max-width: min(26em, 70%); }
   /* Запас под карту, вышедшую за низ кадра, — у самого кадра (проценты — от ширины колонки, то есть
-     от размера кадра): факты идут сразу после того, что ниже, — текста или карты (зазор ≥ ~50 px). */
+     от размера кадра). */
   .home-club__stage { align-self: start; width: min(100%, 680px, calc(88vh * .9)); margin-bottom: calc(14% + 8px); }
   .home-club__frame { aspect-ratio: 4 / 4.5; }
   /* Карта заходит в просвет между колонками, но не на ссылки текста (кадр ниже — карта выше). */
   .home-club__float { left: -8%; bottom: -13%; width: 82%; }
-  .home-club__facts { margin-top: var(--xl); }
 }
 
 /* Появление (ui.js ставит is-in): текст поднимается, кадр проявляется, карта влетает и ложится
@@ -847,12 +793,6 @@ body.no-tr, body.no-tr * { transition: none !important; }
   .home-club__stage[data-reveal].is-in .home-club__card.is-tilting { transition: opacity 1s var(--ease-out) .25s, translate 1.8s var(--expo) .25s, rotate 1.8s var(--expo) .25s, transform .16s var(--ease-out); }
   .home-club__stage[data-reveal].is-in .home-club__glare::after { animation: club-sheen 1.6s var(--ease-out) 1.1s both; }
 
-  .js .home-club__facts[data-reveal]:not(.is-in) .home-club__fact { opacity: 0; transform: translateY(24px); }
-  .js .home-club__facts[data-reveal]:not(.is-in) .home-club__fact::before { transform: scaleX(0); }
-  .home-club__facts[data-reveal].is-in .home-club__fact { transition: opacity 1s var(--ease-out), transform 1.4s var(--expo), border-color 1.2s var(--ease-color); }
-  .home-club__facts[data-reveal].is-in .home-club__fact::before { transition: transform 1.2s var(--expo) .3s; }
-  .home-club__facts.is-in .home-club__fact:nth-child(2), .home-club__facts.is-in .home-club__fact:nth-child(2)::before { transition-delay: .08s; }
-  .home-club__facts.is-in .home-club__fact:nth-child(3), .home-club__facts.is-in .home-club__fact:nth-child(3)::before { transition-delay: .16s; }
 }
 @keyframes club-sheen {
   0% { opacity: 0; transform: translateX(-70%); }
