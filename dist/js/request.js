@@ -234,7 +234,7 @@ export function setupRequest(dialog, { show }) {
   const bookBox = $('[data-request-book]'), incBox = $('[data-request-includes]'), incList = $('[data-request-inc]');
   const whenBox = $('[data-request-when]'), datesEl = $('[data-request-dates]'), timesEl = $('[data-request-times]'), whenNote = $('[data-request-when-note]');
   const branchInputs = [...dialog.querySelectorAll('input[name="book_branch"]')];
-  const embedBox = $('[data-request-embed]'), frameBox = $('[data-request-frame-box]');
+  const embedBox = $('[data-request-embed]'), frameBox = $('[data-request-frame-box]'), branchesEl = $('[data-request-branches]');
   let frame = null;   // iframe встроенной записи — создаётся при первом показе (в разметке iframe нет)
   const frameFor = () => {
     if (!frame) {
@@ -315,13 +315,21 @@ export function setupRequest(dialog, { show }) {
   };
   $('[data-request-embed-alt]')?.addEventListener('click', () => { embedMode(false); form.querySelector('input[name=name]')?.focus(); });
   function renderEmbed(job) {
-    embedBox.hidden = false; whenNote.textContent = '';
+    embedBox.hidden = false; whenNote.textContent = ''; branchesEl.hidden = false;
     embedMode(true);
     for (const input of branchInputs) input.disabled = false;
     loadYc().then(() => {
       if (job !== slotJob || !yc?.embedUrl) return;
       const spec = washSpec();
       const blocked = branchInputs.map((i) => i.value).filter((b) => (yc.unavailable?.(b, spec) || []).length);
+      // Программы нет в онлайн-записи ни одной студии («Трёхфазная», 20.11) — запись YCLIENTS не
+      // открываем (там пустая корзина): своя форма и телефон студии.
+      if (blocked.length === branchInputs.length) {
+        const names = yc.unavailable(blocked[0], spec);
+        embedBox.hidden = true; embedMode(false); online.hidden = true; branchesEl.hidden = true;
+        whenNote.textContent = nb(`${names.map(quoted).join(', ')} онлайн пока не записать — позвоните в студию или оставьте заявку, администратор подберёт время.`);
+        return;
+      }
       let branch = branchNow();
       if (blocked.length && blocked.length < branchInputs.length) {
         for (const input of branchInputs) input.disabled = blocked.includes(input.value);
@@ -340,7 +348,7 @@ export function setupRequest(dialog, { show }) {
     chosen = null; updateSubmit();
     const job = ++slotJob;
     datesEl.replaceChildren(); timesEl.replaceChildren(); whenNote.textContent = '';
-    embedBox.hidden = true;
+    embedBox.hidden = true; branchesEl.hidden = false;
     if (typeof embedMode === 'function') embedMode(false);
     if (!isWash()) { whenBox.hidden = true; bookBox.hidden = incBox.hidden; return; }
     if (slotsOff) { whenBox.hidden = false; bookBox.hidden = false; renderEmbed(job); return; }

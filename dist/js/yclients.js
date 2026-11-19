@@ -25,6 +25,8 @@ export function loadMap() {
 }
 
 const branchOf = (name) => map?.branches?.[name];
+// Услуга заведена, но скрыта в онлайн-записи (yclients.json offline) — для корзины её нет.
+const online = (branch, id) => Boolean(id) && !(map?.offline?.[branch] || []).includes(id);
 
 // spec: { programs: [индексы программ], items: ['Название из прайса'] }
 // body — индекс типа кузова (0 седан … 3 микроавтобус); важен только для программ.
@@ -35,12 +37,12 @@ export function resolve(branch, spec, body = 0) {
   for (const i of spec.programs || []) {
     const row = map.programs[i];
     const id = row && row[branch] && row[branch][body];
-    if (id) ids.push(id);
+    if (online(branch, id)) ids.push(id);
     else if (row) missing.push(row.name);
   }
   for (const name of spec.items || []) {
     const id = map.items[name]?.[branch];
-    if (id) ids.push(id);
+    if (online(branch, id)) ids.push(id);
     else missing.push(name);
   }
   return { ids: [...new Set(ids)], missing };
@@ -50,17 +52,18 @@ export function resolve(branch, spec, body = 0) {
 // «Трёхфазная» на Лубянке. Такую студию в записи не предлагаем.
 export function unavailable(branch, spec) {
   if (!map) return [];
-  return (spec.programs || []).map((i) => map.programs[i]).filter((row) => row && !(row[branch] || []).some(Boolean)).map((row) => row.name);
+  return (spec.programs || []).map((i) => map.programs[i]).filter((row) => row && !(row[branch] || []).some((id) => online(branch, id))).map((row) => row.name);
 }
 
 // Встроенная запись (Влад 19.11, ключа API YCLIENTS нет — партнёрские аккаунты не выдают): та же
 // корзина на домене официального виджета b{form}.yclients.ru — в окне сайта выбирают день, время,
 // имя и телефон, запись создаётся в YCLIENTS. Домен n….yclients.com в рамке отказывает части запросов.
+// Влад 20.11: сразу шаг «Выбрать специалиста» с корзиной (дальше время, имя и телефон), а не «Ваш заказ».
 export function embedUrl(branch, ids = []) {
   const b = branchOf(branch);
   if (!b) return null;
   const base = `https://b${b.form}.yclients.ru/company/${b.company}/personal/`;
-  return ids.length ? `${base}short?o=m-1${ids.map((id) => 's' + id).join('')}` : `${base}select-services?o=`;
+  return ids.length ? `${base}select-master?o=${ids.map((id) => 's' + id).join('')}` : `${base}select-services?o=`;
 }
 
 export function bookingUrl(branch, ids = []) {

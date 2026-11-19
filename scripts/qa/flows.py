@@ -80,7 +80,7 @@ def booking(browser, base, pages, res):
     label = pg.locator('#body-price-label').inner_text()
     pg.locator('[data-book][data-program="3"]').first.click()
     try:
-        pg.wait_for_function("() => [...document.querySelectorAll('#request [data-request-online] a[data-branch]')].some(a => a.href.includes('short?o=')) || (document.querySelector('#request .request__frame')?.src || '').includes('short?o=')", timeout=8000)
+        pg.wait_for_function("() => [...document.querySelectorAll('#request [data-request-online] a[data-branch]')].some(a => a.href.includes('short?o=')) || /[?&]o=(m-1)?s\\d/.test(document.querySelector('#request .request__frame')?.src || '')", timeout=8000)
     except Exception:
         pass
     s = pg.evaluate(REQUEST_STATE)
@@ -88,7 +88,7 @@ def booking(browser, base, pages, res):
     hrefs = {l['branch']: l['href'] for l in s['links']}
     # Корзина: в ссылках обеих студий или во встроенной записи (студия по умолчанию — Лубянка).
     cart_ok = s['open'] and s['topic'] == 'wash' and (all(f'short?o=m-1s{want[b]}' in hrefs.get(b, '') for b in STUDIOS if want[b])
-                                                      or (bool(s['embed']) and any(f'short?o=m-1s{want[b]}' in s['embed'] for b in STUDIOS if want[b])))
+                                                      or (bool(s['embed']) and any(f's{want[b]}' in s['embed'].split('o=')[-1] for b in STUDIOS if want[b])))
     pg.keyboard.press('Escape')
     pg.wait_for_timeout(400)
     # /services: «Оставить заявку» во вкладке «Детейлинг» (полировка, 17.11 — бывшая «Защита») → форма с темой «Детейлинг» и этой работой

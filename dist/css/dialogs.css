@@ -306,6 +306,13 @@ legend.request__legend + * { clear: both; }
 .request__embed-alt { display: inline; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: var(--on); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .request__embed-alt:hover { color: var(--red-ink); }
 /* Запись YCLIENTS в окне: своя форма заявки спрятана, пока не нажали «Оставить заявку». */
+/* В режиме записи направление известно (мойка): поле темы и «+ Добавить работу» не показываем;
+   студия и запись YCLIENTS — сразу под выбранными работами, «Что входит» — ниже, для справки. */
+.request.is-embed .request__about > .request__field, .request.is-embed .request__about > .request__online,
+.request.is-embed .request__add { display: none; }
+.request.is-embed .request__book { display: flex; flex-direction: column; }
+.request.is-embed .request__book > .request__when { order: -1; margin-top: 0; }
+.request.is-embed .request__book > .request__includes { margin-top: 24px; }
 .request.is-embed > .request__card:not(.request__about):not(.request__book) { display: none; }
 .request.is-embed .request__embed-alt { display: inline; }
 .request:not(.is-embed) .request__embed-alt { display: none; }
