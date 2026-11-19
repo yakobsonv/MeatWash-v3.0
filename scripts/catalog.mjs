@@ -109,9 +109,12 @@ const SECTION_NOTE={
 // запись с программой в корзине YCLIENTS — основная кнопка (btn--primary, как до 09.11).
 // Состав по пунктам — в сравнении под карточками (renderCompare), в карточке его нет.
 const shortTime=time=>time.replace(/\s*минут[аы]?$/,' мин');
+// Влад 19.11: у карточки кадр на каждый тип кузова (bodies по порядку bodyTypes) — img несёт
+// data-body-photos и data-body-alts, js/catalog.js (setupBody) меняет кадр при выборе кузова.
 const cardOf=i=>{
  const card=d.programCards?.items?.[i];
  if(!card?.photo||!card.alt||!card.text)throw new Error(`programCards.items[${i}]: нужны photo, alt и text`);
+ if(card.bodies&&(card.bodies.length!==d.bodyTypes.length||card.bodies.some(b=>!b.photo||!b.alt||/\|/.test(b.alt))))throw new Error(`programCards.items[${i}].bodies: по кадру и alt на каждый из ${d.bodyTypes.length} типов кузова, без «|»`);
  return card;
 };
 // sizes: пять в ряд от 1240 px, 3 + 2 от 1000 px, ниже — лента карточек по 300 px / 78vw.
@@ -119,7 +122,7 @@ const PROGRAM_SIZES='(min-width: 1240px) 19vw, (min-width: 1000px) 31vw, (min-wi
 const programCard=([name,,time],i)=>{
  const card=cardOf(i);
  return `<li class="program-card" id="program-${i}">
-      <div class="program-card__media"><img src="${escape(card.photo)}-800.webp" srcset="${escape(card.photo)}-800.webp 800w, ${escape(card.photo)}-1200.webp 1200w" sizes="${PROGRAM_SIZES}" width="800" height="600" alt="${escape(card.alt)}" loading="lazy" decoding="async"></div>
+      <div class="program-card__media"><img src="${escape(card.photo)}-800.webp" srcset="${escape(card.photo)}-800.webp 800w, ${escape(card.photo)}-1200.webp 1200w" sizes="${PROGRAM_SIZES}" width="800" height="600" alt="${escape(card.alt)}" loading="lazy" decoding="async"${card.bodies?` data-body-photos="${escape(card.bodies.map(b=>b.photo).join('|'))}" data-body-alts="${escape(card.bodies.map(b=>b.alt).join('|'))}"`:''}></div>
       <div class="program-card__text"><h4 class="program-card__name">${escape(name)}</h4><p class="program-card__desc">${escape(card.text)}</p></div>
       <p class="program-card__price"><span data-program-price data-prices="${d.programPrices[i].join(',')}">${money(d.programPrices[i][0])}</span><span class="program-card__time"><span class="program-card__dot" aria-hidden="true">·</span><span class="sr">, </span>${escape(shortTime(time))}</span>${studioLine(i,'span','program-card__studio')}${card.only?`<span class="program-card__studio">${escape(card.only)}</span>`:''}</p>
       <button class="btn btn--primary program-card__book" type="button" data-book data-program="${i}" data-book-context="${escape(programContext(i,0))}">${REQUEST_LABEL}${forName(name)}</button>

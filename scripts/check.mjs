@@ -52,6 +52,7 @@
 //   заявка   request.js и api/request.php согласованы; секретов в коде нет.
 // Владелец: WP7.
 import {readFile, readdir, stat} from 'node:fs/promises';
+import {existsSync} from 'node:fs';
 import {resolve, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
@@ -377,6 +378,9 @@ const services = html['services.html'];
     const shown = progBlock.match(new RegExp(`data-prices="${d.programPrices[i].join(',')}">([^<]*)<`))?.[1];
     ok(shown != null && plain(shown) === plain(money(d.programPrices[i][0])), `Программа ${i}: цены по кузову не из JSON`);
     const card = progBlock.match(new RegExp(`<li class="program-card" id="program-${i}">[\\s\\S]*?</li>`))?.[0] || '';
+    // Влад 19.11: кадр под каждый тип кузова — data-body-photos по порядку bodyTypes, файлы -800 и -1200 есть.
+    const bodies = d.programCards.items[i].bodies || [];
+    ok(bodies.length === d.bodyTypes.length && card.includes(`data-body-photos="${bodies.map((b) => b.photo).join('|')}"`) && bodies.every((b) => ['800', '1200'].every((w) => existsSync(resolve(dist, `${b.photo}-${w}.webp`)))), `Программа ${i}: нет кадров под 4 типа кузова (data-body-photos и файлы -800/-1200)`);
     ok(card && card.includes(`src="${d.programCards.items[i].photo}-800.webp"`) && card.includes(`alt="${esc(d.programCards.items[i].alt)}"`), `Программа ${i}: нет карточки li#program-${i} с кадром и alt из programCards`);
     // Список по шагам (Влад 19.11): «Входит:», затем пунктами с галочкой «Всё из …» и добавленные
     // работы — состав programIncludes побуквенно.

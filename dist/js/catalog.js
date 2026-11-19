@@ -254,6 +254,19 @@ function setupBody(signal) {
       line.hidden = Boolean(own) && own.dataset.prices.split(',')[i] === line.dataset.base.split(',')[i];
     });
     if (label) label.textContent = 'Цены для\u00a0типа кузова: ' + bodyName(i);   // как в разметке после typo()
+    // Кадр карточки программы под кузов (Влад 19.11, фото услуг YCLIENTS): новый кадр
+    // подставляется, когда уже загружен, — без пустого места на время загрузки.
+    document.querySelectorAll('img[data-body-photos]').forEach((img) => {
+      const photo = img.dataset.bodyPhotos.split('|')[i], alt = img.dataset.bodyAlts?.split('|')[i];
+      if (!photo || img.dataset.bodyShown === photo) return;
+      img.dataset.bodyShown = photo;
+      const next = new Image();
+      next.sizes = img.sizes;
+      next.srcset = `${photo}-800.webp 800w, ${photo}-1200.webp 1200w`;
+      next.src = `${photo}-800.webp`;
+      const swap = () => { if (img.dataset.bodyShown !== photo) return; img.srcset = next.srcset; img.src = next.src; if (alt) img.alt = alt; };
+      (next.decode ? next.decode() : Promise.resolve()).then(swap, swap);
+    });
     // Формат тот же, что в scripts/catalog.mjs (programContext).
     document.querySelectorAll('[data-book][data-program]').forEach((button) => {
       const program = PROGRAMS[Number(button.dataset.program)];
