@@ -264,10 +264,11 @@ export const requestTopics=()=>(d.site?.requests?.topics||[]).map(t=>{
 // всё правее, и ступени видны глазом. Программа j отмечена в строках программ 0…j: буквальное
 // правило «каждая следующая включает предыдущую».
 // Разметка: таблица (от 1100 px; tbody на этап с заголовком th scope="rowgroup"; в шапке столбца —
-// .compare__name и «+N работ»; ячейка «входит» — td.compare__yes, первая в строке — ещё и
-// --start с галочкой; внизу время и цена, цену меняет кузов — тот же data-program-price) и тот же
+// .compare__name и «+N работ»; ячейка «входит» — td.compare__yes с галочкой (Влад 19.11: галочки во всех
+// программах, куда входит пункт, — у «Премиума» все), первая в строке — ещё и --start; внизу время и цена, цену меняет кузов — тот же data-program-price) и тот же
 // состав списком по шагам ol.compare__steps (до 1100 px, таблица там скрыта): программа, цена ·
-// время, шкала «N из M работ» и что добавляется к предыдущей.
+// время, шкала «N из M работ» и «Входит:» — первой строкой с галочкой «Всё из <предыдущей>», за ней
+// добавленные работы (Влад 19.11: у «Премиума» шесть галочек).
 const works=n=>{const a=n%10,b=n%100;return `${n} ${a===1&&b!==11?'работа':a>=2&&a<=4&&(b<12||b>14)?'работы':'работ'}`;};
 export function compareRows(){
  const from=new Map();
@@ -297,7 +298,7 @@ export function renderCompare(){
   ?`<td class="compare__no"><span class="sr">не входит</span></td>`
   :j===row.from
    ?`<td class="compare__yes compare__yes--start${j===last?' compare__yes--end':''}">${icon('check')}<span class="sr">входит</span></td>`
-   :`<td class="compare__yes${j===last?' compare__yes--end':''}"><span class="sr">входит</span></td>`;
+   :`<td class="compare__yes${j===last?' compare__yes--end':''}">${icon('check')}<span class="sr">входит</span></td>`;
  const price=(i,cls)=>`<span data-program-price data-prices="${d.programPrices[i].join(',')}">${money(d.programPrices[i][0])}</span>${studioLine(i,'span',cls)}`;
  return `<div class="compare" id="compare">
      <div class="compare__head">
@@ -324,8 +325,8 @@ ${d.programs.map(([name,,time],j)=>`      <li class="compare__step">
         <p class="compare__step-price"><span data-program-price data-prices="${d.programPrices[j].join(',')}">${money(d.programPrices[j][0])}</span><span class="compare__step-time"><span aria-hidden="true">·</span><span class="sr">, </span>${escape(shortTime(time))}</span>${studioLine(j,'span','compare__studio')}</p>
        </div>
        <p class="compare__meter"><span class="compare__meter-bar" aria-hidden="true"><span style="width: ${(upTo(j)/total*100).toFixed(1)}%"></span></span><span class="compare__meter-label">${upTo(j)} из ${works(total)}</span></p>
-       <p class="compare__step-base">${j?`${escape(d.programIncludes[j][0])}, плюс:`:'Входит:'}</p>
-       <ul class="compare__step-list">${added(j).map(item=>`<li>${escape(item)}</li>`).join('')}</ul>
+       <p class="compare__step-base">Входит:</p>
+       <ul class="compare__step-list">${(j?[d.programIncludes[j][0],...added(j)]:added(j)).map(item=>`<li>${escape(item)}</li>`).join('')}</ul>
       </li>`).join('\n')}
      </ol>
     </div>`;

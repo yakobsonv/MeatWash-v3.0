@@ -378,11 +378,12 @@ const services = html['services.html'];
     ok(shown != null && plain(shown) === plain(money(d.programPrices[i][0])), `Программа ${i}: цены по кузову не из JSON`);
     const card = progBlock.match(new RegExp(`<li class="program-card" id="program-${i}">[\\s\\S]*?</li>`))?.[0] || '';
     ok(card && card.includes(`src="${d.programCards.items[i].photo}-800.webp"`) && card.includes(`alt="${esc(d.programCards.items[i].alt)}"`), `Программа ${i}: нет карточки li#program-${i} с кадром и alt из programCards`);
-    // Список по шагам: «Всё из …, плюс:» и добавленные пункты — состав programIncludes побуквенно.
+    // Список по шагам (Влад 19.11): «Входит:», затем пунктами с галочкой «Всё из …» и добавленные
+    // работы — состав programIncludes побуквенно.
     const step = [...progBlock.matchAll(/<li class="compare__step">([\s\S]*?)<\/ul>/g)][i]?.[1] || '';
     const listed = [...(step.match(/<ul class="compare__step-list">([\s\S]*)$/)?.[1] || '').matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => plain(m[1]));
-    const base = plain(step.match(/<p class="compare__step-base">([\s\S]*?)<\/p>/)?.[1] || '').replace(/, плюс:$|^Входит:$/, '');
-    ok(same(i ? [base, ...listed] : listed, d.programIncludes[i]), `Программа ${i}: состав в списке сравнения по шагам не как в JSON`);
+    const base = plain(step.match(/<p class="compare__step-base">([\s\S]*?)<\/p>/)?.[1] || '');
+    ok(base === 'Входит:' && same(listed, d.programIncludes[i]), `Программа ${i}: состав в списке сравнения по шагам не как в JSON`);
     ok(progBlock.includes(`data-book data-program="${i}"`), `Программа ${i}: нет записи с программой`);
   });
   ok([...progBlock.matchAll(/<input type="radio" name="body-type" value="(\d)"/g)].length === d.bodyTypes.length && progBlock.includes('id="body-price-label"'), 'services.html: нет переключателя кузова (4) или #body-price-label');
