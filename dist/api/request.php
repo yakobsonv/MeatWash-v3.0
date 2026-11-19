@@ -16,6 +16,13 @@
 //   заявка (multipart/form-data): services, topic_id, name, contact, car, branch, comment,
 //                  consent=yes, consentDocument, page, token, mw_extra (ловушка, пустое),
 //                  photos[] (до 5) → {"ok":true} | {"ok":false,"error":"…"}.
+//   action=slots (Влад 19.11, запись на время) — services (работы по строке), body (0–3),
+//                  branch (myasnitskaya|technopark), date (ГГГГ-ММ-ДД, необязательно) →
+//                  {"ok":true,"branch":"…","dates":[…]} без date | {"ok":true,"branch":"…","times":[{"time","datetime"}]}
+//                  с date; свободное время онлайн-записи YCLIENTS (book_dates, book_times; мастер — любой).
+//                  503 — YCLIENTS не настроен: форма тогда не показывает выбор времени.
+//   В заявке поле datetime (ISO из times) — запись на это время: POST book_record в студию; не
+//   вышло — заявка в лист ожидания, желаемое время — в комментарии. Ответ {"ok":true,"booked":{…}}.
 //   Коды: 400 — ошибка в данных, 405 — не POST, 413 — слишком большой файл или запрос,
 //   415 — не картинка, 429 — слишком часто, 503 — не настроено, 500 — не удалось доставить.
 //
@@ -350,6 +357,9 @@ function readFields(): array
     $data['branch'] = $data['branch_id'] !== '' ? BRANCHES[$data['branch_id']] : ($data['branch'] === '' ? 'Любая' : $data['branch']);
     $body = clean($_POST['body'] ?? '', false);
     $data['body'] = is_string($body) && preg_match('/^[0-3]$/', $body) ? (int) $body : 0;
+    // Время записи из выбора в окне (action=slots → times[].datetime): ГГГГ-ММ-ДДTЧЧ:ММ[:СС][±ЧЧ:ММ].
+    $when = clean($_POST['datetime'] ?? '', false);
+    $data['datetime'] = is_string($when) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?([+-]\d{2}:?\d{2}|Z)?$/', $when) ? $when : '';
     $topic = clean($_POST['topic_id'] ?? '', false);
     $data['topic_id'] = is_string($topic) && preg_match('/^[a-z]{1,20}$/', $topic) ? $topic : '';
 
@@ -815,12 +825,97 @@ function ycClient(array $yc, int $company, string $phone, string $name): ?array
     return $id > 0 ? [$id, $name] : null;
 }
 
+// Студия для набора работ: выбранная, а если её услуг там нет — та, где они есть
+// («Трёхфазная» — только Технопарк).
+function ycBranchFor(array $names, string $branch, array $yc, int $body): string
+{
+    if (ycServices($names, $branch, $yc, $body, false)) {
+        return $branch;
+    }
+    foreach (array_keys($yc['companies']) as $other) {
+        if ($other !== $branch && ycServices($names, $other, $yc, $body, false)) {
+            return $other;
+        }
+    }
+    return $branch;
+}
+
+// Свободное время онлайн-записи: даты (без $date) или сеансы на дату. Мастер — любой (0).
+function ycSlots(array $yc, array $names, string $branch, int $body, string $date): ?array
+{
+    $branch = ycBranchFor($names, $branch, $yc, $body);
+    $ids = ycServices($names, $branch, $yc, $body, false);
+    if (!$ids) {
+        return ['branch' => $branch, 'dates' => [], 'times' => []];
+    }
+    $company = (int) $yc['companies'][$branch];
+    $query = http_build_query(['service_ids' => $ids]);
+    if ($date === '') {
+        $res = ycCall($yc, 'GET', "/api/v1/book_dates/$company?$query");
+        if ($res === null) {
+            return null;
+        }
+        $dates = (array) ($res['data']['booking_dates'] ?? $res['booking_dates'] ?? []);
+        $dates = array_values(array_filter($dates, static function ($d) { return is_string($d) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $d); }));
+        sort($dates);
+        return ['branch' => $branch, 'dates' => array_slice($dates, 0, 21)];
+    }
+    $res = ycCall($yc, 'GET', "/api/v1/book_times/$company/0/$date?$query");
+    if ($res === null) {
+        return null;
+    }
+    $times = [];
+    foreach ((array) ($res['data'] ?? $res) as $slot) {
+        if (is_array($slot) && is_string($slot['datetime'] ?? null) && is_string($slot['time'] ?? null)) {
+            $times[] = ['time' => $slot['time'], 'datetime' => $slot['datetime']];
+        }
+    }
+    return ['branch' => $branch, 'times' => $times];
+}
+
+// Запись на время: POST /api/v1/book_record/{company} (онлайн-запись, мастер — любой свободный).
+// Вернёт [дата-время, студия] или null — тогда заявка пойдёт в лист ожидания.
+function ycBook(array $data, array $yc, string $phone): ?array
+{
+    $branch = ycBranchFor($data['services'], ycBranch($data, $yc), $yc, $data['body']);
+    $ids = ycServices($data['services'], $branch, $yc, $data['body'], false);
+    if (!$ids) {
+        return null;
+    }
+    $company = (int) $yc['companies'][$branch];
+    $comment = 'Запись с сайта meatwash.ru. Работы: ' . implode('; ', $data['services']) . ($data['comment'] !== '' ? '. Комментарий: ' . $data['comment'] : '');
+    $res = ycCall($yc, 'POST', "/api/v1/book_record/$company", [
+        'phone' => $phone,
+        'fullname' => $data['name'],
+        'email' => '',
+        'comment' => mb_substr($comment, 0, 1000, 'UTF-8'),
+        'notify_by_sms' => 1,
+        'appointments' => [['id' => 1, 'services' => $ids, 'staff_id' => 0, 'datetime' => $data['datetime']]],
+    ]);
+    $record = is_array($res) ? ($res['data'][0] ?? $res[0] ?? null) : null;
+    if (!is_array($record) || empty($record['record_id'])) {
+        return null;
+    }
+    return ['datetime' => $data['datetime'], 'branch' => $branch, 'studio' => BRANCHES[$branch]];
+}
+
+$GLOBALS['mw_booked'] = null;
+
 function sendYclients(array $data, array $yc): bool
 {
     $phone = ycPhone($data['contact']);
     if ($phone === '') {
         note('yclients: contact is not a Russian phone number');
         return false;
+    }
+    if ($data['datetime'] !== '') {
+        $booked = ycBook($data, $yc, $phone);
+        if ($booked !== null) {
+            $GLOBALS['mw_booked'] = $booked;
+            return true;
+        }
+        // Время успели занять или запись требует подтверждения — в лист ожидания со временем.
+        $data['comment'] = trim('Хотел записаться на ' . str_replace('T', ' ', substr($data['datetime'], 0, 16)) . '. ' . $data['comment']);
     }
     $branch = ycBranch($data, $yc);
     $services = ycServices($data['services'], $branch, $yc, $data['body'], false);
@@ -888,6 +983,26 @@ try {
     if (($_POST['action'] ?? '') === 'token') {
         respond(200, ['ok' => true, 'token' => issueToken($config['secret']), 'wait' => $config['min_seconds']]);
     }
+    if (($_POST['action'] ?? '') === 'slots') {
+        $yc = $config['channels']['yclients'] ?? null;
+        if ($yc === null) {
+            fail(503, 'онлайн-запись на время не подключена');
+        }
+        $names = array_values(array_filter(array_map('trim', explode("\n", (string) (clean($_POST['services'] ?? '', true) ?? ''))), 'strlen'));
+        $names = array_slice(array_filter($names, static function ($n) { return mb_strlen($n, 'UTF-8') <= MAX_SERVICE_LENGTH; }), 0, MAX_SERVICES);
+        $branch = (string) ($_POST['branch'] ?? '');
+        $branch = isset($yc['companies'][$branch]) ? $branch : $yc['default_branch'];
+        $body = preg_match('/^[0-3]$/', (string) ($_POST['body'] ?? '')) ? (int) $_POST['body'] : 0;
+        $date = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_POST['date'] ?? '')) ? (string) $_POST['date'] : '';
+        if (!$names) {
+            fail(400, 'не выбрано ни одной работы', ['field' => 'services']);
+        }
+        $slots = ycSlots($yc, $names, $branch, $body, $date);
+        if ($slots === null) {
+            fail(502, 'не удалось получить свободное время');
+        }
+        respond(200, ['ok' => true] + $slots);
+    }
 
     // Ловушка: скрытое поле, которое человек не видит и не заполняет.
     if (trim((string) ($_POST['mw_extra'] ?? '')) !== '') {
@@ -924,7 +1039,7 @@ try {
     if (!$delivered) {
         fail(500, 'не удалось передать заявку мастеру');
     }
-    respond(200, ['ok' => true]);
+    respond(200, ['ok' => true] + ($GLOBALS['mw_booked'] ? ['booked' => $GLOBALS['mw_booked']] : []));
 } catch (Throwable $error) {
     note('unexpected ' . get_class($error) . ' at line ' . $error->getLine());
     fail(500, 'ошибка на сервере');

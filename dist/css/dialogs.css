@@ -269,6 +269,38 @@ legend.request__legend + * { clear: both; }
 .request__chip:hover { background: rgb(var(--ink-rgb) / .15); }
 .request__chip span:last-child { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; color: var(--on-muted); }
 
+/* Запись на время (Влад 19.11): «Что входит» и студия, день, время. */
+.request__book > * + * { margin-top: 18px; }
+.request__inc { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.request__inc-title { margin: 0 0 4px; font-size: var(--fs-sm); font-weight: 600; }
+.request__inc ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: var(--fs-sm); line-height: 1.4; color: var(--on-muted); }
+.request__inc ul li { position: relative; padding-left: 20px; }
+.request__inc ul li::before {
+  content: ''; position: absolute; left: 2px; top: .45em;
+  width: 9px; height: 5px; border-left: 1.5px solid var(--red-ink); border-bottom: 1.5px solid var(--red-ink);
+  transform: rotate(-45deg);
+}
+.request__branches { display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--r-pill); background: var(--surface-2); }
+.request__branches label { position: relative; }
+.request__branches input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.request__branches span { display: block; padding: 8px 16px; border-radius: var(--r-pill); font-size: var(--fs-sm); }
+.request__branches input:checked + span { background: var(--ink); color: var(--fg); }
+.request__branches input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+.request__branches input:disabled + span { opacity: .4; }
+.request__slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.request__slots:empty { display: none; }
+.request__dates { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.request__dates::-webkit-scrollbar { display: none; }
+.request__slot {
+  flex: none; min-height: 40px; padding: 8px 14px; border: 0; border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--ink); font: 400 var(--fs-sm)/1.2 var(--sans); cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.request__slot:hover { background: rgb(var(--ink-rgb) / .15); }
+.request__slot[aria-pressed="true"] { background: var(--ink); color: var(--fg); }
+.request__when-note { margin: 10px 0 0; font-size: var(--fs-sm); color: var(--on-muted); }
+.request__when-note:empty { display: none; }
+
 /* Фото. */
 .request p.request__rules { margin-top: 0; font-size: var(--fs-sm); color: var(--on-muted); }
 .request__previews { display: grid; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }

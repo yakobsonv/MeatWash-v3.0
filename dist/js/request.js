@@ -173,6 +173,7 @@ export function setupRequest(dialog, { show }) {
     chipsEl.hidden = !services.length;
     renderAdd();
     renderOnline();
+    if (typeof renderBook === 'function') renderBook();
   }
   function addServices(list) {
     for (const name of list) if (name && !services.includes(name)) services.push(name);
@@ -224,7 +225,94 @@ export function setupRequest(dialog, { show }) {
     }).catch(() => { /* карта не загрузилась — ссылки остаются обычным выбором услуг */ });
   }
   // Тип кузова сменили на странице — цены программ в YCLIENTS другие.
-  addEventListener('mw:body', () => { if (dialog.open) renderOnline(); });
+  addEventListener('mw:body', () => { if (dialog.open) { renderOnline(); renderWhen(); } });
+
+  // ── Запись на время (Влад 19.11) ─────────────────────────────────────────
+  // «Что входит» — состав выбранных программ (PROGRAMS[].includes) и допы; студия, день и время —
+  // свободные окна онлайн-записи YCLIENTS через api/request.php (action=slots). Сервер без ключей
+  // YCLIENTS отвечает 503 — выбор времени больше не спрашиваем, заявка уходит как раньше.
+  const bookBox = $('[data-request-book]'), incBox = $('[data-request-includes]'), incList = $('[data-request-inc]');
+  const whenBox = $('[data-request-when]'), datesEl = $('[data-request-dates]'), timesEl = $('[data-request-times]'), whenNote = $('[data-request-when-note]');
+  const branchInputs = [...dialog.querySelectorAll('input[name="book_branch"]')];
+  const doneTitle = $('[data-request-done-title]'), doneText = $('[data-request-done-text]');
+  let slotsOff = !endpoint, slotJob = 0, chosen = null;   // chosen: {datetime, branch, label}
+  const DAYS = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+  const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  const dayOf = (iso) => { const [y, m, d] = iso.slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
+  const dateLabel = (iso) => { const d = dayOf(iso); return `${d.getDate()} ${MONTHS[d.getMonth()]}`; };
+  const branchNow = () => branchInputs.find((i) => i.checked)?.value || 'myasnitskaya';
+  const setBranch = (id) => { for (const input of branchInputs) input.checked = input.value === id; };
+  const isWash = () => topicId() === 'wash' && (washSpec().programs.length + washSpec().items.length > 0);
+  function renderIncludes() {
+    const progs = services.map((n) => PROGRAM_NAMES.indexOf(n)).filter((i) => i >= 0);
+    const extras = services.filter((n) => PROGRAM_NAMES.indexOf(n) < 0);
+    const block = (title, list) => {
+      const li = document.createElement('li'), head = document.createElement('p'), ul = document.createElement('ul');
+      head.className = 'request__inc-title'; head.textContent = title;
+      ul.append(...list.map((x) => { const i = document.createElement('li'); i.textContent = x; return i; }));
+      li.append(head, ul); return li;
+    };
+    // Состав целиком: «Всё из <предыдущей>» раскрываем — каждая следующая включает предыдущую.
+    const full = (i) => PROGRAMS.slice(0, i + 1).flatMap((p, k) => (p.includes || []).slice(k ? 1 : 0));
+    const rows = progs.map((i) => block(PROGRAMS[i].name, full(i)));
+    if (extras.length && progs.length) rows.push(block(extras.length === 1 ? 'Доп' : 'Допы', extras));
+    incList.replaceChildren(...rows);
+    incBox.hidden = !(isWash() && progs.length);
+    bookBox.hidden = incBox.hidden && whenBox.hidden;
+  }
+  async function slots(date) {
+    const body = new FormData();
+    body.append('action', 'slots'); body.append('services', services.join('\n'));
+    body.append('branch', branchNow()); body.append('body', String(getBody()));
+    if (date) body.append('date', date);
+    return post(body);
+  }
+  const slotButton = (label, pressed, onPick) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'request__slot'; b.textContent = label; b.setAttribute('aria-pressed', String(pressed));
+    b.addEventListener('click', () => { for (const x of b.parentElement.children) x.setAttribute('aria-pressed', String(x === b)); onPick(); });
+    return b;
+  };
+  function updateSubmit() {
+    if (!sending) submitBtn.textContent = chosen ? nb(`Записаться: ${chosen.label}`) : 'Отправить заявку';
+  }
+  function pickDate(date) {
+    chosen = null; updateSubmit();
+    const job = ++slotJob;
+    timesEl.replaceChildren(); whenNote.textContent = 'Загружаем время…';
+    slots(date).then((r) => {
+      if (job !== slotJob) return;
+      if (r.branch) setBranch(r.branch);
+      const times = (r.times || []).filter((t) => t && t.datetime && t.time);
+      whenNote.textContent = times.length ? '' : 'На этот день онлайн свободного времени нет — выберите другой.';
+      timesEl.replaceChildren(...times.map((t) => slotButton(t.time, false, () => {
+        chosen = { datetime: t.datetime, branch: r.branch || branchNow(), label: `${dateLabel(date)}, ${t.time}` };
+        updateSubmit();
+      })));
+    }).catch(() => { if (job === slotJob) whenNote.textContent = 'Время не загрузилось — оставьте заявку, администратор подберёт время.'; });
+  }
+  function renderWhen() {
+    chosen = null; updateSubmit();
+    const job = ++slotJob;
+    datesEl.replaceChildren(); timesEl.replaceChildren(); whenNote.textContent = '';
+    if (slotsOff || !isWash()) { whenBox.hidden = true; bookBox.hidden = incBox.hidden; return; }
+    whenBox.hidden = false; bookBox.hidden = false; whenNote.textContent = 'Загружаем свободное время…';
+    slots('').then((r) => {
+      if (job !== slotJob) return;
+      if (r.branch) setBranch(r.branch);
+      for (const input of branchInputs) input.disabled = Boolean(r.branch) && r.branch !== input.value && onlyBranch === r.branch;
+      const dates = (r.dates || []).slice(0, 14);
+      if (!dates.length) { whenNote.textContent = 'Свободного времени онлайн нет — отправьте заявку, администратор подберёт время.'; return; }
+      whenNote.textContent = '';
+      datesEl.replaceChildren(...dates.map((d) => slotButton(`${DAYS[dayOf(d).getDay()]}, ${dateLabel(d)}`, false, () => pickDate(d))));
+    }).catch((error) => {
+      if (job !== slotJob) return;
+      if (error.status === 503) slotsOff = true;   // запись на время не подключена — больше не спрашиваем
+      whenBox.hidden = true; bookBox.hidden = incBox.hidden;
+    });
+  }
+  for (const input of branchInputs) input.addEventListener('change', renderWhen);
+  function renderBook() { renderIncludes(); renderWhen(); }
 
   function renderPhotos() {
     previewsEl.replaceChildren(...photos.map(({ file, url }, i) => {
@@ -365,7 +453,9 @@ export function setupRequest(dialog, { show }) {
     body.append('contact', phoneInput.value.trim());
     body.append('car', '');
     // Студия кнопки (карточка студии) — заявка ляжет в её лист ожидания YCLIENTS; иначе выберет сервер.
-    body.append('branch', onlyBranch || studioFirst || '');
+    body.append('branch', chosen?.branch || onlyBranch || studioFirst || '');
+    // Выбранное время записи (action=slots): сервер записывает на него в YCLIENTS.
+    if (chosen) body.append('datetime', chosen.datetime);
     // Тип кузова (0 седан … 3 микроавтобус) — услуга мойки в YCLIENTS берётся для него.
     body.append('body', String(getBody()));
     const note = context.hidden ? '' : context.textContent.replace(/ /g, ' ');
@@ -377,6 +467,7 @@ export function setupRequest(dialog, { show }) {
     if (photosOn) for (const { file } of photos) body.append('photos[]', file, file.name);
     sending = true; submitBtn.disabled = true; submitBtn.textContent = 'Отправляем…';
     const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 180_000);
+    let sent = null;
     try {
       // Метка: устарела или сервер её не принял — берём новую и отправляем ещё раз (один раз).
       for (let attempt = 0; ; attempt++) {
@@ -384,7 +475,7 @@ export function setupRequest(dialog, { show }) {
         const left = tokenAt + tokenWait * 1000 + 300 - Date.now();
         if (left > 0) await pause(left);
         body.set('token', token);
-        try { await post(body, controller.signal); break; } catch (error) {
+        try { sent = await post(body, controller.signal); break; } catch (error) {
           if (attempt || error.result?.retry !== 'token') throw error;
           token = null;
         }
@@ -394,6 +485,11 @@ export function setupRequest(dialog, { show }) {
       services.splice(0); photos.splice(0).forEach((p) => p.url && URL.revokeObjectURL(p.url));
       form.reset(); renderChips(); renderPhotos();
       try { sessionStorage.removeItem(KEY); } catch { /* приватный режим */ }
+      // Записали на время — так и пишем; иначе — заявка (лист ожидания, администратор перезвонит).
+      const booked = sent?.booked;
+      doneTitle.textContent = booked ? 'Вы записаны' : 'Заявка отправлена';
+      doneText.textContent = booked ? nb(`${dateLabel(booked.datetime)}, ${booked.datetime.slice(11, 16)} — ${booked.studio || ''}. Подтверждение придёт по SMS.`) : 'Администратор студии свяжется с вами по указанному телефону.';
+      chosen = null;
       form.hidden = true; done.hidden = false; done.focus();
     } catch (error) {
       // Приём на сервере не настроен (503) — как без адреса приёма: не отправлено, звоните.
@@ -405,7 +501,7 @@ export function setupRequest(dialog, { show }) {
       const field = error.result?.field === 'contact' ? 'phone' : error.result?.field;
       if (field && errorFor(field)) { errorFor(field).textContent = error.message.charAt(0).toUpperCase() + error.message.slice(1) + '.'; }
     } finally {
-      clearTimeout(timer); sending = false; submitBtn.disabled = false; submitBtn.textContent = 'Отправить заявку';
+      clearTimeout(timer); sending = false; submitBtn.disabled = false; updateSubmit();
     }
   }
 

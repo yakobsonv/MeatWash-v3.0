@@ -693,6 +693,25 @@
         <label class="request__add request__select" data-request-add-box><span class="visually-hidden">Добавить работу</span><select data-request-add><option value="">+ Добавить работу</option></select><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-chevron-down"/></svg></label>
       </div>
     </div>
+    <!-- Запись на мойку (Влад 19.11): «Что входит» — состав программы и допы (request.js из data.js);
+         студия, день и время — свободное время онлайн-записи YCLIENTS (api/request.php action=slots).
+         Без ключей YCLIENTS сервер отвечает 503 — блока времени нет, заявка уходит как раньше. -->
+    <div class="request__card request__book" data-request-book hidden>
+      <div class="request__includes" data-request-includes hidden>
+        <p class="request__legend">Что&nbsp;входит</p>
+        <ul class="request__inc" data-request-inc></ul>
+      </div>
+      <div class="request__when" data-request-when hidden>
+        <p class="request__legend" id="request-when-label">Студия, день и&nbsp;время</p>
+        <div class="request__branches" role="radiogroup" aria-label="Студия" data-request-branches>
+          <label><input type="radio" name="book_branch" value="myasnitskaya" checked><span>Лубянка</span></label>
+          <label><input type="radio" name="book_branch" value="technopark"><span>Технопарк</span></label>
+        </div>
+        <div class="request__slots request__dates" role="group" aria-label="День" data-request-dates></div>
+        <div class="request__slots request__times" role="group" aria-label="Время" data-request-times></div>
+        <p class="request__when-note" data-request-when-note aria-live="polite"></p>
+      </div>
+    </div>
     <div class="request__card">
       <div class="request__grid">
         <label class="request__field"><span>Имя <b aria-hidden="true">*</b></span><input class="ym-disable-keys" name="name" autocomplete="name" required maxlength="80" aria-describedby="request-name-error"><small class="request__error" id="request-name-error" data-error-for="name"></small></label>
@@ -732,8 +751,8 @@
     </div>
   </form>
   <div class="request__done" data-request-done hidden tabindex="-1">
-    <p class="request__donetitle">Заявка отправлена</p>
-    <p>Администратор студии свяжется с&nbsp;вами по&nbsp;указанному телефону.</p>
+    <p class="request__donetitle" data-request-done-title>Заявка отправлена</p>
+    <p data-request-done-text>Администратор студии свяжется с&nbsp;вами по&nbsp;указанному телефону.</p>
     <form method="dialog"><button class="btn btn--secondary">Закрыть</button></form>
   </div>
 </dialog>
