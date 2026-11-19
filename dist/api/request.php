@@ -271,7 +271,7 @@ function dataDir(array $config): ?string
 }
 
 // Сколько секунд ждать (0 — можно). $record — засчитать эту отправку.
-function rateLimit(array $config, bool $record): int
+function rateLimit(array $config, bool $record, string $bucket = 'rl', int $limit = 0, int $window = 0): int
 {
     $dir = dataDir($config);
     if ($dir === null) {
@@ -279,9 +279,10 @@ function rateLimit(array $config, bool $record): int
         return 0;
     }
     $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
-    $file = $dir . '/rl-' . substr(hash_hmac('sha256', 'ip|' . $ip, $config['secret']), 0, 32);
+    $file = $dir . '/' . $bucket . '-' . substr(hash_hmac('sha256', 'ip|' . $ip, $config['secret']), 0, 32);
     $now = time();
-    $window = $config['rate_window'];
+    $window = $window ?: $config['rate_window'];
+    $limit = $limit ?: $config['rate_limit'];
     $handle = @fopen($file, 'c+');
     if (!$handle) {
         note('rate limit: cannot open data file');
@@ -292,7 +293,7 @@ function rateLimit(array $config, bool $record): int
         array_map('intval', explode(',', (string) stream_get_contents($handle))),
         static function (int $t) use ($now, $window) { return $t > $now - $window; }
     ));
-    $wait = count($times) >= $config['rate_limit'] ? max(1, min($times) + $window - $now) : 0;
+    $wait = count($times) >= $limit ? max(1, min($times) + $window - $now) : 0;
     if ($record && $wait === 0) {
         $times[] = $now;
     }
@@ -304,7 +305,7 @@ function rateLimit(array $config, bool $record): int
     fclose($handle);
     // Изредка убираем записи тех, кто давно не отправлял.
     if (random_int(1, 50) === 1) {
-        foreach (glob($dir . '/rl-*') ?: [] as $old) {
+        foreach (glob($dir . '/' . $bucket . '-*') ?: [] as $old) {
             if (@filemtime($old) < $now - $window) {
                 @unlink($old);
             }
@@ -714,7 +715,7 @@ function sendTelegram(array $data, array $photos, array $tg): bool
 // клиент (поиск по телефону, иначе создание) → POST /api/v2/companies/{id}/waiting_list.
 // В журнал — только метод, путь без параметров и код ответа (ни телефона, ни имени, ни токенов).
 
-function ycCall(array $yc, string $method, string $path, ?array $body = null): ?array
+function ycCall(array $yc, string $method, string $path, ?array $body = null, int $timeout = 30): ?array
 {
     if (!function_exists('curl_init')) {
         note('yclients: curl extension is missing');
@@ -725,7 +726,7 @@ function ycCall(array $yc, string $method, string $path, ?array $body = null): ?
         CURLOPT_CUSTOMREQUEST => $method,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_TIMEOUT => 30,
+        CURLOPT_TIMEOUT => $timeout,
         CURLOPT_HTTPHEADER => [
             'Accept: application/vnd.yclients.v2+json',
             'Content-Type: application/json',
@@ -827,17 +828,41 @@ function ycClient(array $yc, int $company, string $phone, string $name): ?array
 
 // Студия для набора работ: выбранная, а если её услуг там нет — та, где они есть
 // («Трёхфазная» — только Технопарк).
+// Сколько работ из списка есть в онлайн-записи студии (у каждой — своя услуга).
+function ycResolved(array $names, string $branch, array $yc, int $body): int
+{
+    $n = 0;
+    foreach ($names as $name) {
+        if (ycServices([$name], $branch, $yc, $body, false)) {
+            $n++;
+        }
+    }
+    return $n;
+}
+
+// Студия, где есть ВСЕ работы (ревью 19.11: «Трёхфазная» + доп из обеих студий не должна уйти
+// в Лубянку одним допом); такой нет — выбранная, если в ней не меньше работ, чем в другой.
 function ycBranchFor(array $names, string $branch, array $yc, int $body): string
 {
-    if (ycServices($names, $branch, $yc, $body, false)) {
+    $all = count($names);
+    $best = $branch;
+    $bestCount = ycResolved($names, $branch, $yc, $body);
+    if ($bestCount === $all) {
         return $branch;
     }
     foreach (array_keys($yc['companies']) as $other) {
-        if ($other !== $branch && ycServices($names, $other, $yc, $body, false)) {
+        if ($other === $branch) {
+            continue;
+        }
+        $count = ycResolved($names, $other, $yc, $body);
+        if ($count === $all) {
             return $other;
         }
+        if ($count > $bestCount) {
+            [$best, $bestCount] = [$other, $count];
+        }
     }
-    return $branch;
+    return $best;
 }
 
 // Свободное время онлайн-записи: даты (без $date) или сеансы на дату. Мастер — любой (0).
@@ -845,13 +870,15 @@ function ycSlots(array $yc, array $names, string $branch, int $body, string $dat
 {
     $branch = ycBranchFor($names, $branch, $yc, $body);
     $ids = ycServices($names, $branch, $yc, $body, false);
-    if (!$ids) {
-        return ['branch' => $branch, 'dates' => [], 'times' => []];
+    // Не все работы есть в онлайн-записи студии — время не предлагаем: заявка уйдёт целиком
+    // в лист ожидания, администратор подберёт время сам.
+    if (!$ids || ycResolved($names, $branch, $yc, $body) < count($names)) {
+        return ['branch' => $branch, 'dates' => [], 'times' => [], 'partial' => true];
     }
     $company = (int) $yc['companies'][$branch];
     $query = http_build_query(['service_ids' => $ids]);
     if ($date === '') {
-        $res = ycCall($yc, 'GET', "/api/v1/book_dates/$company?$query");
+        $res = ycCall($yc, 'GET', "/api/v1/book_dates/$company?$query", null, 10);
         if ($res === null) {
             return null;
         }
@@ -860,7 +887,7 @@ function ycSlots(array $yc, array $names, string $branch, int $body, string $dat
         sort($dates);
         return ['branch' => $branch, 'dates' => array_slice($dates, 0, 21)];
     }
-    $res = ycCall($yc, 'GET', "/api/v1/book_times/$company/0/$date?$query");
+    $res = ycCall($yc, 'GET', "/api/v1/book_times/$company/0/$date?$query", null, 10);
     if ($res === null) {
         return null;
     }
@@ -879,7 +906,8 @@ function ycBook(array $data, array $yc, string $phone): ?array
 {
     $branch = ycBranchFor($data['services'], ycBranch($data, $yc), $yc, $data['body']);
     $ids = ycServices($data['services'], $branch, $yc, $data['body'], false);
-    if (!$ids) {
+    // Записываем только целиком: если какой-то работы в онлайн-записи студии нет — лист ожидания.
+    if (!$ids || ycResolved($data['services'], $branch, $yc, $data['body']) < count($data['services'])) {
         return null;
     }
     $company = (int) $yc['companies'][$branch];
@@ -918,15 +946,10 @@ function sendYclients(array $data, array $yc): bool
         $data['comment'] = trim('Хотел записаться на ' . str_replace('T', ' ', substr($data['datetime'], 0, 16)) . '. ' . $data['comment']);
     }
     $branch = ycBranch($data, $yc);
-    $services = ycServices($data['services'], $branch, $yc, $data['body'], false);
-    // Работы этой студии нет, а в другой есть (например, «Трёхфазная» — только Технопарк) — туда.
-    if (!$services && !isset($yc['topic_branch'][$data['topic_id']])) {
-        foreach (array_keys($yc['companies']) as $other) {
-            if ($other !== $branch && ycServices($data['services'], $other, $yc, $data['body'], false)) {
-                $branch = $other;
-                break;
-            }
-        }
+    // Работ этой студии нет или не все, а в другой есть все (например, «Трёхфазная» — только
+    // Технопарк) — туда.
+    if (!isset($yc['topic_branch'][$data['topic_id']])) {
+        $branch = ycBranchFor($data['services'], $branch, $yc, $data['body']);
     }
     $company = (int) $yc['companies'][$branch];
     $services = ycServices($data['services'], $branch, $yc, $data['body']);
@@ -997,7 +1020,31 @@ try {
         if (!$names) {
             fail(400, 'не выбрано ни одной работы', ['field' => 'services']);
         }
+        // Свободное время — не чаще 60 запросов за 5 минут с адреса и с кэшем на 90 секунд:
+        // лимит YCLIENTS (5 в секунду с IP сайта) общий с записью и листом ожидания.
+        $wait = rateLimit($config, true, 'sl', 60, 300);
+        if ($wait > 0) {
+            fail(429, 'слишком часто — подождите минуту', [], ['Retry-After: ' . $wait]);
+        }
+        $dir = dataDir($config);
+        $key = $dir !== null ? $dir . '/sc-' . substr(hash('sha256', json_encode([$names, $branch, $body, $date], JSON_UNESCAPED_UNICODE)), 0, 32) : null;
+        if ($key !== null && is_file($key) && filemtime($key) > time() - 90) {
+            $cached = json_decode((string) file_get_contents($key), true);
+            if (is_array($cached)) {
+                respond(200, ['ok' => true] + $cached);
+            }
+        }
         $slots = ycSlots($yc, $names, $branch, $body, $date);
+        if ($slots !== null && $key !== null) {
+            @file_put_contents($key, json_encode($slots, JSON_UNESCAPED_UNICODE), LOCK_EX);
+            if (random_int(1, 50) === 1) {
+                foreach (glob($dir . '/sc-*') ?: [] as $old) {
+                    if (@filemtime($old) < time() - 600) {
+                        @unlink($old);
+                    }
+                }
+            }
+        }
         if ($slots === null) {
             fail(502, 'не удалось получить свободное время');
         }

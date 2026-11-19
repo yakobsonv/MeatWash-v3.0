@@ -15,6 +15,9 @@ const setAddons = (list) => {
 let memory = null;
 const current = () => memory ?? getAddons();
 
+// После отправленной заявки допы ушли — заказ пуст (кнопки и строка на /wash обновятся).
+export const clearAddons = () => { setAddons([]); dispatchEvent(new CustomEvent('mw:addons')); };
+
 export function setupAddons() {
   const buttons = [...document.querySelectorAll('button[data-addon]')];
   if (!buttons.length) return;
@@ -33,5 +36,6 @@ export function setupAddons() {
     if (i >= 0) list.splice(i, 1); else list.push(name);
     setAddons(list); render();
   }));
+  addEventListener('mw:addons', render);
   render();
 }

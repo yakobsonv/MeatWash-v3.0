@@ -31,7 +31,7 @@ import { REQUEST_TOPICS, CATEGORY_TOPIC, PROGRAMS, REQUESTS } from './data.js';
 import { goal } from './analytics.js';
 import { getBody } from './body.js';
 import { nb } from './ui.js';
-import { getAddons } from './addons.js';
+import { getAddons, clearAddons } from './addons.js';
 
 const KEY = 'mw:request';
 const MAX_FILES = 5;
@@ -297,12 +297,19 @@ export function setupRequest(dialog, { show }) {
     datesEl.replaceChildren(); timesEl.replaceChildren(); whenNote.textContent = '';
     if (slotsOff || !isWash()) { whenBox.hidden = true; bookBox.hidden = incBox.hidden; return; }
     whenBox.hidden = false; bookBox.hidden = false; whenNote.textContent = 'Загружаем свободное время…';
+    for (const input of branchInputs) input.disabled = false;
+    const asked = branchNow();
     slots('').then((r) => {
       if (job !== slotJob) return;
+      // Сервер выбрал студию, где есть все работы: другая студия для этого заказа недоступна.
+      const moved = Boolean(r.branch) && r.branch !== asked;
       if (r.branch) setBranch(r.branch);
-      for (const input of branchInputs) input.disabled = Boolean(r.branch) && r.branch !== input.value && onlyBranch === r.branch;
+      for (const input of branchInputs) input.disabled = moved && input.value !== r.branch;
+      if (moved) whenNote.textContent = nb(`Эти работы — только ${BRANCH_IN[r.branch] || ''}.`);
       const dates = (r.dates || []).slice(0, 14);
+      if (r.partial) { whenNote.textContent = 'Часть работ онлайн не записать — отправьте заявку, администратор подберёт время.'; return; }
       if (!dates.length) { whenNote.textContent = 'Свободного времени онлайн нет — отправьте заявку, администратор подберёт время.'; return; }
+      if (moved) { datesEl.replaceChildren(...dates.map((d) => slotButton(`${DAYS[dayOf(d).getDay()]}, ${dateLabel(d)}`, false, () => pickDate(d)))); return; }
       whenNote.textContent = '';
       datesEl.replaceChildren(...dates.map((d) => slotButton(`${DAYS[dayOf(d).getDay()]}, ${dateLabel(d)}`, false, () => pickDate(d))));
     }).catch((error) => {
@@ -487,6 +494,7 @@ export function setupRequest(dialog, { show }) {
       try { sessionStorage.removeItem(KEY); } catch { /* приватный режим */ }
       // Записали на время — так и пишем; иначе — заявка (лист ожидания, администратор перезвонит).
       const booked = sent?.booked;
+      if (getAddons().length) clearAddons();
       doneTitle.textContent = booked ? 'Вы записаны' : 'Заявка отправлена';
       doneText.textContent = booked ? nb(`${dateLabel(booked.datetime)}, ${booked.datetime.slice(11, 16)} — ${booked.studio || ''}. Подтверждение придёт по SMS.`) : 'Администратор студии свяжется с вами по указанному телефону.';
       chosen = null;
@@ -558,7 +566,10 @@ export function setupRequest(dialog, { show }) {
     // Допы к заказу (Влад 19.11, js/addons.js): при записи на мойку идут вместе с программой;
     // доп, который уже входит в выбранную программу, второй раз не добавляется.
     let addonNote = '';
-    if (book) {
+    // Допы — и у записи (data-book), и у заявки с темой «Автомойка» (шапка, нижняя кнопка /wash).
+    const ownTopic = list.map(topicOfWork).find(Boolean) || (topicById(category) ? category : CATEGORY_TOPIC[category] || '');
+    const washOpen = book || ownTopic === 'wash';
+    if (washOpen) {
       const top = programs.length ? Math.max(...programs) : -1;
       const inside = new Set(PROGRAMS.slice(0, top + 1).flatMap((p) => p.items || []));
       const extra = getAddons().filter((n) => !works.includes(n));
