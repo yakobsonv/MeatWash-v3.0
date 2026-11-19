@@ -41,7 +41,7 @@
 //            porsche3d.bundle.js), цены и названия работ — из каталога;
 //   машины   2 карточки, фото и проданные — как в src/data/cars.json; счётчики на главной,
 //            в шторке и на /auto — из данных; /import без телефона;
-//   проекты  projects.wrap (Влад 07.11): w223, rr, g20 на /wrap и /works; у каждого фото alt, подпись,
+//   проекты  projects.wrap (Влад 07.11): w223, rr на /wrap и /works (G20 снята 19.11); у каждого фото alt, подпись,
 //            файлы 800/1600 размером 4:5, обложки 3:2; фото окна — только в <template> (грузятся по открытию);
 //   бренд    (Влад 09.11) имя — «MEATWASH» капсом и слитно: «Meat Wash» / «Meatwash» нет нигде —
 //            ни в тексте, alt, aria-label, title, og, JSON-LD, ни в строках скриптов (исключений нет:
@@ -554,7 +554,7 @@ ok(same(d.groups.map((g) => [g.id, g.title, g.booking]), [['wash', 'Автомо
   ok(same(Object.keys(d.projects || {}).filter((k) => k !== '_comment'), Object.keys(PROJECT_PAGES)), `projects: ряды ${Object.keys(PROJECT_PAGES).join(', ')}`);
   for (const [dir, pages] of Object.entries(PROJECT_PAGES)) {
     const list = d.projects?.[dir] || [];
-    ok(same(list.map((p) => p.id), ['w223', 'rr', 'g20']), `projects.${dir}: три проекта — w223, rr, g20 (Влад 07.11)`);
+    ok(same(list.map((p) => p.id), ['w223', 'rr']), `projects.${dir}: два проекта — w223, rr (Влад 07.11; BMW G20 снята 19.11 — её не оклеивали, она в продаже)`);
     for (const p of list) {
       const where = `projects.${dir}.${p.id}`;
       ok(p.title && p.lead && p.cover && p.photos?.length, `${where}: нужны title, lead, cover и photos`);

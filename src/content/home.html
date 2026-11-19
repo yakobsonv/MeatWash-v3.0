@@ -3,22 +3,23 @@
      отзывы → общий подвал. Вид и поведение — как на прежней главной (0d4a653): большие плитки
      с подписью над карточкой, по 2 в ряд, раскрытие 55/45 % при наведении, ролик по наведению,
      появление при прокрутке, смена цвета страницы; на телефоне — карусель с точками и паузой.
-     Первый экран — ролик js/video.js, поверх — горизонтальный логотип из логобука (бык + MEATWASH +
+     Первый экран — ролик js/video.js (Влад 19.11: тот же, что в плитке «О нас» — промо «Meat Wash_без Егора»
+     0,03–4,87 + 7,33–10,87 с; телефон — tile-about.mp4, от 700 px — полоса 16:9 по центру, hero-about-1280), поверх — горизонтальный логотип из логобука (бык + MEATWASH +
      Car Care Club 2021, Влад 09.11; assets/brand/hero-lockup.svg — Horizontal_Logo.svg с округлёнными координатами).
      Ролики плиток — квадратные svc-*-m (плитка на компьютере почти квадратная, на телефоне —
      вертикальная): мойка, детейлинг (кожа салона), оклейка (плёнка в студии); «О нас» — tile-about.
      У «Кузовных работ» и «Продажи» своих роликов нет — фото. Номеров и надписей в кадрах нет.
      Автомойка на компьютере — горизонтальный кадр dir-wash-wide (плитка там почти квадратная).
      «Наши работы» — кейсы по машинам (Влад 09.11): подстановка projects:wrap:cases — оклейка Mercedes-Benz
-     W223, Range Rover, BMW G20, окно-галерея проекта (js/gallery.js), кадры сменяются как ролик (home.js).
+     W223, Range Rover (BMW G20 снята 19.11: не оклеивали, она в продаже), окно-галерея проекта (js/gallery.js), кадры сменяются как ролик (home.js).
      Отзывы — подстановка reviews из meatwash-content.json (плашки — tiles.css, projects.css).
      Стили — dist/css/home.css, поведение — dist/js/home.js. -->
 <section class="hero" aria-labelledby="page-title">
   <picture class="hero__media">
-    <source media="(max-width: 699px)" srcset="assets/img/home/hero-m-poster-720.webp" width="720" height="1280">
-    <img src="assets/img/home/hero-wash-1920.webp" width="1920" height="1080" alt="Автомойка чёрного седана в студии MEATWASH: пена и струя воды" fetchpriority="high" decoding="async">
+    <source media="(max-width: 699px)" srcset="assets/img/home/hero-about-m-poster-720.webp" width="720" height="1280">
+    <img src="assets/img/home/hero-about-1920.webp" width="1920" height="1080" alt="Зал студии MEATWASH: зелёный BMW M4 и чёрный Mercedes-AMG под световыми кольцами" fetchpriority="high" decoding="async">
   </picture>
-  <video class="hero__video" data-video="hero" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src-m="{{asset:assets/video/hero-m-720.mp4}}" data-src="{{asset:assets/video/hero-1280.mp4}}" data-src-hd="{{asset:assets/video/hero-1920.mp4}}"></video>
+  <video class="hero__video" data-video="hero" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1" data-src-m="{{asset:assets/video/tile-about.mp4}}" data-src="{{asset:assets/video/hero-about-1280.mp4}}"></video>
   <button class="hero__toggle" type="button" data-video-toggle aria-pressed="false" aria-label="Остановить видео" hidden>{{icon:pause:hero__pause}}{{icon:play:hero__play}}</button>
   <h1 class="hero__title" id="page-title">
     <span class="sr" lang="en">MEATWASH Car Care Club</span>

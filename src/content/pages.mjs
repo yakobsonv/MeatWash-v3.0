@@ -71,8 +71,8 @@ export const REGISTRY = [
     shared: ALL, css: ['tiles.css', 'projects.css', 'home.css'],
     // Имена v2 (WP2 копирует source/v2-design/img → assets/img/home).
     preload: [
-      { href: 'assets/img/home/hero-m-poster-720.webp', media: '(max-width: 699px)' },   // постеры роликов героя (js/video.js)
-      { href: 'assets/img/home/hero-wash-1920.webp', media: '(min-width: 700px)' },
+      { href: 'assets/img/home/hero-about-m-poster-720.webp', media: '(max-width: 699px)' },   // постеры роликов героя (js/video.js)
+      { href: 'assets/img/home/hero-about-1920.webp', media: '(min-width: 700px)' },
     ],
     jsonLd: ['autowash'], ogImage: 'assets/img/og-meat-wash.jpg',
     date: '2026-11-05', sitemap: { changefreq: 'monthly', priority: '1.0' },

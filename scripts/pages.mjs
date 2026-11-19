@@ -269,7 +269,7 @@ function renderWorks(dir, entry, token) {
   if (!Array.isArray(list) || !list.length) throw new Error(`${token}: нет ряда работ «${dir}» в meatwash-content.json (works)`);
   return tileList('work-tiles', `data-works="${escape(dir)}"`, list.map((item) => workTile(item, entry, token)));
 }
-// ── Проекты с галереей (Влад 07.11: оклейка Mercedes-Benz W223, Range Rover, BMW G20 на /wrap и /works).
+// ── Проекты с галереей (Влад 07.11: оклейка Mercedes-Benz W223, Range Rover на /wrap и /works; BMW G20 снята 19.11).
 // {{projects:<направление>}} — данные projects.<направление> в meatwash-content.json. Разметка:
 //   ul.work-tiles.project-tiles[data-projects] > li.work-tiles__item > button.work-tile.project-tile
 //     [data-gallery-open=<id>] — плашка как у работ (tiles.css): обложка 3:2 (alt="" — имя кнопки
