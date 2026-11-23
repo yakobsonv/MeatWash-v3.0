@@ -315,7 +315,9 @@ for (const page of REGISTRY) {
   if (page.shared.includes('header')) {
     const want = `type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`;
     const headerLabel = page.id === 'home' ? 'Записаться онлайн' : REQUEST_LABEL;
-    ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="${page.topic || ''}">${headerLabel}<`), `${file}: кнопка в шапке — не «${headerLabel}» с темой «${page.topic || ''}»`);
+    // Главная: кнопка шапки открывает окно «Выбрать точку» (Влад 23.11), остальные — заявку с темой страницы.
+    const headerAttrs = page.id === 'home' ? 'data-studios aria-haspopup="dialog"' : `data-request data-request-category="${page.topic || ''}"`;
+    ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" type="button" ${headerAttrs}>${headerLabel}<`), `${file}: кнопка в шапке — не «${headerLabel}» (${headerAttrs})`);
     ok(text.includes(`<button class="btn btn--primary btn--block" ${want}`), `${file}: в шторке нет «${REQUEST_LABEL}» с темой страницы`);
     ok(!/t\.me\/(?!MEATWASH_Auto|meat_wash\/)/.test(sharedOf(text, 'header') + sharedOf(text, 'footer')), `${file}: в шапке или подвале ссылка на личный Telegram`);
   }

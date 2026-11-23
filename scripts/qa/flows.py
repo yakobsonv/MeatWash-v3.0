@@ -60,10 +60,15 @@ def booking(browser, base, pages, res):
             btn.click()
             pg.wait_for_timeout(450)
             s = pg.evaluate(REQUEST_STATE)
-            good = s['open'] and s['locked'] and (label.startswith('Записаться онлайн') if p['id'] in ('wash', 'home') else label.startswith('Оставить заявку')) and (s['topic'] or '') == p['topic']
+            # Главная (Влад 23.11): «Записаться онлайн» в шапке открывает окно «Выбрать точку» #studio-pick.
+            picker = pg.evaluate("() => { const d = document.querySelector('#studio-pick'); return Boolean(d?.open) && d.querySelectorAll('[data-studio-choose]').length === 2 && document.documentElement.classList.contains('is-locked'); }")
+            if p['id'] == 'home' and picker:
+                good = label.startswith('Записаться онлайн')
+            else:
+                good = s['open'] and s['locked'] and (label.startswith('Записаться онлайн') if p['id'] in ('wash', 'home') else label.startswith('Оставить заявку')) and (s['topic'] or '') == p['topic']
             pg.keyboard.press('Escape')
             pg.wait_for_timeout(450)
-            closed = pg.evaluate("() => !document.querySelector('#request').open && !document.documentElement.classList.contains('is-locked')")
+            closed = pg.evaluate("() => !document.querySelector('#request').open && !document.querySelector('#studio-pick')?.open && !document.documentElement.classList.contains('is-locked')")
             if good and closed:
                 ok_pages += 1
             else:

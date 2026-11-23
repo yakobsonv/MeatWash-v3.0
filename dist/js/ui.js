@@ -24,7 +24,7 @@ export function setupUI() {
  const abort=new AbortController(), options={signal:abort.signal};
  const $=s=>document.querySelector(s);
  const root=document.documentElement;
- const requestDialog=$('#request'), drawer=$('#drawer'), drawerOpener=$('#drawer-open');
+ const requestDialog=$('#request'), studiosDialog=$('#studio-pick'), drawer=$('#drawer'), drawerOpener=$('#drawer-open');
  const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
  // Прокрутка фона выключена, пока открыт любой <dialog>: шторка меню, окно записи или заявки,
  // 3D-гараж. Класс на <html>: iOS не считается с overflow у одного body. Место полосы
@@ -80,13 +80,13 @@ export function setupUI() {
   dialog.showModal(); dialog.scrollTop=0; openedAt=performance.now(); syncLock();
  };
  const settling=e=>e.detail>1||performance.now()-openedAt<400;
- const closeDialogs=()=>{ requestDialog?.close(); closeDrawer(); };
+ const closeDialogs=()=>{ requestDialog?.close(); studiosDialog?.close(); closeDrawer(); };
 
  // Окно «Оставить заявку» (js/request.js): модуль — по первому нажатию любой кнопки заявки.
  // Все призывы сайта ведут в эту форму (Влад 05.11): data-request (тема, работы, о чём заявка),
  // data-book у автомойки (тема «Автомойка», программа и работы — в корзину онлайн-записи),
  // data-membership — прежние кнопки клуба, пока страницы не переписаны (тема «Клубная карта»).
- let requestLoading=null;
+ let requestLoading=null, studiosLoading=null;
  const loadRequest=()=>{
   if(!requestDialog)return null;
   requestLoading??=import('./request.js').then(module=>module.setupRequest(requestDialog,{show}))
@@ -157,6 +157,8 @@ export function setupUI() {
   else{const branch=LOCATIONS.find(l=>href&&l.booking&&href.startsWith(l.booking.replace(/\/personal\/.*$/,'/')));if(branch)goal('booking_branch',{branch:branch.id,preset:/[?&]o=m-1s/.test(href)});}
   // «Оставить заявку» (и запись на автомойку, и прежние кнопки клуба) — одна форма #request.
   if(control.matches('[data-book],[data-request],[data-membership]')){ e.preventDefault(); return openRequest(control); }
+  // «Записаться онлайн» в шапке главной (Влад 23.11) — окно «Выбрать точку» (js/studios.js).
+  if(control.matches('[data-studios]')&&studiosDialog){ e.preventDefault(); rememberOpener(control); closeDrawer(); studiosLoading??=import('./studios.js').then(m=>m.setupStudios(studiosDialog,{show})).catch(error=>{studiosLoading=null;console.warn('Окно выбора точки не подключилось.',error);return null;}); studiosLoading.then(open=>open?.()); return; }
   // «На карте» в подвале — переход к карте студии: якорь на этой странице или на «О нас».
   // Уходя на главную, запрос Метрики со старой страницы может не успеть — тогда цель
   // отправит главная по прибытии (отметка в sessionStorage, см. ниже setupAnalytics).

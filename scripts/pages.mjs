@@ -508,6 +508,8 @@ export function renderPartial(template, page) {
       case 'request-label': return requestLabel(id);
       // Кнопка шапки: на главной «Записаться онлайн» (Влад 23.11, только подпись), на остальных — как у кнопок страницы.
       case 'header-label': return home ? 'Записаться онлайн' : requestLabel(id);
+      // Действие кнопки шапки: на главной — окно «Выбрать точку» (Влад 23.11), на остальных — заявка с темой страницы.
+      case 'header-action': return home ? 'data-studios aria-haspopup="dialog"' : `data-request data-request-category="${escape(entry.topic || '')}"`;
       case 'request-say': return requestSay(id);
       case 'header-variant': {
         if (!['over', 'solid'].includes(entry.header)) throw new Error(`${page}: поле header — over или solid`);
