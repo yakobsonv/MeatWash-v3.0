@@ -20,6 +20,8 @@
 //       студий (вместо прежней записи в YCLIENTS; цель в счётчике создаёт Влад);
 //     request_sent {topic, works, photos} — только при подтверждённой доставке;
 //   booking_branch {branch, preset} — переход в онлайн-запись студии (мелкая строка в форме);
+//   booking_embed {branch, works} — в окне заявки показана запись YCLIENTS (request.js);
+//   studios_open, studio_choose {branch} — окно «Выбрать точку» и выбор студии (studios.js);
 //   phone_click, map_open, garage_open, garage_ready, garage_book, garage_request, club_card,
 //   telegram_click {from, place, to} — переход в Telegram (ui.js, поправка критика 18).
 //   booking_open больше не шлётся: окна записи нет, запись — через форму заявки.

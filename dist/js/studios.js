@@ -3,7 +3,10 @@
 // здесь по московскому времени из строк часов студии («Пн–Пт 08:00–22:00») и обновляется раз в минуту.
 // «Выбрать» — запись YCLIENTS этой студии в этом же окне (yclients.js embedUrl, выбор услуг),
 // «← Выбрать точку» возвращает к списку. iframe создаётся скриптом (в разметке его нет).
+// Цели Метрики (analytics.js, только с согласия): studios_open — окно открыто,
+// studio_choose {branch} — выбрана студия, показана её запись YCLIENTS.
 import { loadMap, embedUrl } from './yclients.js';
+import { goal } from './analytics.js';
 import { REQUESTS } from './data.js';
 
 const DAYS = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
@@ -101,6 +104,7 @@ export function setupStudios(dialog, { show }) {
         bookTitle.textContent = name ? `Запись — ${name}` : 'Запись';
         list.hidden = true; book.hidden = false; dialog.scrollTop = 0; dialog.classList.add('is-booking');
         bookTitle.focus({ preventScroll: true });
+        goal('studio_choose', { branch });
       });
       return;
     }
@@ -112,5 +116,6 @@ export function setupStudios(dialog, { show }) {
     paint(); clearInterval(timer); timer = setInterval(paint, 60_000); loadBusy();
     show(dialog);
     dialog.querySelector('#studio-pick-title')?.focus({ preventScroll: true });
+    goal('studios_open');
   };
 }

@@ -25,7 +25,8 @@
 //
 // Цели Метрики (analytics.js, только с согласия): request_open {topic, from, works},
 // request_submit_attempt {topic, ok}, request_offline {topic}, request_sent {topic, works, photos};
-// переход по ссылке онлайн-записи — booking_branch (ui.js).
+// переход по ссылке онлайн-записи — booking_branch (ui.js); в окне показана запись YCLIENTS —
+// booking_embed {branch, works} (один раз за открытие окна, Влад 23.11).
 
 import { REQUEST_TOPICS, CATEGORY_TOPIC, PROGRAMS, REQUESTS } from './data.js';
 import { goal } from './analytics.js';
@@ -314,6 +315,7 @@ export function setupRequest(dialog, { show }) {
     else if (lead.textContent.startsWith('Выберите студию')) lead.textContent = leadText;
   };
   $('[data-request-embed-alt]')?.addEventListener('click', () => { embedMode(false); form.querySelector('input[name=name]')?.focus(); });
+  let embedGoal = false; // booking_embed — один раз за открытие окна
   function renderEmbed(job) {
     embedBox.hidden = false; whenNote.textContent = ''; branchesEl.hidden = false;
     embedMode(true);
@@ -341,6 +343,7 @@ export function setupRequest(dialog, { show }) {
       const url = yc.embedUrl(branch, ids);
       const f = frameFor();
       if (url && f.dataset.src !== url) { f.dataset.src = url; f.src = url; }
+      if (url && !embedGoal) { embedGoal = true; goal('booking_embed', { branch, works: ids.length }); }
       online.hidden = true;
     }).catch(() => { embedBox.hidden = true; whenBox.hidden = true; embedMode(false); });
   }
@@ -650,6 +653,7 @@ export function setupRequest(dialog, { show }) {
     opener = from;
     show(dialog);
     $('#request-title').focus({ preventScroll: true });
+    embedGoal = false;
     goal('request_open', { topic: topic || '—', from: opener || 'page', works: services.length });
   };
 }
