@@ -193,9 +193,11 @@ export const buildPage = async (page) => renderPage(page.file, await renderConte
 
 // Подтверждение прав в Яндекс Вебмастере способом «HTML-файл»: тот же код, что в мета-теге
 // yandex-verification (site.analytics.webmaster), файл — в корне сайта, текст — как выдаёт Вебмастер.
-export function renderYandexVerification() {
-  const code = d.site?.analytics?.webmaster;
-  if (!code) return null;
+export function renderYandexVerifications() {
+  return [d.site?.analytics?.webmaster || []].flat().map(renderYandexVerificationFor);
+}
+export function renderYandexVerification() { return renderYandexVerifications()[0] || null; }
+function renderYandexVerificationFor(code) {
   return {file: `yandex_${code}.html`, text: `<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -226,9 +228,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   }
   await writeFile(distFile('sitemap.xml'), renderSitemap());
   console.log('sitemap.xml');
-  const verification = renderYandexVerification();
-  for (const name of await readdir(new URL('dist/', root))) if (/^yandex_\w+\.html$/.test(name) && name !== verification?.file) await rm(distFile(name));
-  if (verification) { await writeFile(distFile(verification.file), verification.text); console.log(verification.file); }
+  const verifications = renderYandexVerifications();
+  for (const name of await readdir(new URL('dist/', root))) if (/^yandex_\w+\.html$/.test(name) && !verifications.some((v) => v.file === name)) await rm(distFile(name));
+  for (const v of verifications) { await writeFile(distFile(v.file), v.text); console.log(v.file); }
   const missing = missingOperator();
   if (missing.length) console.warn(`ВНИМАНИЕ: в Политике и Согласии не заполнены реквизиты оператора (site.operator в meatwash-content.json): ${missing.join(', ')}.`);
 }

@@ -57,7 +57,7 @@ import {resolve, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {REGISTRY} from '../src/content/pages.mjs';
-import {buildPage, renderSitemap, renderYandexVerification, FONT, missingOperator} from './content.mjs';
+import {buildPage, renderSitemap, renderYandexVerifications, FONT, missingOperator} from './content.mjs';
 import {pageSlug, SITE, humanDate} from './pages.mjs';
 import {content as d, renderData, money} from './catalog.mjs';
 import {cars} from './cars.mjs';
@@ -121,9 +121,9 @@ const sitemap = await readFile(resolve(dist, 'sitemap.xml'), 'utf8');
 if (sitemap !== renderSitemap()) fail('sitemap.xml отстал — выполните npm run build');
 if (await readFile(resolve(dist, 'js/data.js'), 'utf8') !== renderData()) fail('js/data.js отстал от meatwash-content.json — выполните npm run build');
 {
-  const verification = renderYandexVerification(), found = (await readdir(dist)).filter((name) => /^yandex_\w+\.html$/.test(name));
-  if (!same(found, verification ? [verification.file] : [])) fail(`файлы Вебмастера в dist (${found.join(', ') || 'нет'}) не совпадают с site.analytics.webmaster — npm run build`);
-  else if (verification && await readFile(resolve(dist, verification.file), 'utf8') !== verification.text) fail(`${verification.file} отстал от site.analytics.webmaster — npm run build`);
+  const verifications = renderYandexVerifications(), found = (await readdir(dist)).filter((name) => /^yandex_\w+\.html$/.test(name));
+  if (!same([...found].sort(), verifications.map((v) => v.file).sort())) fail(`файлы Вебмастера в dist (${found.join(', ') || 'нет'}) не совпадают с site.analytics.webmaster — npm run build`);
+  else for (const v of verifications) if (await readFile(resolve(dist, v.file), 'utf8') !== v.text) fail(`${v.file} отстал от site.analytics.webmaster — npm run build`);
 }
 
 // ── Каталог: имена и цены ────────────────────────────────────────────────────
@@ -242,7 +242,7 @@ for (const page of REGISTRY) {
   if (!text.includes('href="privacy"')) fail(`${file}: нет ссылки href="privacy"`);
   if (!text.includes('<!-- SHARED:analytics:START -->')) fail(`${file}: нет блока analytics в <head>`);
   if (!site.metrika !== !text.includes(`<meta name="mw-metrika" content="${site.metrika}">`)) fail(`${file}: номер счётчика Метрики не совпадает с JSON`);
-  if (!site.webmaster !== !text.includes(`<meta name="yandex-verification" content="${site.webmaster}">`)) fail(`${file}: код Вебмастера не совпадает с JSON`);
+  for (const code of [site.webmaster || []].flat()) if (!text.includes(`<meta name="yandex-verification" content="${code}">`)) fail(`${file}: нет кода Вебмастера ${code} из JSON`);
   if (/mc\.yandex\.ru|metrika\/tag\.js/.test(text)) fail(`${file}: код Метрики в разметке — она грузится только после согласия (analytics.js)`);
   // Онлайн-запись YCLIENTS (Влад 05.11) — только мелкой строкой в форме заявки: ссылки обеих
   // студий есть в окнах (dialog.dialog) каждой страницы, вне окон их нет (шторка — тоже не окно).

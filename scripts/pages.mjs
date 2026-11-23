@@ -177,7 +177,8 @@ export const missingOperator = () => Object.keys(OPERATOR_HINT).filter((key) => 
 // Код Вебмастера — латиница и цифры, счётчик Метрики — только цифры: иначе в разметку не пишем.
 const analytics = d.site?.analytics || {};
 const ANALYTICS = {
-  webmaster: () => analytics.webmaster ? (/^[\w-]+$/.test(analytics.webmaster) ? `<meta name="yandex-verification" content="${escape(analytics.webmaster)}">` : fail('site.analytics.webmaster')) : '',
+  // Коды Вебмастера — строка или список (24.11: https://meatwash.ru — первым, прежний код www.meatwash.ru — вторым).
+  webmaster: () => [analytics.webmaster || []].flat().map((code) => /^[\w-]+$/.test(code) ? `<meta name="yandex-verification" content="${escape(code)}">` : fail('site.analytics.webmaster')).join('\n'),
   metrika: () => analytics.metrika ? (/^\d+$/.test(String(analytics.metrika)) ? `<meta name="mw-metrika" content="${escape(analytics.metrika)}">` : fail('site.analytics.metrika')) : '',
 };
 function fail(field) { throw new Error(`Неверное значение ${field} в meatwash-content.json`); }
