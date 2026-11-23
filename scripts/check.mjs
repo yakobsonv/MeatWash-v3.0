@@ -305,14 +305,17 @@ for (const page of REGISTRY) {
     const label = plain(inner.replace(/<span class="sr">[\s\S]*?<\/span>/g, '')).trim();
     // «Получить расчёт» — кнопка калькулятора оклейки на /wrap (Влад 09.11 вечер).
     const calc = /\sdata-calc-submit(?=[\s>=])/.test(attrs) && page.id === 'wrap' && label === 'Получить расчёт';
-    if (!calc && !label.startsWith(REQUEST_LABEL)) breach(file, text, m.index, `${file}: кнопка заявки «${label.slice(0, 40)}» — подпись должна быть «${REQUEST_LABEL}»: ${tag.slice(0, 90)}`);
+    // Кнопка шапки главной — «Записаться онлайн» (Влад 23.11).
+    const homeHeader = page.id === 'home' && /site-header__book/.test(attrs) && label === 'Записаться онлайн';
+    if (!calc && !homeHeader && !label.startsWith(REQUEST_LABEL)) breach(file, text, m.index, `${file}: кнопка заявки «${label.slice(0, 40)}» — подпись должна быть «${REQUEST_LABEL}»: ${tag.slice(0, 90)}`);
     const category = attrs.match(/\bdata-request-category="([^"]*)"/)?.[1];
     if (category && !topicIds.has(category) && !d.groups.some((g) => g.id === category)) fail(`${file}: data-request-category="${category}" — не тема из site.requests.topics и не категория каталога`);
   }
   // Кнопка в шапке, кнопка заявки в шторке и подвале, нижняя кнопка — заявка с темой страницы.
   if (page.shared.includes('header')) {
     const want = `type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`;
-    ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" ${want}`), `${file}: кнопка в шапке — не «${REQUEST_LABEL}» с темой «${page.topic || ''}»`);
+    const headerLabel = page.id === 'home' ? 'Записаться онлайн' : REQUEST_LABEL;
+    ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" type="button" data-request data-request-category="${page.topic || ''}">${headerLabel}<`), `${file}: кнопка в шапке — не «${headerLabel}» с темой «${page.topic || ''}»`);
     ok(text.includes(`<button class="btn btn--primary btn--block" ${want}`), `${file}: в шторке нет «${REQUEST_LABEL}» с темой страницы`);
     ok(!/t\.me\/(?!MEATWASH_Auto|meat_wash\/)/.test(sharedOf(text, 'header') + sharedOf(text, 'footer')), `${file}: в шапке или подвале ссылка на личный Telegram`);
   }

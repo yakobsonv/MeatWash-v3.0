@@ -506,6 +506,8 @@ export function renderPartial(template, page) {
       case 'header-logo': return home ? '' : `<a class="site-header__logo" href="./" aria-label="MEATWASH — на главную">${icon('bull')}</a>`;
       // Подпись кнопок заявки: на /wash «Записаться онлайн», на остальных «Оставить заявку» (Влад 09.11 вечер).
       case 'request-label': return requestLabel(id);
+      // Кнопка шапки: на главной «Записаться онлайн» (Влад 23.11, только подпись), на остальных — как у кнопок страницы.
+      case 'header-label': return home ? 'Записаться онлайн' : requestLabel(id);
       case 'request-say': return requestSay(id);
       case 'header-variant': {
         if (!['over', 'solid'].includes(entry.header)) throw new Error(`${page}: поле header — over или solid`);
