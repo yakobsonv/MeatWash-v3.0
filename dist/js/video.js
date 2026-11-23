@@ -81,7 +81,31 @@ export function setupVideo() {
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
   if (reduce.matches || navigator.connection?.saveData) return;
 
-  const play = (video) => video.play().catch(() => {});   // автозапуск запрещён — остаётся постер
+  // Автозапуск запрещён (iPhone в режиме энергосбережения, Safari с «Никогда не воспроизводить
+  // автоматически»; Роман 12.11 и 23.11 «видео не грузится») — остаётся постер, а ролик
+  // запоминаем: браузер разрешает play() только внутри касания или клика, поэтому при следующем
+  // касании, клике или клавише запускаем те, что сейчас на экране (правка b56112e от 19.11).
+  const blocked = new Set();
+  const onScreen = (el) => {
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < innerHeight;
+  };
+  const retry = () => {
+    blocked.forEach((video) => {
+      if (!onScreen(video)) return;
+      blocked.delete(video);
+      video.play().catch(() => blocked.add(video));
+    });
+  };
+  ['touchend', 'click', 'keydown'].forEach((type) => document.addEventListener(type, retry, { passive: true }));
+  // pause() из кода (ушёл с экрана, другая вкладка каталога, кнопка «Остановить») снимает ролик
+  // из очереди — касание запустит только то, что код и сейчас хочет показывать.
+  const pause = HTMLMediaElement.prototype.pause;
+  const play = (video) => video.play().then(() => blocked.delete(video)).catch((err) => {
+    if (err?.name !== 'NotAllowedError') return;
+    blocked.add(video);
+    if (!Object.hasOwn(video, 'pause')) video.pause = () => { blocked.delete(video); pause.call(video); };
+  });
   const mark = (video) => {
     video.addEventListener('playing', () => video.classList.add('is-playing'));
     video.addEventListener('pause', () => video.classList.remove('is-playing'));
