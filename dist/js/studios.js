@@ -4,6 +4,7 @@
 // «Выбрать» — запись YCLIENTS этой студии в этом же окне (yclients.js embedUrl, выбор услуг),
 // «← Выбрать точку» возвращает к списку. iframe создаётся скриптом (в разметке его нет).
 import { loadMap, embedUrl } from './yclients.js';
+import { REQUESTS } from './data.js';
 
 const DAYS = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
 // Сейчас в Москве: день недели 0 (пн) … 6 (вс) и минуты от полуночи.
@@ -49,11 +50,36 @@ export function setupStudios(dialog, { show }) {
       state.hidden = false;
     }
   };
+  // Загруженность сегодня (api/request.php action=load, по свободным окнам YCLIENTS). Без ключа API
+  // сервер отвечает 503 — полоска остаётся скрытой, цифр не придумываем.
+  const hosts = Array.isArray(REQUESTS.hosts) ? REQUESTS.hosts : [];
+  const endpoint = REQUESTS.endpoint && (!hosts.length || hosts.includes(location.hostname)) ? REQUESTS.endpoint : null;
+  let loadAt = 0;
+  const loadBusy = () => {
+    if (!endpoint || Date.now() - loadAt < 5 * 60_000) return;
+    loadAt = Date.now();
+    const body = new FormData(); body.append('action', 'load');
+    fetch(endpoint, { method: 'POST', body, headers: { Accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : null)).then((data) => {
+        if (!data?.ok || !data.branches) return;
+        for (const { card } of cards) {
+          const info = data.branches[card.dataset.studio];
+          const box = card.querySelector('[data-studio-load]');
+          if (!box || !info || typeof info.load !== 'number') continue;
+          const load = Math.max(0, Math.min(1, info.load));
+          const word = load < 0.45 ? 'Свободно' : load < 0.8 ? 'Средняя загрузка' : 'Почти всё занято';
+          box.style.setProperty('--load', load < 0.45 ? '#0f7a3d' : load < 0.8 ? '#c98a00' : '#c0271d');
+          box.querySelector('[data-studio-load-fill]').style.width = `${Math.round(Math.max(load, 0.06) * 100)}%`;
+          box.querySelector('[data-studio-load-text]').textContent = info.next ? `${word} · ближайшее время ${info.next}` : `${word} сегодня`;
+          box.hidden = false;
+        }
+      }).catch(() => {});
+  };
   let timer = 0;
   dialog.addEventListener('close', () => { clearInterval(timer); timer = 0; });
 
   const toList = () => {
-    book.hidden = true; list.hidden = false;
+    book.hidden = true; list.hidden = false; dialog.classList.remove('is-booking');
     dialog.querySelector('#studio-pick-title')?.focus({ preventScroll: true });
   };
   dialog.addEventListener('click', (e) => {
@@ -73,7 +99,7 @@ export function setupStudios(dialog, { show }) {
         frame.title = `Онлайн-запись в YCLIENTS — ${name}`;
         if (frame.dataset.src !== url) { frame.dataset.src = url; frame.src = url; }
         bookTitle.textContent = name ? `Запись — ${name}` : 'Запись';
-        list.hidden = true; book.hidden = false; dialog.scrollTop = 0;
+        list.hidden = true; book.hidden = false; dialog.scrollTop = 0; dialog.classList.add('is-booking');
         bookTitle.focus({ preventScroll: true });
       });
       return;
@@ -82,8 +108,8 @@ export function setupStudios(dialog, { show }) {
   });
 
   return function open() {
-    book.hidden = true; list.hidden = false;
-    paint(); clearInterval(timer); timer = setInterval(paint, 60_000);
+    book.hidden = true; list.hidden = false; dialog.classList.remove('is-booking');
+    paint(); clearInterval(timer); timer = setInterval(paint, 60_000); loadBusy();
     show(dialog);
     dialog.querySelector('#studio-pick-title')?.focus({ preventScroll: true });
   };

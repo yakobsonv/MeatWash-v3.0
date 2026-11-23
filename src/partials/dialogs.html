@@ -18,39 +18,48 @@
      разные компании в YCLIENTS, ссылки ведут каждая в свою запись (с выбранной программой в корзине,
      js/yclients.js). Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
      это обещает Политика, п. 2.1. -->
-<!-- Влад 23.11: «Записаться онлайн» в шапке главной → окно «Выбрать точку»: студии с часами и плашкой
-     «Открыто/Закрыто» (js/studios.js по московскому времени, раз в минуту), телефон, «На карте»;
-     «Выбрать» — запись YCLIENTS этой студии здесь же, в окне (iframe создаёт скрипт). -->
+<!-- Влад 23.11: «Записаться онлайн» в шапке главной → окно «Выбрать точку». Вторая версия (Влад: «не стильно,
+     неудобно с телефона, без прокрутки»): карточка студии — фото с плашкой «Открыто/Закрыто» (js/studios.js по
+     московскому времени, раз в минуту), название, адрес, часы, круглые «Позвонить» и «На карте»; нажатие на
+     карточку (кнопка .spot__choose во всю карточку) — «Выбрать»: запись YCLIENTS этой студии в этом же окне.
+     Загруженность — полоска и «ближайшее свободное время» из YCLIENTS (api/request.php action=load); без ключа
+     API сервер отвечает 503, полоска скрыта. На телефоне окно — на один экран. -->
 <dialog class="dialog dialog--studios" id="studio-pick" aria-labelledby="studio-pick-title">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть">{{icon:close}}</button></form>
   <div class="studios" data-studios-list>
-    <h2 class="dialog__title" id="studio-pick-title" tabindex="-1">Выбрать точку</h2>
-    <section class="studio-pick" data-studio="myasnitskaya" aria-labelledby="studio-pick-myasnitskaya">
-      <div class="studio-pick__head">
-        <h3 class="studio-pick__name" id="studio-pick-myasnitskaya">{{loc:myasnitskaya:name}}</h3>
-        <button class="btn btn--compact btn--primary studio-pick__go" type="button" data-studio-choose="myasnitskaya">Выбрать<span class="sr">: {{loc:myasnitskaya:name}}</span></button>
+    <h2 class="dialog__title studios__title" id="studio-pick-title" tabindex="-1">Выбрать точку</h2>
+    <div class="spots">
+    <article class="spot" data-studio="myasnitskaya">
+      <div class="spot__media"><img src="assets/img/home/spot-myasnitskaya-360.webp" width="360" height="360" alt="Студия на Лубянке: Range Rover в боксе" loading="lazy" decoding="async"><span class="spot__state" data-studio-state hidden></span></div>
+      <div class="spot__body">
+        <h3 class="spot__name" id="studio-pick-myasnitskaya">{{loc:myasnitskaya:name}}</h3>
+        <p class="spot__addr">{{loc:myasnitskaya:address}}</p>
+        <p class="spot__hours" data-studio-hours>{{loc:myasnitskaya:hours}}</p>
+        <div class="spot__load" data-studio-load hidden><span class="spot__load-bar"><span data-studio-load-fill></span></span><span class="spot__load-text" data-studio-load-text></span></div>
+        <div class="spot__foot">
+          <a class="spot__icon" href="tel:{{loc:myasnitskaya:tel}}" aria-label="Позвонить: {{loc:myasnitskaya:name}}, {{loc:myasnitskaya:phone}}">{{icon:phone}}</a>
+          <a class="spot__icon" href="{{loc:myasnitskaya:map}}" target="_blank" rel="noopener noreferrer" aria-label="{{loc:myasnitskaya:name}} на Яндекс Картах (новая вкладка)">{{icon:pin}}</a>
+          <span class="spot__go" aria-hidden="true">Выбрать{{icon:arrow-right}}</span>
+        </div>
       </div>
-      <p class="studio-pick__type">{{loc:myasnitskaya:type}}</p>
-      <p class="studio-pick__address">{{loc:myasnitskaya:address}}</p>
-      <div class="studio-pick__hours"><p data-studio-hours>{{loc:myasnitskaya:hours}}</p><span class="studio-pick__state" data-studio-state hidden></span></div>
-      <ul class="studio-pick__rows">
-        <li><a class="studio-pick__row" href="tel:{{loc:myasnitskaya:tel}}">{{icon:phone}}<span class="nw">{{loc:myasnitskaya:phone}}</span></a></li>
-        <li><a class="studio-pick__row" href="{{loc:myasnitskaya:map}}" target="_blank" rel="noopener noreferrer">{{icon:pin}}<span>На карте<span class="sr"> (Яндекс Карты, новая вкладка)</span></span></a></li>
-      </ul>
-    </section>
-    <section class="studio-pick" data-studio="technopark" aria-labelledby="studio-pick-technopark">
-      <div class="studio-pick__head">
-        <h3 class="studio-pick__name" id="studio-pick-technopark">{{loc:technopark:name}}</h3>
-        <button class="btn btn--compact btn--primary studio-pick__go" type="button" data-studio-choose="technopark">Выбрать<span class="sr">: {{loc:technopark:name}}</span></button>
+      <button class="spot__choose" type="button" data-studio-choose="myasnitskaya"><span class="sr">Выбрать студию {{loc:myasnitskaya:name}}</span></button>
+    </article>
+    <article class="spot" data-studio="technopark">
+      <div class="spot__media"><img src="assets/img/home/spot-technopark-360.webp" width="360" height="360" alt="Студия в Технопарке: Mercedes-AMG G-класса в боксе" loading="lazy" decoding="async"><span class="spot__state" data-studio-state hidden></span></div>
+      <div class="spot__body">
+        <h3 class="spot__name" id="studio-pick-technopark">{{loc:technopark:name}}</h3>
+        <p class="spot__addr">{{loc:technopark:address}}</p>
+        <p class="spot__hours" data-studio-hours>{{loc:technopark:hours}}</p>
+        <div class="spot__load" data-studio-load hidden><span class="spot__load-bar"><span data-studio-load-fill></span></span><span class="spot__load-text" data-studio-load-text></span></div>
+        <div class="spot__foot">
+          <a class="spot__icon" href="tel:{{loc:technopark:tel}}" aria-label="Позвонить: {{loc:technopark:name}}, {{loc:technopark:phone}}">{{icon:phone}}</a>
+          <a class="spot__icon" href="{{loc:technopark:map}}" target="_blank" rel="noopener noreferrer" aria-label="{{loc:technopark:name}} на Яндекс Картах (новая вкладка)">{{icon:pin}}</a>
+          <span class="spot__go" aria-hidden="true">Выбрать{{icon:arrow-right}}</span>
+        </div>
       </div>
-      <p class="studio-pick__type">{{loc:technopark:type}}</p>
-      <p class="studio-pick__address">{{loc:technopark:address}}</p>
-      <div class="studio-pick__hours"><p data-studio-hours>{{loc:technopark:hours}}</p><span class="studio-pick__state" data-studio-state hidden></span></div>
-      <ul class="studio-pick__rows">
-        <li><a class="studio-pick__row" href="tel:{{loc:technopark:tel}}">{{icon:phone}}<span class="nw">{{loc:technopark:phone}}</span></a></li>
-        <li><a class="studio-pick__row" href="{{loc:technopark:map}}" target="_blank" rel="noopener noreferrer">{{icon:pin}}<span>На карте<span class="sr"> (Яндекс Карты, новая вкладка)</span></span></a></li>
-      </ul>
-    </section>
+      <button class="spot__choose" type="button" data-studio-choose="technopark"><span class="sr">Выбрать студию {{loc:technopark:name}}</span></button>
+    </article>
+    </div>
   </div>
   <div class="studios__book" data-studios-book hidden>
     <button class="studios__back" type="button" data-studios-back>{{icon:arrow-left}}<span>Выбрать точку</span></button>

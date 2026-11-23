@@ -1006,6 +1006,49 @@ try {
     if (($_POST['action'] ?? '') === 'token') {
         respond(200, ['ok' => true, 'token' => issueToken($config['secret']), 'wait' => $config['min_seconds']]);
     }
+    // Загруженность студий сегодня (окно «Выбрать точку», Влад 23.11): по «Комплексной» (седан) —
+    // сколько свободных начал сеанса осталось до закрытия и ближайшее; кэш 5 минут на всех.
+    if (($_POST['action'] ?? '') === 'load') {
+        $yc = $config['channels']['yclients'] ?? null;
+        if ($yc === null) {
+            fail(503, 'данные YCLIENTS не подключены');
+        }
+        $dir = dataDir($config);
+        $key = $dir !== null ? $dir . '/load-' . date('Ymd') : null;
+        if ($key !== null && is_file($key) && filemtime($key) > time() - 300) {
+            $cached = json_decode((string) file_get_contents($key), true);
+            if (is_array($cached)) {
+                respond(200, ['ok' => true, 'branches' => $cached]);
+            }
+        }
+        $out = [];
+        $today = (new DateTime('now', new DateTimeZone('Europe/Moscow')));
+        $now = (int) $today->format('G') * 60 + (int) $today->format('i');
+        foreach (array_keys($yc['companies']) as $branch) {
+            $ids = ycServices(['Комплексная с воском'], $branch, $yc, 0, false);
+            if (!$ids) {
+                continue;
+            }
+            $company = (int) $yc['companies'][$branch];
+            $res = ycCall($yc, 'GET', "/api/v1/book_times/$company/0/" . $today->format('Y-m-d') . '?' . http_build_query(['service_ids' => $ids]), null, 10);
+            if ($res === null) {
+                continue;
+            }
+            $free = [];
+            foreach ((array) ($res['data'] ?? $res) as $slot) {
+                if (is_array($slot) && preg_match('/^(\d{1,2}):(\d{2})$/', (string) ($slot['time'] ?? ''), $m) && (int) $m[1] * 60 + (int) $m[2] >= $now) {
+                    $free[] = sprintf('%d:%02d', (int) $m[1], (int) $m[2]);
+                }
+            }
+            // Возможных начал — каждые 30 минут до 21:00 (закрытие 22:00 минус сеанс); свободных меньше — загружено больше.
+            $possible = max(1, (int) floor(max(0, 21 * 60 - max($now, 8 * 60)) / 30) + 1);
+            $out[$branch] = ['load' => round(1 - min(1, count($free) / $possible), 2), 'next' => $free[0] ?? null];
+        }
+        if ($key !== null) {
+            @file_put_contents($key, json_encode($out), LOCK_EX);
+        }
+        respond(200, ['ok' => true, 'branches' => $out]);
+    }
     if (($_POST['action'] ?? '') === 'slots') {
         $yc = $config['channels']['yclients'] ?? null;
         if ($yc === null) {

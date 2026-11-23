@@ -310,39 +310,48 @@
      разные компании в YCLIENTS, ссылки ведут каждая в свою запись (с выбранной программой в корзине,
      js/yclients.js). Поля закрыты от Вебвизора (ym-hide-content у формы, ym-disable-keys у полей) —
      это обещает Политика, п. 2.1. -->
-<!-- Влад 23.11: «Записаться онлайн» в шапке главной → окно «Выбрать точку»: студии с часами и плашкой
-     «Открыто/Закрыто» (js/studios.js по московскому времени, раз в минуту), телефон, «На карте»;
-     «Выбрать» — запись YCLIENTS этой студии здесь же, в окне (iframe создаёт скрипт). -->
+<!-- Влад 23.11: «Записаться онлайн» в шапке главной → окно «Выбрать точку». Вторая версия (Влад: «не стильно,
+     неудобно с телефона, без прокрутки»): карточка студии — фото с плашкой «Открыто/Закрыто» (js/studios.js по
+     московскому времени, раз в минуту), название, адрес, часы, круглые «Позвонить» и «На карте»; нажатие на
+     карточку (кнопка .spot__choose во всю карточку) — «Выбрать»: запись YCLIENTS этой студии в этом же окне.
+     Загруженность — полоска и «ближайшее свободное время» из YCLIENTS (api/request.php action=load); без ключа
+     API сервер отвечает 503, полоска скрыта. На телефоне окно — на один экран. -->
 <dialog class="dialog dialog--studios" id="studio-pick" aria-labelledby="studio-pick-title">
   <form class="dialog__closer" method="dialog"><button class="dialog__close" aria-label="Закрыть"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-close"/></svg></button></form>
   <div class="studios" data-studios-list>
-    <h2 class="dialog__title" id="studio-pick-title" tabindex="-1">Выбрать точку</h2>
-    <section class="studio-pick" data-studio="myasnitskaya" aria-labelledby="studio-pick-myasnitskaya">
-      <div class="studio-pick__head">
-        <h3 class="studio-pick__name" id="studio-pick-myasnitskaya">Лубянка</h3>
-        <button class="btn btn--compact btn--primary studio-pick__go" type="button" data-studio-choose="myasnitskaya">Выбрать<span class="sr">: Лубянка</span></button>
+    <h2 class="dialog__title studios__title" id="studio-pick-title" tabindex="-1">Выбрать точку</h2>
+    <div class="spots">
+    <article class="spot" data-studio="myasnitskaya">
+      <div class="spot__media"><img src="assets/img/home/spot-myasnitskaya-360.webp" width="360" height="360" alt="Студия на Лубянке: Range Rover в боксе" loading="lazy" decoding="async"><span class="spot__state" data-studio-state hidden></span></div>
+      <div class="spot__body">
+        <h3 class="spot__name" id="studio-pick-myasnitskaya">Лубянка</h3>
+        <p class="spot__addr">ул. Мясницкая, 11</p>
+        <p class="spot__hours" data-studio-hours>Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</p>
+        <div class="spot__load" data-studio-load hidden><span class="spot__load-bar"><span data-studio-load-fill></span></span><span class="spot__load-text" data-studio-load-text></span></div>
+        <div class="spot__foot">
+          <a class="spot__icon" href="tel:+79300352325" aria-label="Позвонить: Лубянка, +7 (930) 035-23-25"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg></a>
+          <a class="spot__icon" href="https://yandex.ru/maps/org/meat_wash/191686454110/" target="_blank" rel="noopener noreferrer" aria-label="Лубянка на Яндекс Картах (новая вкладка)"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-pin"/></svg></a>
+          <span class="spot__go" aria-hidden="true">Выбрать<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span>
+        </div>
       </div>
-      <p class="studio-pick__type">Автомойка и&nbsp;детейлинг</p>
-      <p class="studio-pick__address">ул. Мясницкая, 11</p>
-      <div class="studio-pick__hours"><p data-studio-hours>Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</p><span class="studio-pick__state" data-studio-state hidden></span></div>
-      <ul class="studio-pick__rows">
-        <li><a class="studio-pick__row" href="tel:+79300352325"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span class="nw">+7 (930) 035-23-25</span></a></li>
-        <li><a class="studio-pick__row" href="https://yandex.ru/maps/org/meat_wash/191686454110/" target="_blank" rel="noopener noreferrer"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-pin"/></svg><span>На&nbsp;карте<span class="sr"> (Яндекс Карты, новая вкладка)</span></span></a></li>
-      </ul>
-    </section>
-    <section class="studio-pick" data-studio="technopark" aria-labelledby="studio-pick-technopark">
-      <div class="studio-pick__head">
-        <h3 class="studio-pick__name" id="studio-pick-technopark">Технопарк</h3>
-        <button class="btn btn--compact btn--primary studio-pick__go" type="button" data-studio-choose="technopark">Выбрать<span class="sr">: Технопарк</span></button>
+      <button class="spot__choose" type="button" data-studio-choose="myasnitskaya"><span class="sr">Выбрать студию Лубянка</span></button>
+    </article>
+    <article class="spot" data-studio="technopark">
+      <div class="spot__media"><img src="assets/img/home/spot-technopark-360.webp" width="360" height="360" alt="Студия в Технопарке: Mercedes-AMG G-класса в боксе" loading="lazy" decoding="async"><span class="spot__state" data-studio-state hidden></span></div>
+      <div class="spot__body">
+        <h3 class="spot__name" id="studio-pick-technopark">Технопарк</h3>
+        <p class="spot__addr">пр-т&nbsp;Андропова, 8, стр. 2</p>
+        <p class="spot__hours" data-studio-hours>Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</p>
+        <div class="spot__load" data-studio-load hidden><span class="spot__load-bar"><span data-studio-load-fill></span></span><span class="spot__load-text" data-studio-load-text></span></div>
+        <div class="spot__foot">
+          <a class="spot__icon" href="tel:+79324916991" aria-label="Позвонить: Технопарк, +7 (932) 491-69-91"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg></a>
+          <a class="spot__icon" href="https://yandex.ru/maps/org/meat_wash_tekhnopark/122667992007/" target="_blank" rel="noopener noreferrer" aria-label="Технопарк на Яндекс Картах (новая вкладка)"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-pin"/></svg></a>
+          <span class="spot__go" aria-hidden="true">Выбрать<svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-right"/></svg></span>
+        </div>
       </div>
-      <p class="studio-pick__type">Автомойка и&nbsp;детейлинг</p>
-      <p class="studio-pick__address">пр-т&nbsp;Андропова, 8, стр. 2</p>
-      <div class="studio-pick__hours"><p data-studio-hours>Пн–Пт&nbsp;08:00–22:00<br>Сб–Вс&nbsp;09:00–22:00</p><span class="studio-pick__state" data-studio-state hidden></span></div>
-      <ul class="studio-pick__rows">
-        <li><a class="studio-pick__row" href="tel:+79324916991"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-phone"/></svg><span class="nw">+7 (932) 491-69-91</span></a></li>
-        <li><a class="studio-pick__row" href="https://yandex.ru/maps/org/meat_wash_tekhnopark/122667992007/" target="_blank" rel="noopener noreferrer"><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-pin"/></svg><span>На&nbsp;карте<span class="sr"> (Яндекс Карты, новая вкладка)</span></span></a></li>
-      </ul>
-    </section>
+      <button class="spot__choose" type="button" data-studio-choose="technopark"><span class="sr">Выбрать студию Технопарк</span></button>
+    </article>
+    </div>
   </div>
   <div class="studios__book" data-studios-book hidden>
     <button class="studios__back" type="button" data-studios-back><svg class="icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/brand/sprite.svg?v=57207f84#i-arrow-left"/></svg><span>Выбрать точку</span></button>

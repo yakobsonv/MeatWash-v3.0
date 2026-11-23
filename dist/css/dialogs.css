@@ -438,34 +438,74 @@ legend.request__legend + * { clear: both; }
 }
 @media print { .consent { display: none; } }
 
-/* ---------- «Выбрать точку» (Влад 23.11): студии, часы с плашкой «Открыто/Закрыто», запись YCLIENTS ---------- */
-dialog.dialog--studios { width: min(640px, 100vw); }
-.studios .dialog__title { margin-bottom: 8px; }
-.studio-pick { padding: 28px 0; border-bottom: 1px solid var(--on-line); }
-.studio-pick:last-child { border-bottom: 0; }
-.studio-pick__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.studio-pick__name { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.25; }
-.studio-pick__go { flex: none; min-width: 120px; }
-.studio-pick__type { margin: 6px 0 0; color: var(--on-muted); }
-.studio-pick__address { margin: 10px 0 0; }
-.studio-pick__hours { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 4px; }
-.studio-pick__hours p { margin: 0; }
-.studio-pick__state {
-  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px;
-  font-size: 13px; font-weight: 600; line-height: 1.2;
+/* ---------- «Выбрать точку» (Влад 23.11, вторая версия): карточки студий с фото, плашка «Открыто/Закрыто»,
+   круглые «Позвонить» и «На карте», вся карточка — «Выбрать»; на телефоне окно без прокрутки ---------- */
+dialog.dialog--studios { width: min(560px, 100vw); }
+.studios__title { padding-bottom: 4px; }
+.spots { display: grid; gap: 14px; margin-top: 22px; }
+.spot {
+  position: relative; display: grid; grid-template-columns: 132px minmax(0, 1fr);
+  border-radius: 22px; overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 4%, var(--fg));
+  box-shadow: inset 0 0 0 1px rgb(var(--ink-rgb) / .08);
+  transition: box-shadow var(--t-fast) var(--ease), translate var(--t-fast) var(--ease);
 }
-.studio-pick__state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.studio-pick__state.is-open { color: #12733d; background: rgb(18 115 61 / .12); }
-.studio-pick__state.is-closed { color: #b3261e; background: rgb(179 38 30 / .11); }
-.studio-pick__rows { display: grid; gap: 4px; margin: 14px 0 0; padding: 0; list-style: none; }
-.studio-pick__row { display: inline-flex; align-items: center; gap: 12px; min-height: 40px; color: inherit; text-decoration: none; }
-.studio-pick__row .icon { width: 22px; height: 22px; color: var(--on-muted); }
-.studio-pick__row:hover span { text-decoration: underline; text-underline-offset: 3px; }
+.spot:hover { box-shadow: inset 0 0 0 1px rgb(var(--ink-rgb) / .22), 0 14px 30px -18px rgb(0 0 0 / .35); }
+.spot__media { position: relative; min-height: 100%; }
+.spot__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.spot__state {
+  position: absolute; left: 10px; top: 10px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 9px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; line-height: 1; letter-spacing: .01em;
+  background: rgb(255 255 255 / .92); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.spot__state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent); }
+.spot__state.is-open { color: #0f7a3d; }
+.spot__state.is-closed { color: #c0271d; }
+.spot__body { display: flex; flex-direction: column; gap: 4px; padding: 16px 16px 14px 18px; min-width: 0; }
+.spot__name { margin: 0; font-size: 21px; font-weight: 600; line-height: 1.2; letter-spacing: -.01em; }
+.spot__addr { margin: 0; font-size: 14px; line-height: 1.35; }
+.spot__hours { margin: 0; font-size: 13px; line-height: 1.4; color: var(--on-muted); font-variant-numeric: tabular-nums; }
+.spot__load { display: grid; gap: 5px; margin-top: 6px; }
+.spot__load-bar { display: block; height: 5px; border-radius: 999px; background: rgb(var(--ink-rgb) / .1); overflow: hidden; }
+.spot__load-bar > span { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--load, #0f7a3d); transition: width .6s var(--ease-out); }
+.spot__load-text { font-size: 12px; line-height: 1.3; color: var(--on-muted); }
+.spot__foot { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 10px; }
+.spot__icon {
+  position: relative; z-index: 2; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--fg); color: var(--ink); box-shadow: inset 0 0 0 1px rgb(var(--ink-rgb) / .14);
+  transition: background-color var(--t-fast) var(--ease);
+}
+.spot__icon:hover { background: color-mix(in srgb, var(--ink) 8%, var(--fg)); }
+.spot__icon .icon { width: 19px; height: 19px; }
+.spot__go {
+  display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 10px 16px; border-radius: 999px;
+  background: var(--ink); color: var(--fg); font-size: 14px; font-weight: 600; line-height: 1;
+}
+.spot__go .icon { width: 16px; height: 16px; transition: translate var(--t-fast) var(--ease); }
+.spot:hover .spot__go .icon { translate: 3px 0; }
+.spot__choose { position: absolute; inset: 0; z-index: 1; margin: 0; padding: 0; border: 0; border-radius: inherit; background: transparent; cursor: pointer; }
+.spot__choose:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+/* Телефон: окно на один экран — заголовок меньше, карточки ниже. */
+@media (max-width: 759px) {
+  dialog.dialog--studios { max-height: calc(100dvh - 12px); }
+  dialog.dialog--studios:not(.is-booking) { overflow-y: hidden; }
+  .studios__title { padding-top: 22px; font-size: 30px; }
+  .spots { gap: 10px; margin-top: 16px; }
+  .spot { grid-template-columns: 112px minmax(0, 1fr); border-radius: 20px; }
+  .spot__body { padding: 13px 12px 12px 14px; }
+  .spot__name { font-size: 19px; }
+  .spot__go { padding: 9px 13px; font-size: 13px; }
+  .spot__icon { width: 38px; height: 38px; }
+}
+@media (max-width: 359px) { .spot { grid-template-columns: 92px minmax(0, 1fr); } .spot__go { padding: 9px 10px; } }
 .studios__back {
-  display: inline-flex; align-items: center; gap: 8px; margin: 24px 0 0; padding: 8px 0; border: 0; background: none;
-  font: inherit; color: inherit; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; margin: 22px 0 0; padding: 8px 14px 8px 10px; border: 0; border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, var(--fg)); font: inherit; font-size: 14px; color: inherit; cursor: pointer;
 }
-.studios__back .icon { width: 20px; height: 20px; }
-@media (min-width: 760px) { .studios__back { margin-top: 72px; } .studios__book-title { padding-top: 8px; } }
-.studios__frame { margin-top: 20px; }
-.studios__iframe { display: block; width: 100%; height: min(720px, 80vh); height: min(720px, 80svh); border: 0; border-radius: var(--r-md, 16px); background: #111; }
+.studios__back .icon { width: 18px; height: 18px; }
+@media (min-width: 760px) { .studios__back { margin-top: 72px; } }
+.studios__book-title { padding-top: 10px; }
+.studios__frame { margin-top: 16px; }
+.studios__iframe { display: block; width: 100%; height: min(720px, 78vh); height: min(720px, 78svh); border: 0; border-radius: 18px; background: #111; }
+@media (max-width: 759px) { dialog.dialog--studios.is-booking { height: calc(100dvh - 12px); } .studios__iframe { height: calc(100svh - 200px); } }
