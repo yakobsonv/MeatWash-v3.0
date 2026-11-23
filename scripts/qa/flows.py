@@ -60,7 +60,7 @@ def booking(browser, base, pages, res):
             btn.click()
             pg.wait_for_timeout(450)
             s = pg.evaluate(REQUEST_STATE)
-            good = s['open'] and s['locked'] and label.startswith('Записаться онлайн' if p['id'] == 'wash' else 'Оставить заявку') and (s['topic'] or '') == p['topic']
+            good = s['open'] and s['locked'] and (label.startswith('Записаться онлайн') if p['id'] in ('wash', 'home') else label.startswith('Оставить заявку')) and (s['topic'] or '') == p['topic']
             pg.keyboard.press('Escape')
             pg.wait_for_timeout(450)
             closed = pg.evaluate("() => !document.querySelector('#request').open && !document.documentElement.classList.contains('is-locked')")
