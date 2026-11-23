@@ -76,7 +76,7 @@ export function setupStudios(dialog, { show }) {
       }).catch(() => {});
   };
   let timer = 0;
-  dialog.addEventListener('close', () => { clearInterval(timer); timer = 0; });
+  dialog.addEventListener('close', () => { clearInterval(timer); timer = 0; dialog.classList.remove('is-booking'); });
 
   const toList = () => {
     book.hidden = true; list.hidden = false; dialog.classList.remove('is-booking');
