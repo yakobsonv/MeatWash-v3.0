@@ -58,12 +58,12 @@ def inventory(browser, base, pages, res):
     # 05.11: блока основателя и разворота интервью нет (имя убрано со всего сайта).
     b = pg.evaluate("""() => { const t = document.body.innerText.replace(/\u00a0/g, ' '); return {founder: !document.querySelector('img[src*="founder-roman"], img[src*="press-service-parts-interview"]'), path: document.querySelectorAll('#path li').length,
       press: document.querySelectorAll('img[src*="press-service-parts"]').length, team: Boolean(document.querySelector('#team')),
-      visit: ['500', 'аркинг', 'плат'].every(w => (document.querySelector('#before-visit')?.innerText || '').replace(/\u00a0/g, ' ').includes(w)),
+      visit: ['50 %', 'аркинг', 'плат'].every(w => (document.querySelector('#before-visit')?.innerText || '').replace(/\u00a0/g, ' ').includes(w)),
       authors: /Фото|фото:/.test(t), talk: Boolean(document.querySelector('#membership [data-request][data-request-category="club"]')), wahelp: Boolean(document.querySelector('a.membership__link[href*="wahelp"]')),
       external: document.querySelectorAll('a.location__external').length, earlier: (t.match(/ранее Meat Wash/g) || []).length}; }""")
     checks += [
         (b['founder'] and b['path'] >= 4 and b['team'], f"без портрета основателя и разворота интервью {b['founder']}, путь ({b['path']}), пресса ({b['press']}), команда"),
-        (b['visit'], '«Перед визитом»: скидка 500 ₽, паркинг, оплата'),
+        (b['visit'], '«Перед визитом»: скидка 50 % на автомойку (Влад 23.11), паркинг, оплата'),
         (b['talk'] and b['wahelp'], '«Оставить заявку» с темой «Клуб» и клубная карта wahelp'),
         (b['external'] == 2, f"«Открыть в Яндекс Картах» у обеих карт: {b['external']}"),
         (b['earlier'] == 0, f"«ранее Meat Wash» на «О нас» (имя снова Meat Wash, 29.10): {b['earlier']}"),

@@ -360,8 +360,10 @@ body[data-page="home"] .site-header__book { display: inline-block; }
   color: #fff;
 }
 :root[data-theme="home"] .site-footer__mark { color: var(--on); }
-.site-footer__mark .bull { height: clamp(52px, 2vw + 40px, 72px); width: auto; aspect-ratio: 1097 / 800; }
-.site-footer__mark .ccc { width: clamp(150px, 6vw + 110px, 210px); height: auto; aspect-ratio: 1231 / 198; }
+.site-footer__logo { display: block; width: clamp(170px, 8vw + 120px, 240px); height: auto; aspect-ratio: 1480 / 1301; }
+.site-footer__logo--dark { display: none; }
+:root[data-theme="home"] .site-footer__logo--light { display: none; }
+:root[data-theme="home"] .site-footer__logo--dark { display: block; }
 @media (min-width: 760px) {
   .site-footer__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

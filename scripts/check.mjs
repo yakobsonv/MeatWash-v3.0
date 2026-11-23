@@ -319,7 +319,7 @@ for (const page of REGISTRY) {
     const headerAttrs = page.id === 'home' ? 'data-studios aria-haspopup="dialog"' : `data-request data-request-category="${page.topic || ''}"`;
     ok(text.includes(`<button class="site-header__book btn btn--compact btn--secondary" type="button" ${headerAttrs}>${headerLabel}<`), `${file}: кнопка в шапке — не «${headerLabel}» (${headerAttrs})`);
     ok(text.includes(`<button class="btn btn--primary btn--block" ${want}`), `${file}: в шторке нет «${REQUEST_LABEL}» с темой страницы`);
-    ok(!/t\.me\/(?!MEATWASH_Auto|meat_wash\/)/.test(sharedOf(text, 'header') + sharedOf(text, 'footer')), `${file}: в шапке или подвале ссылка на личный Telegram`);
+    ok(!/t\.me\/(?!MEATWASH_Auto|meat_wash\b)/.test(sharedOf(text, 'header') + sharedOf(text, 'footer')), `${file}: в шапке или подвале ссылка на личный Telegram`);
   }
   if (page.cta === 'request') ok(text.includes(`<button class="btn btn--primary mobile-cta" ${`type="button" data-request data-request-category="${page.topic || ''}">${REQUEST_LABEL}<`}`), `${file}: нижняя кнопка на телефоне — не «${REQUEST_LABEL}» с темой страницы`);
   // Главная — без нижней кнопки, как прежняя главная (Влад 05.11: «главная как была»): заявка в шапке видна и на телефоне.
